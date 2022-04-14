@@ -1,4 +1,5 @@
 # play.poc.prx.org
+
 PRX audio embed player and landing pages.
 
 ## Getting Started
@@ -64,3 +65,26 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Typescript and IDE
+
+Yes, We are using typescript. This will require some extra steps to provide explicit types or interfaces for class components, and function parameters and return values. Types and interfaces specific to a component can be exported from the component file. Types and interfaces used by more than one component should be defined in `./interfaces` and organized into its own module directory. Module directories should include a `index.ts` that exports the exported entities from that modules interface files. An export should also be added to `./interfaces.index.ts` for the module.
+
+It is highly recommended to use an IDE that either supports typescript or has a plugin for typescript. This project provides [Visual Studio Code](https://code.visualstudio.com/) settings presets for linting and formatting javascript and typescript.
+
+### Importing Module Exports
+
+When importing module exports, do not use relative import paths for exports not local to the importing module. For example, when importing a function from `./lib` in your component in `./components/MyComponent`, use `import myFunction from '@lib/myFunction';` instead of `import myFunction from '../../lib/myFunction';`
+
+#### Available Aliases
+
+`@components` -> `./components`
+`@contexts` -> `./contexts`
+`@interfaces` -> `./interfaces`
+`@lib` -> `./lib`
+`@svg` -> `./assets/svg`
+`@styles` -> `./styles`
+
+## Contributing
+
+The process around contributing to this codebase and the workflow by which code changes are proposed and accepted into this project are documented [here](./.github/CONTRIBUTING.md).
