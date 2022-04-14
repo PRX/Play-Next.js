@@ -1,0 +1,21 @@
+{
+  "typeAcquisition": {
+    "include": ["jest"]
+  },
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./*"],
+      "@components/*": ["./components/*"],
+      "@config": ["./config"],
+      "@config/*": ["./config/*"],
+      "@contexts/*": ["./contexts/*"],
+      "@interfaces": ["./interfaces"],
+      "@interfaces/*": ["./interfaces/*"],
+      "@lib/*": ["./lib/*"],
+      "@store/*": ["./store/*"],
+      "@svg/*": ["./assets/svg/*"],
+      "@styles/*": ["./styles/*"]
+    }
+  }
+}

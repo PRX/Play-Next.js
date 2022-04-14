@@ -18,6 +18,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@svgr/webpack": "^6.2.1",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0"
@@ -33,6 +34,7 @@
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "12.1.5",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-webpack": "^0.13.2",
     "eslint-plugin-react": "^7.28.0",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",

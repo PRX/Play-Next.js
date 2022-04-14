@@ -27,6 +27,7 @@ module.exports = {
       { extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'] }
     ],
     'react/function-component-definition': 0,
-    'react/jsx-props-no-spreading': 0
+    'react/jsx-props-no-spreading': 0,
+    'import/no-unresolved': ['error', { ignore: ['\\.svg$'] }]
   }
 };
