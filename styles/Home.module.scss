@@ -1,6 +1,11 @@
 .container {
   padding: 0 2rem;
-  background-color: hsl(0 0 30%);
+  background-color: hsl(210, 25%, 30%);
+  animation-name: color-shift;
+  animation-duration: 10s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 .main {
@@ -26,4 +31,13 @@
   text-transform: uppercase;
   font-size: clamp(5rem, 10vw, 12rem);
   margin-block: 0;
+}
+
+@keyframes color-shift {
+  0% {
+    background-color: hsl(210, 25%, 30%);
+  }
+  100% {
+    background-color: hsl(110, 25%, 30%);
+  }
 }
