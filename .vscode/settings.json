@@ -1,0 +1,32 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.packageManager": "yarn",
+  "npm.packageManager": "yarn",
+  "prettier.prettierPath": "./node_modules/prettier",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    // For ESLint
+    "source.fixAll.eslint": false
+  },
+  "editor.formatOnPaste": true,
+  "cSpell.words": [
+    "cflds",
+    "customsearch",
+    "Denormalized",
+    "flipboard",
+    "Lede",
+    "metatags",
+    "optin",
+    "popout",
+    "pubdate",
+    "shortlink",
+    "targetable",
+    "theworld",
+    "unfetch",
+    "unsub",
+    "VERCEL"
+  ]
+}
