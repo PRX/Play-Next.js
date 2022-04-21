@@ -10,28 +10,101 @@
  * Parameter object keys expected from requests.
  */
 export interface IEmbedParams {
+  /**
+   * Use to override title initially shown in player.
+   */
   tt?: string;
+
+  /**
+   * Use to override subtitle of all audio items.
+   */
   ts?: string;
-  tc?: string;
+
+  /**
+   * Use to override audio url of initially loaded audio.
+   */
   ua?: string;
+
+  /**
+   * Use to override URL of image initial shown as player background.
+   */
   ui?: string;
+
+  /**
+   * Use to override URL of image initial shown as thumbnail in player.
+   */
   ue?: string;
+
+  /**
+   * Use to provide URL for RSS feed data.
+   */
   uf?: string;
-  if?: string;
+
+  /**
+   * Guid of episode in feed items to use for initial audio in player.
+   */
   ge?: string;
-  uc?: string;
+
+  /**
+   * Use to override subscription URL when it should differ
+   * from data source RSS feed provided by `uf` or when `ua` is used
+   * without `uf`.
+   */
   us?: string;
+
+  /**
+   * Target window to open subscription URL in.
+   */
   gs?: string;
-  gc?: string;
+
+  /**
+   * Use to indicate a playlist should be shown. Set to an integer value
+   * for the number of items to include in playlist, or `all` to include
+   * everything in the feed. Requires RSS feed URL be provided with `uf`.
+   */
   sp?: string;
+
+  /**
+   * Use to filter playlist items by episode season. Requires `sp` and `uf`
+   * values be provided.
+   */
   se?: string;
+
+  /**
+   * Use to filter playlist items by single category. Requires `sp` and `uf`
+   * values be provided.
+   */
   ct?: string;
+
+  /**
+   * DEPRECATED
+   * Use to set call to action text.
+   */
+  tc?: string;
+
+  /**
+   * DEPRECATED
+   * Use to provide a call to action URL.
+   */
+  uc?: string;
+
+  /**
+   * DEPRECATED
+   * Target window to open call to action URL in.
+   */
+  gc?: string;
+
+  /**
+   * DEPRECATED
+   * Use to provide the ID of a RSS feed.
+   */
+  if?: string;
 }
 
 /**
  * Embed config object.
  */
-interface IEmbedConfig extends URLSearchParams {
+export interface IEmbedConfig {
   title?: string;
   subtitle?: string;
   ctaTitle?: string;
@@ -45,8 +118,8 @@ interface IEmbedConfig extends URLSearchParams {
   subscribeUrl?: string;
   subscribeTarget?: string;
   ctaTarget?: string;
-  showPlaylist?: boolean;
-  playlistSeason?: string;
+  showPlaylist?: number | 'all';
+  playlistSeason?: number;
   playlistCategory?: string;
 }
 
@@ -71,5 +144,3 @@ EmbedParamKeysMap.set('gc', 'ctaTarget');
 EmbedParamKeysMap.set('sp', 'showPlaylist');
 EmbedParamKeysMap.set('se', 'playlistSeason');
 EmbedParamKeysMap.set('ct', 'playlistCategory');
-
-export default IEmbedConfig;

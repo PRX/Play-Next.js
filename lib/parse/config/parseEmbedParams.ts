@@ -1,7 +1,9 @@
-import IEmbedConfig, {
+import {
+  IEmbedConfig,
   IEmbedParams,
   EmbedParamKeysMap
 } from '@interfaces/embed/IEmbedConfig';
+import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 
 /**
  * Parse query parameters into player config object.
@@ -20,10 +22,13 @@ const parseEmbedParams = (params: IEmbedParams): IEmbedConfig => {
           case 'showPlaylist':
             return {
               ...a,
-              [prop]:
-                ['0', 'false', 'null', 'undefined'].indexOf(v) > -1
-                  ? false
-                  : !!v
+              [prop]: v === 'all' ? v : convertStringToInteger(v)
+            };
+
+          case 'playlistSeason':
+            return {
+              ...a,
+              [prop]: convertStringToInteger(v)
             };
 
           default:
