@@ -1,7 +1,17 @@
-import { IRssProxyError } from '@interfaces/error/IRssProxyError';
 import Parser from 'rss-parser';
 
 const parser: Parser<Parser.Output<Parser.Item>, Parser.Item> = new Parser();
+
+class RssProxyError extends Error {
+  public url: string;
+
+  constructor(message: string, url: string) {
+    super(message);
+    this.name = 'RssProxyError';
+    this.message = message;
+    this.url = url;
+  }
+}
 
 /**
  * Fetch and parse RSS feed URL.
@@ -9,24 +19,11 @@ const parser: Parser<Parser.Output<Parser.Item>, Parser.Item> = new Parser();
  * @returns Parsed RSS data object.
  */
 const fetchRssFeed = async (feedUrl: string) => {
-  let error: IRssProxyError;
-  const feed: Parser.Output<Parser.Item> = await parser.parseURL(feedUrl).then(
-    (resp) => resp,
-    (reason: Error) => {
-      error = {
-        name: 'RssProxyError',
-        message: `Bad URL Provided. Reason: ${reason.message}`,
-        url: feedUrl
-      };
-      return null;
-    }
-  );
-
-  return !error
-    ? feed
-    : {
-        error
-      };
+  try {
+    return await parser.parseURL(feedUrl);
+  } catch (err) {
+    throw new RssProxyError(err.message, feedUrl);
+  }
 };
 
 export default fetchRssFeed;
