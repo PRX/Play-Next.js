@@ -9,14 +9,16 @@ export default async function handler(
   res: NextApiResponse<Parser.Output<Parser.Item> | { error: IRssProxyError }>
 ) {
   const { u: feedUrl } = req.query;
-  const feed = await fetchRssFeed(feedUrl as string);
-  const { error } = feed as { error: IRssProxyError };
 
-  if (error) {
-    res.status(400).json({
-      error
-    });
-  } else {
+  try {
+    const feed = await fetchRssFeed(feedUrl as string);
     res.status(200).json(feed);
+  } catch (error) {
+    res.status(400).json({
+      error: {
+        ...error,
+        message: `Bad URL Provided. Reason: ${error.message}`
+      }
+    });
   }
 }
