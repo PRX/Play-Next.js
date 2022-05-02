@@ -20,7 +20,7 @@ const nextConfig = {
           '@contexts': path.join(__dirname, 'contexts'),
           '@interfaces': path.join(__dirname, 'interfaces'),
           '@lib': path.join(__dirname, 'lib'),
-          '@store': path.join(__dirname, 'store'),
+          '@states': path.join(__dirname, 'states'),
           '@svg': path.join(__dirname, 'assets', 'svg'),
           '@theme': path.join(__dirname, 'theme')
         }
