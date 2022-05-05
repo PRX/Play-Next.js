@@ -18,7 +18,7 @@ export enum PlayerActionTypes {
   'PLAYER_SHOW_EMBED_CODE' = '[Player] SHOW_EMBED_CODE',
   'PLAYER_HIDE_EMBED_CODE' = '[Player] HIDE_EMBED_CODE',
   'PLAYER_TOGGLE_EMBED_CODE_SHOWN' = '[Player] TOGGLE_EMBED_CODE_SHOW',
-  'PLAYER_UPDATE_STUCK' = '{Player] UPDATE_STUCK'
+  'PLAYER_UPDATE_STUCK' = '[Player] UPDATE_STUCK'
 }
 
 export type PlayerAction = {
