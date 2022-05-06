@@ -9,7 +9,7 @@ import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
  * Parse query parameters into player config object.
  *
  * @param params Requested query parameters object.
- * @returns PlayerConfig
+ * @returns Embed Config object
  */
 const parseEmbedParams = (params: IEmbedParams): IEmbedConfig => {
   const config: IEmbedConfig = Object.entries(params).reduce(
