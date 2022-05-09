@@ -30,6 +30,10 @@ module.exports = {
     'react/function-component-definition': 0,
     'react/jsx-props-no-spreading': 0,
     'import/no-unresolved': ['error', { ignore: ['\\.svg$'] }],
-    'import/extensions': ['error', 'never', { ignorePackage: true }]
+    'import/extensions': [
+      'error',
+      'never',
+      { ignorePackage: true, svg: 'always' }
+    ]
   }
 };
