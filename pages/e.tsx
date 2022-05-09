@@ -9,8 +9,12 @@ import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 
-const EmbedPage = (props: IEmbedData) => {
-  const { audio } = props;
+export interface IEmbedPageProps {
+  data: IEmbedData;
+}
+
+const EmbedPage = ({ data }: IEmbedPageProps) => {
+  const { audio } = data;
   const { title, url } = audio || {};
 
   return (
@@ -31,10 +35,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // 2. If RSS feed URL is provided.
   const rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
   // 3. Parse config and RSS data into embed data.
-  const embedData = parseEmbedData(config, rssData);
+  const data = parseEmbedData(config, rssData);
 
   return {
-    props: embedData
+    props: { data }
   };
 };
 
