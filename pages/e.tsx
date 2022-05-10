@@ -8,6 +8,8 @@ import { IEmbedData } from '@interfaces/data';
 import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
+import Player from '@components/Player';
+import PlayButton from '@components/Player/PlayButton';
 
 export interface IEmbedPageProps {
   data: IEmbedData;
@@ -15,15 +17,17 @@ export interface IEmbedPageProps {
 
 const EmbedPage = ({ data }: IEmbedPageProps) => {
   const { audio } = data;
-  const { title, url } = audio || {};
+  const { title } = audio || {};
+
+  console.log('EmbedPage::render');
 
   return (
     audio && (
       <>
         <h1>{title}</h1>
-        <audio controls src={url}>
-          <track kind="captions" />
-        </audio>
+        <Player data={audio}>
+          <PlayButton />
+        </Player>
       </>
     )
   );
