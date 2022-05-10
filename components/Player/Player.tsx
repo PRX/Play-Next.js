@@ -47,17 +47,19 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
     onPlay: () => dispatch({ type: PlayerActionTypes.PLAYER_PLAY }),
     onPause: () => dispatch({ type: PlayerActionTypes.PLAYER_PAUSE }),
     onProgress: (payload: IProgressState) => {
-      console.log('Player::progress', payload);
+      console.log('Player::onProgress', payload);
       dispatch({
         type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
         payload
       });
     },
-    onDuration: (payload: number) =>
+    onDuration: (payload: number) => {
+      console.log('Player::onDuration', payload);
       dispatch({
         type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
         payload
-      })
+      });
+    }
   };
 
   useEffect(() => {
