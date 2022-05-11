@@ -8,6 +8,14 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/e',
+        destination: '/embed'
+      }
+    ];
+  },
   webpack(config) {
     const newConfig = {
       ...config,
