@@ -44,9 +44,9 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
 
   useEffect(() => {
     if (!playing) {
-      audioElm?.play();
-    } else {
       audioElm?.pause();
+    } else {
+      audioElm?.play();
     }
   }, [audioElm, playing]);
 
