@@ -27,7 +27,7 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
     }),
     [state]
   );
-  const { playing, muted, volume } = state;
+  const { playing } = state;
 
   useEffect(() => {
     setAudioElm(new Audio(url));
