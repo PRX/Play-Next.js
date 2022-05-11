@@ -11,21 +11,14 @@ import {
 
 export const playerInitialState: IPlayerState = {
   playing: false,
-  volume: 0.8,
-  muted: false,
-  duration: null,
-  seeking: null,
-  played: null,
-  playedSeconds: null,
-  loaded: null,
-  loadedSeconds: null
+  currentTrack: null
 };
 
 export const playerStateReducer = (
   state: IPlayerState,
   action: PlayerAction
 ): IPlayerState => {
-  const { playing, muted, seeking } = state;
+  const { playing } = state;
 
   switch (action.type) {
     case ActionTypes.PLAYER_PLAY:
@@ -37,37 +30,8 @@ export const playerStateReducer = (
     case ActionTypes.PLAYER_TOGGLE_PLAYING:
       return { ...state, playing: !playing };
 
-    case ActionTypes.PLAYER_MUTE:
-      return { ...state, muted: true };
-
-    case ActionTypes.PLAYER_UNMUTE:
-      return { ...state, muted: false };
-
-    case ActionTypes.PLAYER_TOGGLE_MUTED:
-      return { ...state, muted: !muted };
-
-    case ActionTypes.PLAYER_UPDATE_VOLUME:
-      return { ...state, volume: action.payload };
-
-    case ActionTypes.PLAYER_UPDATE_PROGRESS:
-      return { ...state, ...action.payload };
-
-    case ActionTypes.PLAYER_UPDATE_SEEKING:
-      return { ...state, seeking: action.payload };
-
-    case ActionTypes.PLAYER_UPDATE_PROGRESS_TO_SEEKING:
-      return {
-        ...state,
-        played: seeking,
-        seeking: null
-      };
-
-    case ActionTypes.PLAYER_UPDATE_DURATION:
-      return {
-        ...state,
-        duration: action.payload,
-        playing: false
-      };
+    case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK:
+      return { ...state, currentTrack: action.payload };
 
     default:
       return state;

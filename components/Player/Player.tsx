@@ -3,16 +3,15 @@
  * Higher order component used to establish audio player state for children UI components.
  */
 
-import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import ReactPlayer, { ReactPlayerProps } from 'react-player';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { IAudioData } from '@interfaces/data';
-import { IProgressState } from '@interfaces/states/player';
 import {
   playerInitialState,
   playerStateReducer
 } from '@states/player/Player.reducer';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import PlayerContext from '@contexts/PlayerContext';
+import { IStateContext } from '@interfaces/states/IStateContext';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
   data: IAudioData;
@@ -20,66 +19,76 @@ export interface IPlayerProps extends React.PropsWithChildren<{}> {
 
 const Player: React.FC<IPlayerProps> = ({ data, children }) => {
   const { url } = data;
+  const [audioElm, setAudioElm] = useState(null as HTMLAudioElement);
   const [state, dispatch] = useReducer(playerStateReducer, playerInitialState);
-  const stateContextValue = useMemo(() => ({ state, dispatch }), [state]);
-  const { playing, muted, volume } = state;
-  const playerElm = useRef(null as ReactPlayer);
-  // React Player component doesn't hydrate well after SSR. This is a flag to postpone its render to the client.
-  const [isCsr, setIsCsr] = useState(false);
+  const stateContextValue = useMemo(
+    (): IStateContext => ({ audioElm, state, dispatch }),
+    [audioElm, state]
+  );
+  const { playing } = state;
 
-  // Configure React Player Component.
-  const playerProps: ReactPlayerProps = {
-    config: {
-      file: {
-        forceAudio: true,
-        attributes: {
-          autoPlay: false
-        }
-      }
-    },
-    ref: playerElm,
-    style: { display: 'none' },
-    url,
-    playing,
-    volume,
-    muted,
-    progressInterval: 500,
-    onPlay: () => dispatch({ type: PlayerActionTypes.PLAYER_PLAY }),
-    onPause: () => dispatch({ type: PlayerActionTypes.PLAYER_PAUSE }),
-    onProgress: (payload: IProgressState) => {
-      console.log('Player::onProgress', payload);
-      dispatch({
-        type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
-        payload
-      });
-    },
-    onDuration: (payload: number) => {
-      console.log('Player::onDuration', payload);
-      dispatch({
-        type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
-        payload
-      });
-    }
-  };
+  // TODO: Move to progress bar component.
+  // const intervalRef = useRef(null);
+  // const startTimer = useCallback(() => {
+  //   clearInterval(intervalRef.current);
+
+  //   intervalRef.current = setInterval(() => {
+  //     if (audioElm.ended) {
+  //       // TODO: Dispatch for next track.
+  //     } else {
+  //       // Update played progress.
+  //     }
+  //   }, 500);
+  // }, [audioElm]);
 
   useEffect(() => {
-    // Ready to render player on the client.
-    setIsCsr(true);
+    setAudioElm(new Audio(url));
+  }, [setAudioElm, url]);
 
-    return () => {
-      console.log('Player unmounted.');
-    };
-  }, []);
+  useEffect(() => {
+    audioElm?.addEventListener('play', () =>
+      dispatch({ type: PlayerActionTypes.PLAYER_PLAY })
+    );
+    audioElm?.addEventListener('pause', () =>
+      dispatch({ type: PlayerActionTypes.PLAYER_PAUSE })
+    );
+    audioElm?.addEventListener('volumechange', () =>
+      dispatch({
+        type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
+        payload: audioElm.volume
+      })
+    );
 
-  console.log('Player::render', state);
+    // TODO: Handle audio ended when there is a playlist.
+    // audioElm.addEventListener('ended', () =>
+    //   // TODO: Advance to next track.
+    // );
+  }, [audioElm]);
+
+  useEffect(() => {
+    if (!playing) {
+      audioElm?.pause();
+    } else {
+      audioElm?.play();
+    }
+  }, [audioElm, playing]);
+
+  useEffect(
+    () => () => {
+      // Pause and clean up on unmount
+      audioElm?.pause();
+    },
+    [audioElm]
+  );
+
+  console.log('Player::render', state, data, audioElm);
 
   return (
-    <>
-      {isCsr && <ReactPlayer {...playerProps} />}
+    audioElm && (
       <PlayerContext.Provider value={stateContextValue}>
         {children}
       </PlayerContext.Provider>
-    </>
+    )
   );
 };
 

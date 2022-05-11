@@ -8,6 +8,7 @@ import { PlayerAction } from '@states/player/Player.actions';
 import { IPlayerState } from './player';
 
 export interface IStateContext {
+  audioElm: HTMLAudioElement;
   state: IPlayerState;
   dispatch: React.Dispatch<PlayerAction>;
 }
