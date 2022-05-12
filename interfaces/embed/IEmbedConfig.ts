@@ -77,6 +77,11 @@ export interface IEmbedParams {
   ct?: string;
 
   /**
+   * Use to feature episode image as large cover art.
+   */
+  ca?: string;
+
+  /**
    * DEPRECATED
    * Use to set call to action text.
    */
@@ -121,6 +126,7 @@ export interface IEmbedConfig {
   showPlaylist?: number | 'all';
   playlistSeason?: number;
   playlistCategory?: string;
+  showCoverArt?: boolean;
 }
 
 /**
@@ -144,3 +150,4 @@ EmbedParamKeysMap.set('gc', 'ctaTarget');
 EmbedParamKeysMap.set('sp', 'showPlaylist');
 EmbedParamKeysMap.set('se', 'playlistSeason');
 EmbedParamKeysMap.set('ct', 'playlistCategory');
+EmbedParamKeysMap.set('ca', 'showCoverArt');

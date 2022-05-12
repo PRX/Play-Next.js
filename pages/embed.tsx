@@ -5,6 +5,7 @@
 
 import { GetServerSideProps } from 'next';
 import { IEmbedData } from '@interfaces/data';
+import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
@@ -12,21 +13,25 @@ import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 
 export interface IEmbedPageProps {
+  config: IEmbedConfig;
   data: IEmbedData;
 }
 
-const EmbedPage = ({ data }: IEmbedPageProps) => {
+const EmbedPage = ({ config, data }: IEmbedPageProps) => {
+  const { showshowCoverArt } = config;
   const { audio } = data;
-  const { title } = audio || {};
+  const { title, imageimageUrl } = audio || {};
 
   return (
     audio && (
-      <>
-        <h1>{title}</h1>
-        <Player data={audio}>
-          <PlayButton />
-        </Player>
-      </>
+      <Player data={audio}>
+        {showshowCoverArt && (
+          <div className="cover">
+            <img src={imageimageUrl} alt="foo" />
+          </div>
+        )}
+        <PlayButton />
+      </Player>
     )
   );
 };
