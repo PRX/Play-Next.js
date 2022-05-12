@@ -6,6 +6,8 @@
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import { useContext } from 'react';
+import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
+import PauseIcon from '@svg/icons/Pause.svg';
 
 const PlayButton = () => {
   const { state, dispatch } = useContext(PlayerContext);
@@ -17,7 +19,7 @@ const PlayButton = () => {
 
   return (
     <button type="button" onClick={handleClick}>
-      {!playing ? 'Play' : 'Pause'}
+      {!playing ? <PlayArrowIcon /> : <PauseIcon />}
     </button>
   );
 };
