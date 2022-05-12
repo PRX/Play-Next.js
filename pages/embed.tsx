@@ -4,6 +4,7 @@
  */
 
 import { GetServerSideProps } from 'next';
+import clsx from 'clsx';
 import { IEmbedData } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
@@ -11,6 +12,7 @@ import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
+import styles from '@styles/Embed.module.scss';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -18,21 +20,35 @@ export interface IEmbedPageProps {
 }
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
-  const { showshowCoverArt } = config;
-  const { audio } = data;
-  const { title, imageimageUrl } = audio || {};
+  const { showCoverArt, showPlaylist } = config;
+  const { audio, bgImageUrl } = data;
+  const { imageUrl, title } = audio || {};
+  const coverArtImage = imageUrl || bgImageUrl;
+  const canShowCoverArt = showCoverArt && coverArtImage;
+  const containerClasses = clsx(styles.main, {
+    [styles.withCoverArt]: canShowCoverArt,
+    [styles.withPlaylist]: showPlaylist
+  });
 
   return (
-    audio && (
-      <Player data={audio}>
-        {showshowCoverArt && (
-          <div className="cover">
-            <img src={imageimageUrl} alt="foo" />
-          </div>
+    <div className={styles.container}>
+      <div className={containerClasses}>
+        {audio && (
+          <Player data={audio}>
+            {canShowCoverArt && (
+              <div className={styles.cover}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={coverArtImage} alt={`Cover art for "${title}"`} />
+              </div>
+            )}
+            <div className={styles.player}>
+              <PlayButton />
+            </div>
+            {showPlaylist && <div className={styles.playlist} />}
+          </Player>
         )}
-        <PlayButton />
-      </Player>
-    )
+      </div>
+    </div>
   );
 };
 
@@ -45,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const data = parseEmbedData(config, rssData);
 
   return {
-    props: { data }
+    props: { config, data }
   };
 };
 

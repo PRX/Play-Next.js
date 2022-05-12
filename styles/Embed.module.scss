@@ -1,0 +1,64 @@
+$player-height: 200px;
+$gap-size: 3px;
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+}
+
+.main {
+  width: 100vw;
+  display: grid;
+  place-content: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: $player-height;
+  grid-auto-rows: 1fr;
+  grid-row-gap: $gap-size;
+
+  > * {
+    background-color: hsl(0, 0%, 30%);
+  }
+
+  &.withCoverArt {
+    $cover-size: min(100vh - $player-height, 100vw);
+    width: $cover-size;
+    grid-template-rows: $cover-size $player-height;
+  }
+
+  &.withPlaylist {
+    height: 100vh;
+  }
+}
+
+.cover {
+  > img {
+    width: 100%;
+  }
+}
+
+.player {
+  display: grid;
+  place-content: center;
+  color: #f5f5f5;
+  font-size: 3rem;
+
+  button {
+    padding: 0.5em;
+    line-height: 0;
+    color: hsla(0, 0%, 100%, 0.7);
+
+    &:hover {
+      color: hsla(0, 0%, 100%, 1);
+    }
+
+    &:focus {
+      background-color: hsla(0, 0%, 100%, 0.25);
+    }
+
+    > svg {
+      width: 3rem;
+    }
+  }
+}
