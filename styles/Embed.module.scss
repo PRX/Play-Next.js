@@ -1,0 +1,68 @@
+$player-height: 200px;
+$gap-size: 3px;
+
+.container {
+  display: grid;
+  place-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.main {
+  display: grid;
+  grid-gap: $gap-size;
+  grid-template-rows: $player-height;
+  grid-auto-rows: 1fr;
+  width: 100vw;
+
+  &.withCoverArt {
+    $cover-size: min(100vh - $player-height, 100vw);
+    width: $cover-size;
+    grid-template-rows: $cover-size $player-height;
+  }
+
+  &.withPlaylist {
+    height: 100vh;
+  }
+
+  > * {
+    background-color: hsl(0, 0%, 30%);
+  }
+}
+
+// temporary code below: don't get attached
+
+.coverArt {
+  > img {
+    width: 100%;
+  }
+}
+
+.player {
+  display: grid;
+  place-content: center;
+  color: #f5f5f5;
+  font-size: 3rem;
+
+  button {
+    padding: 0.5em;
+    line-height: 0;
+    color: hsla(0, 0%, 100%, 0.7);
+
+    &:hover {
+      color: hsla(0, 0%, 100%, 1);
+    }
+
+    &:focus {
+      background-color: hsla(0, 0%, 100%, 0.25);
+    }
+
+    > svg {
+      width: 3rem;
+    }
+  }
+}
+
+.playlist {
+  display: grid;
+}
