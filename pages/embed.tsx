@@ -21,7 +21,7 @@ export interface IEmbedPageProps {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist } = config;
-  const { audio, bgImageUrl } = data;
+  const { audio, bgImageUrl, playlist } = data;
   const { imageUrl, title } = audio || {};
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
@@ -31,24 +31,50 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   });
 
   return (
-    <div className={styles.container}>
-      <div className={containerClasses}>
-        {audio && (
-          <Player data={audio}>
-            {canShowCoverArt && (
-              <div className={styles.cover}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={coverArtImage} alt={`Cover art for "${title}"`} />
+    <>
+      <div className={styles.container}>
+        <div className={containerClasses}>
+          {audio && (
+            <Player data={audio}>
+              {canShowCoverArt && (
+                <div className={styles.cover}>
+                  {/* TODO: Replace with CoverArt component. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={coverArtImage} alt={`Cover art for "${title}"`} />
+                </div>
+              )}
+              <div className={styles.player}>
+                <PlayButton />
               </div>
-            )}
-            <div className={styles.player}>
-              <PlayButton />
-            </div>
-            {showPlaylist && <div className={styles.playlist} />}
-          </Player>
-        )}
+              {showPlaylist && (
+                <div className={styles.playlist}>
+                  {/* TODO: Replace with Playlist component. */}
+                  {playlist.map(
+                    ({ title: trackTitle, guid, imageUrl: trackThumbUrl }) => (
+                      <div
+                        className={clsx(styles.track, {
+                          [styles.isCurrentTrack]: audio.guid === guid
+                        })}
+                        key={guid}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={trackThumbUrl}
+                          alt={`Thumbnail for "${trackTitle}"`}
+                        />
+                        {trackTitle}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </Player>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* TODO: Add Modals here. */}
+    </>
   );
 };
 

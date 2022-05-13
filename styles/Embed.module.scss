@@ -62,3 +62,39 @@ $gap-size: 3px;
     }
   }
 }
+
+.playlist {
+  display: grid;
+  grid-gap: 5px;
+  align-content: start;
+
+  overflow: hidden;
+  overflow-y: auto;
+
+  padding: 5px;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-gap: 15px;
+  align-items: center;
+  padding: 10px 15px;
+
+  background-color: hsla(0, 0%, 100%, 0.1);
+
+  color: hsl(0, 0%, 80%);
+  font-size: clamp(0.8rem, 5vw, 1.15rem);
+  font-weight: bold;
+
+  > img {
+    width: 100%;
+    border-radius: 25%;
+    border: 1px solid hsl(0, 0%, 100%);
+  }
+
+  &.isCurrentTrack {
+    background-color: hsla(0, 0%, 100%, 0.3);
+    color: hsl(0, 0%, 100%);
+  }
+}
