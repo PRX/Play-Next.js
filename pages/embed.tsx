@@ -23,13 +23,11 @@ export interface IEmbedPageProps {
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist } = config;
   const { audio } = data;
-  const { title, imageUrl } = audio || {};
+  const { imageUrl } = audio || {};
   const mainClasses = clsx(styles.main, {
     [styles.withPlaylist]: showPlaylist,
     [styles.withCoverArt]: showCoverArt
   });
-
-  console.log(styles);
 
   return (
     <>
