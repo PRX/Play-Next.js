@@ -23,12 +23,13 @@
       "@interfaces": ["interfaces"],
       "@interfaces/*": ["interfaces/*"],
       "@lib/*": ["lib/*"],
-      "@store": ["store"],
-      "@store/*": ["store/*"],
+      "@states": ["states"],
+      "@states/*": ["states/*"],
       "@svg": ["assets/svg/*"],
       "@styles/*": ["styles/*"]
-    }
+    },
+    "typeRoots": ["@types", "node_modules/@types"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "assets/svg/**/*.svg"],
-  "exclude": ["node_modules", ".next"]
+  "exclude": ["node_modules", ".next", ".vscode"]
 }

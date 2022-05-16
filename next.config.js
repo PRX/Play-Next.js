@@ -8,6 +8,14 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/e',
+        destination: '/embed'
+      }
+    ];
+  },
   webpack(config) {
     const newConfig = {
       ...config,
@@ -20,7 +28,7 @@ const nextConfig = {
           '@contexts': path.join(__dirname, 'contexts'),
           '@interfaces': path.join(__dirname, 'interfaces'),
           '@lib': path.join(__dirname, 'lib'),
-          '@store': path.join(__dirname, 'store'),
+          '@states': path.join(__dirname, 'states'),
           '@svg': path.join(__dirname, 'assets', 'svg'),
           '@theme': path.join(__dirname, 'theme')
         }

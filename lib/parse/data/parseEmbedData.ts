@@ -57,6 +57,7 @@ const parseEmbedData = (
     ...(configAudioUrl && { url: configAudioUrl }),
     ...(configImageUrl && { imageUrl: configImageUrl })
   };
+  const audioHasProps = Object.keys(audio).length > 0;
   const playlist =
     !!showPlaylist &&
     [
@@ -77,10 +78,11 @@ const parseEmbedData = (
       (items: IAudioData[]) =>
         showPlaylist === 'all' ? items : items.slice(0, showPlaylist)
     ].reduce((a, f) => f(a), audioItems);
+  const bgImageUrl =
+    configBgImageUrl || rssImageUrl || rssItunesImage || audio.imageUrl;
   const data: IEmbedData = {
-    bgImageUrl:
-      configBgImageUrl || rssImageUrl || rssItunesImage || audio.imageUrl,
-    audio,
+    ...(bgImageUrl && { bgImageUrl }),
+    ...(audioHasProps && { audio }),
     ...(playlist && { playlist }),
     ...(feedUrl && { shareUrl: showPlaylist ? rssShareUrl : audio.link }),
     followUrls: {
