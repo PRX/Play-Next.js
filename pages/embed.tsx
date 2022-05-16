@@ -25,7 +25,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { imageUrl, title } = audio || {};
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
-  const containerClasses = clsx(styles.main, {
+  const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: showPlaylist
   });
@@ -33,7 +33,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   return (
     <>
       <div className={styles.container}>
-        <div className={containerClasses}>
+        <div className={mainClasses}>
           {audio && (
             <Player data={audio}>
               {canShowCoverArt && (
