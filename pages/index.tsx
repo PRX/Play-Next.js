@@ -30,7 +30,6 @@ const Home: NextPage = () => (
         <span>a</span>
         <span>y</span>
       </h1>
-      {/* <h3>Hello World</h3> */}
     </main>
   </div>
 );
