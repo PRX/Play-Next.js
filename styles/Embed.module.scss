@@ -1,5 +1,10 @@
 $player-height: 200px;
 $gap-size: 3px;
+$thumbnail-width: 40px;
+
+:export {
+  thumbnailWidth: $thumbnail-width;
+}
 
 .container {
   width: 100vw;
@@ -33,12 +38,40 @@ $gap-size: 3px;
 }
 
 .cover {
+  position: relative;
+
   > img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
+// PLACEHOLDER STYLES BELOW. MOVE TO COMPONENTS.
+
 .player {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+}
+
+.playerBackground {
+  $blurAmount: 50px;
+  position: absolute;
+  inset: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: hsl(0 0 0% / 0.5);
+    backdrop-filter: blur($blurAmount);
+  }
+}
+
+.playerControls {
+  position: relative;
   display: grid;
   place-content: center;
   color: #f5f5f5;
@@ -75,8 +108,9 @@ $gap-size: 3px;
 }
 
 .track {
+  --thumbnail-width: 40px;
   display: grid;
-  grid-template-columns: 40px 1fr;
+  grid-template-columns: var(--thumbnail-width) 1fr;
   grid-gap: 15px;
   align-items: center;
   padding: 10px 15px;
@@ -88,7 +122,7 @@ $gap-size: 3px;
   font-weight: bold;
 
   > img {
-    width: 100%;
+    width: var(--thumbnail-width);
     border-radius: 25%;
     border: 1px solid hsl(0, 0%, 100%);
   }

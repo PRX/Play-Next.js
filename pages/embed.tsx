@@ -13,6 +13,8 @@ import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
+import React from 'react';
+import PrxImage from '@components/PrxImage';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -39,13 +41,27 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               {canShowCoverArt && (
                 <div className={styles.cover}>
                   {/* TODO: Replace with CoverArt component. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={coverArtImage} alt={`Cover art for "${title}"`} />
+                  <PrxImage
+                    src={coverArtImage}
+                    alt={`Cover art for "${title}".`}
+                    layout="fill"
+                  />
                 </div>
               )}
               <div className={styles.player}>
-                <PlayButton />
+                <div className={styles.playerBackground}>
+                  <PrxImage
+                    src={bgImageUrl}
+                    layout="fill"
+                    objectFit="cover"
+                    aria-hidden
+                  />
+                </div>
+                <div className={styles.playerControls}>
+                  <PlayButton />
+                </div>
               </div>
+
               {showPlaylist && (
                 <div className={styles.playlist}>
                   {/* TODO: Replace with Playlist component. */}
@@ -57,10 +73,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         })}
                         key={guid}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={trackThumbUrl}
-                          alt={`Thumbnail for "${trackTitle}"`}
+                        <PrxImage
+                          src={trackThumbUrl || imageUrl}
+                          alt={`Thumbnail for "${trackTitle}".`}
+                          layout="intrinsic"
+                          width={styles.thumbnailWidth}
+                          height={styles.thumbnailWidth}
                         />
                         {trackTitle}
                       </div>
