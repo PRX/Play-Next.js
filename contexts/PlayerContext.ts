@@ -3,7 +3,7 @@
  * Creates context for cta region data.
  */
 
-import { IStateContext } from '@interfaces/states/iStateContext';
+import { IStateContext } from '@interfaces/states/IStateContext';
 import React from 'react';
 
 const PlayerContext = React.createContext({
