@@ -17,8 +17,6 @@ const PrxImage: React.FC<ImageProps> = ({
   const isUrlString = typeof src === 'string';
   const isTrusted = isUrlString && isTrustedImageDomain(src as string);
 
-  console.log(isTrusted, src);
-
   return isTrusted || !isUrlString ? (
     <Image src={src} priority={priority} layout={layout} {...other} />
   ) : (
