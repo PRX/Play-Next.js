@@ -14,6 +14,7 @@ import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
+import PrxImage from '@components/PrxImage';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -22,11 +23,14 @@ export interface IEmbedPageProps {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist } = config;
-  const { audio } = data;
-  const { imageUrl } = audio || {};
+  const { audio, playlist, bgImageUrl } = data;
+  const { guid, imageUrl, title } = audio || {};
+  const coverArtImage = imageUrl || bgImageUrl;
+  const canShowCoverArt = showCoverArt && coverArtImage;
+  const canShowPlaylist = !!(showPlaylist && playlist?.length);
   const mainClasses = clsx(styles.main, {
-    [styles.withPlaylist]: showPlaylist,
-    [styles.withCoverArt]: showCoverArt
+    [styles.withCoverArt]: canShowCoverArt,
+    [styles.withPlaylist]: canShowPlaylist
   });
 
   return (
@@ -43,15 +47,49 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               {showCoverArt && (
                 <div className={styles.coverArt}>
                   {/* TODO: Replace with CoverArt component. */}
-                  <img src={imageUrl} alt="foo" />
+                  <PrxImage
+                    src={imageUrl}
+                    alt={`Cover art for "${title}".`}
+                    layout="fill"
+                    priority
+                  />
                 </div>
               )}
               <div className={styles.player}>
                 <PlayButton />
               </div>
-              {showPlaylist && (
+              {canShowPlaylist && (
                 <div className={styles.playlist}>
                   {/* TODO: Replace with Playlist component. */}
+                  {playlist.map((track) => {
+                    const {
+                      title: trackTitle,
+                      guid: trackGuid,
+                      imageUrl: trackThumbUrl
+                    } = track;
+                    return (
+                      <button
+                        type="button"
+                        className={clsx(styles.track, {
+                          [styles.isCurrentTrack]: trackGuid === guid
+                        })}
+                        key={guid}
+                      >
+                        {trackThumbUrl || imageUrl ? (
+                          <PrxImage
+                            src={trackThumbUrl || imageUrl}
+                            alt={`Thumbnail for "${trackTitle}".`}
+                            layout="intrinsic"
+                            width={styles.thumbnailWidth}
+                            height={styles.thumbnailWidth}
+                          />
+                        ) : (
+                          <span />
+                        )}
+                        <span className={styles.trackTitle}>{trackTitle}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </Player>
