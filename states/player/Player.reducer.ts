@@ -65,8 +65,7 @@ export const playerStateReducer = (
     case ActionTypes.PLAYER_UPDATE_DURATION:
       return {
         ...state,
-        duration: action.payload,
-        playing: false
+        duration: action.payload
       };
 
     default:

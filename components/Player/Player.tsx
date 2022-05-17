@@ -3,7 +3,13 @@
  * Higher order component for Audio Player
  */
 
-import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState
+} from 'react';
 import { IAudioData } from '@interfaces/data';
 import {
   playerInitialState,
@@ -29,18 +35,49 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
   );
   const { playing } = state;
 
-  useEffect(() => {
-    setAudioElm(new Audio(url));
-  }, [setAudioElm, url]);
+  const handlePlay = useCallback(() => {
+    dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
+  }, []);
+
+  const handlePause = useCallback(() => {
+    dispatch({ type: PlayerActionTypes.PLAYER_PAUSE });
+  }, []);
+
+  const handleDurationChange = useCallback(() => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
+      payload: audioElm?.duration
+    });
+  }, [audioElm?.duration]);
+
+  const handleLoadedData = useCallback(() => {
+    // When audio data loads, start playing if we were playing before.
+    if (playing) {
+      audioElm.play();
+    }
+  }, [audioElm, playing]);
 
   useEffect(() => {
-    audioElm?.addEventListener('play', () =>
-      dispatch({ type: PlayerActionTypes.PLAYER_PLAY })
-    );
-    audioElm?.addEventListener('pause', () =>
-      dispatch({ type: PlayerActionTypes.PLAYER_PAUSE })
-    );
-  }, [audioElm]);
+    // Setup event handlers on audio element.
+    audioElm?.addEventListener('play', handlePlay);
+    audioElm?.addEventListener('pause', handlePause);
+    audioElm?.addEventListener('durationchange', handleDurationChange);
+    audioElm?.addEventListener('loadeddata', handleLoadedData);
+
+    return () => {
+      // Cleanup event handlers between dependency changes.
+      audioElm?.removeEventListener('play', handlePlay);
+      audioElm?.removeEventListener('pause', handlePause);
+      audioElm?.removeEventListener('durationchange', handleDurationChange);
+      audioElm?.removeEventListener('loadeddata', handleLoadedData);
+    };
+  }, [
+    audioElm,
+    handleDurationChange,
+    handleLoadedData,
+    handlePause,
+    handlePlay
+  ]);
 
   useEffect(() => {
     if (!playing) {
@@ -48,15 +85,23 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
     } else {
       audioElm?.play();
     }
-  }, [audioElm, playing]);
+  }, [audioElm, playing, url]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    if (!audioElm) {
+      // Initiate audio element.
+      setAudioElm(new Audio(url));
+    } else {
+      // Update audio src. Pause first to prevent load while playing error.
+      audioElm.pause();
+      audioElm.src = url;
+    }
+
+    return () => {
       // Pause and clean up on unmount
       audioElm?.pause();
-    },
-    [audioElm]
-  );
+    };
+  }, [audioElm, url]);
 
   return (
     audioElm && (
