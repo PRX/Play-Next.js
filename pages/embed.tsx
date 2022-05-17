@@ -73,7 +73,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.track, {
                           [styles.isCurrentTrack]: trackGuid === guid
                         })}
-                        key={guid}
+                        key={trackGuid}
                       >
                         {trackThumbUrl || imageUrl ? (
                           <PrxImage
