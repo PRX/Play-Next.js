@@ -3,6 +3,7 @@ import {
   IEmbedParams,
   EmbedParamKeysMap
 } from '@interfaces/embed/IEmbedConfig';
+import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 
 /**
@@ -29,6 +30,12 @@ const parseEmbedParams = (params: IEmbedParams): IEmbedConfig => {
             return {
               ...a,
               [prop]: convertStringToInteger(v)
+            };
+
+          case 'showCoverArt':
+            return {
+              ...a,
+              [prop]: convertStringToBoolean(v)
             };
 
           default:

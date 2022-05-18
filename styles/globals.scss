@@ -18,4 +18,11 @@ a {
 button {
   background: none;
   border: none;
+  border-radius: none;
+  color: currentColor;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 }
