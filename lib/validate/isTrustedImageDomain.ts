@@ -5,7 +5,7 @@
 
 export const trustedDomains = ['f.prxu.org'];
 
-const renderImage = (url: string) => {
+const isTrustedImageDomain = (url: string) => {
   const isTrusted = trustedDomains.reduce(
     (trusted, domain) => trusted || url.indexOf(`//${domain}/`) > -1,
     false
@@ -14,4 +14,4 @@ const renderImage = (url: string) => {
   return isTrusted;
 };
 
-export default renderImage;
+export default isTrustedImageDomain;

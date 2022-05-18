@@ -64,21 +64,122 @@ describe('states/player', () => {
     });
 
     describe('`currentTrack` actions', () => {
-      test('should set `currentTrack`', () => {
+      const mockState = {
+        ...playerInitialState,
+        currentTrackIndex: 0,
+        tracks: [
+          {
+            guid: '1',
+            url: '//foo.com/1.mp3',
+            link: '//foo.com/1',
+            title: 'Title 1'
+          },
+          {
+            guid: '2',
+            url: '//foo.com/2.mp3',
+            link: '//foo.com/2',
+            title: 'Title 2'
+          },
+          {
+            guid: '3',
+            url: '//foo.com/3.mp3',
+            link: '//foo.com/3',
+            title: 'Title 3'
+          }
+        ]
+      };
+
+      test('should set `currentTrackIndex`', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
+            payload: 3
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(3);
+      });
+
+      test('should set `currentTrackIndex` to next index', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState,
+            currentTrackIndex: 1
+          },
+          {
+            type: PlayerActionTypes.PLAYER_NEXT_TRACK
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(2);
+      });
+
+      test('should set `currentTrackIndex` to next index, w/o wrapping', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState,
+            currentTrackIndex: 2
+          },
+          {
+            type: PlayerActionTypes.PLAYER_NEXT_TRACK
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(2);
+      });
+
+      test('should set `currentTrackIndex` to previous index', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState,
+            currentTrackIndex: 1
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(0);
+      });
+
+      test('should set `currentTrackIndex` to previous index, w/o wrapping', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState,
+            currentTrackIndex: 0
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(0);
+      });
+    });
+
+    describe('`tracks` actions', () => {
+      test('should set `tracks`', () => {
+        const mockTrack = {
+          guid: '1',
+          url: '//foo.com/1.mp3',
+          link: '//foo.com/1',
+          title: 'Title 1'
+        };
         const result = playerStateReducer(
           {
             ...playerInitialState
           },
           {
-            type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK,
-            payload: {
-              url: '//foo.com/bar.mp3'
-            }
+            type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
+            payload: [mockTrack]
           }
         );
 
-        expect(result.currentTrack).toHaveProperty('url');
-        expect(result.currentTrack.url).toBe('//foo.com/bar.mp3');
+        expect(result.tracks).not.toBeNull();
+        expect(result.tracks[0]).toStrictEqual(mockTrack);
       });
     });
   });

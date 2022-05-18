@@ -19,6 +19,7 @@ const parseAudioData = ({
   ...(itunes && {
     ...(itunes.subtitle && { subtitle: itunes.subtitle }),
     ...(itunes.image && { imageUrl: itunes.image }),
+    ...(itunes.duration && { duration: itunes.duration }),
     ...(itunes.season && { season: convertStringToInteger(itunes.season) })
   })
 });

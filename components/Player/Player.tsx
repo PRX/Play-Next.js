@@ -19,29 +19,49 @@ import { PlayerActionTypes } from '@states/player/Player.actions';
 import PlayerContext from '@contexts/PlayerContext';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
-  data: IAudioData;
+  audio: IAudioData | IAudioData[];
+  startIndex?: number;
+  imageUrl?: string;
 }
 
-const Player: React.FC<IPlayerProps> = ({ data, children }) => {
-  const { url } = data;
+const Player: React.FC<IPlayerProps> = ({
+  audio,
+  startIndex,
+  imageUrl,
+  children
+}) => {
+  const tracks = Array.isArray(audio) ? audio : [audio];
   const [audioElm, setAudioElm] = useState(null as HTMLAudioElement);
-  const [state, dispatch] = useReducer(playerStateReducer, playerInitialState);
+  const [state, dispatch] = useReducer(playerStateReducer, {
+    ...playerInitialState,
+    tracks,
+    ...(startIndex && { currentTrackIndex: startIndex })
+  });
+  const { playing, currentTrackIndex } = state;
   const playerContextValue = useMemo(
     () => ({
+      audioElm,
+      imageUrl,
       state,
       dispatch
     }),
-    [state]
+    [audioElm, imageUrl, state]
   );
-  const { playing } = state;
+  const currentTrack = tracks[currentTrackIndex];
+  const isLastTrack = currentTrackIndex === tracks.length - 1;
+  const { url } = currentTrack;
+
+  console.log('Player::render', audioElm);
 
   const handlePlay = useCallback(() => {
     dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
   }, []);
 
   const handlePause = useCallback(() => {
-    dispatch({ type: PlayerActionTypes.PLAYER_PAUSE });
-  }, []);
+    if (!audioElm.ended) {
+      dispatch({ type: PlayerActionTypes.PLAYER_PAUSE });
+    }
+  }, [audioElm?.ended]);
 
   const handleDurationChange = useCallback(() => {
     dispatch({
@@ -57,12 +77,19 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
     }
   }, [audioElm, playing]);
 
+  const handleEnded = useCallback(() => {
+    if (!isLastTrack) {
+      dispatch({ type: PlayerActionTypes.PLAYER_NEXT_TRACK });
+    }
+  }, [isLastTrack]);
+
   useEffect(() => {
     // Setup event handlers on audio element.
     audioElm?.addEventListener('play', handlePlay);
     audioElm?.addEventListener('pause', handlePause);
     audioElm?.addEventListener('durationchange', handleDurationChange);
     audioElm?.addEventListener('loadeddata', handleLoadedData);
+    audioElm?.addEventListener('ended', handleEnded);
 
     return () => {
       // Cleanup event handlers between dependency changes.
@@ -70,13 +97,15 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
       audioElm?.removeEventListener('pause', handlePause);
       audioElm?.removeEventListener('durationchange', handleDurationChange);
       audioElm?.removeEventListener('loadeddata', handleLoadedData);
+      audioElm?.removeEventListener('ended', handleEnded);
     };
   }, [
     audioElm,
     handleDurationChange,
     handleLoadedData,
     handlePause,
-    handlePlay
+    handlePlay,
+    handleEnded
   ]);
 
   useEffect(() => {
@@ -85,7 +114,7 @@ const Player: React.FC<IPlayerProps> = ({ data, children }) => {
     } else {
       audioElm?.play();
     }
-  }, [audioElm, playing, url]);
+  }, [audioElm, playing]);
 
   useEffect(() => {
     if (!audioElm) {

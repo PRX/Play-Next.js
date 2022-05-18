@@ -7,17 +7,17 @@ import { IAudioData } from '@interfaces/data/IAudioData';
 
 export interface IPlayerState {
   /**
+   * Boolean to play or pause track playback.
+   */
+  playing: boolean;
+
+  /**
    * Holds the currently playing audio data.
    */
-  currentTrack: IAudioData;
+  currentTrackIndex: number;
 
   /**
    * Holds all the audio data that can be played.
    */
-  tracks?: IAudioData[];
-
-  /**
-   * Boolean to play or pause track playback.
-   */
-  playing: boolean;
+  tracks: IAudioData[];
 }
