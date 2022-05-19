@@ -52,7 +52,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               imageUrl={bgImageUrl}
             >
               {canShowCoverArt && (
-                <div className={styles.cover}>
+                <div className={styles.coverArt}>
                   <PrxImage
                     src={coverArtImage}
                     alt={`Cover art for "${title}".`}
