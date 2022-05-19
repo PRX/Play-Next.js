@@ -7,7 +7,8 @@ export const trustedDomains = ['f.prxu.org'];
 
 const isTrustedImageDomain = (url: string) => {
   const isTrusted = trustedDomains.reduce(
-    (trusted, domain) => trusted || url.indexOf(`//${domain}/`) > -1,
+    (trusted, domain) =>
+      trusted || new RegExp(`^(https?:)?//${domain}/`).test(url),
     false
   );
 

@@ -1,5 +1,6 @@
 /**
  * @file PrxImage.tsx
+ * Component to render Next.js image component for trusted src URL domains.
  */
 
 import React from 'react';

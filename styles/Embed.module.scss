@@ -14,17 +14,11 @@ $thumbnail-width: 40px;
 }
 
 .main {
-  width: 100vw;
   display: grid;
-  place-content: center;
-  grid-template-columns: 1fr;
+  grid-gap: $gap-size;
   grid-template-rows: $player-height;
   grid-auto-rows: 1fr;
-  grid-row-gap: $gap-size;
-
-  > * {
-    background-color: hsl(0, 0%, 30%);
-  }
+  width: 100vw;
 
   &.withCoverArt {
     $cover-size: min(100vh - $player-height, 100vw);
@@ -35,9 +29,16 @@ $thumbnail-width: 40px;
   &.withPlaylist {
     height: 100vh;
   }
+
+  // TODO: Remove this. Placeholder.
+  > * {
+    background-color: hsl(0, 0%, 30%);
+  }
 }
 
-.cover {
+// temporary code below: don't get attached
+
+.coverArt {
   position: relative;
 
   > img {
@@ -46,8 +47,6 @@ $thumbnail-width: 40px;
     object-fit: cover;
   }
 }
-
-// PLACEHOLDER STYLES BELOW. MOVE TO COMPONENTS.
 
 .player {
   position: relative;
