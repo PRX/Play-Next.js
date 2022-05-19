@@ -1,4 +1,3 @@
-import { IProgressState } from '@interfaces/states/player';
 import { PlayerActionTypes } from './Player.actions';
 import { playerInitialState, playerStateReducer } from './Player.reducer';
 
@@ -64,155 +63,123 @@ describe('states/player', () => {
       });
     });
 
-    describe('`muted` actions', () => {
-      test('should set `muted` to true', () => {
+    describe('`currentTrack` actions', () => {
+      const mockState = {
+        ...playerInitialState,
+        currentTrackIndex: 0,
+        tracks: [
+          {
+            guid: '1',
+            url: '//foo.com/1.mp3',
+            link: '//foo.com/1',
+            title: 'Title 1'
+          },
+          {
+            guid: '2',
+            url: '//foo.com/2.mp3',
+            link: '//foo.com/2',
+            title: 'Title 2'
+          },
+          {
+            guid: '3',
+            url: '//foo.com/3.mp3',
+            link: '//foo.com/3',
+            title: 'Title 3'
+          }
+        ]
+      };
+
+      test('should set `currentTrackIndex`', () => {
         const result = playerStateReducer(
           {
-            ...playerInitialState
+            ...mockState
           },
           {
-            type: PlayerActionTypes.PLAYER_MUTE
+            type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
+            payload: 3
           }
         );
 
-        expect(result.muted).toBe(true);
+        expect(result.currentTrackIndex).toBe(3);
       });
 
-      test('should set `muted` to false', () => {
+      test('should set `currentTrackIndex` to next index', () => {
         const result = playerStateReducer(
           {
-            ...playerInitialState,
-            muted: true
+            ...mockState,
+            currentTrackIndex: 1
           },
           {
-            type: PlayerActionTypes.PLAYER_UNMUTE
+            type: PlayerActionTypes.PLAYER_NEXT_TRACK
           }
         );
 
-        expect(result.muted).toBe(false);
+        expect(result.currentTrackIndex).toBe(2);
       });
 
-      test('should toggle `muted`', () => {
-        const result1 = playerStateReducer(
+      test('should set `currentTrackIndex` to next index, w/o wrapping', () => {
+        const result = playerStateReducer(
           {
-            ...playerInitialState
+            ...mockState,
+            currentTrackIndex: 2
           },
           {
-            type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
-          }
-        );
-        const result2 = playerStateReducer(
-          {
-            ...result1
-          },
-          {
-            type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
+            type: PlayerActionTypes.PLAYER_NEXT_TRACK
           }
         );
 
-        expect(result1.muted).toBe(true);
-        expect(result2.muted).toBe(false);
+        expect(result.currentTrackIndex).toBe(2);
+      });
+
+      test('should set `currentTrackIndex` to previous index', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState,
+            currentTrackIndex: 1
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(0);
+      });
+
+      test('should set `currentTrackIndex` to previous index, w/o wrapping', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState,
+            currentTrackIndex: 0
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(0);
       });
     });
 
-    describe('`volume` actions', () => {
-      test('should set `volume`', () => {
+    describe('`tracks` actions', () => {
+      test('should set `tracks`', () => {
+        const mockTrack = {
+          guid: '1',
+          url: '//foo.com/1.mp3',
+          link: '//foo.com/1',
+          title: 'Title 1'
+        };
         const result = playerStateReducer(
           {
             ...playerInitialState
           },
           {
-            type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
-            payload: 0.25
+            type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
+            payload: [mockTrack]
           }
         );
 
-        expect(result.volume).toBe(0.25);
-      });
-    });
-
-    describe('`progress` actions', () => {
-      test('should set `played`, `playedSeconds`, `loaded`, and `loadedSeconds', () => {
-        const result = playerStateReducer(
-          {
-            ...playerInitialState
-          },
-          {
-            type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
-            payload: {
-              played: 0.42,
-              playedSeconds: 84,
-              loaded: 1,
-              loadedSeconds: 200
-            } as IProgressState
-          }
-        );
-
-        expect(result.played).toBe(0.42);
-        expect(result.playedSeconds).toBe(84);
-        expect(result.loaded).toBe(1);
-        expect(result.loadedSeconds).toBe(200);
-      });
-    });
-
-    describe('`seeking` actions', () => {
-      test('should set `seeking`', () => {
-        const result = playerStateReducer(
-          {
-            ...playerInitialState
-          },
-          {
-            type: PlayerActionTypes.PLAYER_UPDATE_SEEKING,
-            payload: 0.25
-          }
-        );
-
-        expect(result.seeking).toBe(0.25);
-      });
-
-      test('should set `played` to `seeking` value', () => {
-        const result1 = playerStateReducer(
-          {
-            ...playerInitialState,
-            played: 0.75
-          },
-          {
-            type: PlayerActionTypes.PLAYER_UPDATE_SEEKING,
-            payload: 0.25
-          }
-        );
-        const result2 = playerStateReducer(
-          {
-            ...result1
-          },
-          {
-            type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS_TO_SEEKING,
-            payload: 0.25
-          }
-        );
-
-        expect(result1.played).toBe(0.75);
-        expect(result1.seeking).toBe(0.25);
-        expect(result2.played).toBe(0.25);
-        expect(result2.seeking).toBeNull();
-      });
-    });
-
-    describe('`duration` actions', () => {
-      test('should set `duration` and stop playing', () => {
-        const result = playerStateReducer(
-          {
-            ...playerInitialState,
-            playing: true
-          },
-          {
-            type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
-            payload: 500
-          }
-        );
-
-        expect(result.duration).toBe(500);
-        expect(result.playing).toBe(false);
+        expect(result.tracks).not.toBeNull();
+        expect(result.tracks[0]).toStrictEqual(mockTrack);
       });
     });
   });
