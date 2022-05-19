@@ -4,7 +4,7 @@
  * playing track.
  */
 
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
@@ -18,6 +18,7 @@ const Playlist = () => {
     dispatch
   } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
+  const rootRef = useRef(null);
 
   const handleTrackClick = (index: number) => () => {
     dispatch({
@@ -31,7 +32,7 @@ const Playlist = () => {
 
   return (
     tracks && (
-      <div className={styles.playlist}>
+      <div ref={rootRef} className={styles.playlist}>
         {tracks.map((track, index) => {
           const { guid, title, imageUrl, duration } = track;
           const thumbSrc = imageUrl || defaultThumbUrl;
@@ -46,11 +47,13 @@ const Playlist = () => {
             >
               {thumbSrc ? (
                 <PrxImage
+                  className={styles.trackThumb}
                   src={thumbSrc}
                   alt={`Thumbnail for "${title}".`}
-                  layout="intrinsic"
+                  layout="raw"
                   width={styles.thumbnailWidth}
                   height={styles.thumbnailWidth}
+                  lazyRoot={rootRef}
                 />
               ) : (
                 <span />

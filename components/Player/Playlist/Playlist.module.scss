@@ -28,16 +28,16 @@ $thumbnail-width: 40px;
   color: hsl(0, 0%, 80%);
   font-size: clamp(0.8rem, 5vw, 1.15rem);
 
-  > img {
-    width: var(--thumbnail-width);
-    border-radius: 25%;
-    border: 1px solid hsl(0, 0%, 100%);
-  }
-
   &.isCurrentTrack {
     background-color: hsla(0, 0%, 100%, 0.3);
     color: hsl(0, 0%, 100%);
   }
+}
+
+.trackThumb {
+  width: var(--thumbnail-width);
+  border-radius: 25%;
+  border: 1px solid hsl(0, 0%, 100%);
 }
 
 .trackTitle {
