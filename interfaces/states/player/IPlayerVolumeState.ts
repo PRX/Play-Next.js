@@ -1,6 +1,6 @@
 /**
  * @file IPlayerVolumeState.ts
- * Define state interface used for player volume.
+ * Define state interface used to describe player volume model.
  */
 
 export interface IPlayerVolumeState {

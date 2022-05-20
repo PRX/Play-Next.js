@@ -3,7 +3,7 @@
  * Define state interface used by player.
  */
 
-import { IAudioData } from '@interfaces/data/IAudioData';
+import { IAudioData } from '@interfaces/data';
 
 export interface IPlayerState {
   /**

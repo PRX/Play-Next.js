@@ -15,6 +15,7 @@ import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 import PrxImage from '@components/PrxImage';
 import Playlist from '@components/Player/Playlist/Playlist';
+import CoverArt from '@components/Player/CoverArt/CoverArt';
 import styles from '@styles/Embed.module.scss';
 
 export interface IEmbedPageProps {
@@ -51,16 +52,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               startIndex={currentTrackIndex}
               imageUrl={bgImageUrl}
             >
-              {canShowCoverArt && (
-                <div className={styles.coverArt}>
-                  <PrxImage
-                    src={coverArtImage}
-                    alt={`Cover art for "${title}".`}
-                    layout="fill"
-                    priority
-                  />
-                </div>
-              )}
+              {canShowCoverArt && <CoverArt />}
               <div className={styles.player}>
                 <div className={styles.playerBackground}>
                   <PrxImage
