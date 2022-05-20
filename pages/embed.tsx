@@ -15,6 +15,7 @@ import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
 import PrxImage from '@components/PrxImage';
+import CoverArt from '@components/Player/CoverArt/CoverArt';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -24,10 +25,13 @@ export interface IEmbedPageProps {
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist } = config;
   const { audio, playlist, bgImageUrl } = data;
-  const { guid, imageUrl, title } = audio || {};
+  const { guid, imageUrl } = audio || {};
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
+  const currentTrackIndex = playlist?.findIndex(
+    (track) => track.guid === audio.guid
+  );
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
@@ -43,18 +47,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       <div className={styles.container}>
         <div className={mainClasses}>
           {audio && (
-            <Player data={audio}>
-              {showCoverArt && (
-                <div className={styles.coverArt}>
-                  {/* TODO: Replace with CoverArt component. */}
-                  <PrxImage
-                    src={imageUrl}
-                    alt={`Cover art for "${title}".`}
-                    layout="fill"
-                    priority
-                  />
-                </div>
-              )}
+            <Player
+              audio={playlist || audio}
+              startIndex={currentTrackIndex}
+              imageUrl={bgImageUrl}
+            >
+              {showCoverArt && <CoverArt />}
               <div className={styles.player}>
                 <PlayButton />
               </div>
