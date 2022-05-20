@@ -18,7 +18,7 @@ const PrxImage: React.FC<ImageProps> = ({
   const isTrusted = isUrlString && isTrustedImageDomain(src as string);
 
   return isTrusted || !isUrlString ? (
-    <Image src={src} priority={priority} layout={layout} {...other} />
+    <Image src={src} alt={alt} priority={priority} layout={layout} {...other} />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} {...other} />
