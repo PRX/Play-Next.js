@@ -13,21 +13,36 @@ import { PlayerActionTypes } from '@states/player/Player.actions';
 import PlayerContext from '@contexts/PlayerContext';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
-  data: IAudioData;
+  audio: IAudioData | IAudioData[];
+  startIndex?: number;
+  imageUrl?: string;
 }
 
-const Player: React.FC<IPlayerProps> = ({ data, children }) => {
-  const { url } = data;
+const Player: React.FC<IPlayerProps> = ({
+  audio,
+  startIndex,
+  imageUrl,
+  children
+}) => {
+  const tracks = Array.isArray(audio) ? audio : [audio];
   const [audioElm, setAudioElm] = useState(null as HTMLAudioElement);
-  const [state, dispatch] = useReducer(playerStateReducer, playerInitialState);
+  const [state, dispatch] = useReducer(playerStateReducer, {
+    ...playerInitialState,
+    tracks,
+    ...(startIndex && { currentTrackIndex: startIndex })
+  });
   const playerContextValue = useMemo(
     () => ({
+      audioElm,
+      imageUrl,
       state,
       dispatch
     }),
-    [state]
+    [state, imageUrl, audioElm]
   );
-  const { playing } = state;
+  const { playing, currentTrackIndex } = state;
+  const currentTrack = tracks[currentTrackIndex];
+  const { url } = currentTrack;
 
   useEffect(() => {
     setAudioElm(new Audio(url));

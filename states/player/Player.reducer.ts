@@ -11,21 +11,15 @@ import {
 
 export const playerInitialState: IPlayerState = {
   playing: false,
-  volume: 0.8,
-  muted: false,
-  duration: null,
-  seeking: null,
-  played: null,
-  playedSeconds: null,
-  loaded: null,
-  loadedSeconds: null
+  currentTrackIndex: 0,
+  tracks: null
 };
 
 export const playerStateReducer = (
   state: IPlayerState,
   action: PlayerAction
 ): IPlayerState => {
-  const { playing, muted, seeking } = state;
+  const { playing, currentTrackIndex, tracks } = state;
 
   switch (action.type) {
     case ActionTypes.PLAYER_PLAY:
@@ -37,36 +31,22 @@ export const playerStateReducer = (
     case ActionTypes.PLAYER_TOGGLE_PLAYING:
       return { ...state, playing: !playing };
 
-    case ActionTypes.PLAYER_MUTE:
-      return { ...state, muted: true };
+    case ActionTypes.PLAYER_UPDATE_TRACKS:
+      return { ...state, tracks: action.payload };
 
-    case ActionTypes.PLAYER_UNMUTE:
-      return { ...state, muted: false };
+    case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX:
+      return { ...state, currentTrackIndex: action.payload };
 
-    case ActionTypes.PLAYER_TOGGLE_MUTED:
-      return { ...state, muted: !muted };
-
-    case ActionTypes.PLAYER_UPDATE_VOLUME:
-      return { ...state, volume: action.payload };
-
-    case ActionTypes.PLAYER_UPDATE_PROGRESS:
-      return { ...state, ...action.payload };
-
-    case ActionTypes.PLAYER_UPDATE_SEEKING:
-      return { ...state, seeking: action.payload };
-
-    case ActionTypes.PLAYER_UPDATE_PROGRESS_TO_SEEKING:
+    case ActionTypes.PLAYER_NEXT_TRACK:
       return {
         ...state,
-        played: seeking,
-        seeking: null
+        currentTrackIndex: Math.min(currentTrackIndex + 1, tracks.length - 1)
       };
 
-    case ActionTypes.PLAYER_UPDATE_DURATION:
+    case ActionTypes.PLAYER_PREVIOUS_TRACK:
       return {
         ...state,
-        duration: action.payload,
-        playing: false
+        currentTrackIndex: Math.max(currentTrackIndex - 1, 0)
       };
 
     default:

@@ -1,2 +1,3 @@
 export * from './IPlayerState';
-export * from './IProgressState';
+export * from './IPlayerProgressState';
+export * from './IPlayerVolumeState';

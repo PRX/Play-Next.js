@@ -3,12 +3,12 @@
  * Creates context for cta region data.
  */
 
-import { IStateContext } from '@interfaces/states/iStateContext';
+import { IPlayerContext } from '@interfaces/context/IPlayerContext';
 import React from 'react';
 
 const PlayerContext = React.createContext({
   state: null,
   dispatch: null
-} as IStateContext);
+} as IPlayerContext);
 
 export default PlayerContext;

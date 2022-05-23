@@ -3,31 +3,21 @@
  * Define state interface used by player.
  */
 
-import { IProgressState } from './IProgressState';
+import { IAudioData } from '@interfaces/data';
 
-export interface IPlayerState extends IProgressState {
+export interface IPlayerState {
   /**
    * Boolean to play or pause track playback.
    */
   playing: boolean;
 
   /**
-   * Current volume of the player as a value between 0 and 1.
+   * Holds the currently playing audio data.
    */
-  volume: number;
+  currentTrackIndex: number;
 
   /**
-   * Boolean to mute player.
+   * Holds all the audio data that can be played.
    */
-  muted: boolean;
-
-  /**
-   * Duration of the track in seconds.
-   */
-  duration: number;
-
-  /**
-   * Position user wants to change playback to as a value between 0 and 1.
-   */
-  seeking: number;
+  tracks: IAudioData[];
 }
