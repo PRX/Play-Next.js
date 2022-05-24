@@ -3,13 +3,16 @@
  * Play button component to toggle playing state of player.
  */
 
+import React, { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
-import { useContext } from 'react';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
 import PauseIcon from '@svg/icons/Pause.svg';
 
-const PlayButton = () => {
+export interface IPlayButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+const PlayButton: React.FC<IPlayButtonProps> = ({ ...props }) => {
   const { state, dispatch } = useContext(PlayerContext);
   const { playing } = state;
 
@@ -18,7 +21,7 @@ const PlayButton = () => {
   };
 
   return (
-    <button type="button" onClick={handleClick}>
+    <button {...props} type="button" onClick={handleClick}>
       {!playing ? <PlayArrowIcon /> : <PauseIcon />}
     </button>
   );

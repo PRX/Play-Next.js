@@ -3,6 +3,7 @@
  * Exports the Embed page component.
  */
 
+import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import clsx from 'clsx';
@@ -16,6 +17,9 @@ import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
 import PrxImage from '@components/PrxImage';
 import CoverArt from '@components/Player/CoverArt/CoverArt';
+import PrxLogo from '@svg/prx-logo.svg';
+import MoreHorizontalIcon from '@svg/icons/MoreHorizontal.svg';
+import CloseIcon from '@svg/icons/Close.svg';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -25,7 +29,9 @@ export interface IEmbedPageProps {
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist } = config;
   const { audio, playlist, bgImageUrl } = data;
-  const { guid, imageUrl } = audio || {};
+  const { guid, imageUrl, title, subtitle } = audio || {};
+  const [showMenu, setShowMenu] = useState(false);
+  const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
@@ -36,6 +42,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
   });
+
+  const handleMoreButtonClick = () => {
+    setShowMenu(!showMenu);
+  };
 
   return (
     <>
@@ -53,8 +63,54 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               imageUrl={bgImageUrl}
             >
               {showCoverArt && <CoverArt />}
-              <div className={styles.player}>
-                <PlayButton />
+              <div className={styles.playerMain}>
+                {!showCoverArt && (
+                  <div className={styles.thumbnail}>
+                    <PrxImage
+                      src={imageUrl}
+                      alt={`Thumbnail for "${title}".`}
+                      layout="intrinsic"
+                      width={135}
+                      height={135}
+                    />
+                  </div>
+                )}
+
+                <div className={styles.text}>
+                  <h2 className={styles.title}>{title}</h2>
+                  <p className={styles.subtitle}>{subtitle}</p>
+                </div>
+
+                <div className={styles.logo}>
+                  {/* TODO: Get PRX text to line up witrh title baseline. */}
+                  <PrxLogo className={styles.logoPrx} />
+                </div>
+
+                <div className={styles.panel}>
+                  <div className={clsx(styles.controls, menuShownClass)}>
+                    {/* TODO: Move play button into a PlayerControls component. */}
+                    <PlayButton
+                      className={clsx(styles.button, styles.playButton)}
+                    />
+                  </div>
+
+                  <div className={clsx(styles.menu, menuShownClass)}>
+                    {/* TODO: Replace content with dialog menu buttons. */}
+                    Menu
+                  </div>
+
+                  <div className={styles.menuToggle}>
+                    <button
+                      type="button"
+                      className={clsx(styles.button, styles.moreButton)}
+                      onClick={handleMoreButtonClick}
+                    >
+                      {showMenu ? <CloseIcon /> : <MoreHorizontalIcon />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.progressBar} />
               </div>
               {canShowPlaylist && (
                 <div className={styles.playlist}>

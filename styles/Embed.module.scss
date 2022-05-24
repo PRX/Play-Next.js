@@ -1,9 +1,12 @@
 $player-height: 200px;
 $gap-size: 3px;
-$thumbnail-width: 40px;
+$progressheight: 45px;
+$player-gap: 10px;
+
+$playlist-thumbnail-width: 40px;
 
 :export {
-  thumbnailWidth: $thumbnail-width;
+  thumbnailWidth: $playlist-thumbnail-width;
 }
 
 .container {
@@ -36,30 +39,183 @@ $thumbnail-width: 40px;
   }
 }
 
-// temporary code below: don't get attached
+.playerMain {
+  --thumbnail-size: 65px;
 
-.player {
   display: grid;
-  place-content: center;
+  grid-template-columns: var(--thumbnail-size) 1fr max-content;
+  grid-template-rows: max-content 1fr max-content;
+  grid-template-areas:
+    'THUMB TEXT  TEXT'
+    'PANEL PANEL PANEL'
+    'PROG  PROG  PROG';
+  align-content: stretch;
+  gap: $player-gap;
+  padding: 20px;
+
   color: #f5f5f5;
   font-size: 3rem;
 
-  button {
-    padding: 0.5em;
-    line-height: 0;
-    color: hsla(0, 0%, 100%, 0.7);
+  .withCoverArt & {
+    grid-template-areas:
+      'TEXT  TEXT  TEXT'
+      'PANEL PANEL PANEL'
+      'PROG  PROG  PROG';
+  }
+}
 
-    &:hover {
-      color: hsla(0, 0%, 100%, 1);
-    }
+.thumbnail {
+  grid-area: THUMB;
+  width: var(--thumbnail-size);
+  height: var(--thumbnail-size);
+}
 
-    &:focus {
-      background-color: hsla(0, 0%, 100%, 0.25);
-    }
+.text {
+  grid-area: TEXT;
 
-    > svg {
-      width: 3rem;
+  display: grid;
+  gap: $player-gap;
+
+  font-size: 1rem;
+}
+
+.title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.subtitle {
+  margin: 0;
+}
+
+.logo {
+  display: none;
+  grid-area: LOGO;
+  align-self: start;
+}
+
+.panel {
+  grid-area: PANEL;
+  align-self: center;
+
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  grid-template-areas: 'CTRLS MTOG';
+  align-items: center;
+  gap: $player-gap;
+
+  line-height: 0;
+}
+
+.controls {
+  grid-area: CTRLS;
+
+  &.menuShown {
+    display: none;
+  }
+}
+
+.button {
+  width: 40px;
+  display: inline-block;
+  padding: 0;
+
+  line-height: 0;
+  color: hsla(0, 0%, 100%, 0.7);
+
+  &:hover {
+    color: hsla(0, 0%, 100%, 1);
+  }
+
+  &:focus {
+    background-color: hsla(0, 0%, 100%, 0.25);
+  }
+}
+
+.menu {
+  display: none;
+  grid-area: CTRLS;
+
+  font-size: 1rem;
+
+  &.menuShown {
+    display: block;
+  }
+}
+
+.menuToggle {
+  grid-area: MTOG;
+
+  > svg {
+    width: 40px;
+  }
+}
+
+@media only screen and (min-width: 300px) {
+  .playerMain {
+    --thumbnail-size: 135px;
+
+    grid-template-areas:
+      'THUMB TEXT  LOGO'
+      'THUMB PANEL PANEL'
+      'PROG  PROG  PROG';
+
+    .withCoverArt & {
+      grid-template-areas:
+        'TEXT  TEXT  LOGO'
+        'PANEL PANEL PANEL'
+        'PROG  PROG  PROG';
     }
+  }
+
+  .logo {
+    display: block;
+    font-size: 1.5rem;
+  }
+
+  .logoPrx {
+    width: 80px;
+    vertical-align: baseline;
+  }
+
+  .panel {
+    grid-template-areas: 'CTRLS MENU';
+  }
+
+  .controls {
+    &.menuShown {
+      display: block;
+    }
+  }
+
+  .menu {
+    display: block;
+    grid-area: MENU;
+  }
+
+  .menuToggle {
+    display: none;
+  }
+}
+
+// temporary code below: don't get attached
+
+.progressBar {
+  grid-area: PROG;
+
+  display: grid;
+  align-content: center;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 5px;
+    background-color: hsla(0, 0%, 100%, 0.7);
+    border-radius: 3px;
   }
 }
 
@@ -75,9 +231,8 @@ $thumbnail-width: 40px;
 }
 
 .track {
-  --thumbnail-width: 40px;
   display: grid;
-  grid-template-columns: var(--thumbnail-width) 1fr;
+  grid-template-columns: $playlist-thumbnail-width 1fr;
   grid-gap: 15px;
   align-items: center;
   padding: 10px 15px;
@@ -89,7 +244,6 @@ $thumbnail-width: 40px;
   font-weight: bold;
 
   > img {
-    width: var(--thumbnail-width);
     border-radius: 25%;
     border: 1px solid hsl(0, 0%, 100%);
   }
@@ -103,4 +257,24 @@ $thumbnail-width: 40px;
 .trackTitle {
   justify-self: start;
   text-align: left;
+}
+
+.fakeContainer {
+  display: grid;
+  grid-template-columns: 200px;
+  align-content: space-between;
+
+  &.text {
+    background-color: aquamarine;
+    display: grid;
+    height: 100px;
+    width: 100px;
+  }
+
+  &.logo {
+    background-color: orange;
+    display: grid;
+    height: 390px;
+    width: 200px;
+  }
 }
