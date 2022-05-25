@@ -43,12 +43,20 @@ $playlist-thumbnail-width: 40px;
   @include grid-stack;
   position: relative;
   z-index: -1;
+  overflow: hidden;
+
+  border-radius: 10px;
 
   &::after {
     content: '';
     z-index: 1;
     background-color: hsl(0 0% 0% / 0.5);
     backdrop-filter: blur(30px);
+  }
+
+  .withCoverArt &,
+  .withPlaylist & {
+    border-radius: 0;
   }
 }
 
@@ -108,6 +116,15 @@ $playlist-thumbnail-width: 40px;
   display: none;
   grid-area: LOGO;
   align-self: start;
+
+  font-size: 1.5rem;
+}
+
+.logoPrx {
+  position: relative;
+  top: 0.1em;
+  width: 80px;
+  vertical-align: baseline;
 }
 
 .panel {
@@ -186,12 +203,6 @@ $playlist-thumbnail-width: 40px;
 
   .logo {
     display: block;
-    font-size: 1.5rem;
-  }
-
-  .logoPrx {
-    width: 80px;
-    vertical-align: baseline;
   }
 
   .panel {

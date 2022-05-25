@@ -1,4 +1,4 @@
-@mixin grid-stack() {
+@mixin grid-stack {
   display: grid;
 
   & > * {
