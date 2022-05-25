@@ -1,6 +1,7 @@
-$player-height: 200px;
+@import './grid.scss';
+
 $gap-size: 3px;
-$progressheight: 45px;
+$player-height: 200px;
 $player-gap: 10px;
 
 $playlist-thumbnail-width: 40px;
@@ -32,10 +33,22 @@ $playlist-thumbnail-width: 40px;
   &.withPlaylist {
     height: 100vh;
   }
+}
 
-  // TODO: Remove this. Placeholder.
-  > * {
-    background-color: hsl(0, 0%, 30%);
+.playerContainer {
+  @include grid-stack;
+}
+
+.background {
+  @include grid-stack;
+  position: relative;
+  z-index: -1;
+
+  &::after {
+    content: '';
+    z-index: 1;
+    background-color: hsl(0 0% 0% / 0.5);
+    backdrop-filter: blur(30px);
   }
 }
 
@@ -228,6 +241,8 @@ $playlist-thumbnail-width: 40px;
   overflow-y: auto;
 
   padding: 5px;
+
+  background-color: hsl(0, 0%, 30%);
 }
 
 .track {

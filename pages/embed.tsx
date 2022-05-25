@@ -63,55 +63,68 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               imageUrl={bgImageUrl}
             >
               {showCoverArt && <CoverArt />}
-              <div className={styles.playerMain}>
-                {!showCoverArt && (
-                  <div className={styles.thumbnail}>
-                    <PrxImage
-                      src={imageUrl}
-                      alt={`Thumbnail for "${title}".`}
-                      layout="intrinsic"
-                      width={135}
-                      height={135}
-                    />
-                  </div>
-                )}
 
-                <div className={styles.text}>
-                  <h2 className={styles.title}>{title}</h2>
-                  <p className={styles.subtitle}>{subtitle}</p>
+              <div className={styles.playerContainer}>
+                <div className={styles.background}>
+                  <PrxImage
+                    src={bgImageUrl}
+                    layout="fill"
+                    objectFit="cover"
+                    aria-hidden
+                  />
                 </div>
 
-                <div className={styles.logo}>
-                  {/* TODO: Get PRX text to line up witrh title baseline. */}
-                  <PrxLogo className={styles.logoPrx} />
+                <div className={styles.playerMain}>
+                  {!showCoverArt && (
+                    <div className={styles.thumbnail}>
+                      <PrxImage
+                        src={imageUrl}
+                        alt={`Thumbnail for "${title}".`}
+                        layout="intrinsic"
+                        width={135}
+                        height={135}
+                      />
+                    </div>
+                  )}
+
+                  <div className={styles.text}>
+                    <h2 className={styles.title}>{title}</h2>
+                    <p className={styles.subtitle}>{subtitle}</p>
+                  </div>
+
+                  <div className={styles.logo}>
+                    {/* TODO: Get PRX text to line up witrh title baseline. */}
+                    <PrxLogo className={styles.logoPrx} />
+                  </div>
+
+                  <div className={styles.panel}>
+                    <div className={clsx(styles.controls, menuShownClass)}>
+                      {/* TODO: Move play button into a PlayerControls component. */}
+                      <PlayButton
+                        className={clsx(styles.button, styles.playButton)}
+                      />
+                    </div>
+
+                    <div className={clsx(styles.menu, menuShownClass)}>
+                      {/* TODO: Replace content with dialog menu buttons. */}
+                      Menu
+                    </div>
+
+                    <div className={styles.menuToggle}>
+                      <button
+                        type="button"
+                        className={clsx(styles.button, styles.moreButton)}
+                        onClick={handleMoreButtonClick}
+                      >
+                        {showMenu ? <CloseIcon /> : <MoreHorizontalIcon />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={styles.progressBar} />
                 </div>
-
-                <div className={styles.panel}>
-                  <div className={clsx(styles.controls, menuShownClass)}>
-                    {/* TODO: Move play button into a PlayerControls component. */}
-                    <PlayButton
-                      className={clsx(styles.button, styles.playButton)}
-                    />
-                  </div>
-
-                  <div className={clsx(styles.menu, menuShownClass)}>
-                    {/* TODO: Replace content with dialog menu buttons. */}
-                    Menu
-                  </div>
-
-                  <div className={styles.menuToggle}>
-                    <button
-                      type="button"
-                      className={clsx(styles.button, styles.moreButton)}
-                      onClick={handleMoreButtonClick}
-                    >
-                      {showMenu ? <CloseIcon /> : <MoreHorizontalIcon />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className={styles.progressBar} />
               </div>
+
               {canShowPlaylist && (
                 <div className={styles.playlist}>
                   {/* TODO: Replace with Playlist component. */}
