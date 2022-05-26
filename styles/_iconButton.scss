@@ -1,0 +1,29 @@
+.iconButton {
+  width: var(--iconButton-size);
+  height: var(--iconButton-size);
+  display: grid;
+  overflow: hidden;
+
+  padding: 0;
+
+  border-radius: var(--iconButton-border-radius);
+
+  color: var(--iconButton-color);
+  line-height: 0;
+
+  > svg {
+    fill: currentColor;
+  }
+
+  &:hover {
+    background-color: var(--iconButton-background-color--hover);
+    color: var(--iconButton-color--hover);
+  }
+
+  &:focus {
+    outline-width: var(--iconButton-outline-width--focus);
+    outline-color: var(--iconButton-outline-color--focus);
+    outline-style: solid;
+    color: var(--iconButton-color--focus);
+  }
+}

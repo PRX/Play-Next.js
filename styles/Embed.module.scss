@@ -1,4 +1,5 @@
 @import './grid.scss';
+@import './iconButton';
 
 $gap-size: 3px;
 $player-height: 200px;
@@ -101,11 +102,21 @@ $playlist-thumbnail-width: 40px;
 }
 
 .title {
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1.5rem;
   margin: 0;
+
+  font-size: clamp(
+    var(--track-title-min-size),
+    5vw,
+    var(--track-title-max-size)
+  );
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  > * {
+    display: inline-block;
+    white-space: break-spaces;
+  }
 }
 
 .subtitle {
@@ -148,23 +159,6 @@ $playlist-thumbnail-width: 40px;
   }
 }
 
-.button {
-  width: 40px;
-  display: inline-block;
-  padding: 0;
-
-  line-height: 0;
-  color: hsla(0, 0%, 100%, 0.7);
-
-  &:hover {
-    color: hsla(0, 0%, 100%, 1);
-  }
-
-  &:focus {
-    background-color: hsla(0, 0%, 100%, 0.25);
-  }
-}
-
 .menu {
   display: none;
   grid-area: CTRLS;
@@ -178,10 +172,6 @@ $playlist-thumbnail-width: 40px;
 
 .menuToggle {
   grid-area: MTOG;
-
-  > svg {
-    width: 40px;
-  }
 }
 
 @media only screen and (min-width: 300px) {
@@ -228,18 +218,30 @@ $playlist-thumbnail-width: 40px;
 // temporary code below: don't get attached
 
 .progressBar {
+  --track-size: var(--playerProgress-size);
+  --track-radius: calc(var(--track-size) / 2);
   grid-area: PROG;
 
-  display: grid;
-  align-content: center;
+  @include grid-stack;
 
   &::before {
     content: '';
-    display: block;
+    grid-row: 1;
+    grid-column: 1;
     width: 100%;
-    height: 5px;
-    background-color: hsla(0, 0%, 100%, 0.7);
-    border-radius: 3px;
+    height: var(--track-size);
+    background-color: var(--playerProgress-track-color);
+    border-radius: var(--track-radius);
+  }
+
+  &::after {
+    content: '';
+    grid-row: 1;
+    grid-column: 1;
+    width: 42%;
+    height: var(--track-size);
+    background-color: var(--accent-color, var(--playerProgress-progress-color));
+    border-radius: var(--track-radius);
   }
 }
 
