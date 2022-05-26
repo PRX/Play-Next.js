@@ -3,6 +3,7 @@
  * Exports the Embed page component.
  */
 
+import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import clsx from 'clsx';
@@ -15,7 +16,12 @@ import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
 import PrxImage from '@components/PrxImage';
-import CoverArt from '@components/Player/CoverArt/CoverArt';
+import CoverArt from '@components/Player/CoverArt';
+import Thumbnail from '@components/Player/Thumbnail';
+import PrxLogo from '@svg/prx-logo.svg';
+import MoreHorizontalIcon from '@svg/icons/MoreHorizontal.svg';
+import CloseIcon from '@svg/icons/Close.svg';
+import PlayerText from '@components/PlayerText';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -26,6 +32,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist } = config;
   const { audio, playlist, bgImageUrl } = data;
   const { guid, imageUrl } = audio || {};
+  const [showMenu, setShowMenu] = useState(false);
+  const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
@@ -36,6 +44,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
   });
+
+  const handleMoreButtonClick = () => {
+    setShowMenu(!showMenu);
+  };
 
   return (
     <>
@@ -53,9 +65,63 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               imageUrl={bgImageUrl}
             >
               {showCoverArt && <CoverArt />}
-              <div className={styles.player}>
-                <PlayButton />
+
+              <div className={styles.playerContainer}>
+                <div className={styles.background}>
+                  <PrxImage
+                    src={bgImageUrl}
+                    layout="fill"
+                    objectFit="cover"
+                    aria-hidden
+                  />
+                </div>
+
+                <div className={styles.playerMain}>
+                  {!showCoverArt && (
+                    <div className={styles.thumbnail}>
+                      <Thumbnail
+                        sizes={`(min-width: 500px) ${styles.playerThumbnailSize}, ${styles.playerThumbnailSizeMob}`}
+                      />
+                    </div>
+                  )}
+
+                  <div className={styles.text}>
+                    <PlayerText />
+                  </div>
+
+                  <div className={styles.logo}>
+                    {/* TODO: Get PRX text to line up witrh title baseline. */}
+                    <PrxLogo className={styles.logoPrx} />
+                  </div>
+
+                  <div className={styles.panel}>
+                    <div className={clsx(styles.controls, menuShownClass)}>
+                      {/* TODO: Move play button into a PlayerControls component. */}
+                      <PlayButton
+                        className={clsx(styles.button, styles.playButton)}
+                      />
+                    </div>
+
+                    <div className={clsx(styles.menu, menuShownClass)}>
+                      {/* TODO: Replace content with dialog menu buttons. */}
+                      Menu
+                    </div>
+
+                    <div className={styles.menuToggle}>
+                      <button
+                        type="button"
+                        className={clsx(styles.button, styles.moreButton)}
+                        onClick={handleMoreButtonClick}
+                      >
+                        {showMenu ? <CloseIcon /> : <MoreHorizontalIcon />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={styles.progressBar} />
+                </div>
               </div>
+
               {canShowPlaylist && (
                 <div className={styles.playlist}>
                   {/* TODO: Replace with Playlist component. */}
@@ -78,8 +144,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                             src={trackThumbUrl || imageUrl}
                             alt={`Thumbnail for "${trackTitle}".`}
                             layout="intrinsic"
-                            width={styles.thumbnailWidth}
-                            height={styles.thumbnailWidth}
+                            width={styles.playlistThumbnailWidth}
+                            height={styles.playlistThumbnailWidth}
                           />
                         ) : (
                           <span />

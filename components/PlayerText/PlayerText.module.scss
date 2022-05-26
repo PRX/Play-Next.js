@@ -1,0 +1,23 @@
+@mixin wordBreak {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  > * {
+    display: inline-block;
+    white-space: break-spaces;
+  }
+}
+
+.title {
+  @include wordBreak;
+
+  font-size: clamp(1.125rem, 20vw, 1.5rem);
+  margin: 0;
+}
+
+.subtitle {
+  @include wordBreak;
+
+  margin: 0;
+}
