@@ -4,10 +4,16 @@ $gap-size: 3px;
 $player-height: 200px;
 $player-gap: 10px;
 
+$playerThumbnail-size--mobile: 65px;
+$playerThumbnail-size: 135px;
+
 $playlist-thumbnail-width: 40px;
 
 :export {
-  thumbnailWidth: $playlist-thumbnail-width;
+  playlistThumbnailWidth: $playlist-thumbnail-width;
+
+  playerThumbnailSizeMobile: $playerThumbnail-size--mobile;
+  playerThumbnailSize: $playerThumbnail-size;
 }
 
 .container {
@@ -61,10 +67,10 @@ $playlist-thumbnail-width: 40px;
 }
 
 .playerMain {
-  --thumbnail-size: 65px;
+  --playerThumbnail-size: #{$playerThumbnail-size--mobile};
 
   display: grid;
-  grid-template-columns: var(--thumbnail-size) 1fr max-content;
+  grid-template-columns: var(--playerThumbnail-size) 1fr max-content;
   grid-template-rows: max-content 1fr max-content;
   grid-template-areas:
     'THUMB TEXT  TEXT'
@@ -87,8 +93,9 @@ $playlist-thumbnail-width: 40px;
 
 .thumbnail {
   grid-area: THUMB;
-  width: var(--thumbnail-size);
-  height: var(--thumbnail-size);
+  position: relative;
+  width: var(--playerThumbnail-size);
+  height: var(--playerThumbnail-size);
 }
 
 .text {
@@ -98,18 +105,6 @@ $playlist-thumbnail-width: 40px;
   gap: $player-gap;
 
   font-size: 1rem;
-}
-
-.title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.subtitle {
-  margin: 0;
 }
 
 .logo {
@@ -184,9 +179,9 @@ $playlist-thumbnail-width: 40px;
   }
 }
 
-@media only screen and (min-width: 300px) {
+@media only screen and (min-width: 500px) {
   .playerMain {
-    --thumbnail-size: 135px;
+    --playerThumbnail-size: #{$playerThumbnail-size};
 
     grid-template-areas:
       'THUMB TEXT  LOGO'

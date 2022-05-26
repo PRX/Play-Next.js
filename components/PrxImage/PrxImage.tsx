@@ -7,7 +7,9 @@ import React from 'react';
 import Image, { ImageProps } from 'next/image';
 import isTrustedImageDomain from '@lib/validate/isTrustedImageDomain';
 
-const PrxImage: React.FC<ImageProps> = ({
+export interface IPrxImageProps extends ImageProps {}
+
+const PrxImage: React.FC<IPrxImageProps> = ({
   src,
   alt,
   priority,
