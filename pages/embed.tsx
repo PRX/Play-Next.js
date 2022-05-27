@@ -108,7 +108,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   </div>
 
                   <div className={styles.logo}>
-                    {/* TODO: Get PRX text to line up witrh title baseline. */}
+                    {/* TODO: Get PRX text to line up with title baseline. */}
                     <PrxLogo className={styles.logoPrx} />
                   </div>
 
