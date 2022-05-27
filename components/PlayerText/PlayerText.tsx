@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
+import ThemeVars from '@components/ThemeVars';
 import styles from './PlayerText.module.scss';
 
 export interface IPlayerTextProps {}
@@ -17,6 +18,7 @@ const PlayerText: React.FC<IPlayerTextProps> = () => {
 
   return (
     <>
+      <ThemeVars theme="PlayerText" cssProps={styles} />
       <h2 className={styles.title}>{wrapWords(title)}</h2>
       <p className={styles.subtitle}>{wrapWords(subtitle)}</p>
     </>

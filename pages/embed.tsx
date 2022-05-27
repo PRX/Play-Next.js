@@ -6,23 +6,29 @@
 import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import clsx from 'clsx';
 import { IEmbedData } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
-import Player from '@components/Player';
 import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
 import PrxImage from '@components/PrxImage';
-import CoverArt from '@components/Player/CoverArt';
-import Thumbnail from '@components/Player/Thumbnail';
+import ThemeVars from '@components/ThemeVars';
+import PlayerText from '@components/PlayerText';
+import IconButton from '@components/IconButton';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
-import ThemeVars from '@components/ThemeVars';
-import PlayerText from '@components/PlayerText';
+
+// Define dynamic component imports.
+const Player = dynamic(() => import('@components/Player'));
+const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
+const PlayerThumbnail = dynamic(
+  () => import('@components/Player/PlayerThumbnail')
+);
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -91,8 +97,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 <div className={styles.playerMain}>
                   {!showCoverArt && (
                     <div className={styles.thumbnail}>
-                      <Thumbnail
-                        sizes={`(min-width: 500px) ${styles.playerThumbnailSize}, ${styles.playerThumbnailSizeMob}`}
+                      <PlayerThumbnail
+                        sizes={`(min-width: 500px) ${styles['--playerThumbnail-size']}, ${styles['--playerThumbnail-size--mobile']}`}
                       />
                     </div>
                   )}
@@ -120,13 +126,13 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     </div>
 
                     <div className={styles.menuToggle}>
-                      <button
+                      <IconButton
                         type="button"
                         className={clsx(styles.iconButton, styles.moreButton)}
                         onClick={handleMoreButtonClick}
                       >
                         {showMenu ? <CloseIcon /> : <MoreHorizIcon />}
-                      </button>
+                      </IconButton>
                     </div>
                   </div>
 

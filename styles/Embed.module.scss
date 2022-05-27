@@ -14,6 +14,10 @@ $player-corner-radius: 10px;
 $player-padding: 20px;
 $player-text-color: $white;
 
+$playerThumbnail-size--mobile: 65px;
+$playerThumbnail-size: 135px;
+
+// TODO: Move to background module.
 $background-tint-color: hsl(0 0% 0%);
 $background-tint-alpha: 0.5;
 $background-blur: 30px;
@@ -31,6 +35,13 @@ $playlist-divider-size: 1px;
 :export {
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
+
+  --playerThumbnail-size--mobile: #{$playerThumbnail-size--mobile};
+  --playerThumbnail-size: #{$playerThumbnail-size};
+
+  // TODO: Move to background module.
+  --background-tint-alpha: #{$background-tint-alpha};
+  --background-blur: #{$background-blur};
 
   // TODO: Move to Playlist module.
   --playlist-text-color: #{$playlist-text-color};
@@ -117,7 +128,7 @@ $playlist-divider-size: 1px;
     $l: color.lightness($background-tint-color);
     content: '';
     z-index: 1;
-    background-color: hsla($h, $s, $l, $background-tint-alpha);
+    background-color: hsl($h, $s, $l, $background-tint-alpha);
     backdrop-filter: blur($background-blur);
   }
 
@@ -153,7 +164,8 @@ $playlist-divider-size: 1px;
 
 .thumbnail {
   grid-area: THUMB;
-  position: relative;
+
+  display: grid;
   width: var(--playerThumbnail-size);
   height: var(--playerThumbnail-size);
 }
@@ -162,7 +174,7 @@ $playlist-divider-size: 1px;
   grid-area: TEXT;
 
   display: grid;
-  gap: $player-gap;
+  gap: $player-gap / 2;
 }
 
 .logo {
@@ -228,6 +240,10 @@ $playlist-divider-size: 1px;
         'PANEL PANEL PANEL'
         'PROG  PROG  PROG';
     }
+  }
+
+  .text {
+    gap: $player-gap;
   }
 
   .logo {
@@ -299,7 +315,12 @@ $playlist-divider-size: 1px;
   grid-template-columns: $playlist-thumbnail-size 1fr;
   grid-gap: 15px;
   align-items: center;
+
   padding: 10px 15px;
+
+  border-bottom-style: solid;
+  border-bottom-width: var(--playlist-divider-size);
+  border-bottom-color: var(--playlist-divider-color);
 
   color: var(--playlist-text-color);
   font-size: clamp(0.8rem, 5vw, 1.15rem);
@@ -308,12 +329,6 @@ $playlist-divider-size: 1px;
   &.isCurrentTrack {
     background-color: var(--playlist-background-color--active);
     color: var(--playlist-text-color--active);
-  }
-
-  & + & {
-    border-top-style: solid;
-    border-top-width: var(--playlist-divider-size);
-    border-top-color: var(--playlist-divider-color);
   }
 }
 
