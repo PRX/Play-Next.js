@@ -4,9 +4,9 @@
  */
 
 import React, { useContext } from 'react';
-import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
+import IconButton from '@components/IconButton';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
 import PauseIcon from '@svg/icons/Pause.svg';
 import styles from './PlayButton.module.scss';
@@ -23,14 +23,14 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
   };
 
   return (
-    <button
-      className={clsx(styles.root, styles.iconButton, className)}
+    <IconButton
+      className={styles.root}
       {...props}
       type="button"
       onClick={handleClick}
     >
       {!playing ? <PlayArrowIcon /> : <PauseIcon />}
-    </button>
+    </IconButton>
   );
 };
 

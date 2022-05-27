@@ -1,3 +1,17 @@
+@import '@styles/colors';
+
+:export {
+  --iconButton-background-color--hover: #{$white-a-10};
+  --iconButton-outline-color--focus: #{$white-a-10};
+  --iconButton-outline-width--focus: 3px;
+  --iconButton-border-radius: 50%;
+  --iconButton-color: #{$white-a-50};
+  --iconButton-color--promote: #{$white-a-80};
+  --iconButton-color--hover: #{$white};
+  --iconButton-color--focus: #{$white};
+  --iconButton-size: 40px;
+}
+
 .iconButton {
   width: var(--iconButton-size);
   height: var(--iconButton-size);

@@ -1,14 +1,46 @@
-@import './grid.scss';
-@import './iconButton';
+@use 'sass:color';
 
-$gap-size: 3px;
+@import './colors';
+@import './grid.scss';
+
+$divider-color: $white-a-70;
+$divider-size: 3px;
+
+$logo-size: 1.75rem;
+
 $player-height: 200px;
 $player-gap: 10px;
+$player-corner-radius: 10px;
+$player-padding: 20px;
+$player-text-color: $white;
 
-$playlist-thumbnail-width: 40px;
+$background-tint-color: hsl(0 0% 0%);
+$background-tint-alpha: 0.5;
+$background-blur: 30px;
+
+// TODO: Move to Playlist module.
+$playlist-text-color: $white-a-60;
+$playlist-text-color--active: $white;
+$playlist-background-color: $grey-100;
+$playlist-background-color--active: $primary-900;
+$playlist-thumbnail-size: 40px;
+$playlist-thumbnail-corner-radius: 10px;
+$playlist-divider-color: $grey-600;
+$playlist-divider-size: 1px;
 
 :export {
-  thumbnailWidth: $playlist-thumbnail-width;
+  --divider-color: #{$divider-color};
+  --divider-size: #{$divider-size};
+
+  // TODO: Move to Playlist module.
+  --playlist-text-color: #{$playlist-text-color};
+  --playlist-text-color--active: #{$playlist-text-color--active};
+  --playlist-background-color: #{$playlist-background-color};
+  --playlist-background-color--active: #{$playlist-background-color--active};
+  --playlist-thumbnail-size: #{$playlist-thumbnail-size};
+  --playlist-thumbnail-corner-radius: #{$player-corner-radius};
+  --playlist-divider-color: #{$playlist-divider-color};
+  --playlist-divider-size: #{$playlist-divider-size};
 }
 
 .container {
@@ -20,7 +52,6 @@ $playlist-thumbnail-width: 40px;
 
 .main {
   display: grid;
-  grid-gap: $gap-size;
   grid-template-rows: $player-height;
   grid-auto-rows: 1fr;
   width: 100vw;
@@ -36,23 +67,58 @@ $playlist-thumbnail-width: 40px;
   }
 }
 
+.coverArt {
+  display: grid;
+}
+
 .playerContainer {
-  @include grid-stack;
+  @include grid-stacked;
+
+  .withCoverArt &,
+  .withPlaylist & {
+    position: relative;
+
+    &::before,
+    &::after {
+      position: absolute;
+      width: 100%;
+      height: $divider-size;
+      z-index: 1;
+
+      background-color: $divider-color;
+    }
+  }
+
+  .withCoverArt & {
+    &::before {
+      content: '';
+      top: 0;
+    }
+  }
+
+  .withPlaylist & {
+    &::after {
+      content: '';
+      bottom: 0;
+    }
+  }
 }
 
 .background {
-  @include grid-stack;
+  @include grid-stacked;
   position: relative;
   z-index: -1;
   overflow: hidden;
 
-  border-radius: 10px;
-
+  border-radius: $player-corner-radius;
   &::after {
+    $h: color.hue($background-tint-color);
+    $s: color.saturation($background-tint-color);
+    $l: color.lightness($background-tint-color);
     content: '';
     z-index: 1;
-    background-color: hsl(0 0% 0% / 0.5);
-    backdrop-filter: blur(30px);
+    background-color: hsla($h, $s, $l, $background-tint-alpha);
+    backdrop-filter: blur($background-blur);
   }
 
   .withCoverArt &,
@@ -73,10 +139,9 @@ $playlist-thumbnail-width: 40px;
     'PROG  PROG  PROG';
   align-content: stretch;
   gap: $player-gap;
-  padding: 20px;
+  padding: $player-padding;
 
-  color: #f5f5f5;
-  font-size: 3rem;
+  color: $player-text-color;
 
   .withCoverArt & {
     grid-template-areas:
@@ -97,8 +162,6 @@ $playlist-thumbnail-width: 40px;
 
   display: grid;
   gap: $player-gap;
-
-  font-size: 1rem;
 }
 
 .title {
@@ -127,15 +190,12 @@ $playlist-thumbnail-width: 40px;
   display: none;
   grid-area: LOGO;
   align-self: start;
-
-  font-size: 1.5rem;
 }
 
 .logoPrx {
-  position: relative;
-  top: 0.1em;
   width: 80px;
-  vertical-align: baseline;
+  display: inline-block;
+  vertical-align: -webkit-baseline-middle;
 }
 
 .panel {
@@ -222,7 +282,7 @@ $playlist-thumbnail-width: 40px;
   --track-radius: calc(var(--track-size) / 2);
   grid-area: PROG;
 
-  @include grid-stack;
+  @include grid-stacked;
 
   &::before {
     content: '';
@@ -247,62 +307,54 @@ $playlist-thumbnail-width: 40px;
 
 .playlist {
   display: grid;
-  grid-gap: 5px;
   align-content: start;
 
   overflow: hidden;
   overflow-y: auto;
 
-  padding: 5px;
-
-  background-color: hsl(0, 0%, 30%);
+  background-color: var(--playlist-background-color);
 }
 
 .track {
   display: grid;
-  grid-template-columns: $playlist-thumbnail-width 1fr;
+  grid-template-columns: $playlist-thumbnail-size 1fr;
   grid-gap: 15px;
   align-items: center;
   padding: 10px 15px;
 
-  background-color: hsla(0, 0%, 100%, 0.1);
-
-  color: hsl(0, 0%, 80%);
+  color: var(--playlist-text-color);
   font-size: clamp(0.8rem, 5vw, 1.15rem);
   font-weight: bold;
 
-  > img {
-    border-radius: 25%;
-    border: 1px solid hsl(0, 0%, 100%);
+  &.isCurrentTrack {
+    background-color: var(--playlist-background-color--active);
+    color: var(--playlist-text-color--active);
   }
 
-  &.isCurrentTrack {
-    background-color: hsla(0, 0%, 100%, 0.3);
-    color: hsl(0, 0%, 100%);
+  & + & {
+    border-top-style: solid;
+    border-top-width: var(--playlist-divider-size);
+    border-top-color: var(--playlist-divider-color);
+  }
+}
+
+.trackThumbnail {
+  @include grid-stacked(after);
+  overflow: hidden;
+
+  border-radius: var(--playlist-thumbnail-corner-radius);
+
+  &::after {
+    content: '';
+    z-index: 1;
+
+    box-shadow: inset 0 0 0 2px var(--divider-color);
+
+    border-radius: inherit;
   }
 }
 
 .trackTitle {
   justify-self: start;
   text-align: left;
-}
-
-.fakeContainer {
-  display: grid;
-  grid-template-columns: 200px;
-  align-content: space-between;
-
-  &.text {
-    background-color: aquamarine;
-    display: grid;
-    height: 100px;
-    width: 100px;
-  }
-
-  &.logo {
-    background-color: orange;
-    display: grid;
-    height: 390px;
-    width: 200px;
-  }
 }

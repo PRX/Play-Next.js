@@ -15,7 +15,7 @@ const CoverArt = () => {
 
   return (
     imageUrl && (
-      <div className={styles.coverArt}>
+      <div className={styles.root}>
         <PrxImage
           src={imageUrl}
           alt={`Cover art for "${title}".`}

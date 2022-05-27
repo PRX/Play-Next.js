@@ -1,8 +1,15 @@
-@mixin grid-stack {
+@mixin grid-stacked($pseudoElms...) {
   display: grid;
 
   & > * {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  @for $i from 0 to length($pseudoElms) {
+    &::#{nth($pseudoElms, $i + 1)} {
+      grid-column: 1;
+      grid-row: 1;
+    }
   }
 }

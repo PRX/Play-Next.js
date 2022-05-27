@@ -1,5 +1,4 @@
-@import '@styles/iconButton';
-
 .root {
-  --iconButton-size: calc(60px);
+  --iconButton-size: 60px;
+  --iconButton-color: var(--iconButton-color--promote);
 }
