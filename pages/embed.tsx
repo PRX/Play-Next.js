@@ -17,10 +17,12 @@ import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
 import PrxImage from '@components/PrxImage';
 import CoverArt from '@components/Player/CoverArt';
+import Thumbnail from '@components/Player/Thumbnail';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import ThemeVars from '@components/ThemeVars';
+import PlayerText from '@components/PlayerText';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -30,7 +32,7 @@ export interface IEmbedPageProps {
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
   const { audio, playlist, bgImageUrl } = data;
-  const { guid, imageUrl, title, subtitle } = audio || {};
+  const { guid, imageUrl } = audio || {};
   const [showMenu, setShowMenu] = useState(false);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
@@ -89,24 +91,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 <div className={styles.playerMain}>
                   {!showCoverArt && (
                     <div className={styles.thumbnail}>
-                      <PrxImage
-                        src={imageUrl}
-                        alt={`Thumbnail for "${title}".`}
-                        layout="intrinsic"
-                        width={135}
-                        height={135}
+                      <Thumbnail
+                        sizes={`(min-width: 500px) ${styles.playerThumbnailSize}, ${styles.playerThumbnailSizeMob}`}
                       />
                     </div>
                   )}
 
                   <div className={styles.text}>
-                    <h2 className={styles.title}>
-                      {title.match(/\s*\S+/g).map((word, i) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <span key={`${word}:${i}`}>{word}</span>
-                      ))}
-                    </h2>
-                    <p className={styles.subtitle}>{subtitle}</p>
+                    <PlayerText />
                   </div>
 
                   <div className={styles.logo}>

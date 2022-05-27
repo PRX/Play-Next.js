@@ -128,10 +128,10 @@ $playlist-divider-size: 1px;
 }
 
 .playerMain {
-  --thumbnail-size: 65px;
+  --playerThumbnail-size: #{$playerThumbnail-size--mobile};
 
   display: grid;
-  grid-template-columns: var(--thumbnail-size) 1fr max-content;
+  grid-template-columns: var(--playerThumbnail-size) 1fr max-content;
   grid-template-rows: max-content 1fr max-content;
   grid-template-areas:
     'THUMB TEXT  TEXT'
@@ -153,8 +153,9 @@ $playlist-divider-size: 1px;
 
 .thumbnail {
   grid-area: THUMB;
-  width: var(--thumbnail-size);
-  height: var(--thumbnail-size);
+  position: relative;
+  width: var(--playerThumbnail-size);
+  height: var(--playerThumbnail-size);
 }
 
 .text {
@@ -162,28 +163,6 @@ $playlist-divider-size: 1px;
 
   display: grid;
   gap: $player-gap;
-}
-
-.title {
-  overflow: hidden;
-  margin: 0;
-
-  font-size: clamp(
-    var(--track-title-min-size),
-    5vw,
-    var(--track-title-max-size)
-  );
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  > * {
-    display: inline-block;
-    white-space: break-spaces;
-  }
-}
-
-.subtitle {
-  margin: 0;
 }
 
 .logo {
@@ -234,9 +213,9 @@ $playlist-divider-size: 1px;
   grid-area: MTOG;
 }
 
-@media only screen and (min-width: 300px) {
+@media only screen and (min-width: 500px) {
   .playerMain {
-    --thumbnail-size: 135px;
+    --playerThumbnail-size: #{$playerThumbnail-size};
 
     grid-template-areas:
       'THUMB TEXT  LOGO'

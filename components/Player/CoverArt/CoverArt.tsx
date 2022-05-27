@@ -3,12 +3,14 @@
  * Cover art component for player.
  */
 
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';
 import styles from './CoverArt.module.scss';
 
-const CoverArt = () => {
+export interface ICoverArtProps {}
+
+const CoverArt: React.FC<ICoverArtProps> = () => {
   const { state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const { imageUrl, title } = tracks[currentTrackIndex];
