@@ -7,6 +7,7 @@
 import React, { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
+import IconButton from '@components/IconButton';
 import ForwardIcon from '@svg/icons/Forward.svg';
 
 export interface IForwardButtonProps
@@ -25,9 +26,9 @@ const ForwardButton: React.FC<IForwardButtonProps> = ({ ...props }) => {
 
   // have to think about what to do here
   return (
-    <button {...props} type="button" onClick={handleClick}>
+    <IconButton {...props} type="button" onClick={handleClick}>
       <ForwardIcon />
-    </button>
+    </IconButton>
   );
 };
 

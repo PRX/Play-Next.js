@@ -6,6 +6,7 @@
 import React, { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
+import IconButton from '@components/IconButton';
 import NextIcon from '@svg/icons/Next.svg';
 
 export interface INextButtonProps
@@ -24,9 +25,9 @@ const NextButton: React.FC<INextButtonProps> = ({ ...props }) => {
   };
   // add conditional to only show next and previous track buttons when a playlist is present
   return (
-    <button {...props} type="button" onClick={handleClick}>
+    <IconButton {...props} type="button" onClick={handleClick}>
       <NextIcon aria-label="Next Track" />
-    </button>
+    </IconButton>
   );
 };
 

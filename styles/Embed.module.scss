@@ -205,6 +205,10 @@ $playlist-divider-size: 1px;
 .controls {
   grid-area: CTRLS;
 
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
   &.menuShown {
     display: none;
   }

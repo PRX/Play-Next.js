@@ -6,6 +6,7 @@
 import React, { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
+import IconButton from '@components/IconButton';
 import ReplayIcon from '@svg/icons/Replay.svg';
 
 export interface IReplayButtonProps
@@ -23,9 +24,9 @@ const ReplayButton: React.FC<IReplayButtonProps> = ({ ...props }) => {
 
   // have to think about what to do here
   return (
-    <button {...props} type="button" onClick={handleClick}>
+    <IconButton {...props} type="button" onClick={handleClick}>
       <ReplayIcon />
-    </button>
+    </IconButton>
   );
 };
 
