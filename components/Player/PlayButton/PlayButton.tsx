@@ -29,7 +29,11 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
       type="button"
       onClick={handleClick}
     >
-      {!playing ? <PlayArrowIcon /> : <PauseIcon />}
+      {!playing ? (
+        <PlayArrowIcon aria-label="Play" />
+      ) : (
+        <PauseIcon aria-label="Pause" />
+      )}
     </IconButton>
   );
 };
