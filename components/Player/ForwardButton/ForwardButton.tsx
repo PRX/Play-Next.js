@@ -27,7 +27,7 @@ const ForwardButton: React.FC<IForwardButtonProps> = ({ ...props }) => {
   // have to think about what to do here
   return (
     <IconButton {...props} type="button" onClick={handleClick}>
-      <ForwardIcon />
+      <ForwardIcon aria-label="Skip ahead 30 seconds" />
     </IconButton>
   );
 };

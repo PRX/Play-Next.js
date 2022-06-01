@@ -35,7 +35,7 @@
     color: var(--iconButton-color--hover);
   }
 
-  &:focus {
+  &:focus-visible {
     outline-width: var(--iconButton-outline-width--focus);
     outline-color: var(--iconButton-outline-color--focus);
     outline-style: solid;
