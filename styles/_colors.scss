@@ -1,0 +1,33 @@
+// White at specific alphas.
+$white: hsl(0 0% 100%);
+$white-a-10: hsl(0 0% 100% / 0.1);
+$white-a-20: hsl(0 0% 100% / 0.2);
+$white-a-30: hsl(0 0% 100% / 0.3);
+$white-a-40: hsl(0 0% 100% / 0.4);
+$white-a-50: hsl(0 0% 100% / 0.5);
+$white-a-60: hsl(0 0% 100% / 0.6);
+$white-a-70: hsl(0 0% 100% / 0.7);
+$white-a-80: hsl(0 0% 100% / 0.8);
+$white-a-90: hsl(0 0% 100% / 0.9);
+
+// Grays
+$grey-100: hsl(0 0% 10%);
+$grey-200: hsl(0 0% 20%);
+$grey-300: hsl(0 0% 30%);
+$grey-400: hsl(0 0% 40%);
+$grey-500: hsl(0 0% 50%);
+$grey-600: hsl(0 0% 60%);
+$grey-700: hsl(0 0% 70%);
+$grey-800: hsl(0 0% 80%);
+$grey-900: hsl(0 0% 90%);
+
+// Primary
+$primary-100: #75bbe1;
+$primary-500: #0087bd;
+$primary-700: #37729d;
+$primary-900: #003a57;
+
+// Secondary
+$secondary-100: #fccc88;
+$secondary-500: #ff9600;
+$secondary-900: #8a570f;

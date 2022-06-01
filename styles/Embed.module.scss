@@ -1,19 +1,57 @@
+@use 'sass:color';
+
+@import './colors';
 @import './grid.scss';
 
-$gap-size: 3px;
+$divider-color: $white-a-70;
+$divider-size: 3px;
+
+$logo-size: 1.75rem;
+
 $player-height: 200px;
 $player-gap: 10px;
+$player-corner-radius: 10px;
+$player-padding: 20px;
+$player-text-color: $white;
 
 $playerThumbnail-size--mobile: 65px;
 $playerThumbnail-size: 135px;
 
-$playlist-thumbnail-width: 40px;
+// TODO: Move to background module.
+$background-tint-color: hsl(0 0% 0%);
+$background-tint-alpha: 0.5;
+$background-blur: 30px;
+
+// TODO: Move to Playlist module.
+$playlist-text-color: $white-a-60;
+$playlist-text-color--active: $white;
+$playlist-background-color: $grey-100;
+$playlist-background-color--active: $primary-900;
+$playlist-thumbnail-size: 40px;
+$playlist-thumbnail-corner-radius: 10px;
+$playlist-divider-color: $grey-600;
+$playlist-divider-size: 1px;
 
 :export {
-  playlistThumbnailWidth: $playlist-thumbnail-width;
+  --divider-color: #{$divider-color};
+  --divider-size: #{$divider-size};
 
-  playerThumbnailSizeMobile: $playerThumbnail-size--mobile;
-  playerThumbnailSize: $playerThumbnail-size;
+  --playerThumbnail-size--mobile: #{$playerThumbnail-size--mobile};
+  --playerThumbnail-size: #{$playerThumbnail-size};
+
+  // TODO: Move to background module.
+  --background-tint-alpha: #{$background-tint-alpha};
+  --background-blur: #{$background-blur};
+
+  // TODO: Move to Playlist module.
+  --playlist-text-color: #{$playlist-text-color};
+  --playlist-text-color--active: #{$playlist-text-color--active};
+  --playlist-background-color: #{$playlist-background-color};
+  --playlist-background-color--active: #{$playlist-background-color--active};
+  --playlist-thumbnail-size: #{$playlist-thumbnail-size};
+  --playlist-thumbnail-corner-radius: #{$player-corner-radius};
+  --playlist-divider-color: #{$playlist-divider-color};
+  --playlist-divider-size: #{$playlist-divider-size};
 }
 
 .container {
@@ -25,7 +63,6 @@ $playlist-thumbnail-width: 40px;
 
 .main {
   display: grid;
-  grid-gap: $gap-size;
   grid-template-rows: $player-height;
   grid-auto-rows: 1fr;
   width: 100vw;
@@ -41,23 +78,58 @@ $playlist-thumbnail-width: 40px;
   }
 }
 
+.coverArt {
+  display: grid;
+}
+
 .playerContainer {
-  @include grid-stack;
+  @include grid-stacked;
+
+  .withCoverArt &,
+  .withPlaylist & {
+    position: relative;
+
+    &::before,
+    &::after {
+      position: absolute;
+      width: 100%;
+      height: $divider-size;
+      z-index: 1;
+
+      background-color: $divider-color;
+    }
+  }
+
+  .withCoverArt & {
+    &::before {
+      content: '';
+      top: 0;
+    }
+  }
+
+  .withPlaylist & {
+    &::after {
+      content: '';
+      bottom: 0;
+    }
+  }
 }
 
 .background {
-  @include grid-stack;
+  @include grid-stacked;
   position: relative;
   z-index: -1;
   overflow: hidden;
 
-  border-radius: 10px;
-
+  border-radius: $player-corner-radius;
   &::after {
+    $h: color.hue($background-tint-color);
+    $s: color.saturation($background-tint-color);
+    $l: color.lightness($background-tint-color);
     content: '';
     z-index: 1;
-    background-color: hsl(0 0% 0% / 0.5);
-    backdrop-filter: blur(30px);
+    background-color: hsl($h, $s, $l, $background-tint-alpha);
+    backdrop-filter: blur($background-blur);
   }
 
   .withCoverArt &,
@@ -78,10 +150,9 @@ $playlist-thumbnail-width: 40px;
     'PROG  PROG  PROG';
   align-content: stretch;
   gap: $player-gap;
-  padding: 20px;
+  padding: $player-padding;
 
-  color: #f5f5f5;
-  font-size: 3rem;
+  color: $player-text-color;
 
   .withCoverArt & {
     grid-template-areas:
@@ -93,7 +164,8 @@ $playlist-thumbnail-width: 40px;
 
 .thumbnail {
   grid-area: THUMB;
-  position: relative;
+
+  display: grid;
   width: var(--playerThumbnail-size);
   height: var(--playerThumbnail-size);
 }
@@ -102,24 +174,19 @@ $playlist-thumbnail-width: 40px;
   grid-area: TEXT;
 
   display: grid;
-  gap: $player-gap;
-
-  font-size: 1rem;
+  gap: $player-gap / 2;
 }
 
 .logo {
   display: none;
   grid-area: LOGO;
   align-self: start;
-
-  font-size: 1.5rem;
 }
 
 .logoPrx {
-  position: relative;
-  top: 0.1em;
   width: 80px;
-  vertical-align: baseline;
+  display: inline-block;
+  vertical-align: -webkit-baseline-middle;
 }
 
 .panel {
@@ -143,23 +210,6 @@ $playlist-thumbnail-width: 40px;
   }
 }
 
-.button {
-  width: 40px;
-  display: inline-block;
-  padding: 0;
-
-  line-height: 0;
-  color: hsla(0, 0%, 100%, 0.7);
-
-  &:hover {
-    color: hsla(0, 0%, 100%, 1);
-  }
-
-  &:focus {
-    background-color: hsla(0, 0%, 100%, 0.25);
-  }
-}
-
 .menu {
   display: none;
   grid-area: CTRLS;
@@ -173,10 +223,6 @@ $playlist-thumbnail-width: 40px;
 
 .menuToggle {
   grid-area: MTOG;
-
-  > svg {
-    width: 40px;
-  }
 }
 
 @media only screen and (min-width: 500px) {
@@ -194,6 +240,10 @@ $playlist-thumbnail-width: 40px;
         'PANEL PANEL PANEL'
         'PROG  PROG  PROG';
     }
+  }
+
+  .text {
+    gap: $player-gap;
   }
 
   .logo {
@@ -223,79 +273,82 @@ $playlist-thumbnail-width: 40px;
 // temporary code below: don't get attached
 
 .progressBar {
+  --track-size: var(--playerProgress-size);
+  --track-radius: calc(var(--track-size) / 2);
   grid-area: PROG;
 
-  display: grid;
-  align-content: center;
+  @include grid-stacked;
 
   &::before {
     content: '';
-    display: block;
+    grid-row: 1;
+    grid-column: 1;
     width: 100%;
-    height: 5px;
-    background-color: hsla(0, 0%, 100%, 0.7);
-    border-radius: 3px;
+    height: var(--track-size);
+    background-color: var(--playerProgress-track-color);
+    border-radius: var(--track-radius);
+  }
+
+  &::after {
+    content: '';
+    grid-row: 1;
+    grid-column: 1;
+    width: 42%;
+    height: var(--track-size);
+    background-color: var(--accent-color, var(--playerProgress-progress-color));
+    border-radius: var(--track-radius);
   }
 }
 
 .playlist {
   display: grid;
-  grid-gap: 5px;
   align-content: start;
 
   overflow: hidden;
   overflow-y: auto;
 
-  padding: 5px;
-
-  background-color: hsl(0, 0%, 30%);
+  background-color: var(--playlist-background-color);
 }
 
 .track {
   display: grid;
-  grid-template-columns: $playlist-thumbnail-width 1fr;
+  grid-template-columns: $playlist-thumbnail-size 1fr;
   grid-gap: 15px;
   align-items: center;
+
   padding: 10px 15px;
 
-  background-color: hsla(0, 0%, 100%, 0.1);
+  border-bottom-style: solid;
+  border-bottom-width: var(--playlist-divider-size);
+  border-bottom-color: var(--playlist-divider-color);
 
-  color: hsl(0, 0%, 80%);
+  color: var(--playlist-text-color);
   font-size: clamp(0.8rem, 5vw, 1.15rem);
   font-weight: bold;
 
-  > img {
-    border-radius: 25%;
-    border: 1px solid hsl(0, 0%, 100%);
-  }
-
   &.isCurrentTrack {
-    background-color: hsla(0, 0%, 100%, 0.3);
-    color: hsl(0, 0%, 100%);
+    background-color: var(--playlist-background-color--active);
+    color: var(--playlist-text-color--active);
+  }
+}
+
+.trackThumbnail {
+  @include grid-stacked(after);
+  overflow: hidden;
+
+  border-radius: var(--playlist-thumbnail-corner-radius);
+
+  &::after {
+    content: '';
+    z-index: 1;
+
+    box-shadow: inset 0 0 0 2px var(--divider-color);
+
+    border-radius: inherit;
   }
 }
 
 .trackTitle {
   justify-self: start;
   text-align: left;
-}
-
-.fakeContainer {
-  display: grid;
-  grid-template-columns: 200px;
-  align-content: space-between;
-
-  &.text {
-    background-color: aquamarine;
-    display: grid;
-    height: 100px;
-    width: 100px;
-  }
-
-  &.logo {
-    background-color: orange;
-    display: grid;
-    height: 390px;
-    width: 200px;
-  }
 }

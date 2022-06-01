@@ -1,0 +1,43 @@
+@import '@styles/colors';
+
+:export {
+  --iconButton-background-color--hover: #{$white-a-10};
+  --iconButton-outline-color--focus: #{$white-a-10};
+  --iconButton-outline-width--focus: 3px;
+  --iconButton-border-radius: 50%;
+  --iconButton-color: #{$white-a-50};
+  --iconButton-color--promote: #{$white-a-80};
+  --iconButton-color--hover: #{$white};
+  --iconButton-color--focus: #{$white};
+  --iconButton-size: 40px;
+}
+
+.iconButton {
+  width: var(--iconButton-size);
+  height: var(--iconButton-size);
+  display: grid;
+  overflow: hidden;
+
+  padding: 0;
+
+  border-radius: var(--iconButton-border-radius);
+
+  color: var(--iconButton-color);
+  line-height: 0;
+
+  > svg {
+    fill: currentColor;
+  }
+
+  &:hover {
+    background-color: var(--iconButton-background-color--hover);
+    color: var(--iconButton-color--hover);
+  }
+
+  &:focus {
+    outline-width: var(--iconButton-outline-width--focus);
+    outline-color: var(--iconButton-outline-color--focus);
+    outline-style: solid;
+    color: var(--iconButton-color--focus);
+  }
+}
