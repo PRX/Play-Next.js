@@ -158,7 +158,11 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.iconButton, styles.moreButton)}
                         onClick={handleMoreButtonClick}
                       >
-                        {!showMenu ? <MoreHorizIcon /> : <CloseIcon />}
+                        {!showMenu ? (
+                          <MoreHorizIcon aria-label="Show menu" />
+                        ) : (
+                          <CloseIcon aria-label="Close menu" />
+                        )}
                       </IconButton>
                     </div>
                   </div>

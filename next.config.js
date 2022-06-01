@@ -11,6 +11,10 @@ const nextConfig = {
   images: {
     domains: ['f.prxu.org']
   },
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en'
+  },
   experimental: {
     images: {
       layoutRaw: true

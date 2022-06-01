@@ -7,7 +7,6 @@ import { IEmbedState } from '@interfaces/states/embed';
 import { EmbedActionTypes as ActionTypes, EmbedAction } from './Embed.actions';
 
 export const embedInitialState: IEmbedState = {
-  currentTrack: null,
   shareShown: false,
   followShown: false,
   supportShown: false
@@ -17,15 +16,9 @@ export const embedStateReducer = (
   state: IEmbedState,
   action: EmbedAction
 ): IEmbedState => {
-  const { tracks, shareShown, followShown, supportShown } = state;
+  const { shareShown, followShown, supportShown } = state;
 
   switch (action.type) {
-    case ActionTypes.EMBED_CURRENT_TRACK_UPDATE:
-      return { ...state, currentTrack: action.payload };
-
-    case ActionTypes.EMBED_APPEND_TRACKS:
-      return { ...state, tracks: [...(tracks || []), ...action.payload] };
-
     case ActionTypes.EMBED_SHOW_SHARE_DIALOG:
       return { ...state, shareShown: true };
 
