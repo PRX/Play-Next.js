@@ -22,16 +22,6 @@ $background-tint-color: hsl(0 0% 0%);
 $background-tint-alpha: 0.5;
 $background-blur: 30px;
 
-// TODO: Move to Playlist module.
-$playlist-text-color: $white-a-60;
-$playlist-text-color--active: $white;
-$playlist-background-color: $grey-100;
-$playlist-background-color--active: $primary-900;
-$playlist-thumbnail-size: 40px;
-$playlist-thumbnail-corner-radius: 10px;
-$playlist-divider-color: $grey-600;
-$playlist-divider-size: 1px;
-
 :export {
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
@@ -42,16 +32,6 @@ $playlist-divider-size: 1px;
   // TODO: Move to background module.
   --background-tint-alpha: #{$background-tint-alpha};
   --background-blur: #{$background-blur};
-
-  // TODO: Move to Playlist module.
-  --playlist-text-color: #{$playlist-text-color};
-  --playlist-text-color--active: #{$playlist-text-color--active};
-  --playlist-background-color: #{$playlist-background-color};
-  --playlist-background-color--active: #{$playlist-background-color--active};
-  --playlist-thumbnail-size: #{$playlist-thumbnail-size};
-  --playlist-thumbnail-corner-radius: #{$player-corner-radius};
-  --playlist-divider-color: #{$playlist-divider-color};
-  --playlist-divider-size: #{$playlist-divider-size};
 }
 
 .container {

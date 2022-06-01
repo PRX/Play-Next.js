@@ -52,8 +52,6 @@ const Player: React.FC<IPlayerProps> = ({
   const { url } = currentTrack;
   // variable for the current timestamp to scrub position?
 
-  console.log('Player::render', audioElm);
-
   const handlePlay = useCallback(() => {
     dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
   }, []);

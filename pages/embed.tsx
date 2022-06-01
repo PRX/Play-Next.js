@@ -19,7 +19,6 @@ import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import ThemeVars from '@components/ThemeVars';
-import Playlist from '@components/Player/Playlist/Playlist';
 
 // Define dynamic component imports.
 const IconButton = dynamic(() => import('@components/IconButton'));
@@ -32,6 +31,11 @@ const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 const PlayerThumbnail = dynamic(
   () => import('@components/Player/PlayerThumbnail')
 );
+const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
+const PreviousButton = dynamic(
+  () => import('@components/Player/PreviousButton')
+);
+const NextButton = dynamic(() => import('@components/Player/NextButton'));
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -116,7 +120,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
                   <div className={styles.panel}>
                     <div className={clsx(styles.controls, menuShownClass)}>
-                      {/* TODO: Move play button into a PlayerControls component. */}
+                      {showPlaylist && (
+                        <PreviousButton
+                          className={clsx(styles.button, styles.previousButton)}
+                          disabled={currentTrackIndex === 1}
+                        />
+                      )}
 
                       <ReplayButton
                         className={clsx(styles.button, styles.replayButton)}
@@ -129,6 +138,13 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                       <ForwardButton
                         className={clsx(styles.button, styles.replayButton)}
                       />
+
+                      {showPlaylist && (
+                        <NextButton
+                          className={clsx(styles.button, styles.nextButton)}
+                          disabled={currentTrackIndex === playlist.length - 1}
+                        />
+                      )}
                     </div>
 
                     <div className={clsx(styles.menu, menuShownClass)}>
@@ -142,7 +158,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.iconButton, styles.moreButton)}
                         onClick={handleMoreButtonClick}
                       >
-                        {showMenu ? <CloseIcon /> : <MoreHorizIcon />}
+                        {!showMenu ? <MoreHorizIcon /> : <CloseIcon />}
                       </IconButton>
                     </div>
                   </div>
