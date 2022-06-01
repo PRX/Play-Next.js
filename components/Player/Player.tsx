@@ -40,9 +40,10 @@ const Player: React.FC<IPlayerProps> = ({
     }),
     [state, imageUrl, audioElm]
   );
-  const { playing, currentTrackIndex } = state;
+  const { playing, currentTrackIndex, currentTime } = state;
   const currentTrack = tracks[currentTrackIndex];
   const { url } = currentTrack;
+  // variable for the current timestamp to scrub position?
 
   useEffect(() => {
     setAudioElm(new Audio(url));
@@ -64,6 +65,12 @@ const Player: React.FC<IPlayerProps> = ({
       audioElm?.play();
     }
   }, [audioElm, playing]);
+
+  useEffect(() => {
+    if (audioElm) {
+      audioElm.currentTime = currentTime;
+    }
+  }, [audioElm, currentTime]);
 
   useEffect(
     () => () => {

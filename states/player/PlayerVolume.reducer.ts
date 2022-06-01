@@ -6,7 +6,7 @@
 import { IPlayerVolumeState } from '@interfaces/states/player';
 import {
   PlayerActionTypes as ActionTypes,
-  PlayerAction
+  IPlayerAction
 } from './Player.actions';
 
 export const playerVolumeInitialState: IPlayerVolumeState = {
@@ -16,7 +16,7 @@ export const playerVolumeInitialState: IPlayerVolumeState = {
 
 export const playerVolumeStateReducer = (
   state: IPlayerVolumeState,
-  action: PlayerAction
+  action: IPlayerAction
 ): IPlayerVolumeState => {
   const { muted } = state;
 

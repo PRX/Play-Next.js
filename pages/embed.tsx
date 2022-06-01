@@ -22,6 +22,8 @@ import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizontalIcon from '@svg/icons/MoreHorizontal.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import PlayerText from '@components/PlayerText';
+import ReplayButton from '@components/Player/ReplayButton';
+import ForwardButton from '@components/Player/ForwardButton';
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -97,8 +99,17 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   <div className={styles.panel}>
                     <div className={clsx(styles.controls, menuShownClass)}>
                       {/* TODO: Move play button into a PlayerControls component. */}
+
+                      <ReplayButton
+                        className={clsx(styles.button, styles.replayButton)}
+                      />
+
                       <PlayButton
                         className={clsx(styles.button, styles.playButton)}
+                      />
+
+                      <ForwardButton
+                        className={clsx(styles.button, styles.replayButton)}
                       />
                     </div>
 
