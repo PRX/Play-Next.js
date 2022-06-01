@@ -37,12 +37,39 @@ $playlist-divider-size: 1px;
   grid-template-columns: var(--playlist-thumbnail-size) 1fr min-content;
   grid-gap: 15px;
   align-items: center;
+
   padding: $padding-v $padding-h;
+
   border-bottom-style: solid;
   border-bottom-width: var(--playlist-divider-size);
   border-bottom-color: var(--playlist-divider-color);
+
   color: var(--playlist-text-color);
   font-size: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    inset: ($padding-v * -1) ($padding-h * -1);
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    &::before {
+      opacity: 0.15;
+
+      background-color: var(
+        --accent-color,
+        var(--playlist-background-color--active)
+      );
+    }
+  }
 
   &.isCurrentTrack {
     color: var(--playlist-text-color--active);
@@ -52,12 +79,6 @@ $playlist-divider-size: 1px;
     }
 
     &::before {
-      content: '';
-      position: absolute;
-      display: block;
-      inset: ($padding-v * -1) ($padding-h * -1);
-      grid-column: 1 / -1;
-      grid-row: 1 / -1;
       opacity: 0.35;
 
       background-color: var(
