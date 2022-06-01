@@ -62,7 +62,7 @@ $playlist-divider-size: 1px;
 
       background-color: var(
         --accent-color,
-        --playlist-background-color--active
+        var(--playlist-background-color--active)
       );
     }
   }
