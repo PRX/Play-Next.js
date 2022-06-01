@@ -19,6 +19,7 @@ import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import ThemeVars from '@components/ThemeVars';
+import Playlist from '@components/Player/Playlist/Playlist';
 
 // Define dynamic component imports.
 const IconButton = dynamic(() => import('@components/IconButton'));
@@ -40,7 +41,7 @@ export interface IEmbedPageProps {
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
   const { audio, playlist, bgImageUrl } = data;
-  const { guid, imageUrl } = audio || {};
+  const { imageUrl } = audio || {};
   const [showMenu, setShowMenu] = useState(false);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
@@ -71,7 +72,6 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
           }
         `}</style>
       </Head>
-
       <div className={styles.container}>
         <div className={mainClasses}>
           {audio && (
@@ -151,42 +151,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
               </div>
 
-              {canShowPlaylist && (
-                <div className={styles.playlist}>
-                  {/* TODO: Replace with Playlist component. */}
-                  {playlist.map((track) => {
-                    const {
-                      title: trackTitle,
-                      guid: trackGuid,
-                      imageUrl: trackThumbUrl
-                    } = track;
-                    return (
-                      <button
-                        type="button"
-                        className={clsx(styles.track, {
-                          [styles.isCurrentTrack]: trackGuid === guid
-                        })}
-                        key={trackGuid}
-                      >
-                        {trackThumbUrl || imageUrl ? (
-                          <div className={styles.trackThumbnail}>
-                            <PrxImage
-                              src={trackThumbUrl || imageUrl}
-                              alt={`Thumbnail for "${trackTitle}".`}
-                              layout="intrinsic"
-                              width={styles['--playlist-thumbnail-size']}
-                              height={styles['--playlist-thumbnail-size']}
-                            />
-                          </div>
-                        ) : (
-                          <span />
-                        )}
-                        <span className={styles.trackTitle}>{trackTitle}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              {showPlaylist && <Playlist />}
             </Player>
           )}
         </div>

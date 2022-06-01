@@ -55,13 +55,10 @@ $playlist-divider-size: 1px;
 }
 
 .container {
-  display: grid;
-  place-content: center;
   width: 100vw;
   height: 100vh;
 
   touch-action: manpulation;
-  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
 }
 
 .main {
@@ -305,57 +302,4 @@ $playlist-divider-size: 1px;
     background-color: var(--accent-color, var(--playerProgress-progress-color));
     border-radius: var(--track-radius);
   }
-}
-
-.playlist {
-  display: grid;
-  align-content: start;
-
-  overflow: hidden;
-  overflow-y: auto;
-
-  background-color: var(--playlist-background-color);
-}
-
-.track {
-  display: grid;
-  grid-template-columns: $playlist-thumbnail-size 1fr;
-  grid-gap: 15px;
-  align-items: center;
-
-  padding: 10px 15px;
-
-  border-bottom-style: solid;
-  border-bottom-width: var(--playlist-divider-size);
-  border-bottom-color: var(--playlist-divider-color);
-
-  color: var(--playlist-text-color);
-  font-size: clamp(0.8rem, 5vw, 1.15rem);
-  font-weight: bold;
-
-  &.isCurrentTrack {
-    background-color: var(--playlist-background-color--active);
-    color: var(--playlist-text-color--active);
-  }
-}
-
-.trackThumbnail {
-  @include grid-stacked(after);
-  overflow: hidden;
-
-  border-radius: var(--playlist-thumbnail-corner-radius);
-
-  &::after {
-    content: '';
-    z-index: 1;
-
-    box-shadow: inset 0 0 0 2px var(--divider-color);
-
-    border-radius: inherit;
-  }
-}
-
-.trackTitle {
-  justify-self: start;
-  text-align: left;
 }

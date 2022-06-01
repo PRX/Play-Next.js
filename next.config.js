@@ -11,6 +11,11 @@ const nextConfig = {
   images: {
     domains: ['f.prxu.org']
   },
+  experimental: {
+    images: {
+      layoutRaw: true
+    }
+  },
   async rewrites() {
     return [
       {
