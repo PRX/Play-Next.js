@@ -17,7 +17,7 @@ import PlayButton from '@components/Player/PlayButton';
 import styles from '@styles/Embed.module.scss';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
-import PlayerText from '@components/PlayerText';
+import PlayerText from '@components/Player/PlayerText';
 import IconButton from '@components/IconButton';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
