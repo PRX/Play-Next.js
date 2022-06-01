@@ -82,6 +82,11 @@ export interface IEmbedParams {
   ca?: string;
 
   /**
+   * Provide a custom accent color.
+   */
+  ac?: string;
+
+  /**
    * DEPRECATED
    * Use to set call to action text.
    */
@@ -127,6 +132,7 @@ export interface IEmbedConfig {
   playlistSeason?: number;
   playlistCategory?: string;
   showCoverArt?: boolean;
+  accentColor?: string;
 }
 
 /**
@@ -151,3 +157,4 @@ EmbedParamKeysMap.set('sp', 'showPlaylist');
 EmbedParamKeysMap.set('se', 'playlistSeason');
 EmbedParamKeysMap.set('ct', 'playlistCategory');
 EmbedParamKeysMap.set('ca', 'showCoverArt');
+EmbedParamKeysMap.set('ac', 'accentColor');

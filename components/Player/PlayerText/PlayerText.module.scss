@@ -5,14 +5,23 @@
 
   > * {
     display: inline-block;
-    white-space: break-spaces;
+    white-space: pre;
   }
+}
+
+:export {
+  --playerText-title-size--min: 1.125rem;
+  --playerText-title-size--max: 1.5rem;
 }
 
 .title {
   @include wordBreak;
 
-  font-size: clamp(1.125rem, 20vw, 1.5rem);
+  font-size: clamp(
+    var(--playerText-title-size--min),
+    5vw,
+    var(--playerText-title-size--max)
+  );
   margin: 0;
 }
 

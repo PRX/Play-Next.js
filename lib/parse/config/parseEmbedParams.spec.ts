@@ -18,7 +18,9 @@ describe('lib/parse/config', () => {
       gc: 'GC',
       sp: '42',
       se: '2',
-      ct: 'CT'
+      ct: 'CT',
+      ca: '1',
+      ac: 'ff0000'
     };
 
     test('should handle expected parameters', () => {
@@ -40,6 +42,8 @@ describe('lib/parse/config', () => {
       expect(result.showPlaylist).toBe(42);
       expect(result.playlistSeason).toBe(2);
       expect(result.playlistCategory).toBe('CT');
+      expect(result.showCoverArt).toBe(true);
+      expect(result.accentColor).toBe('ff0000');
     });
 
     test('should process `showPlaylist` into integer', () => {
