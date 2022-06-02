@@ -1,29 +1,19 @@
 @import './colors';
+@import './fonts';
 
 :root {
   // Button
   // TODO: Move to button component.
   --button-bg-color: #{$primary-500};
   --button-bg-color--hover: hsl(198 100% 32%);
-
-  // Progress
-  // TODO: Move to PlayerProgress component.
-  --playerProgress-progress-color: #{$secondary-500};
-  --playerProgress-track-color: #{$white-a-50};
-  --playerProgress-size: 10px;
-
-  // Text
-  // TODO: Move to PlayerText component.
-  --track-title-min-size: 1.125rem;
-  --track-title-max-size: 1.5rem;
 }
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Open Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
