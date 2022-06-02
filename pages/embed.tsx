@@ -171,7 +171,11 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
               </div>
 
-              {canShowPlaylist && <Playlist />}
+              {canShowPlaylist && (
+                <div className={styles.playlist}>
+                  <Playlist style={{ height: '100%' }} />
+                </div>
+              )}
             </Player>
           )}
         </div>

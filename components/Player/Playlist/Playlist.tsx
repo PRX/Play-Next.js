@@ -4,7 +4,7 @@
  * playing track.
  */
 
-import { useContext, useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
@@ -12,7 +12,13 @@ import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import styles from './Playlist.module.scss';
 
-const Playlist = () => {
+export interface IPlaylistProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
+
+const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   const {
     imageUrl: defaultThumbUrl,
     state,
@@ -76,7 +82,7 @@ const Playlist = () => {
 
   return (
     tracks && (
-      <div className={styles.root}>
+      <div {...props} className={clsx(styles.root, className)}>
         <ThemeVars theme="Playlist" cssProps={styles} />
         <header className={styles.header}>
           <span>

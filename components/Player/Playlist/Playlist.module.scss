@@ -50,7 +50,6 @@ $playlist-header-text-color: $white;
 }
 
 .playlist {
-  position: relative;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -58,9 +57,6 @@ $playlist-header-text-color: $white;
 .tracks {
   display: grid;
   align-content: start;
-  position: absolute;
-  inset: 0;
-  width: 100vw;
 }
 
 .track {

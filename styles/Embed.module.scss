@@ -209,6 +209,10 @@ $background-blur: 30px;
   grid-area: MTOG;
 }
 
+.playlist {
+  overflow: hidden;
+}
+
 @media only screen and (min-width: 500px) {
   .playerMain {
     --playerThumbnail-size: #{$playerThumbnail-size};
