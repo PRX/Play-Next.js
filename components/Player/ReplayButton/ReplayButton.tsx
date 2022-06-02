@@ -18,11 +18,10 @@ const ReplayButton: React.FC<IReplayButtonProps> = ({ ...props }) => {
   const handleClick = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: audioElm.currentTime - 5
+      payload: Math.max(audioElm.currentTime - 5, 0)
     });
   };
 
-  // have to think about what to do here
   return (
     <IconButton {...props} type="button" onClick={handleClick}>
       <ReplayIcon aria-label="Replay last 5 seconds" />

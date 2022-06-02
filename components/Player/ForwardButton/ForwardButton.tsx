@@ -16,15 +16,13 @@ export interface IForwardButtonProps
 const ForwardButton: React.FC<IForwardButtonProps> = ({ ...props }) => {
   const { audioElm, dispatch } = useContext(PlayerContext);
 
-  // it seems like there's no replay action type; using as placeholder. Unless I'm blind and missed it. -AM
   const handleClick = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: audioElm.currentTime + 30
+      payload: Math.min(audioElm.currentTime + 30, audioElm.duration)
     });
   };
 
-  // have to think about what to do here
   return (
     <IconButton {...props} type="button" onClick={handleClick}>
       <ForwardIcon aria-label="Skip ahead 30 seconds" />
