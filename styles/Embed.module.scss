@@ -38,7 +38,7 @@ $background-blur: 30px;
   width: 100vw;
   height: 100vh;
 
-  touch-action: manpulation;
+  touch-action: manipulation;
 }
 
 .main {
@@ -46,6 +46,8 @@ $background-blur: 30px;
   grid-template-rows: $player-height;
   grid-auto-rows: 1fr;
   width: 100vw;
+
+  margin-inline: auto;
 
   &.withCoverArt {
     $cover-size: min(100vh - $player-height, 100vw);
@@ -68,6 +70,7 @@ $background-blur: 30px;
   .withCoverArt &,
   .withPlaylist & {
     position: relative;
+    overflow: hidden;
 
     &::before,
     &::after {
