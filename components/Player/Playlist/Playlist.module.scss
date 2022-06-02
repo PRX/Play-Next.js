@@ -1,6 +1,9 @@
 @import '@styles/colors';
 @import '@styles/grid';
 
+$padding-v: 10px;
+$padding-h: 20px;
+
 $playlist-text-color: $white-a-80;
 $playlist-text-color--active: $white;
 $playlist-background-color: $grey-100;
@@ -9,6 +12,7 @@ $playlist-thumbnail-size: 40px;
 $playlist-thumbnail-corner-radius: 10px;
 $playlist-divider-color: $grey-600;
 $playlist-divider-size: 1px;
+$playlist-header-text-color: $white;
 
 :export {
   --playlist-text-color: #{$playlist-text-color};
@@ -19,23 +23,51 @@ $playlist-divider-size: 1px;
   --playlist-thumbnail-corner-radius: #{$playlist-thumbnail-corner-radius};
   --playlist-divider-color: #{$playlist-divider-color};
   --playlist-divider-size: #{$playlist-divider-size};
+  --playlist-header-text-color: #{$playlist-header-text-color};
+}
+
+.root {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+
+  background-color: var(--playlist-background-color);
+
+  color: var(--playlist-header-text-color);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: $padding-h;
+
+  border-bottom-style: solid;
+  border-bottom-width: var(--playlist-divider-size);
+  border-bottom-color: var(--playlist-divider-color);
+
+  font-weight: 700;
 }
 
 .playlist {
-  display: grid;
-  align-content: start;
+  position: relative;
   overflow: hidden;
   overflow-y: auto;
-  background-color: var(--playlist-background-color);
+}
+
+.tracks {
+  display: grid;
+  align-content: start;
+  position: absolute;
+  inset: 0;
+  width: 100vw;
 }
 
 .track {
-  $padding-v: 10px;
-  $padding-h: 15px;
   position: relative;
   display: grid;
   grid-template-columns: var(--playlist-thumbnail-size) 1fr min-content;
-  grid-gap: 15px;
+  grid-gap: $padding-h;
   align-items: center;
 
   padding: $padding-v $padding-h;

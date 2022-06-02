@@ -84,7 +84,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               startIndex={currentTrackIndex}
               imageUrl={bgImageUrl}
             >
-              {showCoverArt && (
+              {canShowCoverArt && (
                 <div className={styles.coverArt}>
                   <CoverArt />
                 </div>
@@ -101,7 +101,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
 
                 <div className={styles.playerMain}>
-                  {!showCoverArt && (
+                  {!canShowCoverArt && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
                         sizes={`(min-width: 500px) ${styles['--playerThumbnail-size']}, ${styles['--playerThumbnail-size--mobile']}`}
@@ -120,7 +120,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
                   <div className={styles.panel}>
                     <div className={clsx(styles.controls, menuShownClass)}>
-                      {showPlaylist && (
+                      {canShowPlaylist && (
                         <PreviousButton
                           className={clsx(styles.button, styles.previousButton)}
                           disabled={currentTrackIndex === 1}
@@ -139,7 +139,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.button, styles.replayButton)}
                       />
 
-                      {showPlaylist && (
+                      {canShowPlaylist && (
                         <NextButton
                           className={clsx(styles.button, styles.nextButton)}
                           disabled={currentTrackIndex === playlist.length - 1}
@@ -171,7 +171,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
               </div>
 
-              {showPlaylist && <Playlist />}
+              {canShowPlaylist && <Playlist />}
             </Player>
           )}
         </div>
