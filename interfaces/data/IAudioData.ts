@@ -50,6 +50,11 @@ export interface IAudioData {
   season?: number;
 
   /**
+   * Duration of audio track formatted as '[HH:]MM:SS'.
+   */
+  duration?: string;
+
+  /**
    * Categories that apply to audio. Used to filter playlists.
    */
   categories?: string[];

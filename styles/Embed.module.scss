@@ -22,16 +22,6 @@ $background-tint-color: hsl(0 0% 0%);
 $background-tint-alpha: 0.5;
 $background-blur: 30px;
 
-// TODO: Move to Playlist module.
-$playlist-text-color: $white-a-60;
-$playlist-text-color--active: $white;
-$playlist-background-color: $grey-100;
-$playlist-background-color--active: $primary-900;
-$playlist-thumbnail-size: 40px;
-$playlist-thumbnail-corner-radius: 10px;
-$playlist-divider-color: $grey-600;
-$playlist-divider-size: 1px;
-
 :export {
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
@@ -42,26 +32,13 @@ $playlist-divider-size: 1px;
   // TODO: Move to background module.
   --background-tint-alpha: #{$background-tint-alpha};
   --background-blur: #{$background-blur};
-
-  // TODO: Move to Playlist module.
-  --playlist-text-color: #{$playlist-text-color};
-  --playlist-text-color--active: #{$playlist-text-color--active};
-  --playlist-background-color: #{$playlist-background-color};
-  --playlist-background-color--active: #{$playlist-background-color--active};
-  --playlist-thumbnail-size: #{$playlist-thumbnail-size};
-  --playlist-thumbnail-corner-radius: #{$player-corner-radius};
-  --playlist-divider-color: #{$playlist-divider-color};
-  --playlist-divider-size: #{$playlist-divider-size};
 }
 
 .container {
-  display: grid;
-  place-content: center;
   width: 100vw;
   height: 100vh;
 
-  touch-action: manpulation;
-  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
+  touch-action: manipulation;
 }
 
 .main {
@@ -69,6 +46,8 @@ $playlist-divider-size: 1px;
   grid-template-rows: $player-height;
   grid-auto-rows: 1fr;
   width: 100vw;
+
+  margin-inline: auto;
 
   &.withCoverArt {
     $cover-size: min(100vh - $player-height, 100vw);
@@ -91,6 +70,7 @@ $playlist-divider-size: 1px;
   .withCoverArt &,
   .withPlaylist & {
     position: relative;
+    overflow: hidden;
 
     &::before,
     &::after {
@@ -235,6 +215,10 @@ $playlist-divider-size: 1px;
   grid-area: MTOG;
 }
 
+.playlist {
+  overflow: hidden;
+}
+
 @media only screen and (min-width: 500px) {
   .playerMain {
     --playerThumbnail-size: #{$playerThumbnail-size};
@@ -308,57 +292,4 @@ $playlist-divider-size: 1px;
     background-color: var(--accent-color, var(--playerProgress-progress-color));
     border-radius: var(--track-radius);
   }
-}
-
-.playlist {
-  display: grid;
-  align-content: start;
-
-  overflow: hidden;
-  overflow-y: auto;
-
-  background-color: var(--playlist-background-color);
-}
-
-.track {
-  display: grid;
-  grid-template-columns: $playlist-thumbnail-size 1fr;
-  grid-gap: 15px;
-  align-items: center;
-
-  padding: 10px 15px;
-
-  border-bottom-style: solid;
-  border-bottom-width: var(--playlist-divider-size);
-  border-bottom-color: var(--playlist-divider-color);
-
-  color: var(--playlist-text-color);
-  font-size: clamp(0.8rem, 5vw, 1.15rem);
-  font-weight: bold;
-
-  &.isCurrentTrack {
-    background-color: var(--playlist-background-color--active);
-    color: var(--playlist-text-color--active);
-  }
-}
-
-.trackThumbnail {
-  @include grid-stacked(after);
-  overflow: hidden;
-
-  border-radius: var(--playlist-thumbnail-corner-radius);
-
-  &::after {
-    content: '';
-    z-index: 1;
-
-    box-shadow: inset 0 0 0 2px var(--divider-color);
-
-    border-radius: inherit;
-  }
-}
-
-.trackTitle {
-  justify-self: start;
-  text-align: left;
 }

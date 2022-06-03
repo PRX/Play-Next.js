@@ -13,14 +13,12 @@ export interface INextButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const NextButton: React.FC<INextButtonProps> = ({ ...props }) => {
-  const { state, dispatch } = useContext(PlayerContext);
-  const { currentTrackIndex } = state;
+  const { dispatch } = useContext(PlayerContext);
 
   //  Change to correct player action
   const handleClick = () => {
     dispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
-      payload: currentTrackIndex + 1
+      type: PlayerActionTypes.PLAYER_NEXT_TRACK
     });
   };
   // add conditional to only show next and previous track buttons when a playlist is present

@@ -40,6 +40,11 @@ const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 const PlayerThumbnail = dynamic(
   () => import('@components/Player/PlayerThumbnail')
 );
+const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
+const PreviousButton = dynamic(
+  () => import('@components/Player/PreviousButton')
+);
+const NextButton = dynamic(() => import('@components/Player/NextButton'));
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -49,7 +54,7 @@ export interface IEmbedPageProps {
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
   const { audio, playlist, bgImageUrl } = data;
-  const { guid, imageUrl } = audio || {};
+  const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
   const [showMenu, setShowMenu] = useState(false);
@@ -106,7 +111,6 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
           }
         `}</style>
       </Head>
-
       <div className={styles.container}>
         <div className={mainClasses}>
           {audio && (
@@ -115,7 +119,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               startIndex={currentTrackIndex}
               imageUrl={bgImageUrl}
             >
-              {showCoverArt && (
+              {canShowCoverArt && (
                 <div className={styles.coverArt}>
                   <CoverArt />
                 </div>
@@ -132,7 +136,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
 
                 <div className={styles.playerMain}>
-                  {!showCoverArt && (
+                  {!canShowCoverArt && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
                         sizes={`(min-width: 500px) ${styles['--playerThumbnail-size']}, ${styles['--playerThumbnail-size--mobile']}`}
@@ -151,7 +155,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
                   <div className={styles.panel}>
                     <div className={clsx(styles.controls, menuShownClass)}>
-                      {/* TODO: Move play button into a PlayerControls component. */}
+                      {canShowPlaylist && (
+                        <PreviousButton
+                          className={clsx(styles.button, styles.previousButton)}
+                          disabled={currentTrackIndex === 1}
+                        />
+                      )}
 
                       <ReplayButton
                         className={clsx(styles.button, styles.replayButton)}
@@ -164,6 +173,13 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                       <ForwardButton
                         className={clsx(styles.button, styles.replayButton)}
                       />
+
+                      {canShowPlaylist && (
+                        <NextButton
+                          className={clsx(styles.button, styles.nextButton)}
+                          disabled={currentTrackIndex === playlist.length - 1}
+                        />
+                      )}
                     </div>
 
                     <div className={clsx(styles.menu, menuShownClass)}>
@@ -202,7 +218,11 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.iconButton, styles.moreButton)}
                         onClick={handleMoreButtonClick}
                       >
-                        {showMenu ? <CloseIcon /> : <MoreHorizIcon />}
+                        {!showMenu ? (
+                          <MoreHorizIcon aria-label="Show menu" />
+                        ) : (
+                          <CloseIcon aria-label="Close menu" />
+                        )}
                       </IconButton>
                     </div>
                   </div>
@@ -213,38 +233,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
               {canShowPlaylist && (
                 <div className={styles.playlist}>
-                  {/* TODO: Replace with Playlist component. */}
-                  {playlist.map((track) => {
-                    const {
-                      title: trackTitle,
-                      guid: trackGuid,
-                      imageUrl: trackThumbUrl
-                    } = track;
-                    return (
-                      <button
-                        type="button"
-                        className={clsx(styles.track, {
-                          [styles.isCurrentTrack]: trackGuid === guid
-                        })}
-                        key={trackGuid}
-                      >
-                        {trackThumbUrl || imageUrl ? (
-                          <div className={styles.trackThumbnail}>
-                            <PrxImage
-                              src={trackThumbUrl || imageUrl}
-                              alt={`Thumbnail for "${trackTitle}".`}
-                              layout="intrinsic"
-                              width={styles['--playlist-thumbnail-size']}
-                              height={styles['--playlist-thumbnail-size']}
-                            />
-                          </div>
-                        ) : (
-                          <span />
-                        )}
-                        <span className={styles.trackTitle}>{trackTitle}</span>
-                      </button>
-                    );
-                  })}
+                  <Playlist style={{ height: '100%' }} />
                 </div>
               )}
             </Player>

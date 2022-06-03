@@ -1,0 +1,137 @@
+@import '@styles/colors';
+@import '@styles/grid';
+
+$padding-v: 10px;
+$padding-h: 20px;
+
+$playlist-text-color: $white-a-80;
+$playlist-text-color--active: $white;
+$playlist-background-color: $grey-100;
+$playlist-background-color--active: $primary-500;
+$playlist-thumbnail-size: 40px;
+$playlist-thumbnail-corner-radius: 10px;
+$playlist-divider-color: $grey-600;
+$playlist-divider-size: 1px;
+$playlist-header-text-color: $white;
+
+:export {
+  --playlist-text-color: #{$playlist-text-color};
+  --playlist-text-color--active: #{$playlist-text-color--active};
+  --playlist-background-color: #{$playlist-background-color};
+  --playlist-background-color--active: #{$playlist-background-color--active};
+  --playlist-thumbnail-size: #{$playlist-thumbnail-size};
+  --playlist-thumbnail-corner-radius: #{$playlist-thumbnail-corner-radius};
+  --playlist-divider-color: #{$playlist-divider-color};
+  --playlist-divider-size: #{$playlist-divider-size};
+  --playlist-header-text-color: #{$playlist-header-text-color};
+}
+
+.root {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+
+  background-color: var(--playlist-background-color);
+
+  color: var(--playlist-header-text-color);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: $padding-h;
+
+  border-bottom-style: solid;
+  border-bottom-width: var(--playlist-divider-size);
+  border-bottom-color: var(--playlist-divider-color);
+
+  font-weight: 700;
+}
+
+.playlist {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.tracks {
+  display: grid;
+  align-content: start;
+}
+
+.track {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--playlist-thumbnail-size) 1fr min-content;
+  grid-gap: $padding-h;
+  align-items: center;
+
+  padding: $padding-v $padding-h;
+
+  border-bottom-style: solid;
+  border-bottom-width: var(--playlist-divider-size);
+  border-bottom-color: var(--playlist-divider-color);
+
+  color: var(--playlist-text-color);
+  font-size: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    inset: ($padding-v * -1) ($padding-h * -1);
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    &::before {
+      opacity: 0.15;
+
+      background-color: var(
+        --accent-color,
+        var(--playlist-background-color--active)
+      );
+    }
+  }
+
+  &.isCurrentTrack {
+    color: var(--playlist-text-color--active);
+
+    & > * {
+      position: relative;
+    }
+
+    &::before {
+      opacity: 0.35;
+
+      background-color: var(
+        --accent-color,
+        var(--playlist-background-color--active)
+      );
+    }
+  }
+}
+
+.trackThumbnail {
+  @include grid-stacked(after);
+  overflow: hidden;
+  border-radius: var(--playlist-thumbnail-corner-radius);
+  &::after {
+    content: '';
+    z-index: 1;
+    box-shadow: inset 0 0 0 2px var(--divider-color);
+    border-radius: inherit;
+  }
+}
+
+.trackTitle {
+  justify-self: start;
+
+  font-weight: bold;
+  text-align: left;
+}
