@@ -1,0 +1,25 @@
+@import '@styles/colors';
+
+$modal-background-color: $grey-200;
+$modal-text-color: $white;
+
+:export {
+  --modal-background-color: #{$modal-background-color};
+  --modal-text-color: #{$modal-text-color};
+}
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: var(--modal-background-color);
+  display: grid;
+  place-content: center;
+  color: var(--modal-text-color);
+}
+
+.closeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
