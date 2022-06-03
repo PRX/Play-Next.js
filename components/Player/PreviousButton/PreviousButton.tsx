@@ -15,13 +15,12 @@ export interface INextButtonProps
 const PreviousButton: React.FC<INextButtonProps> = ({ ...props }) => {
   const { dispatch } = useContext(PlayerContext);
 
-  //  Change to correct player action
   const handleClick = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
     });
   };
-  // add conditional to only show next and previous track buttons when a playlist is present
+
   return (
     <IconButton {...props} type="button" onClick={handleClick}>
       <PreviousIcon aria-label="Previous Track" />

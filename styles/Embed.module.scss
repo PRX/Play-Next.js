@@ -35,10 +35,14 @@ $background-blur: 30px;
 }
 
 .container {
+  display: grid;
+  align-content: center;
   width: 100vw;
   height: 100vh;
 
   touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
 }
 
 .main {
@@ -215,6 +219,10 @@ $background-blur: 30px;
   grid-area: MTOG;
 }
 
+.progress {
+  grid-area: PROG;
+}
+
 .playlist {
   overflow: hidden;
 }
@@ -261,35 +269,5 @@ $background-blur: 30px;
 
   .menuToggle {
     display: none;
-  }
-}
-
-// temporary code below: don't get attached
-
-.progressBar {
-  --track-size: var(--playerProgress-size);
-  --track-radius: calc(var(--track-size) / 2);
-  grid-area: PROG;
-
-  @include grid-stacked;
-
-  &::before {
-    content: '';
-    grid-row: 1;
-    grid-column: 1;
-    width: 100%;
-    height: var(--track-size);
-    background-color: var(--playerProgress-track-color);
-    border-radius: var(--track-radius);
-  }
-
-  &::after {
-    content: '';
-    grid-row: 1;
-    grid-column: 1;
-    width: 42%;
-    height: var(--track-size);
-    background-color: var(--accent-color, var(--playerProgress-progress-color));
-    border-radius: var(--track-radius);
   }
 }

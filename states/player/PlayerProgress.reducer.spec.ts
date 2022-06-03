@@ -16,10 +16,11 @@ describe('states/player', () => {
     });
 
     describe('`progress` actions', () => {
-      test('should set `played`, `playedSeconds`, `loaded`, and `loadedSeconds', () => {
+      test('should set `played`, `playedSeconds`, `loaded`, and `loadedSeconds`', () => {
         const result = playerProgressStateReducer(
           {
-            ...playerProgressInitialState
+            ...playerProgressInitialState,
+            duration: 200
           },
           {
             type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
@@ -36,6 +37,24 @@ describe('states/player', () => {
         expect(result.playedSeconds).toBe(84);
         expect(result.loaded).toBe(1);
         expect(result.loadedSeconds).toBe(200);
+      });
+
+      test('should set `played`', () => {
+        const result = playerProgressStateReducer(
+          {
+            ...playerProgressInitialState,
+            duration: 200,
+            playedSeconds: 84
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
+            payload: {
+              playedSeconds: 0
+            }
+          }
+        );
+
+        expect(result.played).toBe(0);
       });
     });
 
@@ -83,7 +102,7 @@ describe('states/player', () => {
     });
 
     describe('`duration` actions', () => {
-      test('should set `duration` and stop playing', () => {
+      test('should set `duration`', () => {
         const result = playerProgressStateReducer(
           {
             ...playerProgressInitialState

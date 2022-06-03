@@ -14,7 +14,8 @@ describe('lib/parse/data', () => {
       itunes: {
         subtitle: 'bar',
         image: '//foo.com/image.png',
-        season: '42'
+        season: '42',
+        duration: '12:34'
       }
     };
 
@@ -29,7 +30,8 @@ describe('lib/parse/data', () => {
         categories: ['cat1', 'cat2', 'cat3'],
         subtitle: 'bar',
         imageUrl: '//foo.com/image.png',
-        season: 42
+        season: 42,
+        duration: '12:34'
       });
     });
 
@@ -45,7 +47,8 @@ describe('lib/parse/data', () => {
         url: '//foo.com/audio.mp3',
         subtitle: 'bar',
         imageUrl: '//foo.com/image.png',
-        season: 42
+        season: 42,
+        duration: '12:34'
       });
     });
 
@@ -75,7 +78,8 @@ describe('lib/parse/data', () => {
         categories: ['cat1', 'cat2', 'cat3'],
         subtitle: 'bar',
         imageUrl: '//foo.com/image.png',
-        season: 42
+        season: 42,
+        duration: '12:34'
       });
     });
   });

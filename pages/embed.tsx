@@ -13,25 +13,26 @@ import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
-import PlayButton from '@components/Player/PlayButton';
+import {
+  embedInitialState,
+  embedStateReducer
+} from '@states/embed/Embed.reducer';
+import { EmbedActionTypes } from '@states/embed/Embed.actions';
+import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import Modal from '@components/Modal';
-import styles from '@styles/Embed.module.scss';
+import PlayButton from '@components/Player/PlayButton';
+import PlayerProgress from '@components/Player/PlayerProgress';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import AddIcon from '@svg/icons/Add.svg';
 import ShareIcon from '@svg/icons/Share.svg';
 import FavoriteIcon from '@svg/icons/Favorite.svg';
-import {
-  embedInitialState,
-  embedStateReducer
-} from '@states/embed/Embed.reducer';
-import { EmbedActionTypes } from '@states/embed/Embed.actions';
+import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
 const IconButton = dynamic(() => import('@components/IconButton'));
-const PrxImage = dynamic(() => import('@components/PrxImage'));
 const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
 const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
 const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
@@ -132,6 +133,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     layout="fill"
                     objectFit="cover"
                     aria-hidden
+                    priority
                   />
                 </div>
 
@@ -227,7 +229,9 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     </div>
                   </div>
 
-                  <div className={styles.progressBar} />
+                  <div className={styles.progress}>
+                    <PlayerProgress />
+                  </div>
                 </div>
               </div>
 
