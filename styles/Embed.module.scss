@@ -35,6 +35,8 @@ $background-blur: 30px;
 }
 
 .container {
+  display: grid;
+  align-content: center;
   width: 100vw;
   height: 100vh;
 
