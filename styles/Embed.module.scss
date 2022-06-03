@@ -202,13 +202,16 @@ $background-blur: 30px;
 }
 
 .menu {
-  display: none;
   grid-area: CTRLS;
+
+  display: none;
+  align-items: center;
+  gap: 5px;
 
   font-size: 1rem;
 
   &.menuShown {
-    display: block;
+    display: flex;
   }
 }
 
@@ -260,7 +263,7 @@ $background-blur: 30px;
   }
 
   .menu {
-    display: block;
+    display: flex;
     grid-area: MENU;
   }
 
