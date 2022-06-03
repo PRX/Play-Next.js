@@ -218,13 +218,16 @@ $playlist-divider-size: 1px;
 }
 
 .menu {
-  display: none;
   grid-area: CTRLS;
+
+  display: none;
+  align-items: center;
+  gap: 5px;
 
   font-size: 1rem;
 
   &.menuShown {
-    display: block;
+    display: flex;
   }
 }
 
@@ -268,7 +271,7 @@ $playlist-divider-size: 1px;
   }
 
   .menu {
-    display: block;
+    display: flex;
     grid-area: MENU;
   }
 
