@@ -6,18 +6,19 @@
 import { IPlayerState } from '@interfaces/states/player';
 import {
   PlayerActionTypes as ActionTypes,
-  PlayerAction
+  IPlayerAction
 } from './Player.actions';
 
 export const playerInitialState: IPlayerState = {
   playing: false,
   currentTrackIndex: 0,
-  tracks: null
+  tracks: null,
+  currentTime: null
 };
 
 export const playerStateReducer = (
   state: IPlayerState,
-  action: PlayerAction
+  action: IPlayerAction
 ): IPlayerState => {
   const { playing, currentTrackIndex, tracks } = state;
 
@@ -48,6 +49,9 @@ export const playerStateReducer = (
         ...state,
         currentTrackIndex: Math.max(currentTrackIndex - 1, 0)
       };
+
+    case ActionTypes.PLAYER_UPDATE_CURRENT_TIME:
+      return { ...state, currentTime: action.payload };
 
     default:
       return state;

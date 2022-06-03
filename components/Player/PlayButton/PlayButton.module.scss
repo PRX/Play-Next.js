@@ -1,4 +1,5 @@
 .root {
   --iconButton-size: 60px;
+  --iconButton-padding: 0.0001px; // Need a really small non-zero value.
   --iconButton-color: var(--iconButton-color--promote);
 }

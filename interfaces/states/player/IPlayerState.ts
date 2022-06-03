@@ -12,6 +12,11 @@ export interface IPlayerState {
   playing: boolean;
 
   /**
+   * Current time played.
+   */
+  currentTime: number;
+
+  /**
    * Holds the currently playing audio data.
    */
   currentTrackIndex: number;

@@ -18,10 +18,11 @@ export enum PlayerActionTypes {
   'PLAYER_UPDATE_TRACKS' = '[Player] UPDATE_TRACKS',
   'PLAYER_UPDATE_CURRENT_TRACK_INDEX' = '[Player] UPDATE_CURRENT_TRACK_INDEX',
   'PLAYER_NEXT_TRACK' = '[Player] NEXT_TRACK',
-  'PLAYER_PREVIOUS_TRACK' = '[Player] PREVIOUS_TRACK'
+  'PLAYER_PREVIOUS_TRACK' = '[Player] PREVIOUS_TRACK',
+  'PLAYER_UPDATE_CURRENT_TIME' = '[Player] UPDATE_CURRENT_TIME'
 }
 
-export type PlayerAction = {
+export interface IPlayerAction {
   type: PlayerActionTypes;
   payload?: any;
-};
+}

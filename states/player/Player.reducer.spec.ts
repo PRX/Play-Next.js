@@ -63,6 +63,22 @@ describe('states/player', () => {
       });
     });
 
+    describe('`currentTime` actions', () => {
+      test('should set `scrubPosition`', () => {
+        const result = playerStateReducer(
+          {
+            ...playerInitialState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
+            payload: 0.25
+          }
+        );
+
+        expect(result.currentTime).toBe(0.25);
+      });
+    });
+
     describe('`currentTrack` actions', () => {
       const mockState = {
         ...playerInitialState,

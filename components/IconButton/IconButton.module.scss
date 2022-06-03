@@ -10,15 +10,16 @@
   --iconButton-color--hover: #{$white};
   --iconButton-color--focus: #{$white};
   --iconButton-size: 40px;
+  --iconButton-padding: 5px; // Override with a really small non-zero value, eg `0.0001px`.
 }
 
 .iconButton {
-  width: var(--iconButton-size);
-  height: var(--iconButton-size);
+  width: calc(var(--iconButton-size) + var(--iconButton-padding));
+  height: calc(var(--iconButton-size) + var(--iconButton-padding));
   display: grid;
   overflow: hidden;
 
-  padding: 0;
+  padding: var(--iconButton-padding);
 
   border-radius: var(--iconButton-border-radius);
 
@@ -34,7 +35,7 @@
     color: var(--iconButton-color--hover);
   }
 
-  &:focus {
+  &:focus-visible {
     outline-width: var(--iconButton-outline-width--focus);
     outline-color: var(--iconButton-outline-color--focus);
     outline-style: solid;

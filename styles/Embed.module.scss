@@ -59,6 +59,9 @@ $playlist-divider-size: 1px;
   place-content: center;
   width: 100vw;
   height: 100vh;
+
+  touch-action: manpulation;
+  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
 }
 
 .main {
@@ -205,19 +208,26 @@ $playlist-divider-size: 1px;
 .controls {
   grid-area: CTRLS;
 
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
   &.menuShown {
     display: none;
   }
 }
 
 .menu {
-  display: none;
   grid-area: CTRLS;
+
+  display: none;
+  align-items: center;
+  gap: 5px;
 
   font-size: 1rem;
 
   &.menuShown {
-    display: block;
+    display: flex;
   }
 }
 
@@ -261,7 +271,7 @@ $playlist-divider-size: 1px;
   }
 
   .menu {
-    display: block;
+    display: flex;
     grid-area: MENU;
   }
 

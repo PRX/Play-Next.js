@@ -6,7 +6,7 @@
 import { IPlayerProgressState } from '@interfaces/states/player';
 import {
   PlayerActionTypes as ActionTypes,
-  PlayerAction
+  IPlayerAction
 } from './Player.actions';
 
 export const playerProgressInitialState: IPlayerProgressState = {
@@ -20,7 +20,7 @@ export const playerProgressInitialState: IPlayerProgressState = {
 
 export const playerProgressStateReducer = (
   state: IPlayerProgressState,
-  action: PlayerAction
+  action: IPlayerAction
 ): IPlayerProgressState => {
   const { scrubPosition } = state;
 

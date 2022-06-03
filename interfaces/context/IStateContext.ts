@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { PlayerAction } from '@states/player/Player.actions';
+import { IPlayerAction } from '@states/player/Player.actions';
 import { IPlayerState } from '../states/player';
 
 export interface IStateContext {
   state: IPlayerState;
-  dispatch: React.Dispatch<PlayerAction>;
+  dispatch: React.Dispatch<IPlayerAction>;
 }

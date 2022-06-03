@@ -3,7 +3,7 @@
  * Exports the Embed page component.
  */
 
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
@@ -14,16 +14,27 @@ import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import PlayButton from '@components/Player/PlayButton';
-import styles from '@styles/Embed.module.scss';
-import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
-import PlayerText from '@components/Player/PlayerText';
-import IconButton from '@components/IconButton';
+import Modal from '@components/Modal';
+import styles from '@styles/Embed.module.scss';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
+import AddIcon from '@svg/icons/Add.svg';
+import ShareIcon from '@svg/icons/Share.svg';
+import FavoriteIcon from '@svg/icons/Favorite.svg';
+import {
+  embedInitialState,
+  embedStateReducer
+} from '@states/embed/Embed.reducer';
+import { EmbedActionTypes } from '@states/embed/Embed.actions';
 
 // Define dynamic component imports.
+const IconButton = dynamic(() => import('@components/IconButton'));
+const PrxImage = dynamic(() => import('@components/PrxImage'));
+const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
+const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
+const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
 const Player = dynamic(() => import('@components/Player'));
 const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 const PlayerThumbnail = dynamic(
@@ -39,6 +50,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
   const { audio, playlist, bgImageUrl } = data;
   const { guid, imageUrl } = audio || {};
+  const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
+  const { shareShown, followShown, supportShown } = state;
   const [showMenu, setShowMenu] = useState(false);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
@@ -54,6 +67,30 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
   const handleMoreButtonClick = () => {
     setShowMenu(!showMenu);
+  };
+
+  const handleFollowButtonClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_SHOW_FOLLOW_DIALOG });
+  };
+
+  const handleFollowCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_FOLLOW_DIALOG });
+  };
+
+  const handleShareButtonClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_SHOW_SHARE_DIALOG });
+  };
+
+  const handleShareCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_SHARE_DIALOG });
+  };
+
+  const handleSupportButtonClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_SHOW_SUPPORT_DIALOG });
+  };
+
+  const handleSupportCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_SUPPORT_DIALOG });
   };
 
   return (
@@ -115,14 +152,48 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   <div className={styles.panel}>
                     <div className={clsx(styles.controls, menuShownClass)}>
                       {/* TODO: Move play button into a PlayerControls component. */}
+
+                      <ReplayButton
+                        className={clsx(styles.button, styles.replayButton)}
+                      />
+
                       <PlayButton
                         className={clsx(styles.button, styles.playButton)}
+                      />
+
+                      <ForwardButton
+                        className={clsx(styles.button, styles.replayButton)}
                       />
                     </div>
 
                     <div className={clsx(styles.menu, menuShownClass)}>
                       {/* TODO: Replace content with dialog menu buttons. */}
-                      Menu
+                      <IconButton
+                        type="button"
+                        className={clsx(styles.menuButton, styles.followButton)}
+                        onClick={handleFollowButtonClick}
+                      >
+                        <AddIcon />
+                      </IconButton>
+
+                      <IconButton
+                        type="button"
+                        className={clsx(styles.menuButton, styles.shareButton)}
+                        onClick={handleShareButtonClick}
+                      >
+                        <ShareIcon />
+                      </IconButton>
+
+                      <IconButton
+                        type="button"
+                        className={clsx(
+                          styles.menuButton,
+                          styles.supportButton
+                        )}
+                        onClick={handleSupportButtonClick}
+                      >
+                        <FavoriteIcon />
+                      </IconButton>
                     </div>
 
                     <div className={styles.menuToggle}>
@@ -182,6 +253,16 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       </div>
 
       {/* TODO: Add Modals here. */}
+
+      {followShown && (
+        <Modal onClose={handleFollowCloseClick}>Follow Menu</Modal>
+      )}
+
+      {shareShown && <Modal onClose={handleShareCloseClick}>Share Menu</Modal>}
+
+      {supportShown && (
+        <Modal onClose={handleSupportCloseClick}>Support Menu</Modal>
+      )}
     </>
   );
 };
