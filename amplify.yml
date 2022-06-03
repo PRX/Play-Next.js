@@ -1,0 +1,34 @@
+version: 1
+test:
+  phases:
+    preTest:
+      commands:
+        - mkdir .jest
+        - yarn install
+    test:
+      commands:
+        - yarn lint
+        - yarn test --json --outputFile=.jest/jestReport.json
+  artifacts:
+    baseDirectory: .jest
+    configFilePath: 'jestReport.json'
+    files:
+      - '**/*'
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install
+        - yarn install
+    build:
+      commands:
+        - nvm use
+        - yarn run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - 'node_modules/**/*'
+      - '.next/cache/**/*'
