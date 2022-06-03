@@ -40,9 +40,13 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
       payload: index
     });
-    dispatch({
-      type: PlayerActionTypes.PLAYER_PLAY
-    });
+
+    // Delay playing to give audio a chance to update src.
+    setTimeout(() => {
+      dispatch({
+        type: PlayerActionTypes.PLAYER_PLAY
+      });
+    }, 200);
   };
 
   return (
