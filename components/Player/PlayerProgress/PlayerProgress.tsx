@@ -50,8 +50,9 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     currentTime: playerCurrentTime
   } = playerState;
   const { duration: trackDuration } = tracks[currentTrackIndex];
+  const progress = scrubPosition || played || 0;
   const progressStyles: IPlayerProgressCssProps = {
-    '--progress': scrubPosition || played || 0
+    '--progress': progress
   };
   const currentDuration = convertSecondsToDuration(Math.round(playedSeconds));
   const totalDuration = duration
@@ -76,7 +77,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   const updateProgress = useCallback(
     (seconds?: number) => {
       const { currentTime: ct, duration: d } = audioElm;
-      const updatedPlayed = seconds || ct;
+      const updatedPlayed = seconds || seconds === 0 ? seconds : ct;
 
       dispatch({
         type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,

@@ -39,8 +39,8 @@ $background-blur: 30px;
   height: 100vh;
 
   touch-action: manipulation;
-
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
 }
 
 .main {
@@ -214,6 +214,10 @@ $background-blur: 30px;
   grid-area: MTOG;
 }
 
+.progress {
+  grid-area: PROG;
+}
+
 .playlist {
   overflow: hidden;
 }
@@ -261,8 +265,4 @@ $background-blur: 30px;
   .menuToggle {
     display: none;
   }
-}
-
-.progress {
-  grid-area: PROG;
 }

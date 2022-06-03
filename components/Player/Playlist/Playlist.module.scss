@@ -52,6 +52,7 @@ $playlist-header-text-color: $white;
 .playlist {
   overflow: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tracks {

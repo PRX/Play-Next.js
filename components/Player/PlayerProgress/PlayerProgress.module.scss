@@ -24,6 +24,8 @@ $playerProgress-gap: 20px;
 
   @include grid-stacked;
 
+  touch-action: none;
+
   height: var(--track-size);
   overflow: hidden;
 

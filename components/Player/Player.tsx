@@ -67,7 +67,11 @@ const Player: React.FC<IPlayerProps> = ({
       type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
       payload: audioElm?.duration
     });
-  }, [audioElm?.duration]);
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
+      payload: audioElm?.currentTime
+    });
+  }, [audioElm?.currentTime, audioElm?.duration]);
 
   const handleLoadedData = useCallback(() => {
     // When audio data loads, start playing if we were playing before.
@@ -95,7 +99,7 @@ const Player: React.FC<IPlayerProps> = ({
       audioElm?.removeEventListener('play', handlePlay);
       audioElm?.removeEventListener('pause', handlePause);
       audioElm?.removeEventListener('durationchange', handleDurationChange);
-      audioElm?.removeEventListener('loadeddata', handleLoadedData);
+      audioElm?.removeEventListener('loadedmetadata', handleLoadedData);
       audioElm?.removeEventListener('ended', handleEnded);
     };
   }, [
