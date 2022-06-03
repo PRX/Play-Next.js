@@ -39,6 +39,8 @@ $background-blur: 30px;
   height: 100vh;
 
   touch-action: manipulation;
+
+  -webkit-font-smoothing: antialiased;
 }
 
 .main {
