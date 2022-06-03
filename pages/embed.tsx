@@ -242,20 +242,20 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               )}
             </Player>
           )}
+
+          {followShown && (
+            <Modal onClose={handleFollowCloseClick}>Follow Menu</Modal>
+          )}
+
+          {shareShown && (
+            <Modal onClose={handleShareCloseClick}>Share Menu</Modal>
+          )}
+
+          {supportShown && (
+            <Modal onClose={handleSupportCloseClick}>Support Menu</Modal>
+          )}
         </div>
       </div>
-
-      {/* TODO: Add Modals here. */}
-
-      {followShown && (
-        <Modal onClose={handleFollowCloseClick}>Follow Menu</Modal>
-      )}
-
-      {shareShown && <Modal onClose={handleShareCloseClick}>Share Menu</Modal>}
-
-      {supportShown && (
-        <Modal onClose={handleSupportCloseClick}>Support Menu</Modal>
-      )}
     </>
   );
 };
