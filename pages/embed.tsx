@@ -14,15 +14,16 @@ import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import PlayButton from '@components/Player/PlayButton';
+import ThemeVars from '@components/ThemeVars';
+import PlayerProgress from '@components/Player/PlayerProgress';
 import styles from '@styles/Embed.module.scss';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
-import ThemeVars from '@components/ThemeVars';
+import PrxImage from '@components/PrxImage';
 
 // Define dynamic component imports.
 const IconButton = dynamic(() => import('@components/IconButton'));
-const PrxImage = dynamic(() => import('@components/PrxImage'));
 const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
 const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
 const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
@@ -97,6 +98,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     layout="fill"
                     objectFit="cover"
                     aria-hidden
+                    priority
                   />
                 </div>
 
@@ -167,7 +169,9 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     </div>
                   </div>
 
-                  <div className={styles.progressBar} />
+                  <div className={styles.progress}>
+                    <PlayerProgress />
+                  </div>
                 </div>
               </div>
 

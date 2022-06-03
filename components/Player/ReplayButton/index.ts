@@ -1,3 +1,3 @@
-import Replay from './ReplayButton';
+import ReplayButton from './ReplayButton';
 
-export default Replay;
+export default ReplayButton;

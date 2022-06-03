@@ -1,0 +1,43 @@
+@import '@styles/colors';
+@import '@styles/grid';
+
+$playerProgress-gap: 20px;
+
+:export {
+  --playerProgress-progress-color: #{$secondary-500};
+  --playerProgress-track-color: #{$white-a-50};
+  --playerProgress-size: 10px;
+}
+
+.root {
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  gap: $playerProgress-gap;
+  align-items: center;
+
+  line-height: 0;
+}
+
+.track {
+  --track-size: var(--playerProgress-size);
+  --track-radius: calc(var(--track-size) / 2);
+
+  @include grid-stacked;
+
+  height: var(--track-size);
+  overflow: hidden;
+
+  cursor: col-resize;
+
+  border-radius: var(--track-radius);
+  background-color: var(--playerProgress-track-color);
+
+  &::after {
+    content: '';
+    grid-row: 1;
+    grid-column: 1;
+    width: calc(var(--progress) * 100%);
+    height: var(--track-size);
+    background-color: var(--accent-color, var(--playerProgress-progress-color));
+  }
+}
