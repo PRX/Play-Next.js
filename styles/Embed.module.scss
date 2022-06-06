@@ -46,12 +46,16 @@ $background-blur: 30px;
 }
 
 .main {
+  position: relative;
   display: grid;
   grid-template-rows: $player-height;
   grid-auto-rows: 1fr;
   width: 100vw;
+  overflow: hidden;
 
   margin-inline: auto;
+
+  border-radius: $player-corner-radius;
 
   &.withCoverArt {
     $cover-size: min(100vh - $player-height, 100vw);
@@ -61,6 +65,11 @@ $background-blur: 30px;
 
   &.withPlaylist {
     height: 100vh;
+  }
+
+  &.withCoverArt,
+  &.withPlaylist {
+    border-radius: 0;
   }
 }
 
@@ -108,7 +117,6 @@ $background-blur: 30px;
   z-index: -1;
   overflow: hidden;
 
-  border-radius: $player-corner-radius;
   &::after {
     $h: color.hue($background-tint-color);
     $s: color.saturation($background-tint-color);
@@ -117,11 +125,6 @@ $background-blur: 30px;
     z-index: 1;
     background-color: hsl($h, $s, $l, $background-tint-alpha);
     backdrop-filter: blur($background-blur);
-  }
-
-  .withCoverArt &,
-  .withPlaylist & {
-    border-radius: 0;
   }
 }
 
