@@ -9,13 +9,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link
           rel="icon"
           type="image/png"
-          href="//media.prx.org/favicon-16x16.png"
+          href="https://media.prx.org/favicon-16x16.png"
           sizes="16x16"
         />
         <link
           rel="icon"
           type="image/png"
-          href="//media.prx.org/favicon-32x32.png"
+          href="https://media.prx.org/favicon-32x32.png"
           sizes="32x32"
         />
       </Head>

@@ -191,7 +191,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.menuButton, styles.followButton)}
                         onClick={handleFollowButtonClick}
                       >
-                        <AddIcon />
+                        <AddIcon aria-label="Follow" />
                       </IconButton>
 
                       <IconButton
@@ -199,7 +199,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         className={clsx(styles.menuButton, styles.shareButton)}
                         onClick={handleShareButtonClick}
                       >
-                        <ShareIcon />
+                        <ShareIcon aria-label="Share" />
                       </IconButton>
 
                       <IconButton
@@ -210,7 +210,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         )}
                         onClick={handleSupportButtonClick}
                       >
-                        <FavoriteIcon />
+                        <FavoriteIcon aria-label="Support" />
                       </IconButton>
                     </div>
 
