@@ -158,3 +158,27 @@ EmbedParamKeysMap.set('se', 'playlistSeason');
 EmbedParamKeysMap.set('ct', 'playlistCategory');
 EmbedParamKeysMap.set('ca', 'showCoverArt');
 EmbedParamKeysMap.set('ac', 'accentColor');
+
+/**
+ * Map of embed config property keys to embed parameter keys.
+ */
+export const EmbedConfigKeysMap: Map<keyof IEmbedConfig, keyof IEmbedParams> =
+  new Map();
+EmbedConfigKeysMap.set('title', 'tt');
+EmbedConfigKeysMap.set('subtitle', 'ts');
+EmbedConfigKeysMap.set('ctaTitle', 'tc');
+EmbedConfigKeysMap.set('audioUrl', 'ua');
+EmbedConfigKeysMap.set('imageUrl', 'ui');
+EmbedConfigKeysMap.set('epImageUrl', 'ue');
+EmbedConfigKeysMap.set('feedUrl', 'uf');
+EmbedConfigKeysMap.set('feedId', 'if');
+EmbedConfigKeysMap.set('episodeGuid', 'ge');
+EmbedConfigKeysMap.set('ctaUrl', 'uc');
+EmbedConfigKeysMap.set('subscribeUrl', 'us');
+EmbedConfigKeysMap.set('subscribeTarget', 'gs');
+EmbedConfigKeysMap.set('ctaTarget', 'gc');
+EmbedConfigKeysMap.set('showPlaylist', 'sp');
+EmbedConfigKeysMap.set('playlistSeason', 'se');
+EmbedConfigKeysMap.set('playlistCategory', 'ct');
+EmbedConfigKeysMap.set('showCoverArt', 'ca');
+EmbedConfigKeysMap.set('accentColor', 'ac');
