@@ -14,8 +14,9 @@ const generateEmbedHtml = (config: IEmbedConfig) => {
     .map(([k, v]: [keyof IEmbedConfig, any]) => `${k}=${v}`)
     .join('&');
   const src = `https://play.prx.org/e?${srcParams}`;
-  let height = 200;
+  let height: number | string = 200;
   let style = '';
+  let wrapper = (children: string) => children;
 
   // Add some height for playlists.
   if (showPlaylist) {
@@ -24,13 +25,19 @@ const generateEmbedHtml = (config: IEmbedConfig) => {
 
   // Add some height for cover art and responsive styling.
   if (showCoverArt) {
-    height += 800;
-    style = `height: calc(100% + ${showPlaylist ? 600 : 200}px)`;
+    height = '100%';
+    style = 'position: absolute; inset: 0;';
+    wrapper = (children: string) =>
+      `<div style="position: relative; height: 0; width: 100%; padding-top: calc(100% + ${
+        showPlaylist ? 600 : 200
+      }px);">${children}</div>`;
   }
 
-  return `<iframe allow="monetization" frameborder="0" height="${height}" scrolling="no" src="${src}"${
-    style && ` style="${style}"`
-  } width="100%"></iframe>`;
+  return wrapper(
+    `<iframe allow="monetization" frameborder="0" height="${height}" scrolling="no" src="${src}"${
+      style && ` style="${style}"`
+    } width="100%"></iframe>`
+  );
 };
 
 export default generateEmbedHtml;

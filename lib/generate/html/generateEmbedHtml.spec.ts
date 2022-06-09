@@ -98,12 +98,17 @@ describe('lib/generate/html', () => {
         showCoverArt: true
       });
 
-      expect(result).toMatch(/^<iframe[^>]+><\/iframe>$/);
+      expect(result).toMatch(
+        /^<div style="[^"]+"><iframe[^>]+><\/iframe><\/div>$/
+      );
       expect(result).toMatch(/src="https:\/\/play\.prx\.org\/e\?[^"]+"/);
       expect(result).toMatch(/[?&]ca=1/);
+      expect(result).toMatch(
+        'div style="position: relative; height: 0; width: 100%; padding-top: calc(100% + 200px);"'
+      );
       expect(result).toMatch('width="100%"');
-      expect(result).toMatch('height="1000"');
-      expect(result).toMatch('style="height: calc(100% + 200px)"');
+      expect(result).toMatch('height="100%"');
+      expect(result).toMatch('style="position: absolute; inset: 0;"');
       expect(result).toMatch('frameborder="0"');
       expect(result).toMatch('scrolling="no"');
       expect(result).toMatch('allow="monetization"');
@@ -116,13 +121,18 @@ describe('lib/generate/html', () => {
         showPlaylist: 15
       });
 
-      expect(result).toMatch(/^<iframe[^>]+><\/iframe>$/);
+      expect(result).toMatch(
+        /^<div style="[^"]+"><iframe[^>]+><\/iframe><\/div>$/
+      );
       expect(result).toMatch(/src="https:\/\/play\.prx\.org\/e\?[^"]+"/);
       expect(result).toMatch(/[?&]ca=1/);
       expect(result).toMatch(/[?&]sp=15/);
+      expect(result).toMatch(
+        'div style="position: relative; height: 0; width: 100%; padding-top: calc(100% + 600px);"'
+      );
       expect(result).toMatch('width="100%"');
-      expect(result).toMatch('height="1400"');
-      expect(result).toMatch('style="height: calc(100% + 600px)"');
+      expect(result).toMatch('height="100%"');
+      expect(result).toMatch('style="position: absolute; inset: 0;"');
       expect(result).toMatch('frameborder="0"');
       expect(result).toMatch('scrolling="no"');
       expect(result).toMatch('allow="monetization"');
