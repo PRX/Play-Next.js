@@ -4,31 +4,14 @@
  * Generate embed HTML markup from embed config options.
  */
 
-import {
-  IEmbedConfig,
-  EmbedConfigKeysMap
-} from '@interfaces/embed/IEmbedConfig';
+import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import parseEmbedConfigToParams from '@lib/parse/config/parseEmbedConfigToParams';
 
 const generateEmbedHtml = (config: IEmbedConfig) => {
   const { showCoverArt, showPlaylist } = config;
-  const srcParams = Object.entries(config)
-    .map((c: [keyof IEmbedConfig, any]) => {
-      const [k, v] = c;
-      const prop = EmbedConfigKeysMap.get(k);
-
-      if (prop) {
-        switch (typeof v) {
-          case 'boolean':
-            return v ? `${prop}=1` : '';
-
-          default:
-            return v ? `${prop}=${v}` : '';
-        }
-      }
-
-      return '';
-    })
-    .filter((v) => !!v)
+  const params = parseEmbedConfigToParams(config);
+  const srcParams = Object.entries(params)
+    .map(([k, v]: [keyof IEmbedConfig, any]) => `${k}=${v}`)
     .join('&');
   const src = `https://play.prx.org/e?${srcParams}`;
   let height = 200;

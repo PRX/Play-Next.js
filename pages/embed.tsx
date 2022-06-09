@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic';
 import clsx from 'clsx';
 import { IEmbedData } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
-import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
+import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import {
@@ -262,7 +262,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // 1. Convert query params into embed config.
-  const config = parseEmbedParams(query);
+  const config = parseEmbedParamsToConfig(query);
   // 2. If RSS feed URL is provided.
   const rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
   // 3. Parse config and RSS data into embed data.

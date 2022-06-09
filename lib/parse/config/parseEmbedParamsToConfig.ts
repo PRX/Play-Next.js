@@ -12,7 +12,7 @@ import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
  * @param params Requested query parameters object.
  * @returns Embed Config object
  */
-const parseEmbedParams = (params: IEmbedParams): IEmbedConfig => {
+const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
   const config: IEmbedConfig = Object.entries(params).reduce(
     (a, c: [keyof IEmbedParams, string]) => {
       const [k, v] = c;
@@ -54,4 +54,4 @@ const parseEmbedParams = (params: IEmbedParams): IEmbedConfig => {
   return config;
 };
 
-export default parseEmbedParams;
+export default parseEmbedParamsToConfig;

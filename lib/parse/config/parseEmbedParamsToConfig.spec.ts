@@ -1,7 +1,7 @@
-import parseEmbedParams from './parseEmbedParams';
+import parseEmbedParamsToConfig from './parseEmbedParamsToConfig';
 
 describe('lib/parse/config', () => {
-  describe('parseEmbedParams', () => {
+  describe('parseEmbedParamsToConfig', () => {
     const params = {
       tt: 'TT',
       ts: 'TS',
@@ -24,7 +24,7 @@ describe('lib/parse/config', () => {
     };
 
     test('should handle expected parameters', () => {
-      const result = parseEmbedParams(params);
+      const result = parseEmbedParamsToConfig(params);
 
       expect(result.title).toBe('TT');
       expect(result.subtitle).toBe('TS');
@@ -47,36 +47,36 @@ describe('lib/parse/config', () => {
     });
 
     test('should process `showPlaylist` into integer', () => {
-      const resultNumeric = parseEmbedParams({ sp: '25' });
-      const resultEmpty = parseEmbedParams({ sp: '' });
+      const resultNumeric = parseEmbedParamsToConfig({ sp: '25' });
+      const resultEmpty = parseEmbedParamsToConfig({ sp: '' });
 
       expect(resultNumeric.showPlaylist).toBe(25);
       expect(resultEmpty.showPlaylist).toBe(0);
     });
 
     test('should process `playlistSeason` into integer', () => {
-      const resultNumeric = parseEmbedParams({ se: '5' });
-      const resultEmpty = parseEmbedParams({ se: '' });
+      const resultNumeric = parseEmbedParamsToConfig({ se: '5' });
+      const resultEmpty = parseEmbedParamsToConfig({ se: '' });
 
       expect(resultNumeric.playlistSeason).toBe(5);
       expect(resultEmpty.playlistSeason).toBe(0);
     });
 
     test('should process `playlistSeason` into "all"', () => {
-      const result = parseEmbedParams({ sp: 'all' });
+      const result = parseEmbedParamsToConfig({ sp: 'all' });
 
       expect(result.showPlaylist).toBe('all');
     });
 
     test('should handle no params', () => {
-      const result = parseEmbedParams({});
+      const result = parseEmbedParamsToConfig({});
 
       expect(result).toEqual({});
     });
 
     test('should ignore unexpected params', () => {
       /* @ts-ignore */
-      const result = parseEmbedParams({ tt: 'TITLE', foo: 'bar' });
+      const result = parseEmbedParamsToConfig({ tt: 'TITLE', foo: 'bar' });
 
       /* @ts-ignore */
       expect(result.foo).toBeUndefined();
