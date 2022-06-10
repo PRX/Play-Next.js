@@ -11,21 +11,20 @@ import styles from './IconButton.module.scss';
 export interface IIconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-const IconButton: React.FC<IIconButtonProps> = ({
-  className,
-  children,
-  ...props
-}) => (
-  <>
-    <ThemeVars theme="IconButton" cssProps={styles} />
-    <button
-      {...props}
-      className={clsx(styles.iconButton, className)}
-      type="button"
-    >
-      {children}
-    </button>
-  </>
+const IconButton = React.forwardRef<HTMLButtonElement, IIconButtonProps>(
+  ({ className, children, ...props }, ref) => (
+    <>
+      <ThemeVars theme="IconButton" cssProps={styles} />
+      <button
+        {...props}
+        ref={ref}
+        className={clsx(styles.iconButton, className)}
+        type="button"
+      >
+        {children}
+      </button>
+    </>
+  )
 );
 
 export default IconButton;

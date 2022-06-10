@@ -18,21 +18,25 @@ import {
   embedStateReducer
 } from '@states/embed/Embed.reducer';
 import { EmbedActionTypes } from '@states/embed/Embed.actions';
+import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import Modal from '@components/Modal';
 import PlayButton from '@components/Player/PlayButton';
 import PlayerProgress from '@components/Player/PlayerProgress';
+import ClipboardButton from '@components/ClipboardButton/ClipboardButton';
+import IconButton from '@components/IconButton';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import AddIcon from '@svg/icons/Add.svg';
 import ShareIcon from '@svg/icons/Share.svg';
 import FavoriteIcon from '@svg/icons/Favorite.svg';
+import CodeIcon from '@svg/icons/Code.svg';
+import LinkIcon from '@svg/icons/Link.svg';
 import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
-const IconButton = dynamic(() => import('@components/IconButton'));
 const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
 const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
 const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
@@ -54,7 +58,7 @@ export interface IEmbedPageProps {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
-  const { audio, playlist, bgImageUrl } = data;
+  const { audio, playlist, bgImageUrl, shareUrl } = data;
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
@@ -70,6 +74,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
   });
+  const embedHtml = generateEmbedHtml(config);
 
   const handleMoreButtonClick = () => {
     setShowMenu(!showMenu);
@@ -248,7 +253,25 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
           )}
 
           {shareShown && (
-            <Modal onClose={handleShareCloseClick}>Share Menu</Modal>
+            <Modal onClose={handleShareCloseClick}>
+              <nav className={styles.modalMenu}>
+                <ClipboardButton
+                  component={IconButton}
+                  text={shareUrl}
+                  label="Link"
+                >
+                  <LinkIcon />
+                </ClipboardButton>
+
+                <ClipboardButton
+                  component={IconButton}
+                  text={embedHtml}
+                  label="Embed Code"
+                >
+                  <CodeIcon />
+                </ClipboardButton>
+              </nav>
+            </Modal>
           )}
 
           {supportShown && (

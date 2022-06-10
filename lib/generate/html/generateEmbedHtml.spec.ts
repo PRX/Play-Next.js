@@ -11,7 +11,7 @@ describe('lib/generate/html', () => {
       notAConfigProp: null
     };
 
-    test('should not include params in src that are falsy.', () => {
+    test('should not include params in src URL that are falsy.', () => {
       const result = generateEmbedHtml({
         ...mockConfig
       });
@@ -20,7 +20,7 @@ describe('lib/generate/html', () => {
       expect(result).not.toMatch(/[?&]sp=/);
     });
 
-    test('should include params in src any config prop.', () => {
+    test('should include params in src URL for any config prop.', () => {
       const result = generateEmbedHtml({
         title: 'TT',
         subtitle: 'TS',
@@ -92,7 +92,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch('allow="monetization"');
     });
 
-    test('should include an iframe w/ attributes for cover art.', () => {
+    test('should include an iframe w/ attributes for cover art, and a wrapper div.', () => {
       const result = generateEmbedHtml({
         ...mockConfig,
         showCoverArt: true
@@ -114,7 +114,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch('allow="monetization"');
     });
 
-    test('should include an iframe w/ attributes for both playlist and cover art.', () => {
+    test('should include an iframe w/ attributes for both playlist and cover art, and a wrapper div.', () => {
       const result = generateEmbedHtml({
         ...mockConfig,
         showCoverArt: true,

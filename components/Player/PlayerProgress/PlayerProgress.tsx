@@ -32,7 +32,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   updateFrequency = 500
 }) => {
   const updateInterval = useRef(null);
-  const trackRef = useRef(null as HTMLDivElement);
+  const trackRef = useRef<HTMLDivElement>();
   const [state, dispatch] = useReducer(
     playerProgressStateReducer,
     playerProgressInitialState
