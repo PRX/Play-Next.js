@@ -1,56 +1,58 @@
 /**
- * @file ClipboardButton.tsx
- * Play button component to toggle playing state of player.
+ * @file MenuButton.tsx
+ * Button for use in modal menus.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import clsx from 'clsx';
-import styles from './ClipboardButton.module.scss';
+import IconButton from '@components/IconButton';
+import styles from './MenuButton.module.scss';
 
-export interface IClipboardButtonProps
+export type MenuButtonAction = 'link' | 'clipboard';
+
+export interface IMenuButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
-  format?: string;
+  action: MenuButtonAction;
   label: string;
-  component?: React.FC<any>;
+  clipboardText?: string;
+  clipboardFormat?: string;
+  linkHref?: string;
 }
 
-/**
- * Fallback button component.
- * @param props
- * @returns
- */
-const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
+const MenuButton: React.FC<IMenuButtonProps> = ({
+  action,
   children,
-  ...props
-}) => (
-  // eslint-disable-next-line react/button-has-type
-  <button {...props}>{children}</button>
-);
-
-const ClipboardButton: React.FC<IClipboardButtonProps> = ({
   className,
-  children,
-  component,
-  text,
-  format,
+  clipboardFormat,
+  clipboardText,
   label,
+  linkHref,
+  onClick,
   ...props
 }) => {
-  const ButtonComponent = component || Button;
   const buttonRef = useRef<HTMLButtonElement>();
   const promptRef = useRef<HTMLButtonElement>();
   const [copiedClass, setCopiedClass] = useState<string>();
   const [promptHoverClass, setPromptHoverClass] = useState<string>();
   const promptId = `prompt: ${label}`;
-  const prompt = `${!copiedClass ? 'Copy' : 'Copied'} ${label}`;
+  const formatPrompt = () => {
+    switch (action) {
+      case 'clipboard':
+        return `${!copiedClass ? 'Copy' : 'Copied'} ${label}`;
+
+      default:
+        return label;
+    }
+  };
+  const prompt = formatPrompt();
   const classNames = clsx(className, styles.root, {
     [styles.copied]: !!copiedClass
   });
   const promptClasses = clsx(styles.prompt, promptHoverClass, copiedClass);
   const promptTimeout = useRef(null);
 
+  // TODO: Move to ModalButton
   const clearPromptTimeout = () => {
     if (promptTimeout.current) {
       clearTimeout(promptTimeout.current);
@@ -58,6 +60,7 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
     }
   };
 
+  // TODO: Move to ModalButton
   const handlePromptAnimationEnd = useCallback((e: AnimationEvent) => {
     switch (e.animationName) {
       case styles.copiedStart:
@@ -82,10 +85,11 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
   }, []);
 
   const copyTextToClipboard = useCallback(() => {
-    const result = copy(text, {
-      format: format || 'text/plain'
+    const result = copy(clipboardText, {
+      format: clipboardFormat || 'text/plain'
     });
 
+    // TODO: This can be done in a onCopy callback.
     if (result) {
       clearPromptTimeout();
       setCopiedClass(styles.copiedStart);
@@ -94,11 +98,26 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
         handlePromptAnimationEnd
       );
     }
-  }, [format, handlePromptAnimationEnd, text]);
+  }, [clipboardFormat, handlePromptAnimationEnd, clipboardText]);
 
-  const handleClick = useCallback(() => {
-    copyTextToClipboard();
-  }, [copyTextToClipboard]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      switch (action) {
+        case 'clipboard':
+          copyTextToClipboard();
+          break;
+
+        default:
+          // TODO: Open link in new target.
+          break;
+      }
+
+      if (typeof onClick === 'function') {
+        onClick(e);
+      }
+    },
+    [action, copyTextToClipboard, onClick]
+  );
 
   const handlePointerEnter = useCallback((e: PointerEvent) => {
     if (!buttonRef.current || e.pointerType !== 'mouse') return;
@@ -115,6 +134,16 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
     setCopiedClass(null);
   }, []);
 
+  const actionProps =
+    action === 'clipboard'
+      ? {
+          onClick: handleClick
+        }
+      : {
+          href: linkHref,
+          onClick
+        };
+
   useEffect(() => {
     const btnRef = buttonRef.current;
     btnRef?.addEventListener('pointerenter', handlePointerEnter);
@@ -130,17 +159,16 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
   }, [handlePointerEnter, handlePointerLeave]);
 
   return (
-    <span className={styles.root}>
-      <ButtonComponent
+    <span className={styles.root} ref={buttonRef}>
+      <IconButton
         {...props}
+        {...actionProps}
         className={classNames}
-        ref={buttonRef}
-        onClick={handleClick}
         aria-describedby={promptId}
         aria-label={prompt}
       >
         {children}
-      </ButtonComponent>
+      </IconButton>
       <span ref={promptRef} id={promptId} className={promptClasses} aria-hidden>
         {prompt}
       </span>
@@ -148,4 +176,4 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
   );
 };
 
-export default ClipboardButton;
+export default MenuButton;

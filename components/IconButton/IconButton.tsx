@@ -9,22 +9,32 @@ import ThemeVars from '@components/ThemeVars';
 import styles from './IconButton.module.scss';
 
 export interface IIconButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  href?: string;
+}
 
-const IconButton = React.forwardRef<HTMLButtonElement, IIconButtonProps>(
-  ({ className, children, ...props }, ref) => (
-    <>
-      <ThemeVars theme="IconButton" cssProps={styles} />
+const IconButton = ({ className, children, href = null, ...props }) => (
+  <>
+    <ThemeVars theme="IconButton" cssProps={styles} />
+    {href ? (
+      <a
+        className={clsx(styles.iconButton, className)}
+        href={href}
+        rel="noreferrer"
+        target="_blank"
+      >
+        {children}
+      </a>
+    ) : (
       <button
         {...props}
-        ref={ref}
         className={clsx(styles.iconButton, className)}
         type="button"
       >
         {children}
       </button>
-    </>
-  )
+    )}
+  </>
 );
 
 export default IconButton;

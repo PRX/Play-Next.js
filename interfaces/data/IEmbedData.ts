@@ -34,6 +34,14 @@ export interface IEmbedData {
   shareUrl?: string;
 
   /**
+   * Owner information.
+   */
+  owner?: {
+    name?: string;
+    email?: string;
+  };
+
+  /**
    * URL's for social platforms to follow the creator on.
    */
   followUrls?: {
