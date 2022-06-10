@@ -119,11 +119,13 @@ const ClipboardButton: React.FC<IClipboardButtonProps> = ({
     const btnRef = buttonRef.current;
     btnRef?.addEventListener('pointerenter', handlePointerEnter);
     btnRef?.addEventListener('pointerleave', handlePointerLeave);
+    btnRef?.addEventListener('blur', handlePointerLeave);
 
     return () => {
       clearTimeout(promptTimeout.current);
       btnRef?.removeEventListener('mouseenter', handlePointerEnter);
       btnRef?.removeEventListener('pointerleave', handlePointerLeave);
+      btnRef?.removeEventListener('blur', handlePointerLeave);
     };
   }, [handlePointerEnter, handlePointerLeave]);
 
