@@ -3,7 +3,8 @@
  * Button for use in modal menus.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import clsx from 'clsx';
 import IconButton from '@components/IconButton';

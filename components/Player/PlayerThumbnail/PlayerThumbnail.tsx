@@ -3,7 +3,8 @@
  * Player thumbnail component for player.
  */
 
-import React, { useContext } from 'react';
+import type React from 'react';
+import { useContext } from 'react';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';
 import ThemeVars from '@components/ThemeVars';

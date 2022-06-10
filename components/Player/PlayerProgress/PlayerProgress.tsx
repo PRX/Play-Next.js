@@ -3,13 +3,8 @@
  * Play progress bar control.
  */
 
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useReducer,
-  useRef
-} from 'react';
+import type React from 'react';
+import { useCallback, useContext, useEffect, useReducer, useRef } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import {

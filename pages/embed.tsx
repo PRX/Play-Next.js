@@ -3,13 +3,13 @@
  * Exports the Embed page component.
  */
 
+import type { GetServerSideProps } from 'next';
+import type { IEmbedData } from '@interfaces/data';
+import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import { useReducer, useState } from 'react';
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import clsx from 'clsx';
-import { IEmbedData } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';

@@ -2,7 +2,7 @@
  * Defines Embed data interfaces and types.
  */
 
-import { IAudioData } from './IAudioData';
+import type { IAudioData } from './IAudioData';
 
 /**
  * Embed data interface.

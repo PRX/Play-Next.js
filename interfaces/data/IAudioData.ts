@@ -2,7 +2,7 @@
  * Defines audio data interfaces and types.
  */
 
-import Parser from 'rss-parser';
+import type Parser from 'rss-parser';
 
 export interface IRssItem extends Parser.Item {
   itunes: {

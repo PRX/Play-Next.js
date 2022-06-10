@@ -3,14 +3,9 @@
  * Higher order component for Audio Player
  */
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState
-} from 'react';
-import { IAudioData } from '@interfaces/data';
+import type React from 'react';
+import type { IAudioData } from '@interfaces/data';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import {
   playerInitialState,
   playerStateReducer

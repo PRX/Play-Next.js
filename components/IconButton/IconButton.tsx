@@ -3,7 +3,7 @@
  * Play button component to toggle playing state of player.
  */
 
-import React from 'react';
+import type React from 'react';
 import clsx from 'clsx';
 import ThemeVars from '@components/ThemeVars';
 import styles from './IconButton.module.scss';
@@ -13,7 +13,7 @@ export interface IIconButtonProps
   href?: string;
 }
 
-const IconButton = ({ className, children, href = null, ...props }) => (
+const IconButton = ({ children, className = null, href = null, ...props }) => (
   <>
     <ThemeVars theme="IconButton" cssProps={styles} />
     {href ? (

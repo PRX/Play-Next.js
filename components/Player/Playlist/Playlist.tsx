@@ -4,7 +4,8 @@
  * playing track.
  */
 
-import React, { useContext, useRef } from 'react';
+import type React from 'react';
+import { useContext, useRef } from 'react';
 import clsx from 'clsx';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
 import formatDurationParts from '@lib/format/time/formatDurationParts';

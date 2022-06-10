@@ -1,4 +1,10 @@
-import React, { useContext } from 'react';
+/**
+ * @file PlayerText.tsx
+ * Component to display text (title, subtitle) in player.
+ */
+
+import type React from 'react';
+import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import ThemeVars from '@components/ThemeVars';
 import styles from './PlayerText.module.scss';
