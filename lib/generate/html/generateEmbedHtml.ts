@@ -5,15 +5,11 @@
  */
 
 import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
-import parseEmbedConfigToParams from '@lib/parse/config/parseEmbedConfigToParams';
+import generateEmbedUrl from '@lib/generate/string/generateEmbedUrl';
 
 const generateEmbedHtml = (config: IEmbedConfig) => {
   const { showCoverArt, showPlaylist } = config;
-  const params = parseEmbedConfigToParams(config);
-  const srcParams = Object.entries(params)
-    .map(([k, v]: [keyof IEmbedConfig, any]) => `${k}=${v}`)
-    .join('&');
-  const src = `https://play.prx.org/e?${srcParams}`;
+  const src = generateEmbedUrl(config);
   let height: number | string = 200;
   let style = '';
   let wrapper = (children: string) => children;

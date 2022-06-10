@@ -11,64 +11,13 @@ describe('lib/generate/html', () => {
       notAConfigProp: null
     };
 
-    test('should not include params in src URL that are falsy.', () => {
-      const result = generateEmbedHtml({
-        ...mockConfig
-      });
-
-      expect(result).not.toMatch(/[?&]ca=/);
-      expect(result).not.toMatch(/[?&]sp=/);
-    });
-
-    test('should include params in src URL for any config prop.', () => {
-      const result = generateEmbedHtml({
-        title: 'TT',
-        subtitle: 'TS',
-        ctaTitle: 'TC',
-        audioUrl: 'UA',
-        imageUrl: 'UI',
-        epImageUrl: 'UE',
-        feedUrl: 'UF',
-        feedId: 'IF',
-        episodeGuid: 'GE',
-        ctaUrl: 'UC',
-        subscribeUrl: 'US',
-        subscribeTarget: 'GS',
-        ctaTarget: 'GC',
-        showPlaylist: 42,
-        playlistSeason: 2,
-        playlistCategory: 'CT',
-        showCoverArt: true,
-        accentColor: 'ff0000'
-      });
-
-      expect(result).toMatch(/[?&]tt=TT/);
-      expect(result).toMatch(/[?&]ts=TS/);
-      expect(result).toMatch(/[?&]tc=TC/);
-      expect(result).toMatch(/[?&]ua=UA/);
-      expect(result).toMatch(/[?&]ui=UI/);
-      expect(result).toMatch(/[?&]ue=UE/);
-      expect(result).toMatch(/[?&]uf=UF/);
-      expect(result).toMatch(/[?&]if=IF/);
-      expect(result).toMatch(/[?&]ge=GE/);
-      expect(result).toMatch(/[?&]uc=UC/);
-      expect(result).toMatch(/[?&]us=US/);
-      expect(result).toMatch(/[?&]gs=GS/);
-      expect(result).toMatch(/[?&]gc=GC/);
-      expect(result).toMatch(/[?&]sp=42/);
-      expect(result).toMatch(/[?&]se=2/);
-      expect(result).toMatch(/[?&]ct=CT/);
-      expect(result).toMatch(/[?&]ca=1/);
-      expect(result).toMatch(/[?&]ac=ff0000/);
-    });
-
     test('should include an iframe w/ default attributes.', () => {
       const result = generateEmbedHtml({
         feedUrl: mockConfig.feedUrl
       });
 
       expect(result).toMatch(/^<iframe[^>]+><\/iframe>$/);
-      expect(result).toMatch(/src="https:\/\/play\.prx\.org\/e\?[^"]+"/);
+      expect(result).toMatch(/src="[^"]+"/);
       expect(result).toMatch('width="100%"');
       expect(result).toMatch('height="200"');
       expect(result).toMatch('frameborder="0"');
@@ -83,7 +32,7 @@ describe('lib/generate/html', () => {
       });
 
       expect(result).toMatch(/^<iframe[^>]+><\/iframe>$/);
-      expect(result).toMatch(/src="https:\/\/play\.prx\.org\/e\?[^"]+"/);
+      expect(result).toMatch(/src="[^"]+"/);
       expect(result).toMatch(/[?&]sp=10/);
       expect(result).toMatch('width="100%"');
       expect(result).toMatch('height="600"');
@@ -101,7 +50,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch(
         /^<div style="[^"]+"><iframe[^>]+><\/iframe><\/div>$/
       );
-      expect(result).toMatch(/src="https:\/\/play\.prx\.org\/e\?[^"]+"/);
+      expect(result).toMatch(/src="[^"]+"/);
       expect(result).toMatch(/[?&]ca=1/);
       expect(result).toMatch(
         'div style="position: relative; height: 0; width: 100%; padding-top: calc(100% + 200px);"'
@@ -124,7 +73,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch(
         /^<div style="[^"]+"><iframe[^>]+><\/iframe><\/div>$/
       );
-      expect(result).toMatch(/src="https:\/\/play\.prx\.org\/e\?[^"]+"/);
+      expect(result).toMatch(/src="[^"]+"/);
       expect(result).toMatch(/[?&]ca=1/);
       expect(result).toMatch(/[?&]sp=15/);
       expect(result).toMatch(
