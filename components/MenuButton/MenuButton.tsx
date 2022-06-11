@@ -160,10 +160,11 @@ const MenuButton: React.FC<IMenuButtonProps> = ({
   }, [handlePointerEnter, handlePointerLeave]);
 
   return (
-    <span className={styles.root} ref={buttonRef}>
+    <span className={styles.root}>
       <IconButton
         {...props}
         {...actionProps}
+        ref={buttonRef}
         className={classNames}
         aria-describedby={promptId}
         aria-label={prompt}
