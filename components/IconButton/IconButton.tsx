@@ -14,7 +14,7 @@ export interface IIconButtonProps
   href?: string;
 }
 
-const IconButton = forwardRef<HTMLButtonElement, IIconButtonProps>(
+const IconButton = forwardRef<any, IIconButtonProps>(
   ({ children, className = null, href = null, ...props }, ref) => (
     <>
       <ThemeVars theme="IconButton" cssProps={styles} />
@@ -24,6 +24,7 @@ const IconButton = forwardRef<HTMLButtonElement, IIconButtonProps>(
           href={href}
           rel="noreferrer"
           target="_blank"
+          ref={ref}
         >
           {children}
         </a>
