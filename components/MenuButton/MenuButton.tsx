@@ -123,8 +123,6 @@ const MenuButton: React.FC<IMenuButtonProps> = ({
   const handlePointerEnter = useCallback((e: PointerEvent) => {
     if (!buttonRef.current || e.pointerType !== 'mouse') return;
 
-    console.log(buttonRef.current);
-
     const rect = buttonRef.current.getBoundingClientRect();
     const hoveringRight = e.offsetX < rect.width / 2;
 
