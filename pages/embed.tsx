@@ -219,24 +219,24 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         <FavoriteIcon aria-label="Support" />
                       </IconButton>
                     </div>
-
-                    <div className={styles.menuToggle}>
-                      <IconButton
-                        type="button"
-                        className={clsx(styles.iconButton, styles.moreButton)}
-                        onClick={handleMoreButtonClick}
-                      >
-                        {!showMenu ? (
-                          <MoreHorizIcon aria-label="Show menu" />
-                        ) : (
-                          <CloseIcon aria-label="Close menu" />
-                        )}
-                      </IconButton>
-                    </div>
                   </div>
 
                   <div className={styles.progress}>
                     <PlayerProgress />
+                  </div>
+
+                  <div className={styles.menuToggle}>
+                    <IconButton
+                      type="button"
+                      className={clsx(styles.iconButton, styles.moreButton)}
+                      onClick={handleMoreButtonClick}
+                    >
+                      {!showMenu ? (
+                        <MoreHorizIcon aria-label="Show menu" />
+                      ) : (
+                        <CloseIcon aria-label="Close menu" />
+                      )}
+                    </IconButton>
                   </div>
                 </div>
               </div>

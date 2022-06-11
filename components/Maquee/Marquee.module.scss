@@ -1,0 +1,25 @@
+.root {
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  padding-right: 0.25em;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(0);
+  }
+  90% {
+    transform: translateX(var(--marquee-offset));
+  }
+  100% {
+    transform: translateX(var(--marquee-offset));
+  }
+}

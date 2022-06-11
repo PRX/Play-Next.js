@@ -14,8 +14,13 @@
   --playerText-title-size--max: 1.5rem;
 }
 
+.root {
+  display: grid;
+  gap: 5px;
+}
+
 .title {
-  @include wordBreak;
+  display: grid;
 
   font-size: clamp(
     var(--playerText-title-size--min),
