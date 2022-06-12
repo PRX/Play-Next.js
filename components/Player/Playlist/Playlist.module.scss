@@ -121,7 +121,7 @@ $playlist-header-text-color: $white;
         var(--playlist-background-color--active)
       );
       background-image: linear-gradient(
-        to bottom,
+        to bottom right,
         var(--accent-gradient, transparent)
       );
       background-attachment: fixed;
