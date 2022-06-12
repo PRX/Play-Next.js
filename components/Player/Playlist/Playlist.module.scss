@@ -120,6 +120,10 @@ $playlist-header-text-color: $white;
       );
     }
   }
+
+  &.isExplicit {
+    grid-template-columns: var(--playlist-thumbnail-size) 1fr min-content min-content;
+  }
 }
 
 .trackThumbnail {
@@ -139,4 +143,9 @@ $playlist-header-text-color: $white;
 
   font-weight: bold;
   text-align: left;
+}
+
+.explicit {
+  fill: currentColor;
+  width: 1.5em;
 }

@@ -12,26 +12,49 @@
 :export {
   --playerText-title-size--min: 1.125rem;
   --playerText-title-size--max: 1.5rem;
-}
-
-.root {
-  display: grid;
-  gap: 5px;
-}
-
-.title {
-  display: grid;
-
-  font-size: clamp(
+  --playerText-title-size: clamp(
     var(--playerText-title-size--min),
     5vw,
     var(--playerText-title-size--max)
   );
+}
+
+.root {
+  display: grid;
+  grid-template-columns: var(--playerText-title-size) 1fr;
+  grid-template-areas:
+    'TT TT'
+    'ST ST';
+  gap: 5px;
+  align-items: center;
+
+  &.isExplicit {
+    grid-template-areas:
+      'EX TT'
+      'ST ST';
+  }
+}
+
+.title {
+  grid-area: TT;
+
+  display: grid;
+
+  font-size: var(--playerText-title-size);
   margin: 0;
 }
 
 .subtitle {
+  grid-area: ST;
+
   @include wordBreak;
 
   margin: 0;
+}
+
+.explicit {
+  grid-area: EX;
+
+  fill: currentColor;
+  width: var(--playerText-title-size);
 }

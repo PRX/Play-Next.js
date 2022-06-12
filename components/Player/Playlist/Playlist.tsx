@@ -14,6 +14,7 @@ import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
+import ExplicitIcon from '@svg/icons/Explicit.svg';
 import styles from './Playlist.module.scss';
 
 export interface IPlaylistProps
@@ -63,13 +64,14 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
         <div ref={rootRef} className={styles.playlist}>
           <div className={styles.tracks}>
             {tracks.map((track, index) => {
-              const { guid, title, imageUrl, duration } = track;
+              const { guid, title, imageUrl, duration, explicit } = track;
               const thumbSrc = imageUrl || defaultThumbUrl;
               return (
                 <button
                   type="button"
                   className={clsx(styles.track, {
-                    [styles.isCurrentTrack]: index === currentTrackIndex
+                    [styles.isCurrentTrack]: index === currentTrackIndex,
+                    [styles.isExplicit]: explicit
                   })}
                   key={guid}
                   onClick={handleTrackClick(index)}
@@ -89,6 +91,14 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                     <span />
                   )}
                   <span className={styles.trackTitle}>{title}</span>
+                  {explicit && (
+                    <span className={styles.explicit}>
+                      <ExplicitIcon
+                        className={styles.explicit}
+                        aria-label="Explicit"
+                      />
+                    </span>
+                  )}
                   <span className={styles.trackDuration}>{duration}</span>
                 </button>
               );
