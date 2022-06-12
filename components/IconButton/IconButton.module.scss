@@ -30,7 +30,7 @@
     fill: currentColor;
   }
 
-  &:hover {
+  &:active {
     background-color: var(--iconButton-background-color--hover);
     color: var(--iconButton-color--hover);
   }
@@ -40,5 +40,12 @@
     outline-color: var(--iconButton-outline-color--focus);
     outline-style: solid;
     color: var(--iconButton-color--focus);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--iconButton-background-color--hover);
+      color: var(--iconButton-color--hover);
+    }
   }
 }
