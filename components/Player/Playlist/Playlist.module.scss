@@ -19,6 +19,8 @@ $playlist-header-text-color: $white;
   --playlist-text-color--active: #{$playlist-text-color--active};
   --playlist-background-color: #{$playlist-background-color};
   --playlist-background-color--active: #{$playlist-background-color--active};
+  --playlist-background-image-position--active: top;
+  --playlist-background-image-size--active: 100vh;
   --playlist-thumbnail-size: #{$playlist-thumbnail-size};
   --playlist-thumbnail-corner-radius: #{$playlist-thumbnail-corner-radius};
   --playlist-divider-color: #{$playlist-divider-color};
@@ -118,6 +120,13 @@ $playlist-header-text-color: $white;
         --accent-color,
         var(--playlist-background-color--active)
       );
+      background-image: linear-gradient(
+        to bottom,
+        var(--accent-gradient, transparent)
+      );
+      background-attachment: fixed;
+      background-position: 0 var(--playlist-top);
+      background-size: 100vw var(--playlist-height);
     }
   }
 
