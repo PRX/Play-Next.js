@@ -184,9 +184,11 @@ $background-blur: 30px;
   justify-content: center;
   align-items: center;
   gap: $player-gap;
-  height: var(--playButton-size);
 
   line-height: 0;
+
+  --iconButton-size: clamp(20px, 14vw, 40px);
+  --playButton-size: clamp(40px, 20vw, 60px);
 }
 
 .controls {

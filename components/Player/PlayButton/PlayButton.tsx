@@ -11,6 +11,7 @@ import IconButton from '@components/IconButton';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
 import PauseIcon from '@svg/icons/Pause.svg';
 import styles from './PlayButton.module.scss';
+import ThemeVars from '@components/ThemeVars';
 
 export interface IPlayButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
@@ -24,18 +25,21 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
   };
 
   return (
-    <IconButton
-      className={styles.root}
-      {...props}
-      type="button"
-      onClick={handleClick}
-    >
-      {!playing ? (
-        <PlayArrowIcon aria-label="Play" />
-      ) : (
-        <PauseIcon aria-label="Pause" />
-      )}
-    </IconButton>
+    <>
+      <ThemeVars theme="PlayButton" cssProps={styles} />
+      <IconButton
+        className={styles.root}
+        {...props}
+        type="button"
+        onClick={handleClick}
+      >
+        {!playing ? (
+          <PlayArrowIcon aria-label="Play" />
+        ) : (
+          <PauseIcon aria-label="Pause" />
+        )}
+      </IconButton>
+    </>
   );
 };
 
