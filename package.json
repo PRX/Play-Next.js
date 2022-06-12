@@ -29,8 +29,10 @@
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "react-is": "^18.1.0",
     "rss-parser": "^3.12.0",
-    "sharp": "^0.30.5"
+    "sharp": "^0.30.5",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
