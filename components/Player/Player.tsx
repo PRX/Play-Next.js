@@ -64,6 +64,10 @@ const Player: React.FC<IPlayerProps> = ({
       type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
       payload: audioElm?.duration
     });
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
+      payload: 0.00001
+    });
 
     if (playing) {
       audioElm.play();

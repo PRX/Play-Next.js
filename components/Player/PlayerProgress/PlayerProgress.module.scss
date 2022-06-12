@@ -47,7 +47,7 @@ $playerProgress-gap: 20px;
     top: 0;
     left: 0;
     // right: 100%;
-    width: calc(var(--progress) * 100%);
+    width: calc(var(--progress, 0) * 100%);
     height: var(--track-size);
 
     // transform: translateX(calc(var(--progress) * 100%));
