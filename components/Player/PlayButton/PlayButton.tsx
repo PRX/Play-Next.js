@@ -7,6 +7,7 @@ import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
+import ThemeVars from '@components/ThemeVars';
 import IconButton from '@components/IconButton';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
 import PauseIcon from '@svg/icons/Pause.svg';
@@ -24,18 +25,21 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
   };
 
   return (
-    <IconButton
-      className={styles.root}
-      {...props}
-      type="button"
-      onClick={handleClick}
-    >
-      {!playing ? (
-        <PlayArrowIcon aria-label="Play" />
-      ) : (
-        <PauseIcon aria-label="Pause" />
-      )}
-    </IconButton>
+    <>
+      <ThemeVars theme="PlayButton" cssProps={styles} />
+      <IconButton
+        className={styles.root}
+        {...props}
+        type="button"
+        onClick={handleClick}
+      >
+        {!playing ? (
+          <PlayArrowIcon aria-label="Play" />
+        ) : (
+          <PauseIcon aria-label="Pause" />
+        )}
+      </IconButton>
+    </>
   );
 };
 

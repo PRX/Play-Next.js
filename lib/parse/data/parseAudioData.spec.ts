@@ -15,7 +15,8 @@ describe('lib/parse/data', () => {
         subtitle: 'bar',
         image: '//foo.com/image.png',
         season: '42',
-        duration: '12:34'
+        duration: '12:34',
+        explicit: 'true'
       }
     };
 
@@ -31,7 +32,8 @@ describe('lib/parse/data', () => {
         subtitle: 'bar',
         imageUrl: '//foo.com/image.png',
         season: 42,
-        duration: '12:34'
+        duration: '12:34',
+        explicit: true
       });
     });
 
@@ -48,7 +50,8 @@ describe('lib/parse/data', () => {
         subtitle: 'bar',
         imageUrl: '//foo.com/image.png',
         season: 42,
-        duration: '12:34'
+        duration: '12:34',
+        explicit: true
       });
     });
 
@@ -79,7 +82,8 @@ describe('lib/parse/data', () => {
         subtitle: 'bar',
         imageUrl: '//foo.com/image.png',
         season: 42,
-        duration: '12:34'
+        duration: '12:34',
+        explicit: true
       });
     });
   });

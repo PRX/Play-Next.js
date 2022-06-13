@@ -84,7 +84,7 @@ export interface IEmbedParams {
   /**
    * Provide a custom accent color.
    */
-  ac?: string;
+  ac?: string | string[];
 
   /**
    * DEPRECATED
@@ -132,7 +132,7 @@ export interface IEmbedConfig {
   playlistSeason?: number;
   playlistCategory?: string;
   showCoverArt?: boolean;
-  accentColor?: string;
+  accentColor?: string[];
 }
 
 /**

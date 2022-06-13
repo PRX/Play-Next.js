@@ -21,7 +21,7 @@ describe('lib/parse/config', () => {
       playlistSeason: 2,
       playlistCategory: 'CT',
       showCoverArt: true,
-      accentColor: 'ff0000'
+      accentColor: ['#ff0000']
     };
 
     test('should handle expected parameters', () => {
@@ -44,7 +44,7 @@ describe('lib/parse/config', () => {
       expect(result.se).toBe(2);
       expect(result.ct).toBe('CT');
       expect(result.ca).toBe(1);
-      expect(result.ac).toBe('ff0000');
+      expect(result.ac).toStrictEqual(['ff0000']);
     });
 
     test('should not include falsy params', () => {

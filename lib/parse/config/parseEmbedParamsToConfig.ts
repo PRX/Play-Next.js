@@ -38,6 +38,20 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
               [prop]: convertStringToBoolean(v)
             };
 
+          case 'accentColor':
+            return {
+              ...a,
+              [prop]: (Array.isArray(v) ? (v as string[]) : [v])
+                .map((ac) =>
+                  /^[a-f0-9]{2}[a-f0-9]{2}[a-f0-9]{2}(?:[a-f0-9]{2})?(?:\s1?\d?\d%)?$/i.test(
+                    ac
+                  )
+                    ? `#${ac}`
+                    : null
+                )
+                .filter((ac) => !!ac)
+            };
+
           default:
             return {
               ...a,

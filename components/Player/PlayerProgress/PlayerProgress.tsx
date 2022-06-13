@@ -4,7 +4,15 @@
  */
 
 import type React from 'react';
-import { useCallback, useContext, useEffect, useReducer, useRef } from 'react';
+import {
+  CSSProperties,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState
+} from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import {
@@ -21,6 +29,7 @@ export interface IPlayerProgressProps {
 
 export interface IPlayerProgressCssProps extends React.CSSProperties {
   '--progress': number;
+  '--track-width'?: string;
 }
 
 const PlayerProgress: React.FC<IPlayerProgressProps> = ({
@@ -46,13 +55,21 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   } = playerState;
   const { duration: trackDuration } = tracks[currentTrackIndex];
   const progress = scrubPosition || played || 0;
-  const progressStyles: IPlayerProgressCssProps = {
-    '--progress': progress
-  };
+  const [progressStyles, setProgressStyles] = useState({});
   const currentDuration = convertSecondsToDuration(Math.round(playedSeconds));
   const totalDuration = duration
     ? convertSecondsToDuration(Math.round(duration))
     : trackDuration;
+
+  /**
+   * Update progress styles.
+   */
+  const updateProgressStyles = useCallback(() => {
+    const rect = trackRef.current.getBoundingClientRect();
+    setProgressStyles({
+      '--track-width': `${rect.width}px`
+    });
+  }, []);
 
   /**
    * Update scrub position on the progress track.
@@ -61,7 +78,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    */
   const updateScrubPosition = useCallback((e: PointerEvent) => {
     const rect = trackRef.current.getBoundingClientRect();
-    const position = e.offsetX / rect.width;
+    const position = Math.max(0, Math.min(e.offsetX / rect.width, 1));
 
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_SCRUB_POSITION,
@@ -143,6 +160,13 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   }, [audioElm.duration, handlePointerMove, playerDispatch, scrubPosition]);
 
   /**
+   * Window resize handler.
+   */
+  const handleResize = useCallback(() => {
+    updateProgressStyles();
+  }, [updateProgressStyles]);
+
+  /**
    * Update state when player state's currentTime changes.
    */
   useEffect(() => {
@@ -191,18 +215,26 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     trackRef.current.addEventListener('pointerdown', handlePointerDown);
     trackRef.current.addEventListener('pointerup', handlePointerUp);
 
+    window.addEventListener('resize', handleResize);
+
     return () => {
       refElm.removeEventListener('pointerdown', handlePointerDown);
       refElm.removeEventListener('pointerup', handlePointerUp);
+
+      window.removeEventListener('resize', handleResize);
     };
-  }, [handlePointerDown, handlePointerUp]);
+  }, [handlePointerDown, handlePointerUp, handleResize]);
 
   return (
     <>
       <ThemeVars theme="PlayerProgress" cssProps={styles} />
       <div className={styles.root}>
         <div className={styles.currentTime}>{currentDuration}</div>
-        <div className={styles.track} style={progressStyles} ref={trackRef} />
+        <div
+          className={styles.track}
+          style={{ ...progressStyles, '--progress': progress } as CSSProperties}
+          ref={trackRef}
+        />
         <div className={styles.duration}>{totalDuration}</div>
       </div>
     </>

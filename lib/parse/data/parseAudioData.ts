@@ -1,4 +1,5 @@
 import type { IAudioData, IRssItem } from '@interfaces/data';
+import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 
 const parseAudioData = ({
@@ -20,7 +21,10 @@ const parseAudioData = ({
     ...(itunes.subtitle && { subtitle: itunes.subtitle }),
     ...(itunes.image && { imageUrl: itunes.image }),
     ...(itunes.duration && { duration: itunes.duration }),
-    ...(itunes.season && { season: convertStringToInteger(itunes.season) })
+    ...(itunes.season && { season: convertStringToInteger(itunes.season) }),
+    ...(itunes.explicit && {
+      explicit: convertStringToBoolean(itunes.explicit)
+    })
   })
 });
 

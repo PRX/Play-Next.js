@@ -1,5 +1,5 @@
-import { IAudioData, IEmbedData, IRssItem } from '@interfaces/data';
-import Parser from 'rss-parser';
+import type { IAudioData, IEmbedData, IRssItem } from '@interfaces/data';
+import type Parser from 'rss-parser';
 import parseEmbedData from './parseEmbedData';
 
 describe('lib/parse/data', () => {
@@ -11,7 +11,11 @@ describe('lib/parse/data', () => {
       title: 'Foo',
       link: '//foo.com',
       itunes: {
-        image: '//foo.com/foo-3000.png'
+        image: '//foo.com/foo-3000.png',
+        owner: {
+          name: 'John Doe',
+          email: 'email@address.com'
+        }
       },
       items: [
         {
@@ -92,7 +96,11 @@ describe('lib/parse/data', () => {
         followUrls: {
           rss: '//foo.com/feed.rss'
         },
-        shareUrl: '//foo.com/foo-bar'
+        shareUrl: '//foo.com/foo-bar',
+        owner: {
+          name: 'John Doe',
+          email: 'email@address.com'
+        }
       } as IEmbedData);
     });
 
@@ -117,7 +125,11 @@ describe('lib/parse/data', () => {
         followUrls: {
           rss: '//foo.com/feed.rss'
         },
-        shareUrl: '//foo.com/foo-baz'
+        shareUrl: '//foo.com/foo-baz',
+        owner: {
+          name: 'John Doe',
+          email: 'email@address.com'
+        }
       } as IEmbedData);
     });
 
@@ -142,7 +154,11 @@ describe('lib/parse/data', () => {
         followUrls: {
           rss: '//foo.com/feed.rss'
         },
-        shareUrl: '//foo.com/foo-bar'
+        shareUrl: '//foo.com/foo-bar',
+        owner: {
+          name: 'John Doe',
+          email: 'email@address.com'
+        }
       } as IEmbedData);
     });
 

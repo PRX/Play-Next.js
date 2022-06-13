@@ -58,4 +58,9 @@ export interface IAudioData {
    * Categories that apply to audio. Used to filter playlists.
    */
   categories?: string[];
+
+  /**
+   * Contains explicit content.
+   */
+  explicit?: boolean;
 }

@@ -45,13 +45,18 @@ $playerProgress-gap: 20px;
 
     position: absolute;
     top: 0;
-    right: 100%;
-    width: 100%;
+    left: 0;
+    width: calc(var(--progress, 0) * 100%);
     height: var(--track-size);
 
-    transform: translateX(calc(var(--progress, 0) * 100%));
-
     background-color: var(--accent-color, var(--playerProgress-progress-color));
+    background-image: linear-gradient(
+      to right,
+      var(--accent-gradient, transparent)
+    );
+    background-size: var(--track-width, calc(100vw - 150px));
+    background-attachment: fixed;
+    background-position: center;
 
     border-right: var(--playerProgress-handle-size) solid
       var(--playerProgress-handle-color);

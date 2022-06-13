@@ -135,7 +135,7 @@ $background-blur: 30px;
   grid-template-columns: var(--playerThumbnail-size) 1fr max-content;
   grid-template-rows: max-content 1fr max-content;
   grid-template-areas:
-    'THUMB TEXT  TEXT'
+    'THUMB TEXT  MTOG'
     'PANEL PANEL PANEL'
     'PROG  PROG  PROG';
   align-content: stretch;
@@ -146,7 +146,7 @@ $background-blur: 30px;
 
   .withCoverArt & {
     grid-template-areas:
-      'TEXT  TEXT  TEXT'
+      'TEXT  TEXT  MTOG'
       'PANEL PANEL PANEL'
       'PROG  PROG  PROG';
   }
@@ -162,9 +162,6 @@ $background-blur: 30px;
 
 .text {
   grid-area: TEXT;
-
-  display: grid;
-  gap: $player-gap / 2;
 }
 
 .logo {
@@ -184,17 +181,17 @@ $background-blur: 30px;
   align-self: center;
 
   display: grid;
-  grid-template-columns: 1fr max-content;
-  grid-template-areas: 'CTRLS MTOG';
+  justify-content: center;
   align-items: center;
   gap: $player-gap;
 
   line-height: 0;
+
+  --iconButton-size: clamp(20px, 14vw, 40px);
+  --playButton-size: clamp(40px, 20vw, 60px);
 }
 
 .controls {
-  grid-area: CTRLS;
-
   display: flex;
   align-items: center;
   gap: 5px;
@@ -205,8 +202,6 @@ $background-blur: 30px;
 }
 
 .menu {
-  grid-area: CTRLS;
-
   display: none;
   align-items: center;
   gap: 5px;
@@ -236,7 +231,7 @@ $background-blur: 30px;
   gap: 5px;
 }
 
-@media only screen and (min-width: 500px) {
+@media only screen and (min-width: 600px) {
   .playerMain {
     --playerThumbnail-size: #{$playerThumbnail-size};
 
@@ -262,7 +257,8 @@ $background-blur: 30px;
   }
 
   .panel {
-    grid-template-areas: 'CTRLS MENU';
+    display: flex;
+    justify-content: space-between;
   }
 
   .controls {
