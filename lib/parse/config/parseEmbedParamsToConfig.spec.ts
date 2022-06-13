@@ -43,7 +43,7 @@ describe('lib/parse/config', () => {
       expect(result.playlistSeason).toBe(2);
       expect(result.playlistCategory).toBe('CT');
       expect(result.showCoverArt).toBe(true);
-      expect(result.accentColor).toBe('ff0000');
+      expect(result.accentColor).toStrictEqual(['#ff0000']);
     });
 
     test('should process `showPlaylist` into integer', () => {
@@ -66,6 +66,18 @@ describe('lib/parse/config', () => {
       const result = parseEmbedParamsToConfig({ sp: 'all' });
 
       expect(result.showPlaylist).toBe('all');
+    });
+
+    test('should process `accentColor` into array of sanitized hex values', () => {
+      const result = parseEmbedParamsToConfig({
+        ac: ['FF0000', '00FF00 20%', '0000FF42', 'NOT VALID']
+      });
+
+      expect(result.accentColor).toStrictEqual([
+        '#FF0000',
+        '#00FF00 20%',
+        '#0000FF42'
+      ]);
     });
 
     test('should handle no params', () => {

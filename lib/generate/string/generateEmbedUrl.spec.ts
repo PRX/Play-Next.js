@@ -40,7 +40,7 @@ describe('lib/generate/string', () => {
         playlistSeason: 2,
         playlistCategory: 'CT',
         showCoverArt: true,
-        accentColor: 'ff0000'
+        accentColor: ['#ff0000']
       });
 
       expect(result).toMatch(/[?&]tt=TT/);

@@ -12,16 +12,22 @@ import { EmbedConfigKeysMap } from '@interfaces/embed/IEmbedConfig';
  */
 const parseEmbedConfigToParams = (config: IEmbedConfig): IEmbedParams => {
   const params: IEmbedParams = Object.entries(config).reduce(
-    (a, c: [keyof IEmbedConfig, string]) => {
+    (a, c: [keyof IEmbedConfig, any]) => {
       const [k, v] = c;
       const prop = EmbedConfigKeysMap.get(k);
 
       if (prop && v) {
-        switch (typeof v) {
-          case 'boolean':
+        switch (k) {
+          case 'showCoverArt':
             return {
               ...a,
               [prop]: 1
+            };
+
+          case 'accentColor':
+            return {
+              ...a,
+              [prop]: v.map((ac: string) => ac.replace(/^#/, '')) // Remove '#' prefix.
             };
 
           default:
