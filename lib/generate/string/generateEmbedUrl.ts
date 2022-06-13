@@ -9,9 +9,16 @@ import parseEmbedConfigToParams from '@lib/parse/config/parseEmbedConfigToParams
 
 const generateEmbedUrl = (config: IEmbedConfig) => {
   const embedUrlHost = typeof window !== 'undefined' && window.location.origin;
-  const embedUrlParams = new URLSearchParams({
-    ...parseEmbedConfigToParams(config)
-  });
+  const urlSearchPrams = Object.entries(
+    parseEmbedConfigToParams(config)
+  ).reduce(
+    (a, [k, v]) => [
+      ...a,
+      ...(Array.isArray(v) ? v.map((cv) => [k, cv]) : [[k, v]])
+    ],
+    [] as string[][]
+  );
+  const embedUrlParams = new URLSearchParams(urlSearchPrams);
 
   embedUrlParams.sort();
 

@@ -7,7 +7,6 @@
 import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
-import { PlayerActionTypes } from '@states/player/Player.actions';
 import IconButton from '@components/IconButton';
 import ForwardIcon from '@svg/icons/Forward.svg';
 
@@ -15,13 +14,10 @@ export interface IForwardButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const ForwardButton: React.FC<IForwardButtonProps> = ({ ...props }) => {
-  const { audioElm, dispatch } = useContext(PlayerContext);
+  const { seekBy } = useContext(PlayerContext);
 
   const handleClick = () => {
-    dispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: Math.min(audioElm.currentTime + 30, audioElm.duration)
-    });
+    seekBy(30);
   };
 
   return (

@@ -2,6 +2,8 @@
  * Defines embed config interfaces and types.
  */
 
+import { ParsedUrlQuery } from 'querystring';
+
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !! If these change ALL EXISTING EMBEDS WILL BREAK !!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -9,7 +11,7 @@
 /**
  * Parameter object keys expected from requests.
  */
-export interface IEmbedParams {
+export interface IEmbedParams extends ParsedUrlQuery {
   /**
    * Use to override title initially shown in player.
    */

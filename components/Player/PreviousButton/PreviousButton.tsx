@@ -6,20 +6,17 @@
 import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
-import { PlayerActionTypes } from '@states/player/Player.actions';
 import IconButton from '@components/IconButton';
 import PreviousIcon from '@svg/icons/Previous.svg';
 
-export interface INextButtonProps
+export interface IPreviousButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-const PreviousButton: React.FC<INextButtonProps> = ({ ...props }) => {
-  const { dispatch } = useContext(PlayerContext);
+const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
+  const { previousTrack } = useContext(PlayerContext);
 
   const handleClick = () => {
-    dispatch({
-      type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
-    });
+    previousTrack();
   };
 
   return (
