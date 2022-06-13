@@ -86,6 +86,9 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     });
   }, []);
 
+  /**
+   * Update player progress visuals.
+   */
   const updateProgress = useCallback(
     (seconds?: number) => {
       const { currentTime: ct, duration: d } = audioElm;
@@ -171,15 +174,9 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    */
   useEffect(() => {
     if (playerCurrentTime !== null) {
-      dispatch({
-        type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
-        payload: {
-          playedSeconds: playerCurrentTime,
-          played: playerCurrentTime / duration
-        }
-      });
+      updateProgress(playerCurrentTime);
     }
-  }, [duration, playerCurrentTime]);
+  }, [duration, playerCurrentTime, updateProgress]);
 
   /**
    * Setup update interval.

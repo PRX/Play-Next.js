@@ -17,25 +17,28 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
     (a, c: [keyof IEmbedParams, string]) => {
       const [k, v] = c;
       const prop = EmbedParamKeysMap.get(k);
+      const normalizeValue = (val: string | string[]) =>
+        Array.isArray(val) ? val[0] : val;
 
       if (prop) {
         switch (prop) {
           case 'showPlaylist':
             return {
               ...a,
-              [prop]: v === 'all' ? v : convertStringToInteger(v)
+              [prop]:
+                v === 'all' ? v : convertStringToInteger(normalizeValue(v))
             };
 
           case 'playlistSeason':
             return {
               ...a,
-              [prop]: convertStringToInteger(v)
+              [prop]: convertStringToInteger(normalizeValue(v))
             };
 
           case 'showCoverArt':
             return {
               ...a,
-              [prop]: convertStringToBoolean(v)
+              [prop]: convertStringToBoolean(normalizeValue(v))
             };
 
           case 'accentColor':
@@ -55,7 +58,7 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
           default:
             return {
               ...a,
-              [prop]: v
+              [prop]: normalizeValue(v)
             };
         }
       }

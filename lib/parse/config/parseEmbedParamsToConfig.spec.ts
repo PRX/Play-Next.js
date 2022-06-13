@@ -1,15 +1,16 @@
+import { IEmbedParams } from '@interfaces/embed/IEmbedConfig';
 import parseEmbedParamsToConfig from './parseEmbedParamsToConfig';
 
 describe('lib/parse/config', () => {
   describe('parseEmbedParamsToConfig', () => {
-    const params = {
+    const params: IEmbedParams = {
       tt: 'TT',
       ts: 'TS',
       tc: 'TC',
       ua: 'UA',
       ui: 'UI',
       ue: 'UE',
-      uf: 'UF',
+      uf: ['UF', 'UF2'],
       if: 'IF',
       ge: 'GE',
       uc: 'UC',
