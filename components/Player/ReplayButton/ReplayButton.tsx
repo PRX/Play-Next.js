@@ -3,7 +3,8 @@
  * Jump 5 seconds back in currently playing track.
  */
 
-import React, { useContext } from 'react';
+import type React from 'react';
+import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import IconButton from '@components/IconButton';

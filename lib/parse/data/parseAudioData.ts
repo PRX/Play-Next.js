@@ -1,4 +1,4 @@
-import { IAudioData, IRssItem } from '@interfaces/data';
+import type { IAudioData, IRssItem } from '@interfaces/data';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 
 const parseAudioData = ({

@@ -3,14 +3,14 @@
  * Exports the Embed page component.
  */
 
+import type { GetServerSideProps } from 'next';
+import type { IEmbedData } from '@interfaces/data';
+import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import { useReducer, useState } from 'react';
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import clsx from 'clsx';
-import { IEmbedData } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
-import parseEmbedParams from '@lib/parse/config/parseEmbedParams';
+import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import {
@@ -18,21 +18,26 @@ import {
   embedStateReducer
 } from '@states/embed/Embed.reducer';
 import { EmbedActionTypes } from '@states/embed/Embed.actions';
+import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import Modal from '@components/Modal';
 import PlayButton from '@components/Player/PlayButton';
 import PlayerProgress from '@components/Player/PlayerProgress';
+import MenuButton from '@components/MenuButton';
+import IconButton from '@components/IconButton';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import AddIcon from '@svg/icons/Add.svg';
 import ShareIcon from '@svg/icons/Share.svg';
 import FavoriteIcon from '@svg/icons/Favorite.svg';
+import CodeIcon from '@svg/icons/Code.svg';
+import EmailIcon from '@svg/icons/Email.svg';
+import LinkIcon from '@svg/icons/Link.svg';
 import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
-const IconButton = dynamic(() => import('@components/IconButton'));
 const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
 const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
 const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
@@ -54,7 +59,7 @@ export interface IEmbedPageProps {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
-  const { audio, playlist, bgImageUrl } = data;
+  const { audio, playlist, bgImageUrl, shareUrl, owner } = data;
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
@@ -70,6 +75,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
   });
+  const embedHtml = generateEmbedHtml(config);
 
   const handleMoreButtonClick = () => {
     setShowMenu(!showMenu);
@@ -248,7 +254,35 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
           )}
 
           {shareShown && (
-            <Modal onClose={handleShareCloseClick}>Share Menu</Modal>
+            <Modal onClose={handleShareCloseClick}>
+              <nav className={styles.modalMenu}>
+                {owner?.email && (
+                  <MenuButton
+                    action="link"
+                    linkHref={`mailto:${owner.email}`}
+                    label={`Email ${owner.name}`}
+                  >
+                    <EmailIcon />
+                  </MenuButton>
+                )}
+
+                <MenuButton
+                  action="clipboard"
+                  clipboardText={shareUrl}
+                  label="Link"
+                >
+                  <LinkIcon />
+                </MenuButton>
+
+                <MenuButton
+                  action="clipboard"
+                  clipboardText={embedHtml}
+                  label="Embed Code"
+                >
+                  <CodeIcon />
+                </MenuButton>
+              </nav>
+            </Modal>
           )}
 
           {supportShown && (
@@ -262,7 +296,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // 1. Convert query params into embed config.
-  const config = parseEmbedParams(query);
+  const config = parseEmbedParamsToConfig(query);
   // 2. If RSS feed URL is provided.
   const rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
   // 3. Parse config and RSS data into embed data.

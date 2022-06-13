@@ -1,6 +1,6 @@
-import { IAudioData, IEmbedData, IRssItem } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
-import Parser from 'rss-parser';
+import type { IAudioData, IEmbedData, IRssItem } from '@interfaces/data';
+import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import type Parser from 'rss-parser';
 import parseAudioData from './parseAudioData';
 
 const parseEmbedData = (
@@ -21,20 +21,20 @@ const parseEmbedData = (
     playlistCategory
   } = config;
   const {
-    title: rssSubtitle,
+    title: rssTitle,
     link: rssShareUrl,
     image: rssImage,
     itunes,
     items: rssItems
   } = rssData || {};
   const { url: rssImageUrl } = rssImage || {};
-  const { image: rssItunesImage } = itunes || {};
+  const { image: rssItunesImage, owner: rssItunesOwner } = itunes || {};
   const audioItems =
     rssItems &&
     rssItems.map((i) => ({
       ...parseAudioData(i as IRssItem),
       // Use feed title as audio items' subtitle.
-      subtitle: rssSubtitle
+      subtitle: rssTitle
     }));
   const audio: IAudioData = {
     // Establish defaults from feed props.
@@ -84,7 +84,10 @@ const parseEmbedData = (
     ...(bgImageUrl && { bgImageUrl }),
     ...(audioHasProps && { audio }),
     ...(playlist && { playlist }),
-    ...(feedUrl && { shareUrl: showPlaylist ? rssShareUrl : audio.link }),
+    ...(feedUrl && {
+      shareUrl: showPlaylist ? rssShareUrl : audio.link,
+      ...(rssItunesOwner && { owner: rssItunesOwner })
+    }),
     followUrls: {
       ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
     }

@@ -3,7 +3,7 @@
  * Creates context for cta region data.
  */
 
-import { IPlayerContext } from '@interfaces/context/IPlayerContext';
+import type { IPlayerContext } from '@interfaces/contexts/IPlayerContext';
 import React from 'react';
 
 const PlayerContext = React.createContext({

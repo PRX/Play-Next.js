@@ -4,7 +4,7 @@
  * player.
  */
 
-import { IStateContext } from './IStateContext';
+import type { IStateContext } from './IStateContext';
 
 export interface IPlayerContext extends IStateContext {
   audioElm: HTMLAudioElement;

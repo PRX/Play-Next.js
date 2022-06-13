@@ -230,6 +230,12 @@ $background-blur: 30px;
   overflow: hidden;
 }
 
+.modalMenu {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 @media only screen and (min-width: 500px) {
   .playerMain {
     --playerThumbnail-size: #{$playerThumbnail-size};

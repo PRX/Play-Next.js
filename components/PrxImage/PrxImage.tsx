@@ -3,8 +3,9 @@
  * Component to render Next.js image component for trusted src URL domains.
  */
 
-import React from 'react';
-import Image, { ImageProps } from 'next/image';
+import type React from 'react';
+import type { ImageProps } from 'next/image';
+import Image from 'next/image';
 import isTrustedImageDomain from '@lib/validate/isTrustedImageDomain';
 
 export interface IPrxImageProps extends ImageProps {}

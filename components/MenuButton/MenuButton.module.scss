@@ -1,0 +1,89 @@
+@import '@styles/colors';
+
+@mixin promptAnimation($name) {
+  animation: #{$name} 200ms cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+.root {
+  position: relative;
+  display: grid;
+  user-select: none;
+}
+
+.prompt {
+  justify-self: center;
+  position: absolute;
+  display: block;
+  top: calc(100% + 5px);
+  height: auto;
+  z-index: 9;
+  white-space: nowrap;
+  display: none;
+
+  &.hoverRight {
+    display: block;
+    @include promptAnimation(fromRight);
+  }
+  &.hoverLeft {
+    display: block;
+    @include promptAnimation(fromLeft);
+  }
+
+  &.copiedStart {
+    display: block;
+    animation: copiedStart 200ms ease-in-out forwards;
+  }
+  &.copiedEnd {
+    display: block;
+    animation: copiedEnd 200ms ease-in forwards;
+    color: $success-500;
+    font-weight: 700;
+  }
+}
+
+@keyframes fromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes copiedStart {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+    color: $success-500;
+    font-weight: 700;
+  }
+  100% {
+    transform: scale(1) translateX(0);
+    color: $success-500;
+    font-weight: 700;
+  }
+}
+
+@keyframes copiedEnd {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

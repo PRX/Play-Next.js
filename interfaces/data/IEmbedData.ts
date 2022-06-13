@@ -2,7 +2,7 @@
  * Defines Embed data interfaces and types.
  */
 
-import { IAudioData } from './IAudioData';
+import type { IAudioData } from './IAudioData';
 
 /**
  * Embed data interface.
@@ -32,6 +32,14 @@ export interface IEmbedData {
    * URL to be used in sharing links.
    */
   shareUrl?: string;
+
+  /**
+   * Owner information.
+   */
+  owner?: {
+    name?: string;
+    email?: string;
+  };
 
   /**
    * URL's for social platforms to follow the creator on.

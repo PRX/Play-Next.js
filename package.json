@@ -25,11 +25,14 @@
     "@styled-icons/fa-brands": "^10.38.0",
     "@svgr/webpack": "^6.2.1",
     "clsx": "^1.1.1",
+    "copy-to-clipboard": "^3.3.1",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "react-is": "^18.1.0",
     "rss-parser": "^3.12.0",
-    "sharp": "^0.30.5"
+    "sharp": "^0.30.5",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",

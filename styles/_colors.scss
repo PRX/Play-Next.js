@@ -10,6 +10,18 @@ $white-a-70: hsl(0 0% 100% / 0.7);
 $white-a-80: hsl(0 0% 100% / 0.8);
 $white-a-90: hsl(0 0% 100% / 0.9);
 
+// Black at specific alphas.
+$black: hsl(0 0% 100%);
+$black-a-10: hsl(0 0% 0% / 0.1);
+$black-a-20: hsl(0 0% 0% / 0.2);
+$black-a-30: hsl(0 0% 0% / 0.3);
+$black-a-40: hsl(0 0% 0% / 0.4);
+$black-a-50: hsl(0 0% 0% / 0.5);
+$black-a-60: hsl(0 0% 0% / 0.6);
+$black-a-70: hsl(0 0% 0% / 0.7);
+$black-a-80: hsl(0 0% 0% / 0.8);
+$black-a-90: hsl(0 0% 0% / 0.9);
+
 // Grays
 $grey-100: hsl(0 0% 10%);
 $grey-200: hsl(0 0% 20%);
@@ -31,3 +43,8 @@ $primary-900: #003a57;
 $secondary-100: #fccc88;
 $secondary-500: #ff9600;
 $secondary-900: #8a570f;
+
+// Success
+$success-100: #98f0ba;
+$success-500: #23c763;
+$success-900: #178240;

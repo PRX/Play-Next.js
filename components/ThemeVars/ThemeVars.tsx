@@ -3,8 +3,8 @@
  * Injects a theme's custom CSS properties into `:root`.
  */
 
+import type React from 'react';
 import Head from 'next/head';
-import React from 'react';
 
 export interface IThemeVarsProps {
   theme: string;

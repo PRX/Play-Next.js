@@ -76,6 +76,10 @@ $playlist-header-text-color: $white;
   color: var(--playlist-text-color);
   font-size: 1rem;
 
+  &:last-of-type {
+    border-bottom: none;
+  }
+
   &::before {
     content: '';
     position: absolute;

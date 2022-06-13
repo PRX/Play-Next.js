@@ -3,14 +3,9 @@
  * Higher order component for Audio Player
  */
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState
-} from 'react';
-import { IAudioData } from '@interfaces/data';
+import type React from 'react';
+import type { IAudioData } from '@interfaces/data';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import {
   playerInitialState,
   playerStateReducer
@@ -62,19 +57,18 @@ const Player: React.FC<IPlayerProps> = ({
     }
   }, [audioElm?.ended]);
 
-  const handleDurationChange = useCallback(() => {
+  const handleLoadedMetadata = useCallback(() => {
+    // When audio data loads, update duration and current time, then start
+    // playing if we were playing before.
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
       payload: audioElm?.duration
     });
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: audioElm?.currentTime
+      payload: 0.00001
     });
-  }, [audioElm?.currentTime, audioElm?.duration]);
 
-  const handleLoadedData = useCallback(() => {
-    // When audio data loads, start playing if we were playing before.
     if (playing) {
       audioElm.play();
     }
@@ -90,26 +84,17 @@ const Player: React.FC<IPlayerProps> = ({
     // Setup event handlers on audio element.
     audioElm?.addEventListener('play', handlePlay);
     audioElm?.addEventListener('pause', handlePause);
-    audioElm?.addEventListener('durationchange', handleDurationChange);
-    audioElm?.addEventListener('loadeddata', handleLoadedData);
+    audioElm?.addEventListener('loadedmetadata', handleLoadedMetadata);
     audioElm?.addEventListener('ended', handleEnded);
 
     return () => {
       // Cleanup event handlers between dependency changes.
       audioElm?.removeEventListener('play', handlePlay);
       audioElm?.removeEventListener('pause', handlePause);
-      audioElm?.removeEventListener('durationchange', handleDurationChange);
-      audioElm?.removeEventListener('loadedmetadata', handleLoadedData);
+      audioElm?.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audioElm?.removeEventListener('ended', handleEnded);
     };
-  }, [
-    audioElm,
-    handleDurationChange,
-    handleLoadedData,
-    handlePause,
-    handlePlay,
-    handleEnded
-  ]);
+  }, [audioElm, handleLoadedMetadata, handlePause, handlePlay, handleEnded]);
 
   useEffect(() => {
     if (!playing) {

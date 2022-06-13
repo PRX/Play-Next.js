@@ -3,7 +3,8 @@
  * Cover art component for player.
  */
 
-import React, { useContext } from 'react';
+import type React from 'react';
+import { useContext } from 'react';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';

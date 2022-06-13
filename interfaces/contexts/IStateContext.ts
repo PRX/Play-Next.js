@@ -3,9 +3,9 @@
  * Interface for state context. Used to pass state and dispatcher via context.
  */
 
-import React from 'react';
-import { IPlayerAction } from '@states/player/Player.actions';
-import { IPlayerState } from '../states/player';
+import type React from 'react';
+import type { IPlayerAction } from '@states/player/Player.actions';
+import type { IPlayerState } from '../states/player';
 
 export interface IStateContext {
   state: IPlayerState;
