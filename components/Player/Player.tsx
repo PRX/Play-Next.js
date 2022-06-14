@@ -36,16 +36,20 @@ const Player: React.FC<IPlayerProps> = ({
     tracks,
     ...(startIndex && { currentTrackIndex: startIndex })
   });
-  const { playing, currentTrackIndex, currentTime } = state;
+  const { playing, currentTrackIndex, currentTime, muted, volume } = state;
   const currentTrack = tracks[currentTrackIndex];
   const isLastTrack = currentTrackIndex === tracks.length - 1;
   const { url } = currentTrack;
 
-  const toggleMute = () => {
-    dispatch({
-      type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
-    });
-  };
+  const boundedTime = useCallback(
+    (time: number) => Math.min(Math.max(0.00001, time), audioElm.duration),
+    [audioElm?.duration]
+  );
+
+  const boundedVolume = useCallback(
+    (newVolume: number) => Math.min(Math.max(0, newVolume), 1),
+    []
+  );
 
   const play = () => {
     dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
@@ -58,11 +62,6 @@ const Player: React.FC<IPlayerProps> = ({
   const togglePlayPause = () => {
     dispatch({ type: PlayerActionTypes.PLAYER_TOGGLE_PLAYING });
   };
-
-  const boundedTime = useCallback(
-    (time: number) => Math.min(Math.max(0.00001, time), audioElm.duration),
-    [audioElm?.duration]
-  );
 
   const seekTo = useCallback(
     (time: number) => {
@@ -104,6 +103,26 @@ const Player: React.FC<IPlayerProps> = ({
   const nextTrack = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_NEXT_TRACK
+    });
+  };
+
+  const volumeUp = useCallback(() => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
+      payload: boundedVolume(audioElm.volume + 0.05)
+    });
+  }, [audioElm?.volume, boundedVolume]);
+
+  const volumeDown = useCallback(() => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
+      payload: boundedVolume(audioElm.volume - 0.05)
+    });
+  }, [audioElm?.volume, boundedVolume]);
+
+  const toggleMute = () => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
     });
   };
 
@@ -236,11 +255,23 @@ const Player: React.FC<IPlayerProps> = ({
         case 'Digit0':
           seekTo(0);
           break;
+        case 'BracketLeft':
+          previousTrack();
+          break;
+        case 'BracketRight':
+          nextTrack();
+          break;
+        case 'ArrowUp':
+          volumeUp();
+          break;
+        case 'ArrowDown':
+          volumeDown();
+          break;
         default:
           break;
       }
     },
-    [audioElm, playing, seekBy, seekTo, seekToRelative]
+    [audioElm, playing, seekBy, seekTo, seekToRelative, volumeDown, volumeUp]
   );
 
   useEffect(() => {
@@ -277,6 +308,16 @@ const Player: React.FC<IPlayerProps> = ({
       audioElm?.play();
     }
   }, [audioElm, playing]);
+
+  useEffect(() => {
+    if (!audioElm) return;
+    audioElm.muted = muted;
+  }, [audioElm, muted]);
+
+  useEffect(() => {
+    if (!audioElm) return;
+    audioElm.volume = volume;
+  }, [audioElm, volume]);
 
   useEffect(() => {
     if (audioElm) {

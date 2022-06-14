@@ -198,5 +198,72 @@ describe('states/player', () => {
         expect(result.tracks[0]).toStrictEqual(mockTrack);
       });
     });
+
+    describe('`muted` actions', () => {
+      test('should set `muted` to true', () => {
+        const result = playerStateReducer(
+          {
+            ...playerInitialState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_MUTE
+          }
+        );
+
+        expect(result.muted).toBe(true);
+      });
+
+      test('should set `muted` to false', () => {
+        const result = playerStateReducer(
+          {
+            ...playerInitialState,
+            muted: true
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UNMUTE
+          }
+        );
+
+        expect(result.muted).toBe(false);
+      });
+
+      test('should toggle `muted`', () => {
+        const result1 = playerStateReducer(
+          {
+            ...playerInitialState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
+          }
+        );
+        const result2 = playerStateReducer(
+          {
+            ...result1
+          },
+          {
+            type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
+          }
+        );
+
+        expect(result1.muted).toBe(true);
+        expect(result2.muted).toBe(false);
+      });
+    });
+
+    describe('`volume` actions', () => {
+      test('should set `volume`', () => {
+        const result = playerStateReducer(
+          {
+            ...playerInitialState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
+            payload: 0.25
+          }
+        );
+
+        expect(result.volume).toBe(0.25);
+      });
+    });
   });
 });
