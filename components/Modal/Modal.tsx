@@ -15,22 +15,22 @@ export interface IModalProps extends React.PropsWithChildren<{}> {
 }
 
 const Modal: React.FC<IModalProps> = ({ children, onClose }) => {
-  const rootRef = useRef<HTMLDivElement>();
+  const closeButtonRef = useRef<HTMLButtonElement>();
 
   const handleClick = () => {
     onClose();
   };
 
   useEffect(() => {
-    rootRef.current.focus();
-    rootRef.current.blur();
+    closeButtonRef.current.focus();
+    closeButtonRef.current.blur();
   });
 
   return (
     <div className={styles.root}>
       <ThemeVars theme="Modal" cssProps={styles} />
       <IconButton
-        ref={rootRef}
+        ref={closeButtonRef}
         type="button"
         className={styles.closeButton}
         onClick={handleClick}
