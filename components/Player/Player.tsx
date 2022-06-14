@@ -147,10 +147,6 @@ const Player: React.FC<IPlayerProps> = ({
       navigator.mediaSession.setActionHandler('pause', () => {
         pause();
       });
-      navigator.mediaSession.setActionHandler('stop', () => {
-        pause();
-        seekTo(0);
-      });
       navigator.mediaSession.setActionHandler('seekto', (e) => {
         seekTo(e.seekTime);
       });
@@ -160,20 +156,25 @@ const Player: React.FC<IPlayerProps> = ({
       navigator.mediaSession.setActionHandler('seekforward', () => {
         forward();
       });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        previousTrack();
-      });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        nextTrack();
-      });
+
+      if (tracks.length > 1) {
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+          previousTrack();
+        });
+
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+          nextTrack();
+        });
+      }
     }
   }, [
-    currentTrack?.imageUrl,
-    currentTrack?.subtitle,
-    currentTrack?.title,
+    currentTrack.imageUrl,
+    currentTrack.subtitle,
+    currentTrack.title,
     forward,
     replay,
-    seekTo
+    seekTo,
+    tracks.length
   ]);
 
   const playerContextValue = useMemo(
