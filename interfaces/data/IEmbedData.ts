@@ -47,4 +47,9 @@ export interface IEmbedData {
   followUrls?: {
     [key: string]: string;
   };
+
+  /**
+   * Title of the RSS feed.
+   */
+  rssTitle?: string;
 }

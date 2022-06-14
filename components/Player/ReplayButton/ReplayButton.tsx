@@ -13,10 +13,10 @@ export interface IReplayButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const ReplayButton: React.FC<IReplayButtonProps> = ({ ...props }) => {
-  const { seekBy } = useContext(PlayerContext);
+  const { replay } = useContext(PlayerContext);
 
   const handleClick = () => {
-    seekBy(-5);
+    replay();
   };
 
   return (

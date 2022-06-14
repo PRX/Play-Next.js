@@ -16,6 +16,8 @@ export interface IPlayerContext extends IStateContext {
   toggleMute(): void;
   seekTo(time: number): void;
   seekBy(time: number): void;
+  replay(): void;
+  forward(): void;
   seekToRelative(time: number): void;
   nextTrack(): void;
   previousTrack(): void;
