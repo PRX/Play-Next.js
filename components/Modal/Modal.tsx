@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import ThemeVars from '@components/ThemeVars';
 import IconButton from '@components/IconButton';
 import CloseIcon from '@svg/icons/Close.svg';
@@ -15,22 +15,30 @@ export interface IModalProps extends React.PropsWithChildren<{}> {
 }
 
 const Modal: React.FC<IModalProps> = ({ children, onClose }) => {
+  const closeButtonRef = useRef<HTMLButtonElement>();
+
   const handleClick = () => {
     onClose();
   };
 
+  useEffect(() => {
+    closeButtonRef.current.focus();
+    closeButtonRef.current.blur();
+  });
+
   return (
     <div className={styles.root}>
       <ThemeVars theme="Modal" cssProps={styles} />
-      {children}
-
       <IconButton
+        ref={closeButtonRef}
         type="button"
         className={styles.closeButton}
         onClick={handleClick}
       >
         <CloseIcon />
       </IconButton>
+
+      {children}
     </div>
   );
 };

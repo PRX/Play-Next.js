@@ -6,7 +6,6 @@
 import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
-import { PlayerActionTypes } from '@states/player/Player.actions';
 import IconButton from '@components/IconButton';
 import ReplayIcon from '@svg/icons/Replay.svg';
 
@@ -14,13 +13,10 @@ export interface IReplayButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const ReplayButton: React.FC<IReplayButtonProps> = ({ ...props }) => {
-  const { audioElm, dispatch } = useContext(PlayerContext);
+  const { seekBy } = useContext(PlayerContext);
 
   const handleClick = () => {
-    dispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: Math.max(audioElm.currentTime - 5, 0)
-    });
+    seekBy(-5);
   };
 
   return (

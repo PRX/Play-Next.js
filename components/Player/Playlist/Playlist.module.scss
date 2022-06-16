@@ -62,6 +62,8 @@ $playlist-header-text-color: $white;
   align-content: start;
 }
 
+@mixin trackAccentBackground {
+}
 .track {
   position: relative;
   display: grid;
@@ -76,7 +78,7 @@ $playlist-header-text-color: $white;
   border-bottom-color: var(--playlist-divider-color);
 
   color: var(--playlist-text-color);
-  font-size: 1rem;
+  font-size: clamp(0.8rem, 4.5vw, 1rem);
 
   &:last-of-type {
     border-bottom: none;
@@ -98,24 +100,24 @@ $playlist-header-text-color: $white;
   &:focus-visible {
     &::before {
       opacity: 0.15;
-
-      background-color: var(
-        --accent-color,
-        var(--playlist-background-color--active)
-      );
     }
   }
 
   &.isCurrentTrack {
     color: var(--playlist-text-color--active);
 
+    &::before {
+      opacity: 0.35;
+    }
+  }
+
+  &.isCurrentTrack,
+  &:focus-visible {
     & > * {
       position: relative;
     }
 
     &::before {
-      opacity: 0.35;
-
       background-color: var(
         --accent-color,
         var(--playlist-background-color--active)

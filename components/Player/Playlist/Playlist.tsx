@@ -11,7 +11,6 @@ import convertDurationStringToIntegerArray from '@lib/convert/string/convertDura
 import formatDurationParts from '@lib/format/time/formatDurationParts';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
 import PlayerContext from '@contexts/PlayerContext';
-import { PlayerActionTypes } from '@states/player/Player.actions';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import ExplicitIcon from '@svg/icons/Explicit.svg';
@@ -27,7 +26,8 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   const {
     imageUrl: defaultThumbUrl,
     state,
-    dispatch
+    play,
+    setTrack
   } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const rootRef = useRef(null);
@@ -47,16 +47,11 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   }, []);
 
   const handleTrackClick = (index: number) => () => {
-    dispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
-      payload: index
-    });
+    setTrack(index);
 
     // Delay playing to give audio a chance to update src.
     setTimeout(() => {
-      dispatch({
-        type: PlayerActionTypes.PLAYER_PLAY
-      });
+      play();
     }, 200);
   };
 

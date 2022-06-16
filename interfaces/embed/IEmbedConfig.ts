@@ -2,6 +2,8 @@
  * Defines embed config interfaces and types.
  */
 
+import { ParsedUrlQuery } from 'querystring';
+
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !! If these change ALL EXISTING EMBEDS WILL BREAK !!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -9,77 +11,77 @@
 /**
  * Parameter object keys expected from requests.
  */
-export interface IEmbedParams {
+export interface IEmbedParams extends ParsedUrlQuery {
   /**
    * Use to override title initially shown in player.
    */
-  tt?: string;
+  tt?: string | string[];
 
   /**
    * Use to override subtitle of all audio items.
    */
-  ts?: string;
+  ts?: string | string[];
 
   /**
    * Use to override audio url of initially loaded audio.
    */
-  ua?: string;
+  ua?: string | string[];
 
   /**
    * Use to override URL of image initial shown as player background.
    */
-  ui?: string;
+  ui?: string | string[];
 
   /**
    * Use to override URL of image initial shown as thumbnail in player.
    */
-  ue?: string;
+  ue?: string | string[];
 
   /**
    * Use to provide URL for RSS feed data.
    */
-  uf?: string;
+  uf?: string | string[];
 
   /**
    * Guid of episode in feed items to use for initial audio in player.
    */
-  ge?: string;
+  ge?: string | string[];
 
   /**
    * Use to override subscription URL when it should differ
    * from data source RSS feed provided by `uf` or when `ua` is used
    * without `uf`.
    */
-  us?: string;
+  us?: string | string[];
 
   /**
    * Target window to open subscription URL in.
    */
-  gs?: string;
+  gs?: string | string[];
 
   /**
    * Use to indicate a playlist should be shown. Set to an integer value
    * for the number of items to include in playlist, or `all` to include
    * everything in the feed. Requires RSS feed URL be provided with `uf`.
    */
-  sp?: string;
+  sp?: string | string[];
 
   /**
    * Use to filter playlist items by episode season. Requires `sp` and `uf`
    * values be provided.
    */
-  se?: string;
+  se?: string | string[];
 
   /**
    * Use to filter playlist items by single category. Requires `sp` and `uf`
    * values be provided.
    */
-  ct?: string;
+  ct?: string | string[];
 
   /**
    * Use to feature episode image as large cover art.
    */
-  ca?: string;
+  ca?: string | string[];
 
   /**
    * Provide a custom accent color.
@@ -90,25 +92,25 @@ export interface IEmbedParams {
    * DEPRECATED
    * Use to set call to action text.
    */
-  tc?: string;
+  tc?: string | string[];
 
   /**
    * DEPRECATED
    * Use to provide a call to action URL.
    */
-  uc?: string;
+  uc?: string | string[];
 
   /**
    * DEPRECATED
    * Target window to open call to action URL in.
    */
-  gc?: string;
+  gc?: string | string[];
 
   /**
    * DEPRECATED
    * Use to provide the ID of a RSS feed.
    */
-  if?: string;
+  if?: string | string[];
 }
 
 /**

@@ -14,8 +14,8 @@ $player-corner-radius: 10px;
 $player-padding: 20px;
 $player-text-color: $white;
 
-$playerThumbnail-size--mobile: 65px;
-$playerThumbnail-size: 135px;
+$player-thumbnail-size--mobile: 65px;
+$player-thumbnail-size: 135px;
 
 // TODO: Move to background module.
 $background-tint-color: hsl(0 0% 0%);
@@ -26,8 +26,8 @@ $background-blur: 30px;
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
 
-  --playerThumbnail-size--mobile: #{$playerThumbnail-size--mobile};
-  --playerThumbnail-size: #{$playerThumbnail-size};
+  --player-thumbnail-size--mobile: #{$player-thumbnail-size--mobile};
+  --player-thumbnail-size: #{$player-thumbnail-size};
 
   // TODO: Move to background module.
   --background-tint-alpha: #{$background-tint-alpha};
@@ -129,13 +129,13 @@ $background-blur: 30px;
 }
 
 .playerMain {
-  --playerThumbnail-size: #{$playerThumbnail-size--mobile};
+  --player-thumbnail-size: #{$player-thumbnail-size--mobile};
 
   display: grid;
-  grid-template-columns: var(--playerThumbnail-size) 1fr max-content;
+  grid-template-columns: var(--player-thumbnail-size) 1fr max-content;
   grid-template-rows: max-content 1fr max-content;
   grid-template-areas:
-    'THUMB TEXT  MTOG'
+    'THUMB TEXT  LOGO'
     'PANEL PANEL PANEL'
     'PROG  PROG  PROG';
   align-content: stretch;
@@ -146,7 +146,7 @@ $background-blur: 30px;
 
   .withCoverArt & {
     grid-template-areas:
-      'TEXT  TEXT  MTOG'
+      'TEXT  TEXT  LOGO'
       'PANEL PANEL PANEL'
       'PROG  PROG  PROG';
   }
@@ -156,8 +156,8 @@ $background-blur: 30px;
   grid-area: THUMB;
 
   display: grid;
-  width: var(--playerThumbnail-size);
-  height: var(--playerThumbnail-size);
+  width: var(--player-thumbnail-size);
+  height: var(--player-thumbnail-size);
 }
 
 .text {
@@ -187,7 +187,7 @@ $background-blur: 30px;
 
   line-height: 0;
 
-  --iconButton-size: clamp(20px, 14vw, 40px);
+  --iconButton-size: clamp(20px, 12vw, 40px);
   --playButton-size: clamp(40px, 20vw, 60px);
 }
 
@@ -202,6 +202,8 @@ $background-blur: 30px;
 }
 
 .menu {
+  grid-area: MENU;
+
   display: none;
   align-items: center;
   gap: 5px;
@@ -214,7 +216,7 @@ $background-blur: 30px;
 }
 
 .menuToggle {
-  grid-area: MTOG;
+  grid-area: LOGO;
 }
 
 .progress {
@@ -231,21 +233,45 @@ $background-blur: 30px;
   gap: 5px;
 }
 
+@media only screen and (min-width: #{600px - $player-thumbnail-size}) {
+  .main.withCoverArt {
+    .text {
+      gap: $player-gap;
+    }
+
+    .logo {
+      display: block;
+    }
+
+    .panel {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .controls {
+      &.menuShown {
+        display: block;
+      }
+    }
+
+    .menu {
+      display: flex;
+    }
+
+    .menuToggle {
+      display: none;
+    }
+  }
+}
+
 @media only screen and (min-width: 600px) {
   .playerMain {
-    --playerThumbnail-size: #{$playerThumbnail-size};
+    --player-thumbnail-size: #{$player-thumbnail-size};
 
     grid-template-areas:
       'THUMB TEXT  LOGO'
       'THUMB PANEL PANEL'
       'PROG  PROG  PROG';
-
-    .withCoverArt & {
-      grid-template-areas:
-        'TEXT  TEXT  LOGO'
-        'PANEL PANEL PANEL'
-        'PROG  PROG  PROG';
-    }
   }
 
   .text {
@@ -269,7 +295,6 @@ $background-blur: 30px;
 
   .menu {
     display: flex;
-    grid-area: MENU;
   }
 
   .menuToggle {

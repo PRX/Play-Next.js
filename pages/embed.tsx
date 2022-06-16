@@ -167,6 +167,20 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     <PrxLogo className={styles.logoPrx} />
                   </div>
 
+                  <div className={styles.menuToggle}>
+                    <IconButton
+                      type="button"
+                      className={clsx(styles.iconButton, styles.moreButton)}
+                      onClick={handleMoreButtonClick}
+                    >
+                      {!showMenu ? (
+                        <MoreHorizIcon aria-label="Show menu" />
+                      ) : (
+                        <CloseIcon aria-label="Close menu" />
+                      )}
+                    </IconButton>
+                  </div>
+
                   <div className={styles.panel}>
                     <div className={clsx(styles.controls, menuShownClass)}>
                       {canShowPlaylist && (
@@ -229,20 +243,6 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
                   <div className={styles.progress}>
                     <PlayerProgress />
-                  </div>
-
-                  <div className={styles.menuToggle}>
-                    <IconButton
-                      type="button"
-                      className={clsx(styles.iconButton, styles.moreButton)}
-                      onClick={handleMoreButtonClick}
-                    >
-                      {!showMenu ? (
-                        <MoreHorizIcon aria-label="Show menu" />
-                      ) : (
-                        <CloseIcon aria-label="Close menu" />
-                      )}
-                    </IconButton>
                   </div>
                 </div>
               </div>

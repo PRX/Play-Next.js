@@ -42,11 +42,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     playerProgressInitialState
   );
   const { scrubPosition, played, playedSeconds, duration } = state;
-  const {
-    audioElm,
-    state: playerState,
-    dispatch: playerDispatch
-  } = useContext(PlayerContext);
+  const { audioElm, state: playerState, seekTo } = useContext(PlayerContext);
   const {
     currentTrackIndex,
     tracks,
@@ -86,6 +82,9 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     });
   }, []);
 
+  /**
+   * Update player progress visuals.
+   */
   const updateProgress = useCallback(
     (seconds?: number) => {
       const { currentTime: ct, duration: d } = audioElm;
@@ -147,17 +146,14 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    * @param e Pointer Event
    */
   const handlePointerUp = useCallback(() => {
-    playerDispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: scrubPosition * audioElm.duration
-    });
+    seekTo(scrubPosition * audioElm.duration);
 
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS_TO_SCRUB_POSITION
     });
 
     trackRef.current.removeEventListener('pointermove', handlePointerMove);
-  }, [audioElm.duration, handlePointerMove, playerDispatch, scrubPosition]);
+  }, [audioElm.duration, handlePointerMove, scrubPosition, seekTo]);
 
   /**
    * Window resize handler.
@@ -171,15 +167,9 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    */
   useEffect(() => {
     if (playerCurrentTime !== null) {
-      dispatch({
-        type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
-        payload: {
-          playedSeconds: playerCurrentTime,
-          played: playerCurrentTime / duration
-        }
-      });
+      updateProgress(playerCurrentTime);
     }
-  }, [duration, playerCurrentTime]);
+  }, [duration, playerCurrentTime, updateProgress]);
 
   /**
    * Setup update interval.

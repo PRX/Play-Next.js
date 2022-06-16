@@ -6,7 +6,6 @@
 import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
-import { PlayerActionTypes } from '@states/player/Player.actions';
 import ThemeVars from '@components/ThemeVars';
 import IconButton from '@components/IconButton';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
@@ -17,11 +16,11 @@ export interface IPlayButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
-  const { state, dispatch } = useContext(PlayerContext);
+  const { state, togglePlayPause } = useContext(PlayerContext);
   const { playing } = state;
 
   const handleClick = () => {
-    dispatch({ type: PlayerActionTypes.PLAYER_TOGGLE_PLAYING });
+    togglePlayPause();
   };
 
   return (

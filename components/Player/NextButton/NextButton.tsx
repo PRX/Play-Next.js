@@ -6,7 +6,6 @@
 import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
-import { PlayerActionTypes } from '@states/player/Player.actions';
 import IconButton from '@components/IconButton';
 import NextIcon from '@svg/icons/Next.svg';
 
@@ -14,12 +13,10 @@ export interface INextButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const NextButton: React.FC<INextButtonProps> = ({ ...props }) => {
-  const { dispatch } = useContext(PlayerContext);
+  const { nextTrack } = useContext(PlayerContext);
 
   const handleClick = () => {
-    dispatch({
-      type: PlayerActionTypes.PLAYER_NEXT_TRACK
-    });
+    nextTrack();
   };
 
   return (
