@@ -14,10 +14,10 @@ export interface IForwardButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const ForwardButton: React.FC<IForwardButtonProps> = ({ ...props }) => {
-  const { seekBy } = useContext(PlayerContext);
+  const { forward } = useContext(PlayerContext);
 
   const handleClick = () => {
-    seekBy(30);
+    forward();
   };
 
   return (

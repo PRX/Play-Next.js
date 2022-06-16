@@ -85,6 +85,7 @@ const parseEmbedData = (
     ...(audioHasProps && { audio }),
     ...(playlist && { playlist }),
     ...(feedUrl && {
+      rssTitle,
       shareUrl: showPlaylist ? rssShareUrl : audio.link,
       ...(rssItunesOwner && { owner: rssItunesOwner })
     }),

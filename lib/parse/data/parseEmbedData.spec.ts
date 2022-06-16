@@ -96,6 +96,7 @@ describe('lib/parse/data', () => {
         followUrls: {
           rss: '//foo.com/feed.rss'
         },
+        rssTitle: 'Foo',
         shareUrl: '//foo.com/foo-bar',
         owner: {
           name: 'John Doe',
@@ -125,6 +126,7 @@ describe('lib/parse/data', () => {
         followUrls: {
           rss: '//foo.com/feed.rss'
         },
+        rssTitle: 'Foo',
         shareUrl: '//foo.com/foo-baz',
         owner: {
           name: 'John Doe',
@@ -154,6 +156,7 @@ describe('lib/parse/data', () => {
         followUrls: {
           rss: '//foo.com/feed.rss'
         },
+        rssTitle: 'Foo',
         shareUrl: '//foo.com/foo-bar',
         owner: {
           name: 'John Doe',

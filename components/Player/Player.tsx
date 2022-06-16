@@ -87,6 +87,14 @@ const Player: React.FC<IPlayerProps> = ({
     [audioElm?.duration, seekTo]
   );
 
+  const replay = useCallback(() => {
+    seekBy(-5);
+  }, [seekBy]);
+
+  const forward = useCallback(() => {
+    seekBy(30);
+  }, [seekBy]);
+
   const setTrack = (index: number) => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
@@ -126,6 +134,49 @@ const Player: React.FC<IPlayerProps> = ({
     });
   };
 
+  const updateMediaSession = useCallback(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: currentTrack.title,
+        artist: currentTrack.subtitle,
+        artwork: [{ src: currentTrack.imageUrl }]
+      });
+      navigator.mediaSession.setActionHandler('play', () => {
+        play();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        pause();
+      });
+      navigator.mediaSession.setActionHandler('seekto', (e) => {
+        seekTo(e.seekTime);
+      });
+      navigator.mediaSession.setActionHandler('seekbackward', () => {
+        replay();
+      });
+      navigator.mediaSession.setActionHandler('seekforward', () => {
+        forward();
+      });
+
+      if (tracks.length > 1) {
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+          previousTrack();
+        });
+
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+          nextTrack();
+        });
+      }
+    }
+  }, [
+    currentTrack.imageUrl,
+    currentTrack.subtitle,
+    currentTrack.title,
+    forward,
+    replay,
+    seekTo,
+    tracks.length
+  ]);
+
   const playerContextValue = useMemo(
     () => ({
       audioElm,
@@ -138,12 +189,14 @@ const Player: React.FC<IPlayerProps> = ({
       toggleMute,
       seekTo,
       seekBy,
+      replay,
+      forward,
       seekToRelative,
       setTrack,
       previousTrack,
       nextTrack
     }),
-    [audioElm, imageUrl, seekBy, seekTo, seekToRelative, state]
+    [audioElm, forward, imageUrl, replay, seekBy, seekTo, seekToRelative, state]
   );
 
   const handlePlay = useCallback(() => {
@@ -305,9 +358,11 @@ const Player: React.FC<IPlayerProps> = ({
     if (!playing) {
       audioElm?.pause();
     } else {
-      audioElm?.play();
+      audioElm?.play().then(() => {
+        updateMediaSession();
+      });
     }
-  }, [audioElm, playing]);
+  }, [audioElm, playing, updateMediaSession]);
 
   useEffect(() => {
     if (!audioElm) return;

@@ -153,7 +153,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   {!canShowCoverArt && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
-                        sizes={`(min-width: 500px) ${styles['--playerThumbnail-size']}, ${styles['--playerThumbnail-size--mobile']}`}
+                        sizes={`(min-width: 500px) ${styles['--player-thumbnail-size']}, ${styles['--player-thumbnail-size--mobile']}`}
                       />
                     </div>
                   )}
