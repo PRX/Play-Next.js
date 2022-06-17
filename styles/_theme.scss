@@ -1,0 +1,13 @@
+$default-theme: 'dark';
+
+@mixin lightTheme() {
+  &[data-theme='light'] {
+    @content;
+  }
+
+  @media (prefers-color-scheme: light) {
+    &[data-theme='auto'] {
+      @content;
+    }
+  }
+}

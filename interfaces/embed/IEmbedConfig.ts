@@ -89,6 +89,11 @@ export interface IEmbedParams extends ParsedUrlQuery {
   ac?: string | string[];
 
   /**
+   * Choose color theme.
+   */
+  th?: string | string[];
+
+  /**
    * DEPRECATED
    * Use to set call to action text.
    */
@@ -135,6 +140,7 @@ export interface IEmbedConfig {
   playlistCategory?: string;
   showCoverArt?: boolean;
   accentColor?: string[];
+  theme?: 'light' | 'dark' | 'auto';
 }
 
 /**
@@ -160,6 +166,7 @@ EmbedParamKeysMap.set('se', 'playlistSeason');
 EmbedParamKeysMap.set('ct', 'playlistCategory');
 EmbedParamKeysMap.set('ca', 'showCoverArt');
 EmbedParamKeysMap.set('ac', 'accentColor');
+EmbedParamKeysMap.set('th', 'theme');
 
 /**
  * Map of embed config property keys to embed parameter keys.
@@ -184,3 +191,4 @@ EmbedConfigKeysMap.set('playlistSeason', 'se');
 EmbedConfigKeysMap.set('playlistCategory', 'ct');
 EmbedConfigKeysMap.set('showCoverArt', 'ca');
 EmbedConfigKeysMap.set('accentColor', 'ac');
+EmbedConfigKeysMap.set('theme', 'th');
