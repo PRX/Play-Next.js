@@ -22,7 +22,7 @@ const ShareFacebookButton: React.FC<IShareFacebookButtonProps> = ({
   const params = new URLSearchParams({
     u: link
   });
-  const shareUrl = encodeURI(`http://www.facebook.com/sharer.php?${params}`);
+  const shareUrl = `http://www.facebook.com/sharer.php?${params}`;
 
   return (
     <MenuButton

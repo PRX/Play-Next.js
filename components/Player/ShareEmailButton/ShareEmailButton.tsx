@@ -20,7 +20,7 @@ const ShareEmailButton: React.FC<IShareEmailButtonProps> = ({ className }) => {
     subject: title,
     body: `Check out this podcast episode! ${link}`
   });
-  const shareUrl = `mailto:?${params}`;
+  const shareUrl = `mailto:?${params}`.replaceAll('+', ' ');
 
   return (
     <MenuButton
