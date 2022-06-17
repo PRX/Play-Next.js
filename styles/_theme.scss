@@ -1,5 +1,3 @@
-$default-theme: 'dark';
-
 @mixin lightTheme() {
   &[data-theme='light'] {
     @content;
