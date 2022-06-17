@@ -26,6 +26,10 @@ import PlayButton from '@components/Player/PlayButton';
 import PlayerProgress from '@components/Player/PlayerProgress';
 import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
+import CopyLinkButton from '@components/Player/CopyLinkButton';
+import ShareFacebookButton from '@components/Player/ShareFacebookButton';
+import ShareTwitterButton from '@components/Player/ShareTwitterButton';
+import ShareEmailButton from '@components/Player/ShareEmailButton';
 import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
@@ -33,8 +37,6 @@ import AddIcon from '@svg/icons/Add.svg';
 import ShareIcon from '@svg/icons/Share.svg';
 import FavoriteIcon from '@svg/icons/Favorite.svg';
 import CodeIcon from '@svg/icons/Code.svg';
-import EmailIcon from '@svg/icons/Email.svg';
-import LinkIcon from '@svg/icons/Link.svg';
 import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
@@ -59,7 +61,7 @@ export interface IEmbedPageProps {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
-  const { audio, playlist, bgImageUrl, shareUrl, owner } = data;
+  const { audio, playlist, bgImageUrl } = data;
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
@@ -252,43 +254,33 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   <Playlist style={{ height: '100%' }} />
                 </div>
               )}
+
+              {shareShown && (
+                <Modal onClose={handleShareCloseClick}>
+                  <nav className={styles.modalMenu}>
+                    <ShareFacebookButton />
+
+                    <ShareTwitterButton />
+
+                    <ShareEmailButton />
+
+                    <CopyLinkButton />
+
+                    <MenuButton
+                      action="clipboard"
+                      clipboardText={embedHtml}
+                      label="Embed Code"
+                    >
+                      <CodeIcon />
+                    </MenuButton>
+                  </nav>
+                </Modal>
+              )}
             </Player>
           )}
 
           {followShown && (
             <Modal onClose={handleFollowCloseClick}>Follow Menu</Modal>
-          )}
-
-          {shareShown && (
-            <Modal onClose={handleShareCloseClick}>
-              <nav className={styles.modalMenu}>
-                {owner?.email && (
-                  <MenuButton
-                    action="link"
-                    linkHref={`mailto:${owner.email}`}
-                    label={`Email ${owner.name}`}
-                  >
-                    <EmailIcon />
-                  </MenuButton>
-                )}
-
-                <MenuButton
-                  action="clipboard"
-                  clipboardText={shareUrl}
-                  label="Link"
-                >
-                  <LinkIcon />
-                </MenuButton>
-
-                <MenuButton
-                  action="clipboard"
-                  clipboardText={embedHtml}
-                  label="Embed Code"
-                >
-                  <CodeIcon />
-                </MenuButton>
-              </nav>
-            </Modal>
           )}
 
           {supportShown && (

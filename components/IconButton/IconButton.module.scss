@@ -14,9 +14,10 @@
 }
 
 .iconButton {
-  width: calc(var(--iconButton-size) + var(--iconButton-padding));
-  height: calc(var(--iconButton-size) + var(--iconButton-padding));
   display: grid;
+  grid-template-columns: var(--iconButton-size);
+  grid-template-rows: var(--iconButton-size);
+  place-items: stretch;
   overflow: hidden;
 
   padding: var(--iconButton-padding);
@@ -28,6 +29,10 @@
 
   > svg {
     fill: currentColor;
+  }
+
+  > svg[class*='fa-'] {
+    padding: var(--iconButton-padding);
   }
 
   &:active {
