@@ -24,7 +24,7 @@ describe('lib/parse/data', () => {
           title: 'Foo Bar',
           categories: ['foo', 'bar'],
           enclosure: {
-            url: 'http://foo.com/foo-bar.mp3?_from=play.prx.org'
+            url: 'http://foo.com/foo-bar.mp3'
           },
           itunes: {
             subtitle: 'Foo to the bar.',
@@ -38,7 +38,7 @@ describe('lib/parse/data', () => {
           title: 'Foo Baz',
           categories: ['foo', 'baz'],
           enclosure: {
-            url: 'http://foo.com/foo-baz.mp3?_from=play.prx.org'
+            url: 'http://foo.com/foo-baz.mp3'
           },
           itunes: {
             subtitle: 'Foo to the baz.',
