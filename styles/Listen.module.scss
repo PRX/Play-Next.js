@@ -1,0 +1,36 @@
+@import './colors';
+
+:export {
+  bodyColor: #{$primary-900};
+}
+
+.root {
+  min-height: 100vh;
+  background-color: $grey-100;
+}
+
+.logoBar {
+  width: 100vw;
+  padding: 1rem 2rem;
+
+  background-color: $primary-900;
+  color: $white;
+}
+
+.prxLogo {
+  width: 3.6rem;
+}
+
+.header {
+  width: 100vw;
+  height: 364px;
+
+  background-color: $grey-500;
+}
+
+.content {
+  width: 100vw;
+  max-width: 900px;
+  padding: 2rem 1rem;
+  margin: 0 auto;
+}

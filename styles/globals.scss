@@ -1,13 +1,6 @@
 @import './colors';
 @import './fonts';
 
-:root {
-  // Button
-  // TODO: Move to button component.
-  --button-bg-color: #{$primary-500};
-  --button-bg-color--hover: hsl(198 100% 32%);
-}
-
 html,
 body {
   padding: 0;
