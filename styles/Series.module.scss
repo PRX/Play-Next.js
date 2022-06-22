@@ -1,0 +1,68 @@
+@import './colors';
+
+:export {
+  bodyColor: #{$primary-900};
+}
+
+.root {
+  min-height: 100vh;
+  background-color: $grey-100;
+}
+
+.logoBar {
+  width: 100vw;
+  padding: 1rem 2rem;
+
+  background-color: $primary-900;
+  color: $white;
+}
+
+.prxLogo {
+  width: 3.6rem;
+}
+
+.header {
+  width: 100vw;
+  height: 300px;
+
+  background-color: $grey-500;
+}
+
+.content {
+  width: 100vw;
+  max-width: 900px;
+  padding: 2rem 0rem;
+  margin: auto;
+}
+
+.episodeContainer {
+  width: 56rem;
+  margin: 0.5rem auto;
+}
+
+.episodeBox {
+  background-color: $white;
+  height: 600px;
+  margin: 0.25rem 1rem;
+}
+
+.episodeDate {
+  margin: 0;
+}
+
+.episodeTitle {
+  color: $primary-900;
+  margin: 0rem;
+  padding: 0rem;
+}
+
+.episodeTeaser {
+  margin: 0rem auto;
+  padding: 0.25rem;
+}
+
+.footer {
+  width: 100vw;
+  height: 15rem;
+  background-color: $grey-800;
+}
