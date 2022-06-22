@@ -1,6 +1,7 @@
 import type { IAudioData, IEmbedData, IRssItem } from '@interfaces/data';
 import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import type Parser from 'rss-parser';
+import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 import parseAudioData from './parseAudioData';
 
 const parseEmbedData = (
@@ -54,7 +55,7 @@ const parseEmbedData = (
     // Override with values from config.
     ...(configTitle && { title: configTitle }),
     ...(configSubtitle && { subtitle: configSubtitle }),
-    ...(configAudioUrl && { url: configAudioUrl }),
+    ...(configAudioUrl && { url: generateAudioUrl(configAudioUrl) }),
     ...(configImageUrl && { imageUrl: configImageUrl })
   };
   const audioHasProps = Object.keys(audio).length > 0;
