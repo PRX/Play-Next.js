@@ -135,11 +135,12 @@ const Player: React.FC<IPlayerProps> = ({
   };
 
   const updateMediaSession = useCallback(() => {
+    const artworkSrc = currentTrack.imageUrl || imageUrl;
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new window.MediaMetadata({
         title: currentTrack.title,
         artist: currentTrack.subtitle,
-        artwork: [{ src: currentTrack.imageUrl }]
+        ...(artworkSrc && { artwork: [{ src: artworkSrc }] })
       });
       navigator.mediaSession.setActionHandler('play', () => {
         play();
@@ -172,6 +173,7 @@ const Player: React.FC<IPlayerProps> = ({
     currentTrack.subtitle,
     currentTrack.title,
     forward,
+    imageUrl,
     replay,
     seekTo,
     tracks.length

@@ -125,7 +125,12 @@ $background-blur: 30px;
     content: '';
     z-index: 1;
     background-color: hsl($h, $s, $l, $background-tint-alpha);
-    backdrop-filter: blur($background-blur);
+    backdrop-filter: blur(var(--background-blur));
+  }
+
+  & > img {
+    width: 100%;
+    height: 100%;
   }
 }
 

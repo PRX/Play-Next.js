@@ -32,6 +32,7 @@ const parseEmbedData = (
   const audioItems =
     rssItems &&
     rssItems.map((i) => ({
+      link: rssShareUrl,
       ...parseAudioData(i as IRssItem),
       // Use feed title as audio items' subtitle.
       subtitle: rssTitle

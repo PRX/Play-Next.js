@@ -59,6 +59,12 @@ export interface IEmbedPageProps {
   data: IEmbedData;
 }
 
+export interface IEmbedLayoutBreakPoint {
+  name: string;
+  minWidth: number;
+  thumbnailSize: number;
+}
+
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
   const { audio, playlist, bgImageUrl } = data;
@@ -66,12 +72,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
   const [showMenu, setShowMenu] = useState(false);
-  const [playerLayout, setPlayerLayout] = useState<string>();
+  const [playerLayout, setPlayerLayout] = useState<IEmbedLayoutBreakPoint>();
   const playerMainRef = useRef<HTMLDivElement>();
   const playerPanelRef = useRef<HTMLDivElement>();
   const playerControlsRef = useRef<HTMLDivElement>();
   const playerMenuRef = useRef<HTMLDivElement>();
-  const layoutBreakpoints = useRef<{ name: string; minWidth: number }[]>([]);
+  const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([]);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
@@ -103,19 +109,32 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
    * `extended-full` - large logo, controls and menu.
    */
   const initLayoutBreakpoints = useCallback(() => {
+    if (!playerControlsRef.current) return;
+
     const playerControlsRect =
       playerControlsRef.current.getBoundingClientRect();
     const playerMenuRect = playerMenuRef.current.getBoundingClientRect();
     const playerGap = parseInt(styles.playerGap, 10);
+    const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
+    const thumbnailSizeMobile = parseInt(
+      styles['--player-thumbnail-size--mobile'],
+      10
+    );
     const minPanelWidth =
       playerMenuRect.width + playerControlsRect.width + playerGap;
-    const thumbnailOffset = !canShowCoverArt
-      ? parseInt(styles['--player-thumbnail-size'], 10) + playerGap
-      : 0;
-    const breakpoints = [
-      { name: 'compact', minWidth: 0 },
-      { name: 'compact-full', minWidth: minPanelWidth },
-      { name: 'extended-full', minWidth: thumbnailOffset + minPanelWidth }
+    const thumbnailOffset = !canShowCoverArt ? thumbnailSize + playerGap : 0;
+    const breakpoints: IEmbedLayoutBreakPoint[] = [
+      { name: 'compact', minWidth: 0, thumbnailSize: thumbnailSizeMobile },
+      {
+        name: 'compact-full',
+        minWidth: minPanelWidth,
+        thumbnailSize: thumbnailSizeMobile
+      },
+      {
+        name: 'extended-full',
+        minWidth: thumbnailOffset + minPanelWidth,
+        thumbnailSize
+      }
     ].sort((a, b) => a.minWidth - b.minWidth);
 
     layoutBreakpoints.current = breakpoints;
@@ -132,7 +151,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       layoutBreakpoints.current[0]
     );
 
-    setPlayerLayout(bestFit.name);
+    setPlayerLayout(bestFit);
   }, []);
 
   const handleMoreButtonClick = () => {
@@ -225,12 +244,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 <div
                   ref={playerMainRef}
                   className={styles.playerMain}
-                  data-layout={playerLayout}
+                  data-layout={playerLayout?.name}
                 >
-                  {!canShowCoverArt && (
+                  {!canShowCoverArt && playerLayout && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
-                      // sizes={`(min-width: 500px) ${styles['--player-thumbnail-size']}, ${styles['--player-thumbnail-size--mobile']}`}
+                        layout="raw"
+                        width={playerLayout?.thumbnailSize}
+                        height={playerLayout?.thumbnailSize}
                       />
                     </div>
                   )}

@@ -1,10 +1,12 @@
 @import '@styles/colors';
 
 $modal-background-color: $black-a-90;
+$modal-background-blur: 8px;
 $modal-text-color: $white;
 
 :export {
   --modal-background-color: #{$modal-background-color};
+  --modal-background-blur: #{$modal-background-blur};
   --modal-text-color: #{$modal-text-color};
 }
 
@@ -16,6 +18,7 @@ $modal-text-color: $white;
   display: grid;
   place-content: center;
   color: var(--modal-text-color);
+  backdrop-filter: blur(var(--modal-background-blur, 0));
 }
 
 .closeButton {
