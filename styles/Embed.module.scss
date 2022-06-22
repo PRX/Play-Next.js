@@ -45,7 +45,7 @@ $background-blur: 30px;
     // IconButton
     --iconButton-background-color--hover: #{$black-a-10};
     --iconButton-outline-color--focus: #{$black-a-10};
-    --iconButton-color: #{$black-a-50};
+    --iconButton-color: #{$black-a-60};
     --iconButton-color--promote: #{$black-a-80};
     --iconButton-color--hover: #{$black};
     --iconButton-color--focus: #{$black};
@@ -53,7 +53,7 @@ $background-blur: 30px;
     // Playlist
     --playlist-text-color: #{$grey-400};
     --playlist-text-color--active: #{$black};
-    --playlist-background-color: #{$white};
+    --playlist-background-color: #{$grey-100};
     --playlist-divider-color: #{$black-a-10};
     --playlist-header-text-color: #{$black};
 
@@ -61,6 +61,9 @@ $background-blur: 30px;
     --playerProgress-progress-color: #{$secondary-500};
     --playerProgress-handle-color: #{$white-a-50};
     --playerProgress-track-color: #{$black-a-10};
+
+    // Modal
+    --modal-background-color: #{$white-a-90};
   }
 
   display: grid;
@@ -193,12 +196,13 @@ $background-blur: 30px;
   display: none;
   grid-area: LOGO;
   align-self: start;
-}
 
-.logoPrx {
-  width: 80px;
-  display: inline-block;
-  vertical-align: -webkit-baseline-middle;
+  & > svg {
+    width: 80px;
+    display: inline-block;
+    vertical-align: -webkit-baseline-middle;
+    fill: var(--logo-color, currentColor);
+  }
 }
 
 .panel {

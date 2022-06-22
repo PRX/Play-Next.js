@@ -6,7 +6,7 @@
 import type { GetServerSideProps } from 'next';
 import type { IEmbedData } from '@interfaces/data';
 import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
-import { useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import clsx from 'clsx';
@@ -30,7 +30,6 @@ import CopyLinkButton from '@components/Player/CopyLinkButton';
 import ShareFacebookButton from '@components/Player/ShareFacebookButton';
 import ShareTwitterButton from '@components/Player/ShareTwitterButton';
 import ShareEmailButton from '@components/Player/ShareEmailButton';
-import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import AddIcon from '@svg/icons/Add.svg';
@@ -40,6 +39,10 @@ import CodeIcon from '@svg/icons/Code.svg';
 import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
+const PrxLogo = dynamic(() => import('@svg/PRX-Logo-Horizontal.svg'));
+const PrxLogoColor = dynamic(
+  () => import('@svg/PRX-Logo-Horizontal-Color.svg')
+);
 const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
 const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
 const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
@@ -165,8 +168,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   </div>
 
                   <div className={styles.logo}>
-                    {/* TODO: Get PRX text to line up with title baseline. */}
-                    <PrxLogo className={styles.logoPrx} />
+                    {theme === 'light' ? <PrxLogoColor /> : <PrxLogo />}
                   </div>
 
                   <div className={styles.menuToggle}>
