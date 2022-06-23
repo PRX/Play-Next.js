@@ -23,6 +23,7 @@ $background-tint-alpha: 0.5;
 $background-blur: 30px;
 
 :export {
+  playerGap: #{$player-gap};
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
 
@@ -124,7 +125,12 @@ $background-blur: 30px;
     content: '';
     z-index: 1;
     background-color: hsl($h, $s, $l, $background-tint-alpha);
-    backdrop-filter: blur($background-blur);
+    backdrop-filter: blur(var(--background-blur));
+  }
+
+  & > img {
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -140,7 +146,9 @@ $background-blur: 30px;
     'PROG  PROG  PROG';
   align-content: stretch;
   gap: $player-gap;
-  padding: $player-padding;
+  margin: $player-padding;
+
+  visibility: hidden;
 
   color: $player-text-color;
 
@@ -149,6 +157,60 @@ $background-blur: 30px;
       'TEXT  TEXT  LOGO'
       'PANEL PANEL PANEL'
       'PROG  PROG  PROG';
+  }
+
+  &:where([data-layout]) {
+    visibility: visible;
+  }
+
+  &:where([data-layout='compact']) {
+    .logo {
+      display: none;
+    }
+    .menu {
+      display: none;
+    }
+    .panel {
+      --iconButton-size: clamp(20px, 12vw, 40px);
+      --playButton-size: clamp(40px, 20vw, 60px);
+    }
+  }
+
+  &:where([data-layout='compact-full'], [data-layout='extended-full']) {
+    .menuToggle {
+      display: none;
+    }
+    .panel {
+      justify-content: space-between;
+    }
+    .controls {
+      &.menuShown {
+        display: flex;
+      }
+    }
+    .menu {
+      &.menuShown {
+        display: flex;
+      }
+    }
+  }
+
+  &:where([data-layout^='extended']) {
+    --player-thumbnail-size: #{$player-thumbnail-size};
+
+    grid-template-areas:
+      'THUMB TEXT  LOGO'
+      'THUMB PANEL PANEL'
+      'PROG  PROG  PROG';
+  }
+
+  &:where([data-layout='extended']) {
+    .logo {
+      display: none;
+    }
+    .menu {
+      display: none;
+    }
   }
 }
 
@@ -165,7 +227,6 @@ $background-blur: 30px;
 }
 
 .logo {
-  display: none;
   grid-area: LOGO;
   align-self: start;
 }
@@ -180,15 +241,11 @@ $background-blur: 30px;
   grid-area: PANEL;
   align-self: center;
 
-  display: grid;
+  display: flex;
   justify-content: center;
-  align-items: center;
   gap: $player-gap;
 
   line-height: 0;
-
-  --iconButton-size: clamp(20px, 12vw, 40px);
-  --playButton-size: clamp(40px, 20vw, 60px);
 }
 
 .controls {
@@ -202,13 +259,9 @@ $background-blur: 30px;
 }
 
 .menu {
-  grid-area: MENU;
-
-  display: none;
+  display: flex;
   align-items: center;
   gap: 5px;
-
-  font-size: 1rem;
 
   &.menuShown {
     display: flex;
@@ -233,71 +286,71 @@ $background-blur: 30px;
   gap: 5px;
 }
 
-@media only screen and (min-width: #{640px - $player-thumbnail-size}) {
-  .main.withCoverArt {
-    .text {
-      gap: $player-gap;
-    }
+// @media only screen and (min-width: #{640px - $player-thumbnail-size}) {
+//   .main.withCoverArt {
+//     .text {
+//       gap: $player-gap;
+//     }
 
-    .logo {
-      display: block;
-    }
+//     .logo {
+//       display: block;
+//     }
 
-    .panel {
-      display: flex;
-      justify-content: space-between;
-    }
+//     .panel {
+//       display: flex;
+//       justify-content: space-between;
+//     }
 
-    .controls {
-      &.menuShown {
-        display: block;
-      }
-    }
+//     .controls {
+//       &.menuShown {
+//         display: block;
+//       }
+//     }
 
-    .menu {
-      display: flex;
-    }
+//     .menu {
+//       display: flex;
+//     }
 
-    .menuToggle {
-      display: none;
-    }
-  }
-}
+//     .menuToggle {
+//       display: none;
+//     }
+//   }
+// }
 
-@media only screen and (min-width: 640px) {
-  .playerMain {
-    --player-thumbnail-size: #{$player-thumbnail-size};
+// @media only screen and (min-width: 640px) {
+//   .playerMain {
+//     --player-thumbnail-size: #{$player-thumbnail-size};
 
-    grid-template-areas:
-      'THUMB TEXT  LOGO'
-      'THUMB PANEL PANEL'
-      'PROG  PROG  PROG';
-  }
+//     grid-template-areas:
+//       'THUMB TEXT  LOGO'
+//       'THUMB PANEL PANEL'
+//       'PROG  PROG  PROG';
+//   }
 
-  .text {
-    gap: $player-gap;
-  }
+//   .text {
+//     gap: $player-gap;
+//   }
 
-  .logo {
-    display: block;
-  }
+//   .logo {
+//     display: block;
+//   }
 
-  .panel {
-    display: flex;
-    justify-content: space-between;
-  }
+//   .panel {
+//     display: flex;
+//     justify-content: space-between;
+//   }
 
-  .controls {
-    &.menuShown {
-      display: block;
-    }
-  }
+//   .controls {
+//     &.menuShown {
+//       display: block;
+//     }
+//   }
 
-  .menu {
-    display: flex;
-  }
+//   .menu {
+//     display: flex;
+//   }
 
-  .menuToggle {
-    display: none;
-  }
-}
+//   .menuToggle {
+//     display: none;
+//   }
+// }

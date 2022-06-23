@@ -6,7 +6,7 @@
 import type { GetServerSideProps } from 'next';
 import type { IEmbedData } from '@interfaces/data';
 import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
-import { useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import clsx from 'clsx';
@@ -59,6 +59,12 @@ export interface IEmbedPageProps {
   data: IEmbedData;
 }
 
+export interface IEmbedLayoutBreakPoint {
+  name: string;
+  minWidth: number;
+  thumbnailSize: number;
+}
+
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor } = config;
   const { audio, playlist, bgImageUrl } = data;
@@ -66,6 +72,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
   const [showMenu, setShowMenu] = useState(false);
+  const [playerLayout, setPlayerLayout] = useState<IEmbedLayoutBreakPoint>();
+  const playerMainRef = useRef<HTMLDivElement>();
+  const playerPanelRef = useRef<HTMLDivElement>();
+  const playerControlsRef = useRef<HTMLDivElement>();
+  const playerMenuRef = useRef<HTMLDivElement>();
+  const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([]);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
@@ -88,6 +100,59 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
         ]
       : [])
   ].join('');
+
+  /**
+   * Initialize our layout break points based on elements sizes.
+   *
+   * `compact` - default layout.
+   * `compact-full` - small logo, controls and menu.
+   * `extended-full` - large logo, controls and menu.
+   */
+  const initLayoutBreakpoints = useCallback(() => {
+    if (!playerControlsRef.current) return;
+
+    const playerControlsRect =
+      playerControlsRef.current.getBoundingClientRect();
+    const playerMenuRect = playerMenuRef.current.getBoundingClientRect();
+    const playerGap = parseInt(styles.playerGap, 10);
+    const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
+    const thumbnailSizeMobile = parseInt(
+      styles['--player-thumbnail-size--mobile'],
+      10
+    );
+    const minPanelWidth =
+      playerMenuRect.width + playerControlsRect.width + playerGap;
+    const thumbnailOffset = !canShowCoverArt ? thumbnailSize + playerGap : 0;
+    const breakpoints: IEmbedLayoutBreakPoint[] = [
+      { name: 'compact', minWidth: 0, thumbnailSize: thumbnailSizeMobile },
+      {
+        name: 'compact-full',
+        minWidth: minPanelWidth,
+        thumbnailSize: thumbnailSizeMobile
+      },
+      {
+        name: 'extended-full',
+        minWidth: thumbnailOffset + minPanelWidth,
+        thumbnailSize
+      }
+    ].sort((a, b) => a.minWidth - b.minWidth);
+
+    layoutBreakpoints.current = breakpoints;
+  }, [canShowCoverArt]);
+
+  /**
+   * Update player layout by finding the last breakpoint with a min width the
+   * player element fits into.
+   */
+  const updatePlayerLayout = useCallback(() => {
+    const playerMainRect = playerMainRef.current.getBoundingClientRect();
+    const bestFit = layoutBreakpoints.current.reduce(
+      (a, c) => (playerMainRect.width > c.minWidth ? c : a),
+      layoutBreakpoints.current[0]
+    );
+
+    setPlayerLayout(bestFit);
+  }, []);
 
   const handleMoreButtonClick = () => {
     setShowMenu(!showMenu);
@@ -116,6 +181,31 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const handleSupportCloseClick = () => {
     dispatch({ type: EmbedActionTypes.EMBED_HIDE_SUPPORT_DIALOG });
   };
+
+  const handleResize = useCallback(() => {
+    updatePlayerLayout();
+  }, [updatePlayerLayout]);
+
+  /**
+   * Initialize layout breakpoints.
+   */
+  useEffect(() => {
+    setTimeout(() => {
+      initLayoutBreakpoints();
+      updatePlayerLayout();
+    }, 500);
+  }, [initLayoutBreakpoints, canShowCoverArt, updatePlayerLayout]);
+
+  /**
+   * Setup/clean up window events.
+   */
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleResize]);
 
   return (
     <>
@@ -151,11 +241,17 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   />
                 </div>
 
-                <div className={styles.playerMain}>
-                  {!canShowCoverArt && (
+                <div
+                  ref={playerMainRef}
+                  className={styles.playerMain}
+                  data-layout={playerLayout?.name}
+                >
+                  {!canShowCoverArt && playerLayout && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
-                        sizes={`(min-width: 500px) ${styles['--player-thumbnail-size']}, ${styles['--player-thumbnail-size--mobile']}`}
+                        layout="raw"
+                        width={playerLayout?.thumbnailSize}
+                        height={playerLayout?.thumbnailSize}
                       />
                     </div>
                   )}
@@ -183,8 +279,11 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     </IconButton>
                   </div>
 
-                  <div className={styles.panel}>
-                    <div className={clsx(styles.controls, menuShownClass)}>
+                  <div ref={playerPanelRef} className={styles.panel}>
+                    <div
+                      ref={playerControlsRef}
+                      className={clsx(styles.controls, menuShownClass)}
+                    >
                       {canShowPlaylist && (
                         <PreviousButton
                           className={clsx(styles.button, styles.previousButton)}
@@ -212,8 +311,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                       )}
                     </div>
 
-                    <div className={clsx(styles.menu, menuShownClass)}>
-                      {/* TODO: Replace content with dialog menu buttons. */}
+                    <div
+                      ref={playerMenuRef}
+                      className={clsx(styles.menu, menuShownClass)}
+                    >
                       <IconButton
                         type="button"
                         className={clsx(styles.menuButton, styles.followButton)}
