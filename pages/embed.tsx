@@ -143,13 +143,6 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       }
     ].sort((a, b) => a.minWidth - b.minWidth);
 
-    console.log(
-      breakpoints,
-      playerControlsRect.width,
-      playerMenuRect.width,
-      minPanelWidth
-    );
-
     layoutBreakpoints.current = breakpoints;
   }, [canShowCoverArt, thumbnailSize, thumbnailSizeMobile]);
 
@@ -204,11 +197,6 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
    */
   useEffect(() => {
     setTimeout(() => {
-      console.log(
-        'Init delay done.',
-        playerControlsRef.current,
-        playerMenuRef.current
-      );
       initLayoutBreakpoints();
       updatePlayerLayout();
     }, 500);
