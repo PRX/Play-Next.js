@@ -293,5 +293,23 @@ describe('lib/parse/data', () => {
 
       expect(result.bgImageUrl).toBe('http://foo.com/foo-bar.png');
     });
+
+    test('should set rss link on audio when items do not have links', () => {
+      const rssData = {
+        ...mockRssData
+      };
+      delete rssData.items[0].link;
+      const result = parseEmbedData(
+        {
+          feedUrl: '//foo.com/feed.rss',
+          showPlaylist: 'all'
+        },
+        rssData
+      );
+
+      expect(result.audio.link).toBe('//foo.com');
+      expect(result.playlist[0].link).toBe('//foo.com');
+      expect(result.playlist[1].link).toBe('//foo.com/foo-baz');
+    });
   });
 });
