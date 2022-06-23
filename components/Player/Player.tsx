@@ -384,8 +384,10 @@ const Player: React.FC<IPlayerProps> = ({
 
   useEffect(() => {
     if (!audioElm) {
-      // Initiate audio element.
-      setAudioElm(new Audio(url));
+      // Initiate audio element, but wait till we have played.
+      if (playing) {
+        setAudioElm(new Audio(url));
+      }
     } else {
       // Update audio src. Pause first to prevent load while playing error.
       audioElm.pause();
