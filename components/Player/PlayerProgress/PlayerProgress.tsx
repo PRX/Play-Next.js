@@ -55,7 +55,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   const currentDuration = convertSecondsToDuration(Math.round(playedSeconds));
   const totalDuration = duration
     ? convertSecondsToDuration(Math.round(duration))
-    : trackDuration;
+    : convertSecondsToDuration(trackDuration);
 
   /**
    * Update progress styles.

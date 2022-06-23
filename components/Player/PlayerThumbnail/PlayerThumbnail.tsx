@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import PrxImage, { IPrxImageProps } from '@components/PrxImage';
@@ -23,13 +23,14 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   height,
   ...props
 }) => {
+  const imageRef = useRef({ complete: false });
   const { state, imageUrl: defaultImageUrl } = useContext(PlayerContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { tracks, currentTrackIndex } = state;
   const { imageUrl, title } = tracks[currentTrackIndex];
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, className, {
-    [styles.loaded]: !isLoading
+    [styles.loaded]: !isLoading || imageRef.current.complete
   });
 
   const handleLoad = useCallback(() => {
@@ -45,6 +46,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
       <div className={rootClassNames}>
         <ThemeVars theme="PlayerThumbnail" cssProps={styles} />
         <PrxImage
+          ref={imageRef}
           src={srcUrl}
           alt={`Thumbnail for "${title}".`}
           layout={layout}

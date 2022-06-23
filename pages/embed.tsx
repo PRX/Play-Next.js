@@ -27,6 +27,12 @@ import PlayerProgress from '@components/Player/PlayerProgress';
 import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
 import CopyLinkButton from '@components/Player/CopyLinkButton';
+import ForwardButton from '@components/Player/ForwardButton';
+import NextButton from '@components/Player/NextButton';
+import Player from '@components/Player';
+import PlayerText from '@components/Player/PlayerText';
+import PreviousButton from '@components/Player/PreviousButton';
+import ReplayButton from '@components/Player/ReplayButton';
 import ShareFacebookButton from '@components/Player/ShareFacebookButton';
 import ShareTwitterButton from '@components/Player/ShareTwitterButton';
 import ShareEmailButton from '@components/Player/ShareEmailButton';
@@ -43,19 +49,11 @@ const PrxLogo = dynamic(() => import('@svg/PRX-Logo-Horizontal.svg'));
 const PrxLogoColor = dynamic(
   () => import('@svg/PRX-Logo-Horizontal-Color.svg')
 );
-const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
-const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
-const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
-const Player = dynamic(() => import('@components/Player'));
 const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 const PlayerThumbnail = dynamic(
   () => import('@components/Player/PlayerThumbnail')
 );
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
-const PreviousButton = dynamic(
-  () => import('@components/Player/PreviousButton')
-);
-const NextButton = dynamic(() => import('@components/Player/NextButton'));
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -74,13 +72,20 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
+  const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
+  const thumbnailSizeMobile = parseInt(
+    styles['--player-thumbnail-size--mobile'],
+    10
+  );
   const [showMenu, setShowMenu] = useState(false);
   const [playerLayout, setPlayerLayout] = useState<IEmbedLayoutBreakPoint>();
   const playerMainRef = useRef<HTMLDivElement>();
   const playerPanelRef = useRef<HTMLDivElement>();
   const playerControlsRef = useRef<HTMLDivElement>();
   const playerMenuRef = useRef<HTMLDivElement>();
-  const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([]);
+  const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([
+    { name: 'init', minWidth: 0, thumbnailSize: thumbnailSizeMobile }
+  ]);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
@@ -114,15 +119,13 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const initLayoutBreakpoints = useCallback(() => {
     if (!playerControlsRef.current) return;
 
+    // Protect against React double render.
+    if (layoutBreakpoints.current.length > 1) return;
+
     const playerControlsRect =
       playerControlsRef.current.getBoundingClientRect();
     const playerMenuRect = playerMenuRef.current.getBoundingClientRect();
     const playerGap = parseInt(styles.playerGap, 10);
-    const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
-    const thumbnailSizeMobile = parseInt(
-      styles['--player-thumbnail-size--mobile'],
-      10
-    );
     const minPanelWidth =
       playerMenuRect.width + playerControlsRect.width + playerGap;
     const thumbnailOffset = !canShowCoverArt ? thumbnailSize + playerGap : 0;
@@ -140,8 +143,15 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       }
     ].sort((a, b) => a.minWidth - b.minWidth);
 
+    console.log(
+      breakpoints,
+      playerControlsRect.width,
+      playerMenuRect.width,
+      minPanelWidth
+    );
+
     layoutBreakpoints.current = breakpoints;
-  }, [canShowCoverArt]);
+  }, [canShowCoverArt, thumbnailSize, thumbnailSizeMobile]);
 
   /**
    * Update player layout by finding the last breakpoint with a min width the
@@ -194,6 +204,11 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
    */
   useEffect(() => {
     setTimeout(() => {
+      console.log(
+        'Init delay done.',
+        playerControlsRef.current,
+        playerMenuRef.current
+      );
       initLayoutBreakpoints();
       updatePlayerLayout();
     }, 500);

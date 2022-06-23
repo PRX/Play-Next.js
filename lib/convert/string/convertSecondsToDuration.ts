@@ -4,8 +4,17 @@
  * @param totalSeconds Seconds as number.
  * @returns Formatted duration string.
  */
-const convertSecondsToDuration = (totalSeconds: number) => {
+const convertSecondsToDuration = (inputSeconds: number | string) => {
   let duration = '00:00';
+
+  if (typeof inputSeconds === 'string' && inputSeconds.indexOf(':') > -1) {
+    return inputSeconds;
+  }
+
+  const totalSeconds =
+    typeof inputSeconds === 'string'
+      ? parseInt(inputSeconds, 10)
+      : inputSeconds;
 
   if (typeof totalSeconds === 'number' && totalSeconds > 0) {
     const hours = Math.floor(totalSeconds / 3600);

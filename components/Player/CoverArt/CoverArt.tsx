@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';
@@ -18,12 +18,13 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
     togglePlayPause,
     imageUrl: defaultImageUrl
   } = useContext(PlayerContext);
+  const imageRef = useRef({ complete: false });
   const [isLoading, setIsLoading] = useState(true);
   const { tracks, currentTrackIndex } = state;
   const { imageUrl, title } = tracks[currentTrackIndex];
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, {
-    [styles.loaded]: !isLoading
+    [styles.loaded]: !isLoading || imageRef.current.complete
   });
 
   const handleClick = () => {
@@ -42,6 +43,7 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
     srcUrl && (
       <button type="button" className={rootClassNames} onClick={handleClick}>
         <PrxImage
+          ref={imageRef}
           src={srcUrl}
           alt={`Cover art for "${title}".`}
           layout="fill"
