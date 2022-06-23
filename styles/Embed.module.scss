@@ -18,6 +18,7 @@ $player-thumbnail-size--mobile: 65px;
 $player-thumbnail-size: 135px;
 
 :export {
+  playerGap: #{$player-gap};
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
 
@@ -118,7 +119,9 @@ $player-thumbnail-size: 135px;
     'PROG  PROG  PROG';
   align-content: stretch;
   gap: $player-gap;
-  padding: $player-padding;
+  margin: $player-padding;
+
+  visibility: hidden;
 
   color: $player-text-color;
 
@@ -127,6 +130,60 @@ $player-thumbnail-size: 135px;
       'TEXT  TEXT  LOGO'
       'PANEL PANEL PANEL'
       'PROG  PROG  PROG';
+  }
+
+  &:where([data-layout]) {
+    visibility: visible;
+  }
+
+  &:where([data-layout='compact']) {
+    .logo {
+      display: none;
+    }
+    .menu {
+      display: none;
+    }
+    .panel {
+      --iconButton-size: clamp(20px, 12vw, 40px);
+      --playButton-size: clamp(40px, 20vw, 60px);
+    }
+  }
+
+  &:where([data-layout='compact-full'], [data-layout='extended-full']) {
+    .menuToggle {
+      display: none;
+    }
+    .panel {
+      justify-content: space-between;
+    }
+    .controls {
+      &.menuShown {
+        display: flex;
+      }
+    }
+    .menu {
+      &.menuShown {
+        display: flex;
+      }
+    }
+  }
+
+  &:where([data-layout^='extended']) {
+    --player-thumbnail-size: #{$player-thumbnail-size};
+
+    grid-template-areas:
+      'THUMB TEXT  LOGO'
+      'THUMB PANEL PANEL'
+      'PROG  PROG  PROG';
+  }
+
+  &:where([data-layout='extended']) {
+    .logo {
+      display: none;
+    }
+    .menu {
+      display: none;
+    }
   }
 }
 
@@ -143,7 +200,6 @@ $player-thumbnail-size: 135px;
 }
 
 .logo {
-  display: none;
   grid-area: LOGO;
   align-self: start;
 }
@@ -158,15 +214,11 @@ $player-thumbnail-size: 135px;
   grid-area: PANEL;
   align-self: center;
 
-  display: grid;
+  display: flex;
   justify-content: center;
-  align-items: center;
   gap: $player-gap;
 
   line-height: 0;
-
-  --iconButton-size: clamp(20px, 12vw, 40px);
-  --playButton-size: clamp(40px, 20vw, 60px);
 }
 
 .controls {
@@ -180,13 +232,9 @@ $player-thumbnail-size: 135px;
 }
 
 .menu {
-  grid-area: MENU;
-
-  display: none;
+  display: flex;
   align-items: center;
   gap: 5px;
-
-  font-size: 1rem;
 
   &.menuShown {
     display: flex;
@@ -209,73 +257,4 @@ $player-thumbnail-size: 135px;
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-@media only screen and (min-width: #{640px - $player-thumbnail-size}) {
-  .main.withCoverArt {
-    .text {
-      gap: $player-gap;
-    }
-
-    .logo {
-      display: block;
-    }
-
-    .panel {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .controls {
-      &.menuShown {
-        display: block;
-      }
-    }
-
-    .menu {
-      display: flex;
-    }
-
-    .menuToggle {
-      display: none;
-    }
-  }
-}
-
-@media only screen and (min-width: 640px) {
-  .playerMain {
-    --player-thumbnail-size: #{$player-thumbnail-size};
-
-    grid-template-areas:
-      'THUMB TEXT  LOGO'
-      'THUMB PANEL PANEL'
-      'PROG  PROG  PROG';
-  }
-
-  .text {
-    gap: $player-gap;
-  }
-
-  .logo {
-    display: block;
-  }
-
-  .panel {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .controls {
-    &.menuShown {
-      display: block;
-    }
-  }
-
-  .menu {
-    display: flex;
-  }
-
-  .menuToggle {
-    display: none;
-  }
 }

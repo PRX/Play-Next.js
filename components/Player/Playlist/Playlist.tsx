@@ -8,6 +8,7 @@ import type React from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
+import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import formatDurationParts from '@lib/format/time/formatDurationParts';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
 import PlayerContext from '@contexts/PlayerContext';
@@ -88,6 +89,10 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
             {tracks.map((track, index) => {
               const { guid, title, imageUrl, duration, explicit } = track;
               const thumbSrc = imageUrl || defaultThumbUrl;
+              const trackDuration =
+                duration.indexOf(':') !== -1
+                  ? duration
+                  : convertSecondsToDuration(parseInt(duration, 10));
               return (
                 <button
                   type="button"
@@ -121,7 +126,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                       />
                     </span>
                   )}
-                  <span className={styles.trackDuration}>{duration}</span>
+                  <span className={styles.trackDuration}>{trackDuration}</span>
                 </button>
               );
             })}
