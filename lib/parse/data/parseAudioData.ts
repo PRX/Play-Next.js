@@ -1,6 +1,7 @@
 import type { IAudioData, IRssItem } from '@interfaces/data';
 import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
+import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 
 const parseAudioData = ({
   guid,

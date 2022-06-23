@@ -6,12 +6,12 @@ describe('lib/parse/data', () => {
   describe('parseEmbedData', () => {
     const mockRssData: Parser.Output<IRssItem> = {
       image: {
-        url: '//foo.com/foo.png'
+        url: 'http://foo.com/foo.png'
       },
       title: 'Foo',
-      link: '//foo.com',
+      link: 'http://foo.com',
       itunes: {
-        image: '//foo.com/foo-3000.png',
+        image: 'http://foo.com/foo-3000.png',
         owner: {
           name: 'John Doe',
           email: 'email@address.com'
@@ -20,29 +20,29 @@ describe('lib/parse/data', () => {
       items: [
         {
           guid: 'foo-bar',
-          link: '//foo.com/foo-bar',
+          link: 'http://foo.com/foo-bar',
           title: 'Foo Bar',
           categories: ['foo', 'bar'],
           enclosure: {
-            url: '//foo.com/foo-bar.mp3'
+            url: 'http://foo.com/foo-bar.mp3'
           },
           itunes: {
             subtitle: 'Foo to the bar.',
-            image: '//foo.com/foo-bar.png',
+            image: 'http://foo.com/foo-bar.png',
             season: '1'
           }
         },
         {
           guid: 'foo-baz',
-          link: '//foo.com/foo-baz',
+          link: 'http://foo.com/foo-baz',
           title: 'Foo Baz',
           categories: ['foo', 'baz'],
           enclosure: {
-            url: '//foo.com/foo-baz.mp3'
+            url: 'http://foo.com/foo-baz.mp3'
           },
           itunes: {
             subtitle: 'Foo to the baz.',
-            image: '//foo.com/foo-baz.png',
+            image: 'http://foo.com/foo-baz.png',
             season: '2'
           }
         }
@@ -53,22 +53,22 @@ describe('lib/parse/data', () => {
       const result = parseEmbedData({
         title: 'Foo',
         subtitle: 'Foo to the bar',
-        audioUrl: '//foo.com/foo.mp3',
-        imageUrl: '//foo.com/bg.png',
-        epImageUrl: '//foo.com/foo.png',
-        subscribeUrl: '//foo.com/feed.rss'
+        audioUrl: 'http://foo.com/foo.mp3',
+        imageUrl: 'http://foo.com/bg.png',
+        epImageUrl: 'http://foo.com/foo.png',
+        subscribeUrl: 'http://foo.com/feed.rss'
       });
 
       expect(result).toStrictEqual({
-        bgImageUrl: '//foo.com/bg.png',
+        bgImageUrl: 'http://foo.com/bg.png',
         audio: {
           title: 'Foo',
           subtitle: 'Foo to the bar',
-          url: '//foo.com/foo.mp3',
-          imageUrl: '//foo.com/foo.png'
+          url: 'http://foo.com/foo.mp3?_from=play.prx.org',
+          imageUrl: 'http://foo.com/foo.png'
         },
         followUrls: {
-          rss: '//foo.com/feed.rss'
+          rss: 'http://foo.com/feed.rss'
         }
       });
       expect(result.playlist).toBeUndefined();
@@ -77,27 +77,27 @@ describe('lib/parse/data', () => {
 
     test('should use first item as audio data', () => {
       const result = parseEmbedData(
-        { feedUrl: '//foo.com/feed.rss' },
+        { feedUrl: 'http://foo.com/feed.rss' },
         mockRssData
       );
 
       expect(result).toStrictEqual({
-        bgImageUrl: '//foo.com/foo.png',
+        bgImageUrl: 'http://foo.com/foo.png',
         audio: {
           guid: 'foo-bar',
-          link: '//foo.com/foo-bar',
-          url: '//foo.com/foo-bar.mp3',
+          link: 'http://foo.com/foo-bar',
+          url: 'http://foo.com/foo-bar.mp3?_from=play.prx.org',
           title: 'Foo Bar',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-bar.png',
+          imageUrl: 'http://foo.com/foo-bar.png',
           categories: ['foo', 'bar'],
           season: 1
         },
         followUrls: {
-          rss: '//foo.com/feed.rss'
+          rss: 'http://foo.com/feed.rss'
         },
         rssTitle: 'Foo',
-        shareUrl: '//foo.com/foo-bar',
+        shareUrl: 'http://foo.com/foo-bar',
         owner: {
           name: 'John Doe',
           email: 'email@address.com'
@@ -107,27 +107,27 @@ describe('lib/parse/data', () => {
 
     test('should use item matching config guid as audio data', () => {
       const result = parseEmbedData(
-        { feedUrl: '//foo.com/feed.rss', episodeGuid: 'foo-baz' },
+        { feedUrl: 'http://foo.com/feed.rss', episodeGuid: 'foo-baz' },
         mockRssData
       );
 
       expect(result).toStrictEqual({
-        bgImageUrl: '//foo.com/foo.png',
+        bgImageUrl: 'http://foo.com/foo.png',
         audio: {
           guid: 'foo-baz',
-          link: '//foo.com/foo-baz',
-          url: '//foo.com/foo-baz.mp3',
+          link: 'http://foo.com/foo-baz',
+          url: 'http://foo.com/foo-baz.mp3?_from=play.prx.org',
           title: 'Foo Baz',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-baz.png',
+          imageUrl: 'http://foo.com/foo-baz.png',
           categories: ['foo', 'baz'],
           season: 2
         },
         followUrls: {
-          rss: '//foo.com/feed.rss'
+          rss: 'http://foo.com/feed.rss'
         },
         rssTitle: 'Foo',
-        shareUrl: '//foo.com/foo-baz',
+        shareUrl: 'http://foo.com/foo-baz',
         owner: {
           name: 'John Doe',
           email: 'email@address.com'
@@ -137,27 +137,27 @@ describe('lib/parse/data', () => {
 
     test('should use first item as audio data when config guid is not in items', () => {
       const result = parseEmbedData(
-        { feedUrl: '//foo.com/feed.rss', episodeGuid: 'not-there' },
+        { feedUrl: 'http://foo.com/feed.rss', episodeGuid: 'not-there' },
         mockRssData
       );
 
       expect(result).toStrictEqual({
-        bgImageUrl: '//foo.com/foo.png',
+        bgImageUrl: 'http://foo.com/foo.png',
         audio: {
           guid: 'foo-bar',
-          link: '//foo.com/foo-bar',
-          url: '//foo.com/foo-bar.mp3',
+          link: 'http://foo.com/foo-bar',
+          url: 'http://foo.com/foo-bar.mp3?_from=play.prx.org',
           title: 'Foo Bar',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-bar.png',
+          imageUrl: 'http://foo.com/foo-bar.png',
           categories: ['foo', 'bar'],
           season: 1
         },
         followUrls: {
-          rss: '//foo.com/feed.rss'
+          rss: 'http://foo.com/feed.rss'
         },
         rssTitle: 'Foo',
-        shareUrl: '//foo.com/foo-bar',
+        shareUrl: 'http://foo.com/foo-bar',
         owner: {
           name: 'John Doe',
           email: 'email@address.com'
@@ -167,39 +167,39 @@ describe('lib/parse/data', () => {
 
     test('should include a full playlist', () => {
       const result = parseEmbedData(
-        { feedUrl: '//foo.com/feed.rss', showPlaylist: 'all' },
+        { feedUrl: 'http://foo.com/feed.rss', showPlaylist: 'all' },
         mockRssData
       );
 
       expect(result.playlist).toStrictEqual([
         {
           guid: 'foo-bar',
-          link: '//foo.com/foo-bar',
-          url: '//foo.com/foo-bar.mp3',
+          link: 'http://foo.com/foo-bar',
+          url: 'http://foo.com/foo-bar.mp3?_from=play.prx.org',
           title: 'Foo Bar',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-bar.png',
+          imageUrl: 'http://foo.com/foo-bar.png',
           categories: ['foo', 'bar'],
           season: 1
         },
         {
           guid: 'foo-baz',
-          link: '//foo.com/foo-baz',
-          url: '//foo.com/foo-baz.mp3',
+          link: 'http://foo.com/foo-baz',
+          url: 'http://foo.com/foo-baz.mp3?_from=play.prx.org',
           title: 'Foo Baz',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-baz.png',
+          imageUrl: 'http://foo.com/foo-baz.png',
           categories: ['foo', 'baz'],
           season: 2
         }
       ] as IAudioData[]);
-      expect(result.shareUrl).toBe('//foo.com');
+      expect(result.shareUrl).toBe('http://foo.com');
     });
 
     test('should filter playlist by season', () => {
       const result = parseEmbedData(
         {
-          feedUrl: '//foo.com/feed.rss',
+          feedUrl: 'http://foo.com/feed.rss',
           showPlaylist: 'all',
           playlistSeason: 2
         },
@@ -209,11 +209,11 @@ describe('lib/parse/data', () => {
       expect(result.playlist).toStrictEqual([
         {
           guid: 'foo-baz',
-          link: '//foo.com/foo-baz',
-          url: '//foo.com/foo-baz.mp3',
+          link: 'http://foo.com/foo-baz',
+          url: 'http://foo.com/foo-baz.mp3?_from=play.prx.org',
           title: 'Foo Baz',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-baz.png',
+          imageUrl: 'http://foo.com/foo-baz.png',
           categories: ['foo', 'baz'],
           season: 2
         }
@@ -223,7 +223,7 @@ describe('lib/parse/data', () => {
     test('should filter playlist by category', () => {
       const result = parseEmbedData(
         {
-          feedUrl: '//foo.com/feed.rss',
+          feedUrl: 'http://foo.com/feed.rss',
           showPlaylist: 'all',
           playlistCategory: 'baz'
         },
@@ -233,11 +233,11 @@ describe('lib/parse/data', () => {
       expect(result.playlist).toStrictEqual([
         {
           guid: 'foo-baz',
-          link: '//foo.com/foo-baz',
-          url: '//foo.com/foo-baz.mp3',
+          link: 'http://foo.com/foo-baz',
+          url: 'http://foo.com/foo-baz.mp3?_from=play.prx.org',
           title: 'Foo Baz',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-baz.png',
+          imageUrl: 'http://foo.com/foo-baz.png',
           categories: ['foo', 'baz'],
           season: 2
         }
@@ -247,7 +247,7 @@ describe('lib/parse/data', () => {
     test('should limit playlist length', () => {
       const result = parseEmbedData(
         {
-          feedUrl: '//foo.com/feed.rss',
+          feedUrl: 'http://foo.com/feed.rss',
           showPlaylist: 1
         },
         mockRssData
@@ -256,11 +256,11 @@ describe('lib/parse/data', () => {
       expect(result.playlist).toStrictEqual([
         {
           guid: 'foo-bar',
-          link: '//foo.com/foo-bar',
-          url: '//foo.com/foo-bar.mp3',
+          link: 'http://foo.com/foo-bar',
+          url: 'http://foo.com/foo-bar.mp3?_from=play.prx.org',
           title: 'Foo Bar',
           subtitle: 'Foo',
-          imageUrl: '//foo.com/foo-bar.png',
+          imageUrl: 'http://foo.com/foo-bar.png',
           categories: ['foo', 'bar'],
           season: 1
         }
@@ -272,12 +272,12 @@ describe('lib/parse/data', () => {
       delete rssData.image;
       const result = parseEmbedData(
         {
-          feedUrl: '//foo.com/feed.rss'
+          feedUrl: 'http://foo.com/feed.rss'
         },
         rssData
       );
 
-      expect(result.bgImageUrl).toBe('//foo.com/foo-3000.png');
+      expect(result.bgImageUrl).toBe('http://foo.com/foo-3000.png');
     });
 
     test('should fallback to audio image for background image', () => {
@@ -286,12 +286,12 @@ describe('lib/parse/data', () => {
       delete rssData.itunes;
       const result = parseEmbedData(
         {
-          feedUrl: '//foo.com/feed.rss'
+          feedUrl: 'http://foo.com/feed.rss'
         },
         rssData
       );
 
-      expect(result.bgImageUrl).toBe('//foo.com/foo-bar.png');
+      expect(result.bgImageUrl).toBe('http://foo.com/foo-bar.png');
     });
 
     test('should set rss link on audio when items do not have links', () => {

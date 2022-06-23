@@ -19,6 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           sizes="32x32"
         />
       </Head>
+
       <Component {...pageProps} />
     </>
   );
