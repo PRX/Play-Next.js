@@ -44,6 +44,8 @@ const PrxImage: React.FC<IPrxImageProps> = ({
   priority,
   layout,
   lazyRoot,
+  onLoadingComplete,
+  onLoad,
   ...other
 }) => {
   const isUrlString = typeof src === 'string';
@@ -51,7 +53,8 @@ const PrxImage: React.FC<IPrxImageProps> = ({
   const nextImageProps = {
     lazyRoot,
     priority,
-    layout
+    layout,
+    onLoadingComplete
   };
 
   return isTrusted || !isUrlString ? (
@@ -61,6 +64,7 @@ const PrxImage: React.FC<IPrxImageProps> = ({
       src,
       alt,
       layout,
+      onLoad,
       ...other
     })
   );
