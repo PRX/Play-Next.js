@@ -300,7 +300,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                       ref={playerControlsRef}
                       className={clsx(styles.controls, menuShownClass)}
                       {...(showMenu &&
-                        playerLayout.name === 'compact' && {
+                        playerLayout?.name === 'compact' && {
                           inert: 'inert'
                         })}
                     >
@@ -335,7 +335,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                       ref={playerMenuRef}
                       className={clsx(styles.menu, menuShownClass)}
                       {...(!showMenu &&
-                        playerLayout.name === 'compact' && {
+                        playerLayout?.name === 'compact' && {
                           inert: 'inert'
                         })}
                     >
