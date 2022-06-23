@@ -5,44 +5,39 @@
 
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import styles from '@styles/Listen.module.scss';
-import PrxLogo from '@svg/prx-logo.svg';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
+import AppBar from '@components/Page/AppBar/AppBar';
+import styles from '@styles/Listen.module.scss';
 
 const ListenPage = ({ episodeId }) => {
   console.log(episodeId);
   return (
-    <>
-      <div className={styles.root}>
-        <Head>
-          <style>{`body{background-color: ${styles.bodyColor}; }`}</style>
-        </Head>
+    <div className={styles.root}>
+      <Head>
+        <style>{`body{background-color: ${styles.bodyColor}; }`}</style>
+      </Head>
 
-        <div className={styles.logoBar}>
-          {/* Logo bar */}
-          <PrxLogo className={styles.prxLogo} />
-        </div>
+      <AppBar />
 
-        <header className={styles.header}>{/* Header */}</header>
+      <header className={styles.header}>{/* Header */}</header>
 
-        <div className={styles.content}>
-          {/* Main Content */}
-          <h2>hello world {episodeId}</h2>
-          <p className={styles.contentText}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-            totam ratione accusamus, asperiores soluta, inventore aut minima
-            sunt, maiores vero fuga eius! Esse laboriosam beatae quod modi velit
-            pariatur doloremque. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Qui ipsam quisquam laudantium doloribus in rerum
-            officiis dolor fugiat sunt, sequi adipisci recusandae dolores
-            molestiae. Alias sint fugit omnis blanditiis ab!
-          </p>
-        </div>
+      <div className={styles.main}>
+        {/* Main Content */}
+        <h2>hello world {episodeId}</h2>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere totam
+          ratione accusamus, asperiores soluta, inventore aut minima sunt,
+          maiores vero fuga eius! Esse laboriosam beatae quod modi velit
+          pariatur doloremque. Lorem ipsum dolor sit amet consectetur
+          adipisicing elit. Qui ipsam quisquam laudantium doloribus in rerum
+          officiis dolor fugiat sunt, sequi adipisci recusandae dolores
+          molestiae. Alias sint fugit omnis blanditiis ab!
+        </p>
       </div>
       <footer className={styles.footer}>{/* footer */}</footer>
-    </>
+    </div>
   );
 };
 

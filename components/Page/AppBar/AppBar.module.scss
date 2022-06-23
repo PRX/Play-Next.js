@@ -1,0 +1,13 @@
+@use '@styles/colors';
+
+.root {
+  width: 100vw;
+  padding: 1rem 2rem;
+
+  background-color: colors.$primary-900;
+  color: colors.$white;
+}
+
+.prxLogo {
+  width: 3.6rem;
+}

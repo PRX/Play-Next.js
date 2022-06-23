@@ -1,0 +1,32 @@
+@use '@styles/grid';
+@use '@styles/colors';
+
+$backgroundImage-tint-color: hsl(0 0% 0%);
+$backgroundImage-tint-opacity: 0.5;
+$backgroundImage-blur: 30px;
+
+:export {
+  --backgroundImage-tint-color: #{$backgroundImage-tint-color};
+  --backgroundImage-tint-opacity: #{$backgroundImage-tint-opacity};
+  --backgroundImage-blur: #{$backgroundImage-blur};
+}
+
+.root {
+  @include grid.grid-stacked;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    z-index: 1;
+    backdrop-filter: blur($backgroundImage-blur);
+  }
+
+  &::after {
+    content: '';
+    z-index: 2;
+    background-color: var(--backgroundImage-tint-color);
+    opacity: var(--backgroundImage-tint-opacity);
+  }
+}

@@ -1,24 +1,12 @@
 @import './colors';
+@import './page';
 
 :export {
   bodyColor: #{$primary-900};
 }
 
 .root {
-  min-height: 100vh;
   background-color: $grey-100;
-}
-
-.logoBar {
-  width: 100vw;
-  padding: 1rem 2rem;
-
-  background-color: $primary-900;
-  color: $white;
-}
-
-.prxLogo {
-  width: 3.6rem;
 }
 
 .header {
@@ -42,8 +30,33 @@
 
 .episodeBox {
   background-color: $white;
-  height: 600px;
+  height: 4rem;
   margin: 0.25rem 1rem;
+
+  border-left-style: solid;
+  border-left-color: $primary-700;
+  border-left-width: 0.25rem;
+
+  display: grid;
+
+  .episodeDate {
+    grid-area: 'DATE';
+    font-size: 2em;
+    padding: 0.5rem;
+  }
+
+  .episodeTitle {
+    grid-area: 'TITLE';
+    grid-template-columns: 3rem auto;
+  }
+
+  .episodeTeaser {
+    grid-area: 'TEASER';
+  }
+
+  grid-template-areas:
+    'DATE TITLE'
+    'DATE TEASER';
 }
 
 .episodeDate {

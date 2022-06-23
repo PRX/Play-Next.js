@@ -1,42 +1,28 @@
-@import './colors';
+@use './page';
+@use './colors';
 
 :export {
-  bodyColor: #{$primary-900};
+  bodyColor: #{colors.$primary-900};
 }
 
 .root {
-  min-height: 100vh;
-  background-color: $grey-100;
+  @include page.root;
 }
 
-.logoBar {
-  width: 100vw;
-  padding: 1rem 2rem;
-
-  background-color: $primary-900;
-  color: $white;
-}
-
-.prxLogo {
-  width: 3.6rem;
-}
-
+//To do: move into header component
 .header {
   width: 100vw;
   height: 364px;
 
-  background-color: $grey-500;
+  background-color: colors.$grey-500;
 }
 
-.content {
-  width: 100vw;
-  max-width: 900px;
-  padding: 2rem 1rem;
-  margin: 0 auto;
+.main {
+  @include page.content;
 }
 
 .footer {
   width: 100vw;
   height: 15rem;
-  background-color: $grey-800;
+  background-color: colors.$grey-800;
 }

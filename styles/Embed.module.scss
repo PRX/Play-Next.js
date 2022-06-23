@@ -17,21 +17,12 @@ $player-text-color: $white;
 $player-thumbnail-size--mobile: 65px;
 $player-thumbnail-size: 135px;
 
-// TODO: Move to background module.
-$background-tint-color: hsl(0 0% 0%);
-$background-tint-alpha: 0.5;
-$background-blur: 30px;
-
 :export {
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
 
   --player-thumbnail-size--mobile: #{$player-thumbnail-size--mobile};
   --player-thumbnail-size: #{$player-thumbnail-size};
-
-  // TODO: Move to background module.
-  --background-tint-alpha: #{$background-tint-alpha};
-  --background-blur: #{$background-blur};
 }
 
 .container {
@@ -112,20 +103,7 @@ $background-blur: 30px;
 }
 
 .background {
-  @include grid-stacked;
-  position: relative;
   z-index: -1;
-  overflow: hidden;
-
-  &::after {
-    $h: color.hue($background-tint-color);
-    $s: color.saturation($background-tint-color);
-    $l: color.lightness($background-tint-color);
-    content: '';
-    z-index: 1;
-    background-color: hsl($h, $s, $l, $background-tint-alpha);
-    backdrop-filter: blur($background-blur);
-  }
 }
 
 .playerMain {

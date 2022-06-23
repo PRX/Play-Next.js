@@ -1,0 +1,11 @@
+@use './colors';
+
+@mixin root {
+  min-height: 100vh;
+  background-color: colors.$grey-100;
+}
+
+@mixin content {
+  max-width: 900px;
+  margin: 0 auto;
+}
