@@ -27,6 +27,12 @@ import PlayerProgress from '@components/Player/PlayerProgress';
 import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
 import CopyLinkButton from '@components/Player/CopyLinkButton';
+import ForwardButton from '@components/Player/ForwardButton';
+import NextButton from '@components/Player/NextButton';
+import Player from '@components/Player';
+import PlayerText from '@components/Player/PlayerText';
+import PreviousButton from '@components/Player/PreviousButton';
+import ReplayButton from '@components/Player/ReplayButton';
 import ShareFacebookButton from '@components/Player/ShareFacebookButton';
 import ShareTwitterButton from '@components/Player/ShareTwitterButton';
 import ShareEmailButton from '@components/Player/ShareEmailButton';
@@ -40,19 +46,11 @@ import CodeIcon from '@svg/icons/Code.svg';
 import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
-const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
-const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
-const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
-const Player = dynamic(() => import('@components/Player'));
 const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 const PlayerThumbnail = dynamic(
   () => import('@components/Player/PlayerThumbnail')
 );
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
-const PreviousButton = dynamic(
-  () => import('@components/Player/PreviousButton')
-);
-const NextButton = dynamic(() => import('@components/Player/NextButton'));
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -145,6 +143,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
    * player element fits into.
    */
   const updatePlayerLayout = useCallback(() => {
+    if (!playerMainRef.current) return;
+
     const playerMainRect = playerMainRef.current.getBoundingClientRect();
     const bestFit = layoutBreakpoints.current.reduce(
       (a, c) => (playerMainRect.width > c.minWidth ? c : a),

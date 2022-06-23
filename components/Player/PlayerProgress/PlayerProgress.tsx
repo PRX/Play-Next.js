@@ -153,7 +153,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     });
 
     trackRef.current.removeEventListener('pointermove', handlePointerMove);
-  }, [audioElm.duration, handlePointerMove, scrubPosition, seekTo]);
+  }, [audioElm?.duration, handlePointerMove, scrubPosition, seekTo]);
 
   /**
    * Window resize handler.
@@ -190,10 +190,10 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    audioElm.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audioElm?.addEventListener('loadedmetadata', handleLoadedMetadata);
 
     return () => {
-      audioElm.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audioElm?.removeEventListener('loadedmetadata', handleLoadedMetadata);
     };
   }, [audioElm, handleLoadedMetadata]);
 
