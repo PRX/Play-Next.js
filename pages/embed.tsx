@@ -72,6 +72,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
+  const modalShown = shareShown || followShown || supportShown;
   const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
   const thumbnailSizeMobile = parseInt(
     styles['--player-thumbnail-size--mobile'],
@@ -231,12 +232,22 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               imageUrl={bgImageUrl}
             >
               {canShowCoverArt && (
-                <div className={styles.coverArt}>
+                <div
+                  className={styles.coverArt}
+                  {...(modalShown && {
+                    inert: 'inert'
+                  })}
+                >
                   <CoverArt />
                 </div>
               )}
 
-              <div className={styles.playerContainer}>
+              <div
+                className={styles.playerContainer}
+                {...(modalShown && {
+                  inert: 'inert'
+                })}
+              >
                 <div className={styles.background}>
                   <PrxImage
                     src={bgImageUrl}
@@ -288,6 +299,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     <div
                       ref={playerControlsRef}
                       className={clsx(styles.controls, menuShownClass)}
+                      {...(showMenu &&
+                        playerLayout.name === 'compact' && {
+                          inert: 'inert'
+                        })}
                     >
                       {canShowPlaylist && (
                         <PreviousButton
@@ -319,6 +334,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     <div
                       ref={playerMenuRef}
                       className={clsx(styles.menu, menuShownClass)}
+                      {...(!showMenu &&
+                        playerLayout.name === 'compact' && {
+                          inert: 'inert'
+                        })}
                     >
                       <IconButton
                         type="button"
@@ -356,7 +375,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               </div>
 
               {canShowPlaylist && (
-                <div className={styles.playlist}>
+                <div
+                  className={styles.playlist}
+                  {...(modalShown && {
+                    inert: 'inert'
+                  })}
+                >
                   <Playlist style={{ height: '100%' }} />
                 </div>
               )}
