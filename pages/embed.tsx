@@ -159,6 +159,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     );
 
     setPlayerLayout(bestFit);
+
+    setTimeout(
+      () => {
+        // Get rid of temp inline style that prevents content flash.
+        playerMenuRef.current.setAttribute('style', '');
+      },
+      bestFit.name === 'compact' ? 200 : 0
+    );
   }, []);
 
   const handleMoreButtonClick = () => {
@@ -338,6 +346,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         playerLayout?.name === 'compact' && {
                           inert: 'inert'
                         })}
+                      style={{
+                        // Initialize hidden to prevent content flash.
+                        visibility: 'hidden'
+                      }}
                     >
                       <IconButton
                         type="button"
