@@ -3,6 +3,7 @@
 @use './grid';
 
 .root {
+  @include page.root;
   background-color: colors.$grey-100;
 }
 
@@ -26,6 +27,7 @@
 
 .content {
   @include page.content;
+  padding-block-end: 4rem;
 }
 
 .episodes {
