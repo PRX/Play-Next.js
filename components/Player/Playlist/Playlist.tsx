@@ -28,9 +28,8 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   const {
     imageUrl: defaultThumbUrl,
     state,
-    play,
-    setTrack,
-    setTracks
+    setTracks,
+    playTrack
   } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const rootRef = useRef(null);
@@ -58,12 +57,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   };
 
   const handleTrackClick = (index: number) => () => {
-    setTrack(index);
-
-    // Delay playing to give audio a chance to update src.
-    setTimeout(() => {
-      play();
-    }, 200);
+    playTrack(index);
   };
 
   const handleResize = useCallback(() => {

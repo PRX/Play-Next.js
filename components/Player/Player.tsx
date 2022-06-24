@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import type { IAudioData } from '@interfaces/data';
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import {
   playerInitialState,
   playerStateReducer
@@ -30,7 +30,7 @@ const Player: React.FC<IPlayerProps> = ({
   children
 }) => {
   const tracks = Array.isArray(audio) ? audio : [audio];
-  const [audioElm, setAudioElm] = useState(null as HTMLAudioElement);
+  const audioElm = useRef<HTMLAudioElement>();
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
     tracks,
@@ -42,8 +42,9 @@ const Player: React.FC<IPlayerProps> = ({
   const { url } = currentTrack;
 
   const boundedTime = useCallback(
-    (time: number) => Math.min(Math.max(0.00001, time), audioElm.duration),
-    [audioElm?.duration]
+    (time: number) =>
+      Math.min(Math.max(0.00001, time), audioElm.current.duration),
+    []
   );
 
   const boundedVolume = useCallback(
@@ -53,6 +54,10 @@ const Player: React.FC<IPlayerProps> = ({
 
   const play = () => {
     dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
+  };
+
+  const playTrack = (index: number) => {
+    dispatch({ type: PlayerActionTypes.PLAYER_PLAY_TRACK, payload: index });
   };
 
   const pause = () => {
@@ -75,16 +80,16 @@ const Player: React.FC<IPlayerProps> = ({
 
   const seekBy = useCallback(
     (seconds: number) => {
-      seekTo(audioElm.currentTime + seconds);
+      seekTo(audioElm.current.currentTime + seconds);
     },
-    [audioElm?.currentTime, seekTo]
+    [seekTo]
   );
 
   const seekToRelative = useCallback(
     (ratio: number) => {
-      seekTo(audioElm.duration * ratio);
+      seekTo(audioElm.current.duration * ratio);
     },
-    [audioElm?.duration, seekTo]
+    [seekTo]
   );
 
   const replay = useCallback(() => {
@@ -124,16 +129,16 @@ const Player: React.FC<IPlayerProps> = ({
   const volumeUp = useCallback(() => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
-      payload: boundedVolume(audioElm.volume + 0.05)
+      payload: boundedVolume(audioElm.current.volume + 0.05)
     });
-  }, [audioElm?.volume, boundedVolume]);
+  }, [boundedVolume]);
 
   const volumeDown = useCallback(() => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
-      payload: boundedVolume(audioElm.volume - 0.05)
+      payload: boundedVolume(audioElm.current.volume - 0.05)
     });
-  }, [audioElm?.volume, boundedVolume]);
+  }, [boundedVolume]);
 
   const toggleMute = () => {
     dispatch({
@@ -188,11 +193,12 @@ const Player: React.FC<IPlayerProps> = ({
 
   const playerContextValue = useMemo(
     () => ({
-      audioElm,
+      audioElm: audioElm.current,
       imageUrl,
       state,
       dispatch,
       play,
+      playTrack,
       pause,
       togglePlayPause,
       toggleMute,
@@ -209,22 +215,39 @@ const Player: React.FC<IPlayerProps> = ({
     [audioElm, forward, imageUrl, replay, seekBy, seekTo, seekToRelative, state]
   );
 
-  const handlePlay = useCallback(() => {
-    dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
+  const startPlaying = useCallback(() => {
+    audioElm.current.play().then(() => {
+      updateMediaSession();
+    });
+  }, [updateMediaSession]);
+
+  const pauseAudio = useCallback(() => {
+    audioElm.current.pause();
   }, []);
 
+  const loadAudio = (src: string) => {
+    audioElm.current.preload = playing ? 'auto' : 'none';
+    audioElm.current.src = src;
+  };
+
+  const handlePlay = useCallback(() => {
+    if (!playing) {
+      dispatch({ type: PlayerActionTypes.PLAYER_PLAY });
+    }
+  }, [playing]);
+
   const handlePause = useCallback(() => {
-    if (!audioElm.ended) {
+    if (!audioElm.current.ended) {
       dispatch({ type: PlayerActionTypes.PLAYER_PAUSE });
     }
-  }, [audioElm?.ended]);
+  }, []);
 
   const handleLoadedMetadata = useCallback(() => {
     // When audio data loads, update duration and current time, then start
     // playing if we were playing before.
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
-      payload: audioElm?.duration
+      payload: audioElm.current.duration
     });
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
@@ -232,9 +255,9 @@ const Player: React.FC<IPlayerProps> = ({
     });
 
     if (playing) {
-      audioElm.play();
+      startPlaying();
     }
-  }, [audioElm, playing]);
+  }, [playing, startPlaying]);
 
   const handleEnded = useCallback(() => {
     if (!isLastTrack) {
@@ -247,7 +270,7 @@ const Player: React.FC<IPlayerProps> = ({
       const key = event.code || event.key;
       switch (key) {
         case 'KeyS':
-          audioElm.playbackRate = 3 - audioElm.playbackRate;
+          audioElm.current.playbackRate = 3 - audioElm.current.playbackRate;
           break;
         case 'KeyM':
           toggleMute();
@@ -338,73 +361,71 @@ const Player: React.FC<IPlayerProps> = ({
   );
 
   useEffect(() => {
+    // Initialize audio element.
+    if (!audioElm.current) {
+      audioElm.current = new Audio();
+    }
+
     // Setup event handlers on audio element.
-    audioElm?.addEventListener('play', handlePlay);
-    audioElm?.addEventListener('pause', handlePause);
-    audioElm?.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audioElm?.addEventListener('ended', handleEnded);
+    audioElm.current.addEventListener('play', handlePlay);
+    audioElm.current.addEventListener('pause', handlePause);
+    audioElm.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audioElm.current.addEventListener('ended', handleEnded);
 
     window.addEventListener('keydown', handleHotkey);
 
     return () => {
       // Cleanup event handlers between dependency changes.
-      audioElm?.removeEventListener('play', handlePlay);
-      audioElm?.removeEventListener('pause', handlePause);
-      audioElm?.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audioElm?.removeEventListener('ended', handleEnded);
+      audioElm.current.removeEventListener('play', handlePlay);
+      audioElm.current.removeEventListener('pause', handlePause);
+      audioElm.current.removeEventListener(
+        'loadedmetadata',
+        handleLoadedMetadata
+      );
+      audioElm.current.removeEventListener('ended', handleEnded);
 
       window.removeEventListener('keydown', handleHotkey);
     };
   }, [
-    audioElm,
+    handleEnded,
+    handleHotkey,
     handleLoadedMetadata,
     handlePause,
-    handlePlay,
-    handleEnded,
-    handleHotkey
+    handlePlay
   ]);
 
   useEffect(() => {
     if (!playing) {
-      audioElm?.pause();
+      pauseAudio();
     } else {
-      audioElm?.play().then(() => {
-        updateMediaSession();
-      });
+      startPlaying();
     }
-  }, [audioElm, playing, updateMediaSession]);
+  }, [pauseAudio, playing, startPlaying]);
 
   useEffect(() => {
-    if (!audioElm) return;
-    audioElm.muted = muted;
-  }, [audioElm, muted]);
+    audioElm.current.muted = muted;
+  }, [muted]);
 
   useEffect(() => {
-    if (!audioElm) return;
-    audioElm.volume = volume;
-  }, [audioElm, volume]);
+    audioElm.current.volume = volume;
+  }, [volume]);
 
   useEffect(() => {
-    if (audioElm) {
-      audioElm.currentTime = currentTime;
-    }
-  }, [audioElm, currentTime]);
+    audioElm.current.currentTime = currentTime;
+  }, [currentTime]);
 
   useEffect(() => {
-    if (!audioElm) {
-      // Initiate audio element.
-      setAudioElm(new Audio(url));
-    } else {
-      // Update audio src. Pause first to prevent load while playing error.
-      audioElm.pause();
-      audioElm.src = url;
-    }
+    loadAudio(url);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
 
-    return () => {
-      // Pause and clean up on unmount
-      audioElm?.pause();
-    };
-  }, [audioElm, url]);
+  useEffect(
+    () => () => {
+      // Pause audio when unmounting.
+      pauseAudio();
+    },
+    [pauseAudio]
+  );
 
   return (
     audioElm && (

@@ -12,6 +12,7 @@ export interface IPlayerContext extends IStateContext {
   audioElm: HTMLAudioElement;
   imageUrl: string;
   play(): void;
+  playTrack(index: number): void;
   pause(): void;
   togglePlayPause(): void;
   toggleMute(): void;
