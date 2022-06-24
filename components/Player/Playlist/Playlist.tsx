@@ -88,7 +88,12 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
             className={styles.button}
             onClick={handleSortClick}
           >
-            <span className={styles.buttonIcon}>
+            <span
+              className={clsx(styles.buttonIcon, {
+                [styles.up]: !reversed,
+                [styles.down]: reversed
+              })}
+            >
               <SwapVertIcon aria-label="Swap episode order" />
             </span>
             {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}

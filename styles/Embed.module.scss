@@ -1,8 +1,8 @@
-@import './colors';
-@import './grid.scss';
-@import './theme';
+@use './colors';
+@use './grid';
+@use './theme';
 
-$divider-color: $white-a-70;
+$divider-color: colors.$white-a-70;
 $divider-size: 3px;
 
 $logo-size: 1.75rem;
@@ -11,13 +11,13 @@ $player-height: 200px;
 $player-gap: 10px;
 $player-corner-radius: 10px;
 $player-padding: 20px;
-$player-text-color: $white;
+$player-text-color: colors.$white;
 
 $player-thumbnail-size--mobile: 65px;
 $player-thumbnail-size: 135px;
 
 // TODO: Move to background module.
-$background-tint-color: $black-a-50;
+$background-tint-color: colors.$black-a-50;
 $background-blur: 30px;
 
 :export {
@@ -35,37 +35,39 @@ $background-blur: 30px;
 }
 
 .container {
-  @include lightTheme {
-    --divider-color: #{$black-a-10};
+  @include theme.light {
+    --divider-color: #{colors.$black-a-10};
 
-    --player-text-color: #{$black};
+    --player-text-color: #{colors.$black};
 
     // TODO: Move to background module.
-    --background-tint-color: #{$white-a-90};
+    --background-tint-color: #{colors.$white-a-90};
 
     // IconButton
-    --iconButton-background-color--hover: #{$black-a-10};
-    --iconButton-outline-color--focus: #{$black-a-10};
-    --iconButton-color: #{$black-a-60};
-    --iconButton-color--promote: #{$black-a-80};
-    --iconButton-color--hover: #{$black};
-    --iconButton-color--focus: #{$black};
+    --iconButton-background-color--hover: #{colors.$black-a-10};
+    --iconButton-outline-color--focus: #{colors.$black-a-10};
+    --iconButton-color: #{colors.$black-a-60};
+    --iconButton-color--promote: #{colors.$black-a-80};
+    --iconButton-color--hover: #{colors.$black};
+    --iconButton-color--focus: #{colors.$black};
 
     // Playlist
-    --playlist-text-color: #{$grey-600};
-    --playlist-text-color--active: #{$black};
-    --playlist-background-color: #{$grey-50};
-    --playlist-divider-color: #{$black-a-10};
-    --playlist-header-text-color: #{$black};
+    --playlist-text-color: #{colors.$grey-600};
+    --playlist-text-color--active: #{colors.$black};
+    --playlist-background-color: #{colors.$grey-50};
+    --playlist-divider-color: #{colors.$black-a-10};
+    --playlist-header-text-color: #{colors.$black};
+    --playlist-header-icon-color: #{colors.$black-a-30};
+    --playlist-header-icon-color--active: #{colors.$black};
 
     // PlayerProgress
-    --playerProgress-progress-color: #{$secondary-500};
-    --playerProgress-handle-color: #{$white-a-50};
-    --playerProgress-track-color: #{$black-a-10};
+    --playerProgress-progress-color: #{colors.$secondary-500};
+    --playerProgress-handle-color: #{colors.$white-a-50};
+    --playerProgress-track-color: #{colors.$black-a-10};
 
     // Modal
-    --modal-background-color: #{$white-a-90};
-    --modal-text-color: #{$black};
+    --modal-background-color: #{colors.$white-a-90};
+    --modal-text-color: #{colors.$black};
   }
 
   display: grid;
@@ -111,7 +113,7 @@ $background-blur: 30px;
 }
 
 .playerContainer {
-  @include grid-stacked;
+  @include grid.stacked;
 
   .withCoverArt &,
   .withPlaylist & {
@@ -145,7 +147,7 @@ $background-blur: 30px;
 }
 
 .background {
-  @include grid-stacked;
+  @include grid.stacked;
   position: relative;
   z-index: -1;
   overflow: hidden;
@@ -198,7 +200,7 @@ $background-blur: 30px;
       --iconButton-size: clamp(20px, 12vw, 40px);
       --playButton-size: clamp(40px, 20vw, 60px);
 
-      @include grid-stacked;
+      @include grid.stacked;
       justify-items: center;
       isolation: isolate;
     }

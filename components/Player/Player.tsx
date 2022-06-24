@@ -29,14 +29,15 @@ const Player: React.FC<IPlayerProps> = ({
   imageUrl,
   children
 }) => {
-  const tracks = Array.isArray(audio) ? audio : [audio];
+  const initialTracks = Array.isArray(audio) ? audio : [audio];
   const audioElm = useRef<HTMLAudioElement>();
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
-    tracks,
+    tracks: initialTracks,
     ...(startIndex && { currentTrackIndex: startIndex })
   });
-  const { playing, currentTrackIndex, currentTime, muted, volume } = state;
+  const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
+    state;
   const currentTrack = tracks[currentTrackIndex];
   const isLastTrack = currentTrackIndex === tracks.length - 1;
   const { url } = currentTrack;

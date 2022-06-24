@@ -1,8 +1,8 @@
-@import '@styles/colors';
+@use '@styles/colors';
 
-$modal-background-color: $black-a-90;
+$modal-background-color: colors.$black-a-90;
 $modal-background-blur: 8px;
-$modal-text-color: $white;
+$modal-text-color: colors.$white;
 
 :export {
   --modal-background-color: #{$modal-background-color};

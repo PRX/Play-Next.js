@@ -1,13 +1,13 @@
-@import '@styles/colors';
-@import '@styles/grid';
+@use '@styles/colors';
+@use '@styles/grid';
 
 $playerProgress-gap: 20px;
 
 :export {
-  --playerProgress-progress-color: #{$secondary-500};
-  --playerProgress-handle-color: #{$white-a-50};
+  --playerProgress-progress-color: #{colors.$secondary-500};
+  --playerProgress-handle-color: #{colors.$white-a-50};
   --playerProgress-handle-size: 3px;
-  --playerProgress-track-color: #{$white-a-50};
+  --playerProgress-track-color: #{colors.$white-a-50};
   --playerProgress-size: 10px;
 }
 
@@ -24,7 +24,7 @@ $playerProgress-gap: 20px;
   --track-size: var(--playerProgress-size);
   --track-radius: calc(var(--track-size) / 2);
 
-  @include grid-stacked;
+  @include grid.stacked;
 
   position: relative;
 
