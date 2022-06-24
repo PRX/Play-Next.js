@@ -13,9 +13,11 @@ $backgroundImage-blur: 30px;
 
 .root {
   @include grid.grid-stacked('before', 'after');
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   isolation: isolate;
+  z-index: -1;
 
   &::before {
     content: '';

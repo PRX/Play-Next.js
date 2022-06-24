@@ -33,7 +33,8 @@ $player-thumbnail-size: 135px;
     --player-text-color: #{$black};
 
     // TODO: Move to background module.
-    --background-tint-color: #{$white-a-90};
+    --backgroundImage-tint-color: #{$white};
+    --backgroundImage-tint-opacity: 0.9;
 
     // IconButton
     --iconButton-background-color--hover: #{$black-a-10};
@@ -103,8 +104,6 @@ $player-thumbnail-size: 135px;
 }
 
 .playerContainer {
-  @include grid-stacked;
-
   .withCoverArt &,
   .withPlaylist & {
     position: relative;

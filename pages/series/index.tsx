@@ -39,7 +39,7 @@ const SeriesPage = ({ data }: ISeriesPageProps) => {
         </div>
       </header>
 
-      <div className={styles.content}>
+      <div className={styles.main}>
         <h2>Latest Episodes</h2>
         {playlist && (
           <div className={styles.episodes}>

@@ -3,24 +3,17 @@
 @use './grid';
 
 .root {
-  @include page.root;
+  @include page.page-grid(true);
 }
 
 .header {
-  @include grid.grid-stacked;
-  @include page.header;
+  @include page.header(false, true);
+  display: grid;
+  place-content: center;
 
   color: colors.$white;
 
   background-color: colors.$grey-500;
-}
-
-.headerBackground {
-  @include page.headerBackground;
-}
-
-.content {
-  @include page.content;
 }
 
 .main {
@@ -28,6 +21,5 @@
 }
 
 .footer {
-  height: 15rem;
-  background-color: colors.$grey-800;
+  @include page.footer;
 }

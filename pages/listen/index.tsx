@@ -25,6 +25,9 @@ const ListenPage = ({ data }: IListenPageProps) => {
           imageUrl={bgImageUrl}
           className={styles.headerBackground}
         />
+        <div className={styles.headerPlayer}>
+          <h2>Header Player Coming Soon...</h2>
+        </div>
       </header>
 
       <div className={styles.main}>
