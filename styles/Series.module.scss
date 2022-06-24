@@ -1,81 +1,74 @@
-@import './colors';
-@import './page';
-
-:export {
-  bodyColor: #{$primary-900};
-}
+@use './colors';
+@use './page';
+@use './grid';
 
 .root {
-  background-color: $grey-100;
+  background-color: colors.$grey-100;
 }
 
 .header {
-  width: 100vw;
-  height: 300px;
+  @include grid.grid-stacked;
+  @include page.header;
 
-  background-color: $grey-500;
+  color: colors.$white;
+
+  background-color: colors.$grey-500;
+}
+
+.headerContent {
+  @include page.content;
+  align-self: center;
+}
+
+.headerBackground {
+  @include page.headerBackground;
 }
 
 .content {
-  width: 100vw;
-  max-width: 900px;
-  padding: 2rem 0rem;
-  margin: auto;
+  @include page.content;
 }
 
-.episodeContainer {
-  width: 56rem;
-  margin: 0.5rem auto;
+.episodes {
+  display: grid;
+  gap: 0.5rem;
 }
 
-.episodeBox {
-  background-color: $white;
-  height: 4rem;
-  margin: 0.25rem 1rem;
-
-  border-left-style: solid;
-  border-left-color: $primary-700;
-  border-left-width: 0.25rem;
-
+.episode {
   display: grid;
 
-  .episodeDate {
-    grid-area: 'DATE';
-    font-size: 2em;
-    padding: 0.5rem;
-  }
-
-  .episodeTitle {
-    grid-area: 'TITLE';
-    grid-template-columns: 3rem auto;
-  }
-
-  .episodeTeaser {
-    grid-area: 'TEASER';
-  }
+  grid-template-columns: min-content 1fr;
 
   grid-template-areas:
     'DATE TITLE'
     'DATE TEASER';
+  align-items: start;
+  column-gap: 2rem;
+  padding: 1rem;
+
+  background-color: colors.$white;
+
+  border-left-style: solid;
+  border-left-color: colors.$primary-700;
+  border-left-width: 0.25rem;
 }
 
 .episodeDate {
-  margin: 0;
+  grid-area: DATE;
+  display: grid;
+  font-size: 2em;
 }
 
 .episodeTitle {
-  color: $primary-900;
-  margin: 0rem;
-  padding: 0rem;
+  grid-area: TITLE;
+  font-weight: 700;
+  color: colors.$primary-700;
 }
 
 .episodeTeaser {
-  margin: 0rem auto;
-  padding: 0.25rem;
+  grid-area: TEASER;
 }
 
 .footer {
-  width: 100vw;
   height: 15rem;
-  background-color: $grey-800;
+  background-color: colors.$grey-800;
 }

@@ -1,20 +1,26 @@
 @use './page';
 @use './colors';
-
-:export {
-  bodyColor: #{colors.$primary-900};
-}
+@use './grid';
 
 .root {
   @include page.root;
 }
 
-//To do: move into header component
 .header {
-  width: 100vw;
-  height: 364px;
+  @include grid.grid-stacked;
+  @include page.header;
+
+  color: colors.$white;
 
   background-color: colors.$grey-500;
+}
+
+.headerBackground {
+  @include page.headerBackground;
+}
+
+.content {
+  @include page.content;
 }
 
 .main {
@@ -22,7 +28,6 @@
 }
 
 .footer {
-  width: 100vw;
   height: 15rem;
   background-color: colors.$grey-800;
 }

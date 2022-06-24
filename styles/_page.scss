@@ -7,5 +7,13 @@
 
 @mixin content {
   max-width: 900px;
-  margin: 0 auto;
+  margin-inline: auto;
+}
+
+@mixin header {
+  min-height: 300px;
+}
+
+@mixin headerBackground {
+  z-index: -1;
 }

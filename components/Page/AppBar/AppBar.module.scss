@@ -1,10 +1,15 @@
 @use '@styles/colors';
 
-.root {
-  width: 100vw;
-  padding: 1rem 2rem;
+$background-color: colors.$primary-900;
 
-  background-color: colors.$primary-900;
+:export {
+  bodyColor: #{$background-color};
+}
+
+.root {
+  display: flex;
+  padding: 1rem 2rem;
+  background-color: $background-color;
   color: colors.$white;
 }
 

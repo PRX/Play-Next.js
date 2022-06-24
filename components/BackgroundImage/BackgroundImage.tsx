@@ -6,6 +6,7 @@
 import type React from 'react';
 import clsx from 'clsx';
 import PrxImage from '@components/PrxImage';
+import ThemeVars from '@components/ThemeVars';
 import styles from './BackgroundImage.module.scss';
 
 export interface IBackgroundImageProps
@@ -17,7 +18,8 @@ const BackgroundImage: React.FC<IBackgroundImageProps> = ({
   imageUrl,
   className
 }) => (
-  <div className={clsx(className, styles.background)}>
+  <div className={clsx(className, styles.root)}>
+    <ThemeVars theme="BackgroundImage" cssProps={styles} />
     <PrxImage
       src={imageUrl}
       layout="fill"

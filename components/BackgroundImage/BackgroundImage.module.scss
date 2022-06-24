@@ -12,7 +12,7 @@ $backgroundImage-blur: 30px;
 }
 
 .root {
-  @include grid.grid-stacked;
+  @include grid.grid-stacked('before', 'after');
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -20,12 +20,12 @@ $backgroundImage-blur: 30px;
   &::before {
     content: '';
     z-index: 1;
-    backdrop-filter: blur($backgroundImage-blur);
+    backdrop-filter: blur(var(--backgroundImage-blur));
   }
 
   &::after {
     content: '';
-    z-index: 2;
+    z-index: 1;
     background-color: var(--backgroundImage-tint-color);
     opacity: var(--backgroundImage-tint-opacity);
   }

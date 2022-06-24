@@ -4,28 +4,32 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import Head from 'next/head';
+import type { IPageProps } from '@interfaces/data/page';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import AppBar from '@components/Page/AppBar/AppBar';
 import styles from '@styles/Listen.module.scss';
+import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 
-const ListenPage = ({ episodeId }) => {
-  console.log(episodeId);
+export interface IListenPageProps extends IPageProps {}
+
+const ListenPage = ({ data }: IListenPageProps) => {
+  const { bgImageUrl } = data;
   return (
     <div className={styles.root}>
-      <Head>
-        <style>{`body{background-color: ${styles.bodyColor}; }`}</style>
-      </Head>
-
       <AppBar />
 
-      <header className={styles.header}>{/* Header */}</header>
+      <header className={styles.header}>
+        <BackgroundImage
+          imageUrl={bgImageUrl}
+          className={styles.headerBackground}
+        />
+      </header>
 
       <div className={styles.main}>
         {/* Main Content */}
-        <h2>hello world {episodeId}</h2>
+        <h2>hello world</h2>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere totam
           ratione accusamus, asperiores soluta, inventore aut minima sunt,
