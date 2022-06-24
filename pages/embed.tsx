@@ -157,16 +157,19 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       (a, c) => (playerMainRect.width > c.minWidth ? c : a),
       layoutBreakpoints.current[0]
     );
+    const onAnimationComplete = () => {
+      // Get rid of temp inline style that prevents content flash.
+      playerMenuRef.current.setAttribute('style', '');
+
+      playerMenuRef.current.removeEventListener(
+        'animationend',
+        onAnimationComplete
+      );
+    };
+
+    playerMenuRef.current.addEventListener('animationend', onAnimationComplete);
 
     setPlayerLayout(bestFit);
-
-    setTimeout(
-      () => {
-        // Get rid of temp inline style that prevents content flash.
-        playerMenuRef.current.setAttribute('style', '');
-      },
-      bestFit.name === 'compact' ? 200 : 0
-    );
   }, []);
 
   const handleMoreButtonClick = () => {
