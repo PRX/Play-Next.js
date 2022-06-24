@@ -1,7 +1,6 @@
-@use 'sass:color';
-
 @import './colors';
 @import './grid.scss';
+@import './theme';
 
 $divider-color: $white-a-70;
 $divider-size: 3px;
@@ -18,8 +17,7 @@ $player-thumbnail-size--mobile: 65px;
 $player-thumbnail-size: 135px;
 
 // TODO: Move to background module.
-$background-tint-color: hsl(0 0% 0%);
-$background-tint-alpha: 0.5;
+$background-tint-color: $black-a-50;
 $background-blur: 30px;
 
 :export {
@@ -27,15 +25,49 @@ $background-blur: 30px;
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
 
+  --player-text-color: #{$player-text-color};
   --player-thumbnail-size--mobile: #{$player-thumbnail-size--mobile};
   --player-thumbnail-size: #{$player-thumbnail-size};
 
   // TODO: Move to background module.
-  --background-tint-alpha: #{$background-tint-alpha};
+  --background-tint-color: #{$background-tint-color};
   --background-blur: #{$background-blur};
 }
 
 .container {
+  @include lightTheme {
+    --divider-color: #{$black-a-10};
+
+    --player-text-color: #{$black};
+
+    // TODO: Move to background module.
+    --background-tint-color: #{$white-a-90};
+
+    // IconButton
+    --iconButton-background-color--hover: #{$black-a-10};
+    --iconButton-outline-color--focus: #{$black-a-10};
+    --iconButton-color: #{$black-a-60};
+    --iconButton-color--promote: #{$black-a-80};
+    --iconButton-color--hover: #{$black};
+    --iconButton-color--focus: #{$black};
+
+    // Playlist
+    --playlist-text-color: #{$grey-600};
+    --playlist-text-color--active: #{$black};
+    --playlist-background-color: #{$grey-50};
+    --playlist-divider-color: #{$black-a-10};
+    --playlist-header-text-color: #{$black};
+
+    // PlayerProgress
+    --playerProgress-progress-color: #{$secondary-500};
+    --playerProgress-handle-color: #{$white-a-50};
+    --playerProgress-track-color: #{$black-a-10};
+
+    // Modal
+    --modal-background-color: #{$white-a-90};
+    --modal-text-color: #{$black};
+  }
+
   display: grid;
   align-content: center;
   width: 100vw;
@@ -90,10 +122,10 @@ $background-blur: 30px;
     &::after {
       position: absolute;
       width: 100%;
-      height: $divider-size;
+      height: var(--divider-size);
       z-index: 1;
 
-      background-color: $divider-color;
+      background-color: var(--divider-color);
     }
   }
 
@@ -119,18 +151,10 @@ $background-blur: 30px;
   overflow: hidden;
 
   &::after {
-    $h: color.hue($background-tint-color);
-    $s: color.saturation($background-tint-color);
-    $l: color.lightness($background-tint-color);
     content: '';
     z-index: 1;
-    background-color: hsl($h, $s, $l, $background-tint-alpha);
+    background-color: var(--background-tint-color);
     backdrop-filter: blur(var(--background-blur));
-  }
-
-  & > img {
-    width: 100%;
-    height: 100%;
   }
 }
 
@@ -150,7 +174,7 @@ $background-blur: 30px;
 
   visibility: hidden;
 
-  color: $player-text-color;
+  color: var(--player-text-color);
 
   .withCoverArt & {
     grid-template-areas:
@@ -168,11 +192,15 @@ $background-blur: 30px;
       display: none;
     }
     .menu {
-      display: none;
+      animation: dim 200ms ease-out forwards;
     }
     .panel {
       --iconButton-size: clamp(20px, 12vw, 40px);
       --playButton-size: clamp(40px, 20vw, 60px);
+
+      @include grid-stacked;
+      justify-items: center;
+      isolation: isolate;
     }
   }
 
@@ -185,13 +213,15 @@ $background-blur: 30px;
     }
     .controls {
       &.menuShown {
+        animation: sharpen;
         display: flex;
+        pointer-events: all;
       }
     }
     .menu {
-      &.menuShown {
-        display: flex;
-      }
+      animation: sharpen;
+      display: flex;
+      pointer-events: all;
     }
   }
 
@@ -229,12 +259,13 @@ $background-blur: 30px;
 .logo {
   grid-area: LOGO;
   align-self: start;
-}
 
-.logoPrx {
-  width: 80px;
-  display: inline-block;
-  vertical-align: -webkit-baseline-middle;
+  & > svg {
+    width: 80px;
+    display: inline-block;
+    vertical-align: -webkit-baseline-middle;
+    fill: var(--logo-color, currentColor);
+  }
 }
 
 .panel {
@@ -249,22 +280,34 @@ $background-blur: 30px;
 }
 
 .controls {
+  --dim-scale: 0.9;
+  --dim-blur: 10px;
+  --dim-opacity: 0;
+  animation: sharpen 200ms ease-out forwards;
   display: flex;
   align-items: center;
   gap: 5px;
 
   &.menuShown {
-    display: none;
+    animation: dim 200ms ease-out forwards;
+    pointer-events: none;
   }
 }
 
 .menu {
+  --dim-scale: 1.1;
+  --dim-blur: 10px;
+  --dim-opacity: 0;
   display: flex;
   align-items: center;
   gap: 5px;
+  pointer-events: none;
 
   &.menuShown {
+    animation: sharpen 200ms ease-out forwards;
     display: flex;
+    z-index: 1;
+    pointer-events: all;
   }
 }
 
@@ -286,71 +329,38 @@ $background-blur: 30px;
   gap: 5px;
 }
 
-// @media only screen and (min-width: #{640px - $player-thumbnail-size}) {
-//   .main.withCoverArt {
-//     .text {
-//       gap: $player-gap;
-//     }
+@keyframes sharpen {
+  0% {
+    transform: scale(var(--dim-scale));
+    filter: blur(var(--dim-blur)) Opacity(var(--dim-opacity));
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0px) opacity(1);
+  }
+}
 
-//     .logo {
-//       display: block;
-//     }
+@keyframes dim {
+  100% {
+    transform: scale(var(--dim-scale));
+    filter: blur(var(--dim-blur)) Opacity(var(--dim-opacity));
+  }
+}
 
-//     .panel {
-//       display: flex;
-//       justify-content: space-between;
-//     }
+@keyframes fadeIn {
+  0% {
+    transform: scale(1.1);
+    filter: blur(5px) opacity(0);
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0px) opacity(1);
+  }
+}
 
-//     .controls {
-//       &.menuShown {
-//         display: block;
-//       }
-//     }
-
-//     .menu {
-//       display: flex;
-//     }
-
-//     .menuToggle {
-//       display: none;
-//     }
-//   }
-// }
-
-// @media only screen and (min-width: 640px) {
-//   .playerMain {
-//     --player-thumbnail-size: #{$player-thumbnail-size};
-
-//     grid-template-areas:
-//       'THUMB TEXT  LOGO'
-//       'THUMB PANEL PANEL'
-//       'PROG  PROG  PROG';
-//   }
-
-//   .text {
-//     gap: $player-gap;
-//   }
-
-//   .logo {
-//     display: block;
-//   }
-
-//   .panel {
-//     display: flex;
-//     justify-content: space-between;
-//   }
-
-//   .controls {
-//     &.menuShown {
-//       display: block;
-//     }
-//   }
-
-//   .menu {
-//     display: flex;
-//   }
-
-//   .menuToggle {
-//     display: none;
-//   }
-// }
+@keyframes fadeOut {
+  100% {
+    transform: scale(1.1);
+    filter: blur(5px) opacity(0);
+  }
+}

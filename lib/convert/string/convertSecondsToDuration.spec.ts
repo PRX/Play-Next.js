@@ -11,5 +11,17 @@ describe('lib/convert/string', () => {
       expect(result2).toBe('01:45');
       expect(result3).toBe('1:00:16');
     });
+
+    test('should return duration strings.', () => {
+      const result = convertSecondsToDuration('12:34');
+
+      expect(result).toBe('12:34');
+    });
+
+    test('should handle numeric string input.', () => {
+      const result = convertSecondsToDuration('120');
+
+      expect(result).toBe('02:00');
+    });
   });
 });

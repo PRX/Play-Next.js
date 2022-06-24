@@ -316,10 +316,10 @@ const Player: React.FC<IPlayerProps> = ({
         case 'BracketRight':
           nextTrack();
           break;
-        case 'ArrowUp':
+        case 'Equal':
           volumeUp();
           break;
-        case 'ArrowDown':
+        case 'Minus':
           volumeDown();
           break;
         default:
