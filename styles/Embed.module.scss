@@ -1,7 +1,6 @@
-@use 'sass:color';
-
 @import './colors';
 @import './grid.scss';
+@import './theme';
 
 $divider-color: $white-a-70;
 $divider-size: 3px;
@@ -22,11 +21,45 @@ $player-thumbnail-size: 135px;
   --divider-color: #{$divider-color};
   --divider-size: #{$divider-size};
 
+  --player-text-color: #{$player-text-color};
   --player-thumbnail-size--mobile: #{$player-thumbnail-size--mobile};
   --player-thumbnail-size: #{$player-thumbnail-size};
 }
 
 .container {
+  @include lightTheme {
+    --divider-color: #{$black-a-10};
+
+    --player-text-color: #{$black};
+
+    // TODO: Move to background module.
+    --background-tint-color: #{$white-a-90};
+
+    // IconButton
+    --iconButton-background-color--hover: #{$black-a-10};
+    --iconButton-outline-color--focus: #{$black-a-10};
+    --iconButton-color: #{$black-a-60};
+    --iconButton-color--promote: #{$black-a-80};
+    --iconButton-color--hover: #{$black};
+    --iconButton-color--focus: #{$black};
+
+    // Playlist
+    --playlist-text-color: #{$grey-600};
+    --playlist-text-color--active: #{$black};
+    --playlist-background-color: #{$grey-50};
+    --playlist-divider-color: #{$black-a-10};
+    --playlist-header-text-color: #{$black};
+
+    // PlayerProgress
+    --playerProgress-progress-color: #{$secondary-500};
+    --playerProgress-handle-color: #{$white-a-50};
+    --playerProgress-track-color: #{$black-a-10};
+
+    // Modal
+    --modal-background-color: #{$white-a-90};
+    --modal-text-color: #{$black};
+  }
+
   display: grid;
   align-content: center;
   width: 100vw;
@@ -81,10 +114,10 @@ $player-thumbnail-size: 135px;
     &::after {
       position: absolute;
       width: 100%;
-      height: $divider-size;
+      height: var(--divider-size);
       z-index: 1;
 
-      background-color: $divider-color;
+      background-color: var(--divider-color);
     }
   }
 
@@ -103,10 +136,6 @@ $player-thumbnail-size: 135px;
   }
 }
 
-.background {
-  z-index: -1;
-}
-
 .playerMain {
   --player-thumbnail-size: #{$player-thumbnail-size--mobile};
 
@@ -123,7 +152,7 @@ $player-thumbnail-size: 135px;
 
   visibility: hidden;
 
-  color: $player-text-color;
+  color: var(--player-text-color);
 
   .withCoverArt & {
     grid-template-areas:
@@ -141,11 +170,15 @@ $player-thumbnail-size: 135px;
       display: none;
     }
     .menu {
-      display: none;
+      animation: dim 200ms ease-out forwards;
     }
     .panel {
       --iconButton-size: clamp(20px, 12vw, 40px);
       --playButton-size: clamp(40px, 20vw, 60px);
+
+      @include grid-stacked;
+      justify-items: center;
+      isolation: isolate;
     }
   }
 
@@ -158,13 +191,15 @@ $player-thumbnail-size: 135px;
     }
     .controls {
       &.menuShown {
+        animation: sharpen;
         display: flex;
+        pointer-events: all;
       }
     }
     .menu {
-      &.menuShown {
-        display: flex;
-      }
+      animation: sharpen;
+      display: flex;
+      pointer-events: all;
     }
   }
 
@@ -202,12 +237,13 @@ $player-thumbnail-size: 135px;
 .logo {
   grid-area: LOGO;
   align-self: start;
-}
 
-.logoPrx {
-  width: 80px;
-  display: inline-block;
-  vertical-align: -webkit-baseline-middle;
+  & > svg {
+    width: 80px;
+    display: inline-block;
+    vertical-align: -webkit-baseline-middle;
+    fill: var(--logo-color, currentColor);
+  }
 }
 
 .panel {
@@ -222,22 +258,34 @@ $player-thumbnail-size: 135px;
 }
 
 .controls {
+  --dim-scale: 0.9;
+  --dim-blur: 10px;
+  --dim-opacity: 0;
+  animation: sharpen 200ms ease-out forwards;
   display: flex;
   align-items: center;
   gap: 5px;
 
   &.menuShown {
-    display: none;
+    animation: dim 200ms ease-out forwards;
+    pointer-events: none;
   }
 }
 
 .menu {
+  --dim-scale: 1.1;
+  --dim-blur: 10px;
+  --dim-opacity: 0;
   display: flex;
   align-items: center;
   gap: 5px;
+  pointer-events: none;
 
   &.menuShown {
+    animation: sharpen 200ms ease-out forwards;
     display: flex;
+    z-index: 1;
+    pointer-events: all;
   }
 }
 
@@ -257,4 +305,22 @@ $player-thumbnail-size: 135px;
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+@keyframes sharpen {
+  0% {
+    transform: scale(var(--dim-scale));
+    filter: blur(var(--dim-blur)) Opacity(var(--dim-opacity));
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0px) opacity(1);
+  }
+}
+
+@keyframes dim {
+  100% {
+    transform: scale(var(--dim-scale));
+    filter: blur(var(--dim-blur)) Opacity(var(--dim-opacity));
+  }
 }

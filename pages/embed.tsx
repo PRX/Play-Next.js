@@ -27,10 +27,15 @@ import PlayerProgress from '@components/Player/PlayerProgress';
 import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
 import CopyLinkButton from '@components/Player/CopyLinkButton';
+import ForwardButton from '@components/Player/ForwardButton';
+import NextButton from '@components/Player/NextButton';
+import Player from '@components/Player';
+import PlayerText from '@components/Player/PlayerText';
+import PreviousButton from '@components/Player/PreviousButton';
+import ReplayButton from '@components/Player/ReplayButton';
 import ShareFacebookButton from '@components/Player/ShareFacebookButton';
 import ShareTwitterButton from '@components/Player/ShareTwitterButton';
 import ShareEmailButton from '@components/Player/ShareEmailButton';
-import PrxLogo from '@svg/prx-logo.svg';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import AddIcon from '@svg/icons/Add.svg';
@@ -40,19 +45,15 @@ import CodeIcon from '@svg/icons/Code.svg';
 import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
-const PlayerText = dynamic(() => import('@components/Player/PlayerText'));
-const ReplayButton = dynamic(() => import('@components/Player/ReplayButton'));
-const ForwardButton = dynamic(() => import('@components/Player/ForwardButton'));
-const Player = dynamic(() => import('@components/Player'));
+const PrxLogo = dynamic(() => import('@svg/PRX-Logo-Horizontal.svg'));
+const PrxLogoColor = dynamic(
+  () => import('@svg/PRX-Logo-Horizontal-Color.svg')
+);
 const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 const PlayerThumbnail = dynamic(
   () => import('@components/Player/PlayerThumbnail')
 );
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
-const PreviousButton = dynamic(
-  () => import('@components/Player/PreviousButton')
-);
-const NextButton = dynamic(() => import('@components/Player/NextButton'));
 
 export interface IEmbedPageProps {
   config: IEmbedConfig;
@@ -66,18 +67,26 @@ export interface IEmbedLayoutBreakPoint {
 }
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
-  const { showCoverArt, showPlaylist, accentColor } = config;
+  const { showCoverArt, showPlaylist, accentColor, theme } = config;
   const { audio, playlist, bgImageUrl } = data;
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
+  const modalShown = shareShown || followShown || supportShown;
+  const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
+  const thumbnailSizeMobile = parseInt(
+    styles['--player-thumbnail-size--mobile'],
+    10
+  );
   const [showMenu, setShowMenu] = useState(false);
   const [playerLayout, setPlayerLayout] = useState<IEmbedLayoutBreakPoint>();
   const playerMainRef = useRef<HTMLDivElement>();
   const playerPanelRef = useRef<HTMLDivElement>();
   const playerControlsRef = useRef<HTMLDivElement>();
   const playerMenuRef = useRef<HTMLDivElement>();
-  const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([]);
+  const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([
+    { name: 'init', minWidth: 0, thumbnailSize: thumbnailSizeMobile }
+  ]);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
@@ -111,15 +120,13 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const initLayoutBreakpoints = useCallback(() => {
     if (!playerControlsRef.current) return;
 
+    // Protect against React double render.
+    if (layoutBreakpoints.current.length > 1) return;
+
     const playerControlsRect =
       playerControlsRef.current.getBoundingClientRect();
     const playerMenuRect = playerMenuRef.current.getBoundingClientRect();
     const playerGap = parseInt(styles.playerGap, 10);
-    const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
-    const thumbnailSizeMobile = parseInt(
-      styles['--player-thumbnail-size--mobile'],
-      10
-    );
     const minPanelWidth =
       playerMenuRect.width + playerControlsRect.width + playerGap;
     const thumbnailOffset = !canShowCoverArt ? thumbnailSize + playerGap : 0;
@@ -138,7 +145,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     ].sort((a, b) => a.minWidth - b.minWidth);
 
     layoutBreakpoints.current = breakpoints;
-  }, [canShowCoverArt]);
+  }, [canShowCoverArt, thumbnailSize, thumbnailSizeMobile]);
 
   /**
    * Update player layout by finding the last breakpoint with a min width the
@@ -150,6 +157,17 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       (a, c) => (playerMainRect.width > c.minWidth ? c : a),
       layoutBreakpoints.current[0]
     );
+    const onAnimationComplete = () => {
+      // Get rid of temp inline style that prevents content flash.
+      playerMenuRef.current.setAttribute('style', '');
+
+      playerMenuRef.current.removeEventListener(
+        'animationend',
+        onAnimationComplete
+      );
+    };
+
+    playerMenuRef.current.addEventListener('animationend', onAnimationComplete);
 
     setPlayerLayout(bestFit);
   }, []);
@@ -216,7 +234,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
         {/* <meta name="description" content="Generated by create next app" /> */}
         <style>{`:root {${rootStyles}}`}</style>
       </Head>
-      <div className={styles.container}>
+      <div className={styles.container} data-theme={theme}>
         <div className={mainClasses}>
           {audio && (
             <Player
@@ -225,12 +243,22 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               imageUrl={bgImageUrl}
             >
               {canShowCoverArt && (
-                <div className={styles.coverArt}>
+                <div
+                  className={styles.coverArt}
+                  {...(modalShown && {
+                    inert: 'inert'
+                  })}
+                >
                   <CoverArt />
                 </div>
               )}
 
-              <div className={styles.playerContainer}>
+              <div
+                className={styles.playerContainer}
+                {...(modalShown && {
+                  inert: 'inert'
+                })}
+              >
                 <BackgroundImage
                   imageUrl={bgImageUrl}
                   className={styles.background}
@@ -256,8 +284,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   </div>
 
                   <div className={styles.logo}>
-                    {/* TODO: Get PRX text to line up with title baseline. */}
-                    <PrxLogo className={styles.logoPrx} />
+                    {theme === 'light' ? <PrxLogoColor /> : <PrxLogo />}
                   </div>
 
                   <div className={styles.menuToggle}>
@@ -278,6 +305,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     <div
                       ref={playerControlsRef}
                       className={clsx(styles.controls, menuShownClass)}
+                      {...(showMenu &&
+                        playerLayout?.name === 'compact' && {
+                          inert: 'inert'
+                        })}
                     >
                       {canShowPlaylist && (
                         <PreviousButton
@@ -309,6 +340,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                     <div
                       ref={playerMenuRef}
                       className={clsx(styles.menu, menuShownClass)}
+                      {...(!showMenu &&
+                        playerLayout?.name === 'compact' && {
+                          inert: 'inert'
+                        })}
+                      style={{
+                        // Initialize hidden to prevent content flash.
+                        visibility: 'hidden'
+                      }}
                     >
                       <IconButton
                         type="button"
@@ -346,7 +385,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
               </div>
 
               {canShowPlaylist && (
-                <div className={styles.playlist}>
+                <div
+                  className={styles.playlist}
+                  {...(modalShown && {
+                    inert: 'inert'
+                  })}
+                >
                   <Playlist style={{ height: '100%' }} />
                 </div>
               )}

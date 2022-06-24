@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '@styles/Home.module.scss';
-import PrxLogo from '@svg/prx-logo.svg';
+import PrxLogo from '@svg/PRX-Logo-Horizontal.svg';
 
 const Home: NextPage = () => (
   <div className={styles.container}>

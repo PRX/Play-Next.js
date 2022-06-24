@@ -20,6 +20,8 @@
   white-space: nowrap;
   display: none;
 
+  color: var(--iconButton-color--hover);
+
   &.hoverRight {
     display: block;
     @include promptAnimation(fromRight);
