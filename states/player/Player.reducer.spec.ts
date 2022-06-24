@@ -197,6 +197,85 @@ describe('states/player', () => {
         expect(result.tracks).not.toBeNull();
         expect(result.tracks[0]).toStrictEqual(mockTrack);
       });
+
+      test('should set `tracks` and update `currentIndex`', () => {
+        const mockTracks = [
+          {
+            guid: '1',
+            url: '//foo.com/1.mp3',
+            link: '//foo.com/1',
+            title: 'Title 1'
+          },
+          {
+            guid: '2',
+            url: '//foo.com/2.mp3',
+            link: '//foo.com/2',
+            title: 'Title 2'
+          }
+        ];
+        const mockTrack = {
+          guid: '3',
+          url: '//foo.com/3.mp3',
+          link: '//foo.com/3',
+          title: 'Title 3'
+        };
+        const result = playerStateReducer(
+          {
+            ...playerInitialState,
+            tracks: [...mockTracks],
+            currentTrackIndex: 1
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
+            payload: [mockTrack, ...mockTracks]
+          }
+        );
+
+        expect(result.tracks).not.toBeNull();
+        expect(result.tracks[0]).toStrictEqual(mockTrack);
+        expect(result.tracks[1]).toStrictEqual(mockTracks[0]);
+        expect(result.tracks[2]).toStrictEqual(mockTracks[1]);
+        expect(result.currentTrackIndex).toBe(2);
+      });
+
+      test('should set `tracks` and set `currentIndex` to 0', () => {
+        const mockTracks = [
+          {
+            guid: '1',
+            url: '//foo.com/1.mp3',
+            link: '//foo.com/1',
+            title: 'Title 1'
+          },
+          {
+            guid: '2',
+            url: '//foo.com/2.mp3',
+            link: '//foo.com/2',
+            title: 'Title 2'
+          },
+          {
+            guid: '3',
+            url: '//foo.com/3.mp3',
+            link: '//foo.com/3',
+            title: 'Title 3'
+          }
+        ];
+        const result = playerStateReducer(
+          {
+            ...playerInitialState,
+            tracks: [...mockTracks],
+            currentTrackIndex: 1
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
+            payload: [mockTracks[0], mockTracks[2]]
+          }
+        );
+
+        expect(result.tracks).not.toBeNull();
+        expect(result.tracks[0]).toStrictEqual(mockTracks[0]);
+        expect(result.tracks[1]).toStrictEqual(mockTracks[2]);
+        expect(result.currentTrackIndex).toBe(0);
+      });
     });
 
     describe('`muted` actions', () => {

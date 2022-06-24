@@ -102,6 +102,13 @@ const Player: React.FC<IPlayerProps> = ({
     });
   };
 
+  const setTracks = (newTracks: IAudioData[]) => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
+      payload: newTracks
+    });
+  };
+
   const previousTrack = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
@@ -195,6 +202,7 @@ const Player: React.FC<IPlayerProps> = ({
       forward,
       seekToRelative,
       setTrack,
+      setTracks,
       previousTrack,
       nextTrack
     }),
@@ -230,7 +238,7 @@ const Player: React.FC<IPlayerProps> = ({
 
   const handleEnded = useCallback(() => {
     if (!isLastTrack) {
-      dispatch({ type: PlayerActionTypes.PLAYER_NEXT_TRACK });
+      nextTrack();
     }
   }, [isLastTrack]);
 

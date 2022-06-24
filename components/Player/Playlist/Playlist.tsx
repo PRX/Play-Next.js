@@ -15,6 +15,7 @@ import PlayerContext from '@contexts/PlayerContext';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import ExplicitIcon from '@svg/icons/Explicit.svg';
+import SwapVertIcon from '@svg/icons/SwapVert.svg';
 import styles from './Playlist.module.scss';
 
 export interface IPlaylistProps
@@ -28,11 +29,13 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
     imageUrl: defaultThumbUrl,
     state,
     play,
-    setTrack
+    setTrack,
+    setTracks
   } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const rootRef = useRef(null);
   const [playlistStyles, setPlaylistStyles] = useState({});
+  const [reversed, setReversed] = useState(false);
   const playlistDurationsInt = tracks?.map(({ duration }) =>
     convertDurationStringToIntegerArray(duration)
   );
@@ -46,6 +49,13 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
       '--playlist-height': `${rect.height}px`
     });
   }, []);
+
+  const handleSortClick = () => {
+    const reversedTracks = [...tracks].reverse();
+
+    setReversed(!reversed);
+    setTracks(reversedTracks);
+  };
 
   const handleTrackClick = (index: number) => () => {
     setTrack(index);
@@ -79,9 +89,16 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
       <div {...props} className={clsx(styles.root, className)}>
         <ThemeVars theme="Playlist" cssProps={styles} />
         <header className={styles.header}>
-          <span>
+          <button
+            type="button"
+            className={styles.button}
+            onClick={handleSortClick}
+          >
+            <span className={styles.buttonIcon}>
+              <SwapVertIcon aria-label="Swap episode order" />
+            </span>
             {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}
-          </span>
+          </button>
           <span>{playlistDurationString}</span>
         </header>
         <div ref={rootRef} className={styles.playlist} style={playlistStyles}>
