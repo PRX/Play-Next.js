@@ -1,11 +1,10 @@
 :export {
   --playButton-size: 60px;
   --playButton-padding: 0.0001px; // Need a really small non-zero value.
-  --playButton-color: var(--iconButton-color--promote);
 }
 
 .root {
   --iconButton-size: var(--playButton-size);
   --iconButton-padding: var(--playButton-padding);
-  --iconButton-color: var(--playButton-color);
+  color: var(--playButton-color, var(--iconButton-color--promote));
 }

@@ -6,7 +6,7 @@
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import styles from '@styles/Listen.module.scss';
-import PrxLogo from '@svg/prx-logo.svg';
+import PrxLogo from '@svg/PRX-Logo-Horizontal.svg';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';

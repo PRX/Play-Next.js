@@ -11,7 +11,7 @@ $white-a-80: hsl(0 0% 100% / 0.8);
 $white-a-90: hsl(0 0% 100% / 0.9);
 
 // Black at specific alphas.
-$black: hsl(0 0% 100%);
+$black: hsl(0 0% 0%);
 $black-a-10: hsl(0 0% 0% / 0.1);
 $black-a-20: hsl(0 0% 0% / 0.2);
 $black-a-30: hsl(0 0% 0% / 0.3);
@@ -23,6 +23,7 @@ $black-a-80: hsl(0 0% 0% / 0.8);
 $black-a-90: hsl(0 0% 0% / 0.9);
 
 // Grays
+$grey-50: hsl(0 0% 95%);
 $grey-100: hsl(0 0% 90%);
 $grey-200: hsl(0 0% 80%);
 $grey-300: hsl(0 0% 70%);
