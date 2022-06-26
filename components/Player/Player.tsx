@@ -12,6 +12,7 @@ import {
 } from '@states/player/Player.reducer';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import PlayerContext from '@contexts/PlayerContext';
+import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
   audio: IAudioData | IAudioData[];
@@ -38,13 +39,20 @@ const Player: React.FC<IPlayerProps> = ({
   });
   const { playing, currentTrackIndex, currentTime, muted, volume } = state;
   const currentTrack = tracks[currentTrackIndex];
+  const currentTrackDuration = useMemo(
+    () => convertDurationToSeconds(currentTrack.duration),
+    [currentTrack.duration]
+  );
   const isLastTrack = currentTrackIndex === tracks.length - 1;
   const { url } = currentTrack;
 
   const boundedTime = useCallback(
     (time: number) =>
-      Math.min(Math.max(0.00001, time), audioElm.current.duration),
-    []
+      Math.min(
+        Math.max(0.00001, time),
+        audioElm.current.duration || currentTrackDuration
+      ),
+    [currentTrackDuration]
   );
 
   const boundedVolume = useCallback(
@@ -87,9 +95,9 @@ const Player: React.FC<IPlayerProps> = ({
 
   const seekToRelative = useCallback(
     (ratio: number) => {
-      seekTo(audioElm.current.duration * ratio);
+      seekTo((audioElm.current.duration || currentTrackDuration) * ratio);
     },
-    [seekTo]
+    [currentTrackDuration, seekTo]
   );
 
   const replay = useCallback(() => {
@@ -240,10 +248,6 @@ const Player: React.FC<IPlayerProps> = ({
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
       payload: audioElm.current.duration
-    });
-    dispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
-      payload: 0.00001
     });
 
     if (playing) {

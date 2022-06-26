@@ -20,6 +20,7 @@ import {
   playerProgressStateReducer
 } from '@states/player/PlayerProgress.reducer';
 import ThemeVars from '@components/ThemeVars';
+import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import styles from './PlayerProgress.module.scss';
 
@@ -50,12 +51,15 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     currentTime: playerCurrentTime
   } = playerState;
   const { duration: trackDuration } = tracks[currentTrackIndex];
-  const progress = scrubPosition || played || 0;
   const [progressStyles, setProgressStyles] = useState({});
   const currentDuration = convertSecondsToDuration(Math.round(playedSeconds));
   const totalDuration = duration
     ? convertSecondsToDuration(Math.round(duration))
     : convertSecondsToDuration(trackDuration);
+  const totalDurationSeconds =
+    duration || convertDurationToSeconds(trackDuration);
+  const progress =
+    scrubPosition || played || playedSeconds / totalDurationSeconds || 0;
 
   /**
    * Update progress styles.
@@ -90,16 +94,18 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
       const { currentTime: ct, duration: d } = audioElm;
       const updatedPlayed = seconds || seconds === 0 ? seconds : ct;
 
+      updateProgressStyles();
+
       dispatch({
         type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
         payload: {
           duration: d,
           playedSeconds: updatedPlayed,
-          played: updatedPlayed / d
+          played: updatedPlayed / (d || totalDurationSeconds)
         }
       });
     },
-    [audioElm]
+    [audioElm, totalDurationSeconds, updateProgressStyles]
   );
 
   /**
@@ -146,14 +152,14 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    * @param e Pointer Event
    */
   const handlePointerUp = useCallback(() => {
-    seekTo(scrubPosition * audioElm.duration);
+    seekTo(scrubPosition * totalDurationSeconds);
 
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS_TO_SCRUB_POSITION
     });
 
     trackRef.current.removeEventListener('pointermove', handlePointerMove);
-  }, [audioElm?.duration, handlePointerMove, scrubPosition, seekTo]);
+  }, [totalDurationSeconds, handlePointerMove, scrubPosition, seekTo]);
 
   /**
    * Window resize handler.
@@ -169,7 +175,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     if (playerCurrentTime !== null) {
       updateProgress(playerCurrentTime);
     }
-  }, [duration, playerCurrentTime, updateProgress]);
+  }, [playerCurrentTime, updateProgress]);
 
   /**
    * Setup update interval.
