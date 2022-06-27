@@ -152,6 +152,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
    * player element fits into.
    */
   const updatePlayerLayout = useCallback(() => {
+    if (!playerMainRef.current) return;
+
     const playerMainRect = playerMainRef.current.getBoundingClientRect();
     const bestFit = layoutBreakpoints.current.reduce(
       (a, c) => (playerMainRect.width > c.minWidth ? c : a),

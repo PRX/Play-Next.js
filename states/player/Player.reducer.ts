@@ -40,6 +40,9 @@ export const playerStateReducer = (
     case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX:
       return { ...state, currentTrackIndex: action.payload };
 
+    case ActionTypes.PLAYER_PLAY_TRACK:
+      return { ...state, currentTrackIndex: action.payload, playing: true };
+
     case ActionTypes.PLAYER_NEXT_TRACK:
       return {
         ...state,

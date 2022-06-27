@@ -119,6 +119,21 @@ describe('states/player', () => {
         expect(result.currentTrackIndex).toBe(3);
       });
 
+      test('should set `currentTrackIndex`, and `playing` true', () => {
+        const result = playerStateReducer(
+          {
+            ...mockState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PLAY_TRACK,
+            payload: 3
+          }
+        );
+
+        expect(result.currentTrackIndex).toBe(3);
+        expect(result.playing).toBe(true);
+      });
+
       test('should set `currentTrackIndex` to next index', () => {
         const result = playerStateReducer(
           {
