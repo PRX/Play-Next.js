@@ -76,6 +76,43 @@ describe('lib/parse/data', () => {
       ]);
     });
 
+    test('should always add categories from feed', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all' };
+      const result = parseRssItems(
+        {
+          ...mockRssData,
+          itunes: {
+            categories: ['foo']
+          }
+        },
+        config
+      );
+
+      expect(result[0].categories).toContain('foo');
+      expect(result[1].categories).toContain('foo');
+      expect(result[2].categories).toContain('foo');
+      expect(result[3].categories).toContain('foo');
+      expect(result[4].categories).toContain('foo');
+    });
+
+    test('should remove duplicate categories', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all' };
+      const result = parseRssItems(
+        {
+          ...mockRssData,
+          itunes: {
+            categories: ['cat1']
+          }
+        },
+        config
+      );
+
+      expect(result[0].categories.length).toBe(4);
+      expect(result[1].categories.length).toBe(2);
+      expect(result[2].categories.length).toBe(2);
+      expect(result[3].categories.length).toBe(2);
+    });
+
     test('should only add categories when neither rss or itunes categories exist', () => {
       const config: IEmbedConfig = { showPlaylist: 'all' };
       const result = parseRssItems(mockRssData, config);

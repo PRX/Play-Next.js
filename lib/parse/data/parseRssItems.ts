@@ -26,10 +26,12 @@ const parseRssItems = (
           item.categories ||
           item.itunes?.categories) && {
           categories: [
-            ...((rssData.itunes?.categories as string[]) || []),
+            ...(rssData.itunes?.categories || []),
             ...(item.categories || []),
             ...((item.itunes?.categories as string[]) || [])
-          ].map((c) => c.trim())
+          ]
+            .map((c) => c.trim())
+            .reduce((a, c) => (a.indexOf(c) === -1 ? [...a, c] : a), [])
         })
       } as IRssItem)
   );
