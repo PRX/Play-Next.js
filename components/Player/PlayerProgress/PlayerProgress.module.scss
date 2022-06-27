@@ -55,8 +55,7 @@ $playerProgress-gap: 20px;
       var(--accent-gradient, transparent)
     );
     background-size: var(--track-width, calc(100vw - 150px));
-    background-attachment: fixed;
-    background-position: center;
+    background-attachment: scroll;
 
     border-right: var(--playerProgress-handle-size) solid
       var(--playerProgress-handle-color);
