@@ -7,8 +7,9 @@ import convertDurationStringToIntegerArray from './convertDurationStringToIntege
  * @returns Duration in seconds as number.
  */
 const convertDurationToSeconds = (duration: string) => {
-  const [seconds, minutes, hours] =
-    convertDurationStringToIntegerArray(duration);
+  const [seconds, minutes, hours] = convertDurationStringToIntegerArray(
+    duration || '0'
+  );
 
   return seconds + (minutes || 0) * 60 + (hours || 0) * 360;
 };

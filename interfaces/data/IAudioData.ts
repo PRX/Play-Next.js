@@ -5,8 +5,8 @@
 import type Parser from 'rss-parser';
 
 export interface IRssItem extends Parser.Item {
-  itunes: {
-    [key: string]: string;
+  itunes?: {
+    [key: string]: any;
   };
 }
 

@@ -3,6 +3,11 @@ import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 
+/**
+ * Parse RSS item into audio data object.
+ * @param rssItem RSS item to be parsed.
+ * @returns Audio data object.
+ */
 const parseAudioData = ({
   guid,
   link,
