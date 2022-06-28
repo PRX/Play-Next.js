@@ -9,9 +9,9 @@ import type { IPageProps } from '@interfaces/data/page';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
-import AppBar from '@components/Page/AppBar/AppBar';
+import AppBar from '@components/Page/AppBar';
 import styles from '@styles/Series.module.scss';
-import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
+import BackgroundImage from '@components/BackgroundImage';
 
 export interface ISeriesPageProps extends IPageProps {}
 
