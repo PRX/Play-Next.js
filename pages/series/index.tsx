@@ -12,6 +12,7 @@ import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import AppBar from '@components/Page/AppBar/AppBar';
 import styles from '@styles/Series.module.scss';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
+import CoverArt from '@components/Player/CoverArt';
 
 export interface ISeriesPageProps extends IPageProps {}
 

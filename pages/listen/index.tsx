@@ -43,7 +43,6 @@ const ListenPage = ({ data }: IListenPageProps) => {
           molestiae. Alias sint fugit omnis blanditiis ab!
         </p>
       </div>
-      <footer className={styles.footer}>{/* footer */}</footer>
     </div>
   );
 };
