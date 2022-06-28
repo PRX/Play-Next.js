@@ -1,8 +1,8 @@
 /**
- *
- * file @Footer.tsx
+ * @file Footer.tsx
  * Component for page footer
  */
+
 import Styles from './Footer.module.scss';
 
 const Footer = () => {
@@ -11,9 +11,9 @@ const Footer = () => {
     <div className={Styles.footer}>
       <div className={Styles.footerLinks}>
         <h3>Company</h3>
-        {/* <Link className={Styles.links}>TEXT TEXT TEXT</Link>
-        <Link className={Styles.links}>TEXT TEXT TEXT</Link>
-        <Link className={Styles.links}>TEXT TEXT TEXT</Link> */}
+        <span>TEXT TEXT TEXT</span>
+        <span>TEXT TEXT TEXT</span>
+        <span>TEXT TEXT TEXT</span>
       </div>
     </div>
   );

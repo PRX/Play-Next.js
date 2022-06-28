@@ -8,5 +8,11 @@
 
 .footer {
   @include page.full-width;
+  height: 5rem;
   background-color: $grey-800;
+
+  & h3 {
+    display: grid;
+    color: $white;
+  }
 }
