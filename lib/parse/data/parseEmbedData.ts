@@ -21,6 +21,7 @@ const parseEmbedData = (
     title: configTitle,
     subtitle: configSubtitle,
     audioUrl: configAudioUrl,
+    episodeGuid: configEpisodeGuid,
     epImageUrl: configImageUrl,
     showPlaylist
   } = config;
@@ -40,6 +41,14 @@ const parseEmbedData = (
         subtitle: rssTitle
       } as IAudioData)
   );
+  const initialAudioIndex =
+    audioItems &&
+    (configEpisodeGuid
+      ? Math.max(
+          0,
+          audioItems.findIndex((item) => item.guid === configEpisodeGuid)
+        )
+      : 0);
   const audio: IAudioData = {
     // Establish defaults from feed props.
     ...((rssImageUrl || rssItunesImage) && {
@@ -48,7 +57,7 @@ const parseEmbedData = (
 
     // Override with feed items props.
     ...(audioItems && {
-      ...audioItems[0]
+      ...audioItems[initialAudioIndex]
     }),
 
     // Override with values from config.

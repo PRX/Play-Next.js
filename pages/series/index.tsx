@@ -5,7 +5,7 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IPageProps } from '@interfaces/data/page';
+import type { IPageProps } from '@interfaces/page';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
@@ -13,7 +13,12 @@ import AppBar from '@components/Page/AppBar';
 import styles from '@styles/Series.module.scss';
 import BackgroundImage from '@components/BackgroundImage';
 
-export interface ISeriesPageProps extends IPageProps {}
+// REMOVE WHEN Series page data interface is done.
+import { ISeriesData } from '@interfaces/data';
+
+export interface ISeriesPageProps extends IPageProps {
+  data: ISeriesData;
+}
 
 const SeriesPage = ({ data }: ISeriesPageProps) => {
   const { bgImageUrl, rssTitle, playlist } = data;
