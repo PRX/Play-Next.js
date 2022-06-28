@@ -1,0 +1,63 @@
+@use './colors';
+
+$content-width: 900px;
+
+$header-min-height: 300px;
+
+@mixin page-grid($withHeader: false) {
+  display: grid;
+  @if $withHeader == true {
+    grid-template-rows:
+      min-content min-content
+      1fr min-content;
+  } @else {
+    grid-template-rows: min-content 1fr min-content;
+  }
+  min-height: 100vh;
+  background-color: colors.$grey-100;
+}
+
+@mixin content-grid {
+  display: grid;
+  grid-template-columns: 2rem 1fr minmax(min-content, $content-width) 1fr 2rem;
+  align-content: start;
+
+  & > * {
+    grid-column: 3;
+  }
+}
+
+@mixin full-width {
+  grid-column: 1 / -1;
+}
+
+@mixin content {
+  @include content-grid;
+  align-self: stretch;
+}
+
+@mixin header($withContentGrid: false, $withBackground: false) {
+  min-height: $header-min-height;
+
+  @if $withBackground == true {
+    position: relative;
+    isolation: isolate;
+  }
+  @if $withContentGrid == true {
+    @include content-grid;
+    align-content: center;
+
+    @if $withBackground == true {
+      & > :first-child {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+}
+
+@mixin footer {
+  @include full-width;
+  align-self: end;
+  height: 15rem;
+  background-color: colors.$grey-800;
+}

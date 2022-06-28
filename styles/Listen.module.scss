@@ -1,42 +1,25 @@
-@import './colors';
-
-:export {
-  bodyColor: #{$primary-900};
-}
+@use './page';
+@use './colors';
+@use './grid';
 
 .root {
-  min-height: 100vh;
-  background-color: $grey-100;
-}
-
-.logoBar {
-  width: 100vw;
-  padding: 1rem 2rem;
-
-  background-color: $primary-900;
-  color: $white;
-}
-
-.prxLogo {
-  width: 3.6rem;
+  @include page.page-grid(true);
 }
 
 .header {
-  width: 100vw;
-  height: 364px;
+  @include page.header(false, true);
+  display: grid;
+  place-content: center;
 
-  background-color: $grey-500;
+  color: colors.$white;
+
+  background-color: colors.$grey-500;
 }
 
-.content {
-  width: 100vw;
-  max-width: 900px;
-  padding: 2rem 1rem;
-  margin: 0 auto;
+.main {
+  @include page.content;
 }
 
 .footer {
-  width: 100vw;
-  height: 15rem;
-  background-color: $grey-800;
+  @include page.footer;
 }

@@ -1,0 +1,21 @@
+@use '@styles/colors';
+@use '@styles/page';
+
+$background-color: colors.$primary-900;
+
+:export {
+  bodyColor: #{$background-color};
+}
+
+.root {
+  @include page.full-width;
+  display: flex;
+  padding: 1rem 2rem;
+  background-color: $background-color;
+  color: colors.$white;
+}
+
+.prxLogo {
+  width: 3.6rem;
+  fill: colors.$white;
+}
