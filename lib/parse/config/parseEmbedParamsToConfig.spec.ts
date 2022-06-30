@@ -32,7 +32,7 @@ describe('lib/parse/config', () => {
       expect(result.ctaTitle).toBe('TC');
       expect(result.audioUrl).toBe('UA');
       expect(result.imageUrl).toBe('UI');
-      expect(result.epImageUrl).toBe('UE');
+      expect(result.episodeImageUrl).toBe('UE');
       expect(result.feedUrl).toBe('UF');
       expect(result.feedId).toBe('IF');
       expect(result.episodeGuid).toBe('GE');

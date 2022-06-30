@@ -69,7 +69,7 @@ describe('lib/parse/data', () => {
         subtitle: 'Foo to the bar',
         audioUrl: 'http://foo.com/foo.mp3',
         imageUrl: 'http://foo.com/bg.png',
-        epImageUrl: 'http://foo.com/foo.png',
+        episodeImageUrl: 'http://foo.com/foo.png',
         subscribeUrl: 'http://foo.com/feed.rss'
       });
 

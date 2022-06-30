@@ -1,5 +1,5 @@
 /**
- * Defines Listen P\page data interfaces and types.
+ * Defines Listen Page data interfaces and types.
  */
 
 import { IAudioData } from './IAudioData';

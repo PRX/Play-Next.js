@@ -9,6 +9,7 @@ describe('lib/parse/data', () => {
         url: 'http://test.com/foo.png'
       },
       title: 'Foo',
+      description: 'DESCRIPTION',
       link: 'http://test.com',
       itunes: {
         image: 'http://test.com/foo-3000.png',
@@ -58,14 +59,15 @@ describe('lib/parse/data', () => {
       );
 
       expect(result.bgImageUrl).toBe('http://test.com/foo.png');
-      expect(result.imageUrl).toBe('CONTENT:ENCODED');
-      expect(result.title).toBe('ITUNES:SUBTITLE');
-      expect(result.summary).toBe('ITUNES:SUBTITLE');
+      expect(result.imageUrl).toBe('http://test.com/foo.png');
+      expect(result.title).toBe('Foo');
+      expect(result.summary).toBe('<p>DESCRIPTION</p>');
       expect(result.episodes[0].guid).toBe('GUID:1');
       expect(result.episodes[0].title).toBe('TITLE');
       expect(result.episodes[0].teaser).toBe('ITUNES:SUBTITLE');
-      expect(typeof result.episodes[0].pubDate).toBe('Date');
-      expect(result.episodes[0].pubDate.getDate()).toBe(16);
+      expect(result.episodes[0].pubDate).toBe(
+        'Wed, 16 Jun 2022 19:00:00 -0000'
+      );
     });
   });
 });

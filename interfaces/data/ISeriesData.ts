@@ -11,6 +11,6 @@ export interface ISeriesData {
     guid: string;
     title: string;
     teaser: string;
-    pubDate: Date;
+    pubDate: string;
   }[];
 }

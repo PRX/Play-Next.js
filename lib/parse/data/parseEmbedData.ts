@@ -22,7 +22,7 @@ const parseEmbedData = (
     subtitle: configSubtitle,
     audioUrl: configAudioUrl,
     episodeGuid: configEpisodeGuid,
-    epImageUrl: configImageUrl,
+    episodeImageUrl: configImageUrl,
     showPlaylist
   } = config;
   const {
