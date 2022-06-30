@@ -4,7 +4,7 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IListenPageData } from '@interfaces/data';
+import type { IListenData } from '@interfaces/data';
 import type { IPageProps } from '@interfaces/page';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
@@ -18,7 +18,7 @@ import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PlayerText from '@components/Player/PlayerText';
 
 export interface IListenPageProps extends IPageProps {
-  data: IListenPageData;
+  data: IListenData;
 }
 
 const ListenPage = ({ data }: IListenPageProps) => {

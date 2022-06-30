@@ -1,5 +1,5 @@
 import type Parser from 'rss-parser';
-import { IAudioData, IListenPageData, IRssItem } from '@interfaces/data';
+import { IAudioData, IListenData, IRssItem } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
 import parseAudioData from './parseAudioData';
 
@@ -12,7 +12,7 @@ import parseAudioData from './parseAudioData';
 const parseListenData = (
   config: IEmbedConfig,
   rssData?: Parser.Output<IRssItem>
-): IListenPageData => {
+): IListenData => {
   const { episodeGuid, imageUrl: configBgImageUrl } = config;
   const {
     image: rssImage,
@@ -35,7 +35,7 @@ const parseListenData = (
     rssEpisode.itunes?.summary;
   const title = rssEpisode.itunes?.subtitle || rssEpisode.title;
 
-  const data: IListenPageData = {
+  const data: IListenData = {
     episodeAudio,
     bgImageUrl,
     content,
