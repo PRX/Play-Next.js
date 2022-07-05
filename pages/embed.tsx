@@ -5,7 +5,7 @@
 
 import type { GetServerSideProps } from 'next';
 import type { IEmbedData } from '@interfaces/data';
-import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import type { IPageProps } from '@interfaces/page';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
@@ -55,8 +55,7 @@ const PlayerThumbnail = dynamic(
 );
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
 
-export interface IEmbedPageProps {
-  config: IEmbedConfig;
+export interface IEmbedPageProps extends IPageProps {
   data: IEmbedData;
 }
 

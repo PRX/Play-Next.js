@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import type { IAudioData } from '@interfaces/data/IAudioData';
 import {
   CSSProperties,
   useCallback,
@@ -50,7 +51,8 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
     playing,
     currentTime: playerCurrentTime
   } = playerState;
-  const { duration: trackDuration } = tracks[currentTrackIndex];
+  const { duration: trackDuration } =
+    tracks[currentTrackIndex] || ({} as IAudioData);
   const [progressStyles, setProgressStyles] = useState({});
   const currentDuration = convertSecondsToDuration(Math.round(playedSeconds));
   const totalDuration = duration

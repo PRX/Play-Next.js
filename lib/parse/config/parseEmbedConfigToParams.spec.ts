@@ -9,7 +9,7 @@ describe('lib/parse/config', () => {
       ctaTitle: 'TC',
       audioUrl: 'UA',
       imageUrl: 'UI',
-      epImageUrl: 'UE',
+      episodeImageUrl: 'UE',
       feedUrl: 'UF',
       feedId: 'IF',
       episodeGuid: 'GE',

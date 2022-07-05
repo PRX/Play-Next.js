@@ -11,5 +11,13 @@ describe('lib/convert/string', () => {
       expect(result2).toBe(105);
       expect(result3).toBe(376);
     });
+
+    test('should treat falsy argument as 0.', () => {
+      const result1 = convertDurationToSeconds(undefined);
+      const result2 = convertDurationToSeconds(null);
+
+      expect(result1).toBe(0);
+      expect(result2).toBe(0);
+    });
   });
 });

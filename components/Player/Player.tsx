@@ -39,8 +39,8 @@ const Player: React.FC<IPlayerProps> = ({
   });
   const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
     state;
-  const currentTrack = tracks[currentTrackIndex];
-  const currentTrackDuration = useMemo(
+  const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
+  const currentTrackDurationSeconds = useMemo(
     () => convertDurationToSeconds(currentTrack.duration),
     [currentTrack.duration]
   );
@@ -51,9 +51,9 @@ const Player: React.FC<IPlayerProps> = ({
     (time: number) =>
       Math.min(
         Math.max(0.00001, time),
-        audioElm.current.duration || currentTrackDuration
+        audioElm.current.duration || currentTrackDurationSeconds
       ),
-    [currentTrackDuration]
+    [currentTrackDurationSeconds]
   );
 
   const boundedVolume = useCallback(
@@ -96,9 +96,11 @@ const Player: React.FC<IPlayerProps> = ({
 
   const seekToRelative = useCallback(
     (ratio: number) => {
-      seekTo((audioElm.current.duration || currentTrackDuration) * ratio);
+      seekTo(
+        (audioElm.current.duration || currentTrackDurationSeconds) * ratio
+      );
     },
-    [currentTrackDuration, seekTo]
+    [currentTrackDurationSeconds, seekTo]
   );
 
   const replay = useCallback(() => {

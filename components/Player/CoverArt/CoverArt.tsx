@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import type { IAudioData } from '@interfaces/data';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import PrxImage from '@components/PrxImage';
@@ -21,7 +22,7 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
   const imageRef = useRef({ complete: false });
   const [isLoading, setIsLoading] = useState(true);
   const { tracks, currentTrackIndex } = state;
-  const { imageUrl, title } = tracks[currentTrackIndex];
+  const { imageUrl, title } = tracks[currentTrackIndex] || ({} as IAudioData);
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, {
     [styles.loaded]: !isLoading || imageRef.current.complete

@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import type { IAudioData } from '@interfaces/data/IAudioData';
 import { useContext } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
@@ -17,10 +18,11 @@ export interface IPlayerTextProps {}
 const PlayerText: React.FC<IPlayerTextProps> = () => {
   const { state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
-  const { title, subtitle, explicit } = tracks[currentTrackIndex];
+  const { title, subtitle, explicit } =
+    tracks[currentTrackIndex] || ({} as IAudioData);
 
   const wrapWords = (text: string) =>
-    text.match(/\s*\S+/g).map((word, i) => (
+    text?.match(/\s*\S+/g).map((word, i) => (
       // eslint-disable-next-line react/no-array-index-key
       <span key={`${word}:${i}`}>{word}</span>
     ));

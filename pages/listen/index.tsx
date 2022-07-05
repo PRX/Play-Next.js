@@ -4,18 +4,25 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IPageProps } from '@interfaces/data/page';
+import type { IListenData } from '@interfaces/data';
+import type { IPageProps } from '@interfaces/page';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
-import parseEmbedData from '@lib/parse/data/parseEmbedData';
+import parseListenData from '@lib/parse/data/parseListenData';
 import AppBar from '@components/Page/AppBar/AppBar';
 import styles from '@styles/Listen.module.scss';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
+import Player from '@components/Player';
+import PlayButton from '@components/Player/PlayButton';
+import PlayerThumbnail from '@components/Player/PlayerThumbnail';
+import PlayerText from '@components/Player/PlayerText';
 
-export interface IListenPageProps extends IPageProps {}
+export interface IListenPageProps extends IPageProps {
+  data: IListenData;
+}
 
 const ListenPage = ({ data }: IListenPageProps) => {
-  const { bgImageUrl } = data;
+  const { bgImageUrl, episodeAudio, content, title } = data;
   return (
     <div className={styles.root}>
       <AppBar />
@@ -26,22 +33,18 @@ const ListenPage = ({ data }: IListenPageProps) => {
           className={styles.headerBackground}
         />
         <div className={styles.headerPlayer}>
-          <h2>Header Player Coming Soon...</h2>
+          <Player audio={episodeAudio} imageUrl={bgImageUrl}>
+            <PlayerThumbnail layout="fixed" width={100} height={100} />
+            <PlayerText />
+            <PlayButton />
+          </Player>
         </div>
       </header>
 
       <div className={styles.main}>
         {/* Main Content */}
-        <h2>hello world</h2>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere totam
-          ratione accusamus, asperiores soluta, inventore aut minima sunt,
-          maiores vero fuga eius! Esse laboriosam beatae quod modi velit
-          pariatur doloremque. Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Qui ipsam quisquam laudantium doloribus in rerum
-          officiis dolor fugiat sunt, sequi adipisci recusandae dolores
-          molestiae. Alias sint fugit omnis blanditiis ab!
-        </p>
+        <h2>{title}</h2>
+        <p>{content}</p>
       </div>
       <footer className={styles.footer}>{/* footer */}</footer>
     </div>
@@ -54,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // 2. If RSS feed URL is provided.
   const rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
   // 3. Parse config and RSS data into embed data.
-  const data = parseEmbedData(config, rssData);
+  const data = parseListenData(config, rssData);
 
   return {
     props: { config, data }

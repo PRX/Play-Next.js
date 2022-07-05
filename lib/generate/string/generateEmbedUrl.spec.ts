@@ -28,7 +28,7 @@ describe('lib/generate/string', () => {
         ctaTitle: 'TC',
         audioUrl: 'UA',
         imageUrl: 'UI',
-        epImageUrl: 'UE',
+        episodeImageUrl: 'UE',
         feedUrl: 'UF',
         feedId: 'IF',
         episodeGuid: 'GE',
