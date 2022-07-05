@@ -24,7 +24,7 @@ const SeriesPage = ({ data }: ISeriesPageProps) => {
   const formatEpisodePubDate = (pubDate: string) => {
     const date = new Date(pubDate);
 
-    return `${date.getMonth().toString().padStart(2, '0')}/${date
+    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
       .getFullYear()
       .toString()
       .slice(2)}`;

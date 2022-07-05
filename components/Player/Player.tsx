@@ -40,7 +40,7 @@ const Player: React.FC<IPlayerProps> = ({
   const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
     state;
   const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
-  const currentTrackDuration = useMemo(
+  const currentTrackDurationSeconds = useMemo(
     () => convertDurationToSeconds(currentTrack.duration),
     [currentTrack.duration]
   );
