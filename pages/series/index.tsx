@@ -20,6 +20,16 @@ export interface ISeriesPageProps extends IPageProps {
 
 const SeriesPage = ({ data }: ISeriesPageProps) => {
   const { bgImageUrl, title, summary, episodes } = data;
+
+  const formatEpisodePubDate = (pubDate: string) => {
+    const date = new Date(pubDate);
+
+    return `${date.getMonth().toString().padStart(2, '0')}/${date
+      .getFullYear()
+      .toString()
+      .slice(2)}`;
+  };
+
   return (
     <div className={styles.root}>
       <AppBar />
@@ -38,13 +48,22 @@ const SeriesPage = ({ data }: ISeriesPageProps) => {
         <h2>Latest Episodes</h2>
         {episodes && (
           <div className={styles.episodes}>
-            {episodes.map(({ guid }) => (
-              <div className={styles.episode} key={guid}>
-                <div className={styles.episodeDate}>07/22</div>
-                <div className={styles.episodeTitle}>{title}</div>
-                <div className={styles.episodeTeaser}>{summary}</div>
-              </div>
-            ))}
+            {episodes.map(
+              ({
+                guid,
+                title: episodeTitle,
+                teaser: episodeTeaser,
+                pubDate
+              }) => (
+                <div className={styles.episode} key={guid}>
+                  <div className={styles.episodeDate}>
+                    {formatEpisodePubDate(pubDate)}
+                  </div>
+                  <div className={styles.episodeTitle}>{episodeTitle}</div>
+                  <div className={styles.episodeTeaser}>{episodeTeaser}</div>
+                </div>
+              )
+            )}
           </div>
         )}
       </div>

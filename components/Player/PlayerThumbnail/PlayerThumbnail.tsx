@@ -43,7 +43,15 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
 
   return (
     srcUrl && (
-      <div className={rootClassNames}>
+      <div
+        className={rootClassNames}
+        style={{
+          ...(layout !== 'fill' && {
+            width,
+            height
+          })
+        }}
+      >
         <ThemeVars theme="PlayerThumbnail" cssProps={styles} />
         <PrxImage
           ref={imageRef}
