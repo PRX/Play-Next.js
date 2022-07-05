@@ -1,0 +1,15 @@
+@use 'colors';
+@use './page';
+@use './grid';
+
+:export {
+  bodyColor: #{$background-color};
+}
+
+.footer {
+  @include page.full-width;
+  background-color: $grey-800;
+}
+
+.footerLinks {
+}

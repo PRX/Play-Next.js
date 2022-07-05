@@ -1,5 +1,6 @@
 @mixin stacked($pseudoElms...) {
   display: grid;
+  isolation: isolate;
 
   & > * {
     grid-column: 1;

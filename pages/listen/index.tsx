@@ -4,45 +4,47 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import Head from 'next/head';
-import styles from '@styles/Listen.module.scss';
-import PrxLogo from '@svg/PRX-Logo-Horizontal.svg';
+import type { IPageProps } from '@interfaces/data/page';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
+import AppBar from '@components/Page/AppBar/AppBar';
+import styles from '@styles/Listen.module.scss';
+import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 
-const ListenPage = ({ episodeId }) => {
-  console.log(episodeId);
+export interface IListenPageProps extends IPageProps {}
+
+const ListenPage = ({ data }: IListenPageProps) => {
+  const { bgImageUrl } = data;
   return (
-    <>
-      <div className={styles.root}>
-        <Head>
-          <style>{`body{background-color: ${styles.bodyColor}; }`}</style>
-        </Head>
+    <div className={styles.root}>
+      <AppBar />
 
-        <div className={styles.logoBar}>
-          {/* Logo bar */}
-          <PrxLogo className={styles.prxLogo} />
+      <header className={styles.header}>
+        <BackgroundImage
+          imageUrl={bgImageUrl}
+          className={styles.headerBackground}
+        />
+        <div className={styles.headerPlayer}>
+          <h2>Header Player Coming Soon...</h2>
         </div>
+      </header>
 
-        <header className={styles.header}>{/* Header */}</header>
-
-        <div className={styles.content}>
-          {/* Main Content */}
-          <h2>hello world {episodeId}</h2>
-          <p className={styles.contentText}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-            totam ratione accusamus, asperiores soluta, inventore aut minima
-            sunt, maiores vero fuga eius! Esse laboriosam beatae quod modi velit
-            pariatur doloremque. Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Qui ipsam quisquam laudantium doloribus in rerum
-            officiis dolor fugiat sunt, sequi adipisci recusandae dolores
-            molestiae. Alias sint fugit omnis blanditiis ab!
-          </p>
-        </div>
+      <div className={styles.main}>
+        {/* Main Content */}
+        <h2>hello world</h2>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere totam
+          ratione accusamus, asperiores soluta, inventore aut minima sunt,
+          maiores vero fuga eius! Esse laboriosam beatae quod modi velit
+          pariatur doloremque. Lorem ipsum dolor sit amet consectetur
+          adipisicing elit. Qui ipsam quisquam laudantium doloribus in rerum
+          officiis dolor fugiat sunt, sequi adipisci recusandae dolores
+          molestiae. Alias sint fugit omnis blanditiis ab!
+        </p>
       </div>
       <footer className={styles.footer}>{/* footer */}</footer>
-    </>
+    </div>
   );
 };
 

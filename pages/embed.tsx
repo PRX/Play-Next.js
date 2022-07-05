@@ -19,7 +19,7 @@ import {
 } from '@states/embed/Embed.reducer';
 import { EmbedActionTypes } from '@states/embed/Embed.actions';
 import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
-import PrxImage from '@components/PrxImage';
+import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 import ThemeVars from '@components/ThemeVars';
 import Modal from '@components/Modal';
 import PlayButton from '@components/Player/PlayButton';
@@ -261,15 +261,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                   inert: 'inert'
                 })}
               >
-                <div className={styles.background}>
-                  <PrxImage
-                    src={bgImageUrl}
-                    layout="fill"
-                    objectFit="cover"
-                    aria-hidden
-                    priority
-                  />
-                </div>
+                <BackgroundImage
+                  imageUrl={bgImageUrl}
+                  className={styles.background}
+                />
 
                 <div
                   ref={playerMainRef}
