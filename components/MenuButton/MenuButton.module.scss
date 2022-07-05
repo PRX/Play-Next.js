@@ -1,4 +1,4 @@
-@import '@styles/colors';
+@use '@styles/colors';
 
 @mixin promptAnimation($name) {
   animation: #{$name} 200ms cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
@@ -38,7 +38,7 @@
   &.copiedEnd {
     display: block;
     animation: copiedEnd 200ms ease-in forwards;
-    color: $success-500;
+    color: colors.$success-500;
     font-weight: 700;
   }
 }
@@ -71,12 +71,12 @@
   }
   50% {
     transform: scale(1.25);
-    color: $success-500;
+    color: colors.$success-500;
     font-weight: 700;
   }
   100% {
     transform: scale(1) translateX(0);
-    color: $success-500;
+    color: colors.$success-500;
     font-weight: 700;
   }
 }

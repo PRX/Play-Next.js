@@ -73,7 +73,7 @@ const parseEmbedData = (
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),
     ...(audioHasProps && { audio }),
-    ...(playlist && playlist.length > 1 && { playlist }),
+    ...(playlist?.length && { playlist }),
     ...(feedUrl && {
       rssTitle,
       shareUrl: showPlaylist ? rssShareUrl : audio.link,

@@ -1,19 +1,20 @@
-@import '@styles/colors';
-@import '@styles/grid';
-@import '@styles/theme';
+@use '@styles/colors';
+@use '@styles/grid';
 
 $padding-v: 10px;
 $padding-h: 20px;
 
-$playlist-text-color: $white-a-80;
-$playlist-text-color--active: $white;
-$playlist-background-color: $grey-900;
-$playlist-background-color--active: $primary-500;
+$playlist-text-color: colors.$white-a-80;
+$playlist-text-color--active: colors.$white;
+$playlist-background-color: colors.$grey-900;
+$playlist-background-color--active: colors.$primary-500;
 $playlist-thumbnail-size: 40px;
 $playlist-thumbnail-corner-radius: 10px;
-$playlist-divider-color: $grey-400;
+$playlist-divider-color: colors.$grey-400;
 $playlist-divider-size: 1px;
-$playlist-header-text-color: $white;
+$playlist-header-text-color: colors.$white;
+$playlist-header-icon-color: colors.$white-a-50;
+$playlist-header-icon-color--active: colors.$white;
 
 :export {
   --playlist-text-color: #{$playlist-text-color};
@@ -27,6 +28,8 @@ $playlist-header-text-color: $white;
   --playlist-divider-color: #{$playlist-divider-color};
   --playlist-divider-size: #{$playlist-divider-size};
   --playlist-header-text-color: #{$playlist-header-text-color};
+  --playlist-header-icon-color: #{$playlist-header-icon-color};
+  --playlist-header-icon-color--active: #{$playlist-header-icon-color--active};
 }
 
 .root {
@@ -41,15 +44,40 @@ $playlist-header-text-color: $white;
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
 
-  padding: $padding-h;
+  padding-block: $padding-v;
+  padding-inline: $padding-h;
 
   border-bottom-style: solid;
   border-bottom-width: var(--playlist-divider-size);
   border-bottom-color: var(--playlist-divider-color);
 
   font-weight: 700;
+}
+
+.button {
+  display: grid;
+  grid-template-columns: 2em 1fr;
+  align-items: center;
+  gap: 0.5em;
+
+  padding: 0;
+
+  font-weight: inherit;
+  line-height: 1;
+}
+
+.buttonIcon {
+  fill: var(--playlist-header-icon-color);
+
+  &.up {
+    --up-fill-color: var(--playlist-header-icon-color--active);
+  }
+  &.down {
+    --down-fill-color: var(--playlist-header-icon-color--active);
+  }
 }
 
 .playlist {
@@ -63,8 +91,6 @@ $playlist-header-text-color: $white;
   align-content: start;
 }
 
-@mixin trackAccentBackground {
-}
 .track {
   position: relative;
   display: grid;
@@ -139,7 +165,7 @@ $playlist-header-text-color: $white;
 }
 
 .trackThumbnail {
-  @include grid-stacked(after);
+  @include grid.stacked(after);
   overflow: hidden;
   border-radius: var(--playlist-thumbnail-corner-radius);
   &::after {
