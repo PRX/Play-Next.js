@@ -35,7 +35,16 @@ export const playerStateReducer = (
       return { ...state, playing: !playing };
 
     case ActionTypes.PLAYER_UPDATE_TRACKS:
-      return { ...state, tracks: action.payload };
+      return {
+        ...state,
+        tracks: action.payload,
+        currentTrackIndex: Math.max(
+          0,
+          action.payload.findIndex(
+            ({ guid }) => guid === (tracks || [])[currentTrackIndex]?.guid
+          )
+        )
+      };
 
     case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX:
       return { ...state, currentTrackIndex: action.payload };

@@ -1,4 +1,4 @@
-@import '@styles/grid';
+@use '@styles/grid';
 
 $playlist-thumbnail-corner-radius: 10px;
 
@@ -7,7 +7,7 @@ $playlist-thumbnail-corner-radius: 10px;
 }
 
 .root {
-  @include grid-stacked(after);
+  @include grid.stacked(after);
   position: relative;
   overflow: hidden;
 

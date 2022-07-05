@@ -1,14 +1,14 @@
-@import '@styles/colors';
+@use '@styles/colors';
 
 :export {
-  --iconButton-background-color--hover: #{$white-a-10};
-  --iconButton-outline-color--focus: #{$white-a-10};
+  --iconButton-background-color--hover: #{colors.$white-a-10};
+  --iconButton-outline-color--focus: #{colors.$white-a-10};
   --iconButton-outline-width--focus: 3px;
   --iconButton-border-radius: 50%;
-  --iconButton-color: #{$white-a-50};
-  --iconButton-color--promote: #{$white-a-80};
-  --iconButton-color--hover: #{$white};
-  --iconButton-color--focus: #{$white};
+  --iconButton-color: #{colors.$white-a-50};
+  --iconButton-color--promote: #{colors.$white-a-80};
+  --iconButton-color--hover: #{colors.$white};
+  --iconButton-color--focus: #{colors.$white};
   --iconButton-size: 40px;
   --iconButton-padding: 5px; // Override with a really small non-zero value, eg `0.0001px`.
 }

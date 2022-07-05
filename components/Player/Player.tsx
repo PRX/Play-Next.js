@@ -30,14 +30,15 @@ const Player: React.FC<IPlayerProps> = ({
   imageUrl,
   children
 }) => {
-  const tracks = Array.isArray(audio) ? audio : [audio];
+  const initialTracks = Array.isArray(audio) ? audio : [audio];
   const audioElm = useRef<HTMLAudioElement>();
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
-    tracks,
+    tracks: initialTracks,
     ...(startIndex && { currentTrackIndex: startIndex })
   });
-  const { playing, currentTrackIndex, currentTime, muted, volume } = state;
+  const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
+    state;
   const currentTrack = tracks[currentTrackIndex];
   const currentTrackDuration = useMemo(
     () => convertDurationToSeconds(currentTrack.duration),
@@ -112,6 +113,13 @@ const Player: React.FC<IPlayerProps> = ({
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
       payload: index
+    });
+  };
+
+  const setTracks = (newTracks: IAudioData[]) => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
+      payload: newTracks
     });
   };
 
@@ -209,6 +217,7 @@ const Player: React.FC<IPlayerProps> = ({
       forward,
       seekToRelative,
       setTrack,
+      setTracks,
       previousTrack,
       nextTrack
     }),
@@ -257,7 +266,7 @@ const Player: React.FC<IPlayerProps> = ({
 
   const handleEnded = useCallback(() => {
     if (!isLastTrack) {
-      dispatch({ type: PlayerActionTypes.PLAYER_NEXT_TRACK });
+      nextTrack();
     }
   }, [isLastTrack]);
 

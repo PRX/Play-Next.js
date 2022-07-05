@@ -5,6 +5,7 @@
  * player.
  */
 
+import { IAudioData } from '@interfaces/data';
 import type { IStateContext } from './IStateContext';
 
 export interface IPlayerContext extends IStateContext {
@@ -23,4 +24,5 @@ export interface IPlayerContext extends IStateContext {
   nextTrack(): void;
   previousTrack(): void;
   setTrack(index: number): void;
+  setTracks(tracks: IAudioData[]): void;
 }
