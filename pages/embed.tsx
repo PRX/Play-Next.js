@@ -227,6 +227,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
     };
   }, [handleResize]);
 
+  console.log(audio, playlist);
+
   return (
     <>
       <ThemeVars theme="EmbedTheme" cssProps={styles} />
