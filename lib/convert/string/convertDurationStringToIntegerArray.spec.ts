@@ -16,5 +16,12 @@ describe('lib/convert/string', () => {
       expect(result3.length).toBe(3);
       expect(result3).toStrictEqual([16, 0, 12]);
     });
+
+    test('should return zero when passed undefined.', () => {
+      const result1 = convertDurationStringToIntegerArray(undefined);
+
+      expect(result1.length).toBe(1);
+      expect(result1).toStrictEqual([0]);
+    });
   });
 });

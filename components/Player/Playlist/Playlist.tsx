@@ -106,7 +106,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
               const { guid, title, imageUrl, duration, explicit } = track;
               const thumbSrc = imageUrl || defaultThumbUrl;
               const trackDuration =
-                duration.indexOf(':') !== -1
+                duration?.indexOf(':') !== -1
                   ? duration
                   : convertSecondsToDuration(parseInt(duration, 10));
               return (

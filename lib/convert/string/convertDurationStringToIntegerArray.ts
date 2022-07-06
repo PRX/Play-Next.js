@@ -8,9 +8,9 @@ import convertStringToInteger from './convertStringToInteger';
  * @returns Returns number array, with parts reversed.
  */
 const convertDurationStringToIntegerArray = (duration: string) =>
-  duration
-    .split(':') // Split sting on colons to get duration parts.
+  (duration
+    ?.split(':') // Split sting on colons to get duration parts.
     .map((v) => convertStringToInteger(v)) // Parse each part into integers.
-    .reduce((a, c) => [c, ...a], []) as number[]; // Reverse order of parts. ie. [seconds, minutes [, hours]].;
+    .reduce((a, c) => [c, ...a], []) as number[]) || [0]; // Reverse order of parts. ie. [seconds, minutes [, hours]]. // Return zero seconds when passed duration is undefined.
 
 export default convertDurationStringToIntegerArray;
