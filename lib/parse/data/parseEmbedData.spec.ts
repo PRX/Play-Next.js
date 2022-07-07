@@ -73,18 +73,14 @@ describe('lib/parse/data', () => {
         subscribeUrl: 'http://foo.com/feed.rss'
       });
 
-      expect(result).toStrictEqual({
-        bgImageUrl: 'http://foo.com/bg.png',
-        audio: {
-          title: 'Foo',
-          subtitle: 'Foo to the bar',
-          url: 'http://foo.com/foo.mp3?_from=play.prx.org',
-          imageUrl: 'http://foo.com/foo.png'
-        },
-        followUrls: {
-          rss: 'http://foo.com/feed.rss'
-        }
+      expect(result.bgImageUrl).toBe('http://foo.com/bg.png');
+      expect(result.audio).toStrictEqual({
+        title: 'Foo',
+        subtitle: 'Foo to the bar',
+        url: 'http://foo.com/foo.mp3?_from=play.prx.org',
+        imageUrl: 'http://foo.com/foo.png'
       });
+      expect(result.followUrls.rss).toBe('http://foo.com/feed.rss');
       expect(result.playlist).toBeUndefined();
       expect(result.shareUrl).toBeUndefined();
     });
@@ -152,6 +148,18 @@ describe('lib/parse/data', () => {
       );
 
       expect(result.playlist.length).toBe(2);
+    });
+
+    test('should omit playlist prop when playlist contains 1 item', () => {
+      const result = parseEmbedData(
+        {
+          feedUrl: 'http://foo.com/feed.rss',
+          showPlaylist: 1
+        },
+        mockRssData
+      );
+
+      expect(result.playlist).toBeUndefined();
     });
 
     test('should fallback to itunes image for background image', () => {

@@ -70,18 +70,20 @@ const parseEmbedData = (
   const playlist = !!showPlaylist && audioItems;
   const bgImageUrl =
     configBgImageUrl || rssImageUrl || rssItunesImage || audio.imageUrl;
+  const followUrls = {
+    ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
+  };
+
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),
     ...(audioHasProps && { audio }),
-    ...(playlist?.length && { playlist }),
+    ...(playlist && playlist.length > 1 && { playlist }),
     ...(feedUrl && {
       rssTitle,
       shareUrl: showPlaylist ? rssShareUrl : audio.link,
       ...(rssItunesOwner && { owner: rssItunesOwner })
     }),
-    followUrls: {
-      ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
-    }
+    followUrls
   };
 
   return data;
