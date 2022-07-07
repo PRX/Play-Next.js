@@ -25,6 +25,7 @@ const IconButton = forwardRef<any, IIconButtonProps>(
           rel="noreferrer"
           target="_blank"
           ref={ref}
+          aria-label={props['aria-label']}
         >
           {children}
         </a>
