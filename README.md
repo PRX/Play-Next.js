@@ -1,4 +1,4 @@
-# play.poc.prx.org
+# Play Next.js Application
 
 PRX audio embed player and landing pages.
 
@@ -25,14 +25,14 @@ To install **yarn**, follow their [Installation](https://yarnpkg.com/lang/en/doc
 
 ## Setup Development Environment
 
-Now we are ready to clone this repo and get its packages installed and initialized. The following will create a `PRX` directory in your home directory and clone the repo into `~/PRX/play.poc.prx.org`:
+Now we are ready to clone this repo and get its packages installed and initialized. The following will create a `PRX` directory in your home directory and clone the repo into `~/PRX/Play-Next.js`:
 
 ```bash
 cd ~
 mkdir PRX
 cd PRX
-git clone git@github.com:PRX/play.poc.prx.org.git
-cd play.poc.prx.org
+git clone git@github.com:PRX/Play-Next.js.git
+cd Play-Next.js
 ```
 
 Now we need to make sure we are using the the version of _node_ need for the app:
@@ -68,7 +68,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Typescript and IDE
 
-Yes, We are using typescript. This will require some extra steps to provide explicit types or interfaces for class components, and function parameters and return values. Types and interfaces specific to a component can be exported from the component file. Types and interfaces used by more than one component should be defined in `./interfaces` and organized into its own module directory. Module directories should include a `index.ts` that exports the exported entities from that modules interface files. An export should also be added to `./interfaces.index.ts` for the module.
+Yes, We are using typescript. This will require some extra steps to provide explicit types or interfaces for class components, and function parameters and return values. Types and interfaces specific to a component can be exported from the component file. Types and interfaces used by more than one component should be defined in `./interfaces` and organized into its own module directory. Module directories should include a `index.ts` that exports the exported entities from that modules interface files. An export should also be added to `./index.ts` for the module.
 
 It is highly recommended to use an IDE that either supports typescript or has a plugin for typescript. This project provides [Visual Studio Code](https://code.visualstudio.com/) settings presets for linting and formatting javascript and typescript.
 
@@ -78,12 +78,12 @@ When importing module exports, do not use relative import paths for exports not 
 
 #### Available Aliases
 
-`@components` -> `./components`
-`@contexts` -> `./contexts`
-`@interfaces` -> `./interfaces`
-`@lib` -> `./lib`
-`@svg` -> `./assets/svg`
-`@styles` -> `./styles`
+- `@components` -> `./components`
+- `@contexts` -> `./contexts`
+- `@interfaces` -> `./interfaces`
+- `@lib` -> `./lib`
+- `@svg` -> `./assets/svg`
+- `@styles` -> `./styles`
 
 ## Contributing
 
