@@ -6,7 +6,13 @@
 import type { GetServerSideProps } from 'next';
 import type { IEmbedData } from '@interfaces/data';
 import type { IPageProps } from '@interfaces/page';
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState
+} from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import clsx from 'clsx';
@@ -21,28 +27,21 @@ import { EmbedActionTypes } from '@states/embed/Embed.actions';
 import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 import ThemeVars from '@components/ThemeVars';
-import Modal from '@components/Modal';
 import PlayButton from '@components/Player/PlayButton';
 import PlayerProgress from '@components/Player/PlayerProgress';
-import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
-import CopyLinkButton from '@components/Player/CopyLinkButton';
 import ForwardButton from '@components/Player/ForwardButton';
 import NextButton from '@components/Player/NextButton';
 import Player from '@components/Player';
 import PlayerText from '@components/Player/PlayerText';
 import PreviousButton from '@components/Player/PreviousButton';
 import ReplayButton from '@components/Player/ReplayButton';
-import ShareFacebookButton from '@components/Player/ShareFacebookButton';
-import ShareTwitterButton from '@components/Player/ShareTwitterButton';
-import ShareEmailButton from '@components/Player/ShareEmailButton';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
-import AddIcon from '@svg/icons/Add.svg';
-import ShareIcon from '@svg/icons/Share.svg';
-import FavoriteIcon from '@svg/icons/Favorite.svg';
-import CodeIcon from '@svg/icons/Code.svg';
 import styles from '@styles/Embed.module.scss';
+import ShareMenu from '@components/Player/ShareMenu';
+import FollowMenu from '@components/Player/FollowMenu';
+import SupportMenu from '@components/Player/SupportMenu';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/PRX-Logo-Horizontal.svg'));
@@ -67,7 +66,7 @@ export interface IEmbedLayoutBreakPoint {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor, theme } = config;
-  const { audio, playlist, bgImageUrl } = data;
+  const { audio, playlist, bgImageUrl, followUrls, supportUrls } = data;
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown } = state;
@@ -350,32 +349,38 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         visibility: 'hidden'
                       }}
                     >
-                      <IconButton
-                        type="button"
-                        className={clsx(styles.menuButton, styles.followButton)}
-                        onClick={handleFollowButtonClick}
-                      >
-                        <AddIcon aria-label="Follow" />
-                      </IconButton>
+                      <FollowMenu
+                        className={clsx(
+                          styles.menuButton,
+                          styles.followRssButton
+                        )}
+                        onOpen={handleFollowButtonClick}
+                        onClose={handleFollowCloseClick}
+                        isOpen={followShown}
+                        portalId="embed-modals"
+                        followUrls={followUrls}
+                      />
 
-                      <IconButton
-                        type="button"
+                      <ShareMenu
                         className={clsx(styles.menuButton, styles.shareButton)}
-                        onClick={handleShareButtonClick}
-                      >
-                        <ShareIcon aria-label="Share" />
-                      </IconButton>
+                        onOpen={handleShareButtonClick}
+                        onClose={handleShareCloseClick}
+                        embedHtml={embedHtml}
+                        isOpen={shareShown}
+                        portalId="embed-modals"
+                      />
 
-                      <IconButton
-                        type="button"
+                      <SupportMenu
                         className={clsx(
                           styles.menuButton,
                           styles.supportButton
                         )}
-                        onClick={handleSupportButtonClick}
-                      >
-                        <FavoriteIcon aria-label="Support" />
-                      </IconButton>
+                        onOpen={handleSupportButtonClick}
+                        onClose={handleSupportCloseClick}
+                        isOpen={supportShown}
+                        portalId="embed-modals"
+                        supportUrls={supportUrls}
+                      />
                     </div>
                   </div>
 
@@ -396,36 +401,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
               )}
 
-              {shareShown && (
-                <Modal onClose={handleShareCloseClick}>
-                  <nav className={styles.modalMenu}>
-                    <ShareFacebookButton />
-
-                    <ShareTwitterButton />
-
-                    <ShareEmailButton />
-
-                    <CopyLinkButton />
-
-                    <MenuButton
-                      action="clipboard"
-                      clipboardText={embedHtml}
-                      label="Embed Code"
-                    >
-                      <CodeIcon />
-                    </MenuButton>
-                  </nav>
-                </Modal>
-              )}
+              <div
+                className={styles.modals}
+                id="embed-modals"
+                {...(!modalShown && {
+                  inert: 'inert'
+                })}
+              />
             </Player>
-          )}
-
-          {followShown && (
-            <Modal onClose={handleFollowCloseClick}>Follow Menu</Modal>
-          )}
-
-          {supportShown && (
-            <Modal onClose={handleSupportCloseClick}>Support Menu</Modal>
           )}
         </div>
       </div>

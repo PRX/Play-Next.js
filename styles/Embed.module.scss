@@ -8,7 +8,7 @@ $divider-size: 3px;
 $logo-size: 1.75rem;
 
 $player-height: 200px;
-$player-gap: 10px;
+$player-gap: 12px;
 $player-corner-radius: 10px;
 $player-padding: 20px;
 $player-text-color: colors.$white;
@@ -99,6 +99,11 @@ $player-thumbnail-size: 135px;
   &.withPlaylist {
     border-radius: 0;
   }
+}
+
+.modals {
+  position: absolute;
+  inset: 0;
 }
 
 .coverArt {
@@ -300,12 +305,6 @@ $player-thumbnail-size: 135px;
 
 .playlist {
   overflow: hidden;
-}
-
-.modalMenu {
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
 @keyframes sharpen {

@@ -49,6 +49,13 @@ export interface IEmbedData {
   };
 
   /**
+   * URL's for supporting the podcast.
+   */
+  supportUrls?: {
+    [key: string]: string;
+  };
+
+  /**
    * Title of the RSS feed.
    */
   rssTitle?: string;
