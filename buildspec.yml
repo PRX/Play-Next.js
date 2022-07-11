@@ -1,0 +1,25 @@
+version: 0.2
+env:
+  variables:
+    PRX_ECR_CONFIG_PARAMETERS: 'PlayNextjsEcrImageTag'
+  parameter-store:
+    DOCKERHUB_USERNAME: '/prx/DOCKERHUB_USERNAME'
+    DOCKERHUB_PASSWORD: '/prx/DOCKERHUB_PASSWORD'
+  exported-variables:
+    - PRX_ECR_CONFIG_PARAMETERS
+    - PRX_ECR_IMAGE
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
+  build:
+    commands:
+      - yarn test
+      - yarn build
+  post_build:
+    commands:
+      - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/main/ci/utility/post_build.sh" && chmod +x post_build.sh && . ./post_build.sh'
