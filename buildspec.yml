@@ -16,6 +16,8 @@ phases:
     commands:
       - echo Logging in to Docker Hub...
       - echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
+      - npm install -g yarn
+      - yarn
   build:
     commands:
       - yarn test
