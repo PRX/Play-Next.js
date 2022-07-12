@@ -24,6 +24,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   ...props
 }) => {
   const imageRef = useRef({ complete: false });
+  const isInitialLoad = useRef(true);
   const { state, imageUrl: defaultImageUrl } = useContext(PlayerContext);
   const [isLoading, setIsLoading] = useState(false);
   const { tracks, currentTrackIndex } = state;
@@ -38,7 +39,10 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
+    if (!isInitialLoad.current) {
+      setIsLoading(true);
+    }
+    isInitialLoad.current = false;
   }, [srcUrl]);
 
   return (
