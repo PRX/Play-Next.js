@@ -34,6 +34,7 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
     const isTrusted = isUrlString && isTrustedImageDomain(src as string);
     const imageClassNames = clsx(className, styles.image);
     const nextImageProps = {
+      className,
       priority,
       layout,
       lazyRoot,
