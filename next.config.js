@@ -7,6 +7,7 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   images: {
     domains: ['f.prxu.org']
@@ -16,6 +17,7 @@ const nextConfig = {
     defaultLocale: 'en'
   },
   experimental: {
+    outputStandalone: true,
     images: {
       layoutRaw: true
     }
