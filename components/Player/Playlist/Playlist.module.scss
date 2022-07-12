@@ -97,6 +97,7 @@ $playlist-header-icon-color--active: colors.$white;
   grid-template-columns: var(--playlist-thumbnail-size) 1fr min-content;
   grid-gap: $padding-h;
   align-items: center;
+  overflow: hidden;
 
   padding: $padding-v $padding-h;
 

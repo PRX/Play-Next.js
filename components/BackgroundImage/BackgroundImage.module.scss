@@ -32,3 +32,9 @@ $backgroundImage-blur: 30px;
     opacity: var(--backgroundImage-tint-opacity);
   }
 }
+
+@supports not (backdrop-filter: blur(1px)) {
+  .root {
+    --backgroundImage-tint-opacity: 0.9;
+  }
+}
