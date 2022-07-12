@@ -26,7 +26,7 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
   const { imageUrl, title } = tracks[currentTrackIndex] || ({} as IAudioData);
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, {
-    [styles.loaded]: !isLoading
+    [styles.loaded]: !isLoading || imageRef.current.complete
   });
 
   const handleClick = () => {
