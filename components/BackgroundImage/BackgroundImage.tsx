@@ -21,6 +21,7 @@ const BackgroundImage: React.FC<IBackgroundImageProps> = ({
   <div className={clsx(className, styles.root)}>
     <ThemeVars theme="BackgroundImage" cssProps={styles} />
     <PrxImage
+      className={styles.image}
       src={imageUrl}
       layout="fill"
       objectFit="cover"
