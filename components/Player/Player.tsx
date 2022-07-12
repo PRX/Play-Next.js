@@ -227,9 +227,15 @@ const Player: React.FC<IPlayerProps> = ({
   );
 
   const startPlaying = useCallback(() => {
-    audioElm.current.play().then(() => {
-      updateMediaSession();
-    });
+    audioElm.current
+      .play()
+      .then(() => {
+        updateMediaSession();
+      })
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      });
   }, [updateMediaSession]);
 
   const pauseAudio = useCallback(() => {

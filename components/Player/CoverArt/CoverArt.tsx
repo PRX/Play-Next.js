@@ -20,12 +20,13 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
     imageUrl: defaultImageUrl
   } = useContext(PlayerContext);
   const imageRef = useRef({ complete: false });
-  const [isLoading, setIsLoading] = useState(true);
+  const isInitialLoad = useRef(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { tracks, currentTrackIndex } = state;
   const { imageUrl, title } = tracks[currentTrackIndex] || ({} as IAudioData);
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, {
-    [styles.loaded]: !isLoading || imageRef.current.complete
+    [styles.loaded]: !isLoading
   });
 
   const handleClick = () => {
@@ -37,7 +38,10 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
+    if (!isInitialLoad.current) {
+      setIsLoading(true);
+    }
+    isInitialLoad.current = false;
   }, [srcUrl]);
 
   return (

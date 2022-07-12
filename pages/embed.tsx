@@ -34,6 +34,7 @@ import ForwardButton from '@components/Player/ForwardButton';
 import NextButton from '@components/Player/NextButton';
 import Player from '@components/Player';
 import PlayerText from '@components/Player/PlayerText';
+import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PreviousButton from '@components/Player/PreviousButton';
 import ReplayButton from '@components/Player/ReplayButton';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
@@ -49,9 +50,7 @@ const PrxLogoColor = dynamic(
   () => import('@svg/PRX-Logo-Horizontal-Color.svg')
 );
 const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
-const PlayerThumbnail = dynamic(
-  () => import('@components/Player/PlayerThumbnail')
-);
+
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
 
 export interface IEmbedPageProps extends IPageProps {
@@ -208,10 +207,8 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
    * Initialize layout breakpoints.
    */
   useEffect(() => {
-    setTimeout(() => {
-      initLayoutBreakpoints();
-      updatePlayerLayout();
-    }, 500);
+    initLayoutBreakpoints();
+    updatePlayerLayout();
   }, [initLayoutBreakpoints, canShowCoverArt, updatePlayerLayout]);
 
   /**
@@ -401,13 +398,15 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                 </div>
               )}
 
-              <div
-                className={styles.modals}
-                id="embed-modals"
-                {...(!modalShown && {
-                  inert: 'inert'
-                })}
-              />
+              {modalShown && (
+                <div
+                  className={styles.modals}
+                  id="embed-modals"
+                  {...(!modalShown && {
+                    inert: 'inert'
+                  })}
+                />
+              )}
             </Player>
           )}
         </div>
