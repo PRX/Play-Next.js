@@ -22,6 +22,19 @@ const nextConfig = {
       layoutRaw: true
     }
   },
+  async headers() {
+    return [
+      {
+        source: '/e',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300'
+          }
+        ]
+      }
+    ];
+  },
   async rewrites() {
     return [
       {
