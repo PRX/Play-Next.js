@@ -1,0 +1,121 @@
+@use '@styles/colors';
+@use '@styles/grid';
+
+.button {
+  --iconButton-color: #{colors.$white-a-50};
+
+  &.enabled {
+    --iconButton-color: var(--accent-color, #{colors.$secondary-500});
+    --iconButton-color--hover: var(--accent-color, #{colors.$secondary-500});
+  }
+
+  &.active {
+    @include grid.stacked('before');
+
+    &::before {
+      content: '';
+      border-radius: 50%;
+    }
+  }
+
+  &.pulse {
+    overflow: visible;
+    &::before {
+      animation-name: pulse;
+      animation-duration: 500ms;
+      animation-timing-function: ease-out;
+      animation-iteration-count: 1;
+      transform: scale(0.8);
+      outline-style: solid;
+    }
+  }
+}
+
+.content {
+  display: grid;
+  gap: 2rem;
+}
+
+.message {
+  display: grid;
+  gap: 0.5rem;
+
+  & > * {
+    margin-block: 0;
+    max-width: 50ch;
+  }
+
+  & > :is(h3, h4) {
+    font-size: 1.125rem;
+    text-transform: uppercase;
+  }
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+
+  background-color: colors.$white-a-50;
+}
+
+.providers {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1.25rem;
+
+  text-align: center;
+
+  & > * {
+    margin-block: 0;
+  }
+
+  & > :is(h3, h4) {
+    font-size: 1rem;
+  }
+}
+
+.provider {
+  width: 80px;
+}
+
+.monetized {
+  display: grid;
+  gap: 2rem;
+
+  & > * {
+    margin-block: 0;
+  }
+
+  & > :is(h3, h4) {
+    font-size: 1.125rem;
+    text-transform: uppercase;
+  }
+}
+
+@media (min-width: 800px) {
+  .content {
+    grid-template-columns: 2fr min-content 1fr;
+    gap: 3rem;
+  }
+
+  .divider {
+    width: 1px;
+    height: auto;
+  }
+
+  .providers {
+    position: sticky;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    outline-width: 0;
+    outline-color: colors.$white-a-50;
+  }
+  100% {
+    outline-width: 20px;
+    outline-color: transparent;
+  }
+}
