@@ -27,6 +27,7 @@
       animation-iteration-count: 1;
       transform: scale(0.8);
       outline-style: solid;
+      outline-color: transparent;
     }
   }
 }
@@ -81,7 +82,8 @@
 
 .monetized {
   display: grid;
-  gap: 2rem;
+  justify-items: center;
+  gap: 1.25rem;
 
   & > * {
     margin-block: 0;
@@ -91,6 +93,80 @@
     font-size: 1.125rem;
     text-transform: uppercase;
   }
+}
+
+.paymentStream {
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.paid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 0.25em 1em;
+
+  border: 2px solid colors.$white-a-50;
+  border-radius: 10px;
+
+  font-size: clamp(0.75rem, 2.5vw, 1rem);
+}
+
+.amount {
+  font-size: 2.25em;
+  font-weight: 700;
+}
+
+.stream {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 24px;
+  height: 24px;
+  overflow-y: hidden;
+  padding-inline: 7px;
+}
+
+.pip {
+  height: 24px;
+}
+
+.pipIcon {
+  backface-visibility: hidden;
+  transform-origin: center;
+  width: 10px;
+  background-color: colors.$white-a-50;
+  fill: transparent;
+
+  border-radius: 50%;
+
+  &.blipIn {
+    animation-name: pipBlipIn;
+    animation-duration: 300ms;
+    animation-iteration-count: 1;
+  }
+  &.blipOut {
+    animation-name: pipBlipOut;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+  }
+}
+
+.thumbnail {
+  aspect-ratio: 1;
+  position: relative;
+  width: clamp(74px, 13vw, 90px);
+}
+
+.thumbnailImage {
+  border: 2px solid colors.$white-a-50;
+  border-radius: 10px;
 }
 
 @media (min-width: 800px) {
@@ -117,5 +193,31 @@
   100% {
     outline-width: 20px;
     outline-color: transparent;
+  }
+}
+
+@keyframes pipBlipIn {
+  0% {
+    transform: scale(1) rotate(0.01deg);
+    fill: transparent;
+    background-color: colors.$white-a-50;
+  }
+  100% {
+    transform: scale(2.4) rotate(0.01deg);
+    fill: var(--accent-color, #{colors.$secondary-500});
+    background-color: transparent;
+  }
+}
+
+@keyframes pipBlipOut {
+  0% {
+    transform: scale(2.4) rotate(0.01deg);
+    fill: var(--accent-color, #{colors.$secondary-500});
+    background-color: transparent;
+  }
+  100% {
+    transform: scale(1) rotate(0.01deg);
+    fill: transparent;
+    background-color: colors.$white-a-50;
   }
 }
