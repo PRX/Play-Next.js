@@ -144,7 +144,6 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
 
   const handleMonetizationProgress = useCallback(
     ({ detail }: MonetizationProgressEvent) => {
-      console.log('handleMonetizationProgress', detail);
       updateAmountPaid(detail);
       pulse();
     },

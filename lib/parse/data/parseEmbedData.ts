@@ -76,12 +76,6 @@ const parseEmbedData = (
   const paymentPointer =
     process.env.NODE_ENV === 'development' && process.env.PAYMENT_POINTER;
 
-  console.log(
-    process.env.NODE_ENV,
-    process.env.PAYMENT_POINTER,
-    paymentPointer
-  );
-
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),
     ...(audioHasProps && { audio }),
