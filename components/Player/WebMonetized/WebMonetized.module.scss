@@ -162,11 +162,12 @@
   aspect-ratio: 1;
   position: relative;
   width: clamp(74px, 13vw, 90px);
-}
-
-.thumbnailImage {
   border: 2px solid colors.$white-a-50;
   border-radius: 10px;
+
+  & > * {
+    border-radius: inherit;
+  }
 }
 
 @media (min-width: 800px) {
