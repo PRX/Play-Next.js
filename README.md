@@ -19,9 +19,19 @@ Once asdf has been installed and added to your path, install the Node.js plugin:
 asdf plugin add nodejs
 ```
 
+Then install the latest stable version of Node and NPM:
+
+```bash
+asdf install nodejs lts
+```
+
 ### Install Yarn
 
 To install **yarn**, follow their [Installation](https://yarnpkg.com/lang/en/docs/install/#mac-stable) instructions for your OS. Install the _Stable_ version.
+
+```bash
+npm install --global yarn
+```
 
 ## Setup Development Environment
 
@@ -54,6 +64,18 @@ yarn dev
 ```
 
 Then open the app in your browser at [localhost:4300]().
+
+## Developing Along With Other PRX Applications
+
+Though not always the case, sometimes some features will need to be developed to interact with other PRX applications. This is much easier when the locally running app servers have consistent domains. Set up [puma-dev](https://github.com/PRX/internal/wiki/Guide:-Local-Development-Environment#install-puma-dev), then add the `play.prx` domain using port `4300`:
+
+```bash
+echo 4300 > ~/.puma-dev/play.prx
+```
+
+The app should now be available at [play.prx.test]().
+
+> Our other applications should include instructions on setting up their `.test` domains using puma-dev.
 
 ---
 
