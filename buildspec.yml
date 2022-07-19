@@ -9,9 +9,6 @@ env:
     - PRX_ECR_CONFIG_PARAMETERS
     - PRX_ECR_IMAGE
 phases:
-  install:
-    runtime-versions:
-      nodejs: 16
   pre_build:
     commands:
       - echo Logging in to Docker Hub...
