@@ -1,22 +1,22 @@
 # Play Next.js Application
 
-PRX audio embed player and landing pages.
+PRX embed audio player and landing pages.
 
 ## Getting Started
 
 Make sure you have **node**, **NPM**, and **yarn** installed and/or updated.
 
-- `node` - 12.22.0 or later - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.
+- `node` - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.
 - `yarn` - Wrapper CLI for **npm** that streamlines package retrieval and management.
 
-### Install Node and NPM using NVM
+### Install Node and NPM using `asdf`
 
-It is recommended to install and update using _Node Version Manager_ (**nvm**). Follow [Installation and Update](https://github.com/nvm-sh/nvm/blob/master/README.md#installation-and-update) instructions to get started.
+It is recommended to install and update using _asdf_ (**nvm**). Follow [Installation and Update](https://github.com/PRX/internal/wiki/Guide:-Local-Development-Environment#install-asdf) instructions to get started.
 
-Once **nvm** has been installed, use it to install the latest LTS release of **node** and **npm** by running the following command in your terminal:
+Once asdf has been installed and added to your path, install the Node.js plugin:
 
 ```bash
-nvm install --lts
+asdf plugin add nodejs
 ```
 
 ### Install Yarn
@@ -38,7 +38,7 @@ cd Play-Next.js
 Now we need to make sure we are using the the version of _node_ need for the app:
 
 ```
-nvm use
+asdf install
 ```
 
 Now lets install all the packages required by the app:
@@ -53,7 +53,7 @@ Finally, lets spin up the development server:
 yarn dev
 ```
 
-Then open the app in your browser at [localhost:3000]().
+Then open the app in your browser at [localhost:4300]().
 
 ---
 
@@ -83,6 +83,7 @@ When importing module exports, do not use relative import paths for exports not 
 - `@interfaces` -> `./interfaces`
 - `@lib` -> `./lib`
 - `@svg` -> `./assets/svg`
+- `@states` -> `./states`
 - `@styles` -> `./styles`
 
 ## Contributing
