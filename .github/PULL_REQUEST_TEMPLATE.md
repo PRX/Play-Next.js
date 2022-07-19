@@ -9,10 +9,10 @@ Closes #[ISSUE_ID]
 > ...or...
 
 - [ ] Checkout Branch.
-- [ ] Run `nvm use`.
+- [ ] Run `asdf install`.
 - [ ] Run `yarn`.
 - [ ] Run `yarn dev`.
-- [ ] Go to [localhost:3000](https://localhost:3000).
+- [ ] Go to [localhost:4300](http://localhost:4300).
 
 > ...then...
 
