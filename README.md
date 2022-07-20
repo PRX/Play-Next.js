@@ -1,59 +1,82 @@
 # Play Next.js Application
 
-PRX audio embed player and landing pages.
+PRX embed audio player and landing pages.
 
 ## Getting Started
 
 Make sure you have **node**, **NPM**, and **yarn** installed and/or updated.
 
-- `node` - 12.22.0 or later - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.
+- `node` - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.
 - `yarn` - Wrapper CLI for **npm** that streamlines package retrieval and management.
 
-### Install Node and NPM using NVM
+### Install Node and NPM using `asdf`
 
-It is recommended to install and update using _Node Version Manager_ (**nvm**). Follow [Installation and Update](https://github.com/nvm-sh/nvm/blob/master/README.md#installation-and-update) instructions to get started.
+It is recommended to install and update using _asdf_ (**nvm**). Follow [Installation and Update](https://github.com/PRX/internal/wiki/Guide:-Local-Development-Environment#install-asdf) instructions to get started.
 
-Once **nvm** has been installed, use it to install the latest LTS release of **node** and **npm** by running the following command in your terminal:
+Once asdf has been installed and added to your path, install the Node.js plugin:
 
 ```bash
-nvm install --lts
+asdf plugin add nodejs
 ```
-
-### Install Yarn
-
-To install **yarn**, follow their [Installation](https://yarnpkg.com/lang/en/docs/install/#mac-stable) instructions for your OS. Install the _Stable_ version.
 
 ## Setup Development Environment
 
 Now we are ready to clone this repo and get its packages installed and initialized. The following will create a `PRX` directory in your home directory and clone the repo into `~/PRX/Play-Next.js`:
 
 ```bash
+# Change directory to your home directory.
 cd ~
+
+# Create a PRX directory.
 mkdir PRX
+
+# Change directory to the PRX directory.
 cd PRX
+
+# Clone the git repo for this project.
 git clone git@github.com:PRX/Play-Next.js.git
+
+# Change to directory created by the git clone.
 cd Play-Next.js
 ```
 
 Now we need to make sure we are using the the version of _node_ need for the app:
 
-```
-nvm use
+```bash
+asdf install
 ```
 
-Now lets install all the packages required by the app:
+Next, install Yarn globally:
 
+```bash
+npm install --location=global yarn
 ```
+
+Use Yarn to install all the packages required by the app:
+
+```bash
 yarn
 ```
 
 Finally, lets spin up the development server:
 
-```
+```bash
 yarn dev
 ```
 
-Then open the app in your browser at [localhost:3000]().
+View the app at [localhost:4300](https://localhost:4300). This development version of the app will update automatically as you make changes.
+
+## Developing Along With Other PRX Applications
+
+Though not always the case, sometimes some features will need to be developed to interact with other PRX applications. This is much easier when the locally running app servers have consistent domains. Set up [puma-dev](https://github.com/PRX/internal/wiki/Guide:-Local-Development-Environment#install-puma-dev), then add the `play.prx` domain using port `4300`:
+
+```bash
+echo 4300 > ~/.puma-dev/play.prx
+```
+
+The app should now be available at [play.prx.test](http://play.prx.test).
+
+> Our other applications should include instructions on setting up their `.test` domains using puma-dev.
 
 ---
 
@@ -83,6 +106,7 @@ When importing module exports, do not use relative import paths for exports not 
 - `@interfaces` -> `./interfaces`
 - `@lib` -> `./lib`
 - `@svg` -> `./assets/svg`
+- `@states` -> `./states`
 - `@styles` -> `./styles`
 
 ## Contributing

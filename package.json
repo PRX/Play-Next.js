@@ -12,7 +12,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port=4300",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
