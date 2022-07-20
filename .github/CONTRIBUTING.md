@@ -49,6 +49,15 @@ There are scripts included in this project to help check your custom code for co
 - `yarn lint` to lint all of your custom code.
 - `yarn format:check` to automatically format your code.
 
+### VSCode Extensions
+
+Install these extensions to help with formatting and code hinting as you work and save files:
+
+- EditorConfig
+- ESLint
+- Prettier - Code formatter
+- Code Spell Checker
+
 ## Commit message standards
 
 This project makes use of the Commitizen commit convention, which is documented explicitly in [Angular's contribution docs](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit).
