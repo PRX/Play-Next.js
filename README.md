@@ -19,20 +19,6 @@ Once asdf has been installed and added to your path, install the Node.js plugin:
 asdf plugin add nodejs
 ```
 
-Then install the latest stable version of Node and NPM:
-
-```bash
-asdf install nodejs lts
-```
-
-### Install Yarn
-
-To install **yarn**, follow their [Installation](https://yarnpkg.com/lang/en/docs/install/#mac-stable) instructions for your OS. Install the _Stable_ version.
-
-```bash
-npm install --global yarn
-```
-
 ## Setup Development Environment
 
 Now we are ready to clone this repo and get its packages installed and initialized. The following will create a `PRX` directory in your home directory and clone the repo into `~/PRX/Play-Next.js`:
@@ -47,23 +33,29 @@ cd Play-Next.js
 
 Now we need to make sure we are using the the version of _node_ need for the app:
 
-```
+```bash
 asdf install
 ```
 
-Now lets install all the packages required by the app:
+Next, install Yarn globally:
 
+```bash
+npm install --location=global yarn
 ```
+
+Use Yarn to install all the packages required by the app:
+
+```bash
 yarn
 ```
 
 Finally, lets spin up the development server:
 
-```
+```bash
 yarn dev
 ```
 
-Then open the app in your browser at [localhost:4300]().
+View the app at [localhost:4300](https://localhost:4300). This development version of the app will update automatically as you make changes.
 
 ## Developing Along With Other PRX Applications
 
@@ -73,7 +65,7 @@ Though not always the case, sometimes some features will need to be developed to
 echo 4300 > ~/.puma-dev/play.prx
 ```
 
-The app should now be available at [play.prx.test]().
+The app should now be available at [play.prx.test](http://play.prx.test).
 
 > Our other applications should include instructions on setting up their `.test` domains using puma-dev.
 
