@@ -24,10 +24,19 @@ asdf plugin add nodejs
 Now we are ready to clone this repo and get its packages installed and initialized. The following will create a `PRX` directory in your home directory and clone the repo into `~/PRX/Play-Next.js`:
 
 ```bash
+# Change directory to your home directory.
 cd ~
+
+# Create a PRX directory.
 mkdir PRX
+
+# Change directory to the PRX directory.
 cd PRX
+
+# Clone the git repo for this project.
 git clone git@github.com:PRX/Play-Next.js.git
+
+# Change to directory created by the git clone.
 cd Play-Next.js
 ```
 
