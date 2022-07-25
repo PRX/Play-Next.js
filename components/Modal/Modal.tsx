@@ -60,7 +60,7 @@ const Modal: React.FC<IModalProps> = ({
           <CloseIcon aria-label="Close" />
         </IconButton>
 
-        {children}
+        <div className={styles.content}>{children}</div>
       </div>
     </Portal>
   );
