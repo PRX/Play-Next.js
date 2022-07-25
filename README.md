@@ -1,4 +1,4 @@
-# Play Next.js Application
+# PRX Play Next.js
 
 PRX embed audio player and landing pages.
 
