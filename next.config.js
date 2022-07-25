@@ -10,7 +10,8 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   images: {
-    domains: ['f.prxu.org'],
+    minimumCacheTTL: 60 * 60 * 24,
+    domains: ['f.prxu.org', 'f-staging.prxu.org'],
     imageSizes: [16, 32, 40, 48, 65, 96, 128, 135, 256, 384]
   },
   i18n: {
@@ -31,6 +32,15 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=300'
+          }
+        ]
+      },
+      {
+        source: '/_next/image',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
           }
         ]
       }
