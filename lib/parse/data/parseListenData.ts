@@ -1,45 +1,63 @@
-import type Parser from 'rss-parser';
-import { IAudioData, IListenData, IRssItem } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed';
-import parseAudioData from './parseAudioData';
+import type { IListenData, IListenEpisodeData, IRss } from '@interfaces/data';
+import type { IListenConfig } from '@interfaces/config';
+import generateHtmlString from '@lib/generate/html/generateHtmlString';
+import parseListenEpisodeData from './parseListenEpisodeData';
+import parseRssItems from './parseRssItems';
 
 /**
- * Parse RSS data object into embed data object for use on embed page.
+ * Parse RSS data object into listen data object for use on listen page.
  * @param config Embed config object.
  * @param rssData RSS data object.
- * @returns Embed data object.
+ * @returns Listen data object.
  */
 const parseListenData = (
-  config: IEmbedConfig,
-  rssData?: Parser.Output<IRssItem>
+  config: IListenConfig,
+  rssData?: IRss
 ): IListenData => {
-  const { episodeGuid, imageUrl: configBgImageUrl } = config;
+  const { feedUrl, subscribeUrl } = config;
   const {
+    title,
+    link,
     image: rssImage,
-    itunes: rssItunes,
-    items: rssItems,
-    title: rssTitle
-  } = rssData;
+    itunes,
+    copyright,
+    description
+  } = rssData || {};
   const { url: rssImageUrl } = rssImage || {};
-  const { image: rssItunesImage } = rssItunes || {};
-  const rssEpisode = rssItems.find((item) => item.guid === episodeGuid);
-  const episodeAudio = {
-    ...parseAudioData(rssEpisode),
-    subtitle: rssTitle
-  } as IAudioData;
-  const bgImageUrl =
-    configBgImageUrl || rssImageUrl || rssItunesImage || episodeAudio.imageUrl;
-  const content =
-    rssEpisode['content:encoded'] ||
-    rssEpisode.content ||
-    rssEpisode.itunes?.summary;
-  const title = rssEpisode.itunes?.subtitle || rssEpisode.title;
+  const {
+    author: rssItunesAuthor,
+    image: rssItunesImage,
+    owner: rssItunesOwner,
+    summary: rssItunesSummary
+  } = itunes || {};
+  const episodes = parseRssItems(
+    rssData,
+    {
+      // Default to showing all items in feed. Allow config to override.
+      showPlaylist: 'all',
+      ...config
+    },
+    parseListenEpisodeData
+  ) as IListenEpisodeData[];
+  const hasRssData = !!(feedUrl && rssData);
+  const bgImageUrl = rssImageUrl || rssItunesImage;
+  const content = generateHtmlString(rssItunesSummary || description);
+  const followUrls = {
+    ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
+  };
 
   const data: IListenData = {
-    episodeAudio,
-    bgImageUrl,
-    content,
-    title
+    ...(bgImageUrl && { bgImageUrl }),
+    ...(hasRssData && {
+      link,
+      title,
+      content,
+      copyright,
+      ...(rssItunesAuthor && { author: rssItunesAuthor }),
+      ...(rssItunesOwner && { owner: rssItunesOwner }),
+      ...(episodes && episodes.length && { episodes })
+    }),
+    followUrls
   };
 
   return data;

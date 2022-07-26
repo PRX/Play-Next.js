@@ -1,6 +1,5 @@
-import type Parser from 'rss-parser';
-import { IRssItem, ISeriesData } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed';
+import { IRss, ISeriesData } from '@interfaces/data';
+import { IEmbedConfig } from '@interfaces/config';
 import generateHtmlString from '@lib/generate/html/generateHtmlString';
 
 /**
@@ -8,10 +7,7 @@ import generateHtmlString from '@lib/generate/html/generateHtmlString';
  *
  */
 
-const parseSeriesData = (
-  config: IEmbedConfig,
-  rssData?: Parser.Output<IRssItem>
-) => {
+const parseSeriesData = (config: IEmbedConfig, rssData?: IRss) => {
   const { imageUrl: configBgImageUrl, episodeImageUrl: configEpisodeImageUrl } =
     config;
   const {

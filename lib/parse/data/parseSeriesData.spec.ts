@@ -1,10 +1,9 @@
-import { IRssItem } from '@interfaces/data';
-import Parser from 'rss-parser';
+import { IRss } from '@interfaces/data';
 import parseSeriesData from './parseSeriesData';
 
 describe('lib/parse/data', () => {
   describe('parseSeriesData', () => {
-    const mockRssData: Parser.Output<IRssItem> = {
+    const mockRssData: IRss = {
       image: {
         url: 'http://test.com/foo.png'
       },

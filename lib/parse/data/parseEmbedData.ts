@@ -1,6 +1,5 @@
-import type { IAudioData, IEmbedData, IRssItem } from '@interfaces/data';
-import type { IEmbedConfig } from '@interfaces/embed';
-import type Parser from 'rss-parser';
+import type { IAudioData, IEmbedData, IRss } from '@interfaces/data';
+import type { IEmbedConfig } from '@interfaces/config';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 import parseRssItems from './parseRssItems';
 
@@ -10,10 +9,7 @@ import parseRssItems from './parseRssItems';
  * @param rssData RSS data object.
  * @returns Embed data object.
  */
-const parseEmbedData = (
-  config: IEmbedConfig,
-  rssData?: Parser.Output<IRssItem>
-): IEmbedData => {
+const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const {
     feedUrl,
     subscribeUrl,

@@ -4,7 +4,7 @@ import parseEmbedData from './parseEmbedData';
 
 describe('lib/parse/data', () => {
   describe('parseEmbedData', () => {
-    const mockRssData: Parser.Output<IRssItem> = {
+    const mockRssData: IRss = {
       image: {
         url: 'http://foo.com/foo.png'
       },

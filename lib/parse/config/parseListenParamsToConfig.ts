@@ -1,18 +1,17 @@
-import type { IEmbedConfig, IEmbedParams } from '@interfaces/config';
+import type { IListenConfig, IListenParams } from '@interfaces/config';
 import { EmbedParamKeysMap } from '@interfaces/config';
-import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 
 /**
- * Parse query parameters into player config object.
+ * Parse query parameters into listen config object.
  *
  * @param params Requested query parameters object.
- * @returns Embed Config object
+ * @returns Listen Config object
  */
-const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
-  const config: IEmbedConfig = Object.entries(params).reduce((a, c) => {
+const parseListenParamsToConfig = (params: IListenParams): IListenConfig => {
+  const config: IListenConfig = Object.entries(params).reduce((a, c) => {
     const [k, v] = c;
-    const prop = EmbedParamKeysMap.get(k as keyof IEmbedParams);
+    const prop = EmbedParamKeysMap.get(k as keyof IListenParams);
     const normalizeValue = (val: string | string[]) =>
       Array.isArray(val) ? val[0] : val;
 
@@ -28,12 +27,6 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
           return {
             ...a,
             [prop]: convertStringToInteger(normalizeValue(v))
-          };
-
-        case 'showCoverArt':
-          return {
-            ...a,
-            [prop]: convertStringToBoolean(normalizeValue(v))
           };
 
         case 'accentColor':
@@ -59,9 +52,9 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
     }
 
     return a;
-  }, {} as IEmbedConfig);
+  }, {} as IListenConfig);
 
   return config;
 };
 
-export default parseEmbedParamsToConfig;
+export default parseListenParamsToConfig;

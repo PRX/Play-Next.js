@@ -4,7 +4,7 @@
  * Generate embed URL from embed config options.
  */
 
-import type { IEmbedConfig } from '@interfaces/embed';
+import type { IEmbedConfig } from '@interfaces/config';
 import parseEmbedConfigToParams from '@lib/parse/config/parseEmbedConfigToParams';
 
 const generateEmbedUrl = (config: IEmbedConfig) => {
