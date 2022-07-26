@@ -6,54 +6,78 @@
 import type { GetServerSideProps } from 'next';
 import type { IListenData } from '@interfaces/data';
 import type { IPageProps } from '@interfaces/page';
-import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
+import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseListenData from '@lib/parse/data/parseListenData';
-import AppBar from '@components/Page/AppBar/AppBar';
 import styles from '@styles/Listen.module.scss';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
-import Player from '@components/Player';
-import PlayButton from '@components/Player/PlayButton';
-import PlayerThumbnail from '@components/Player/PlayerThumbnail';
-import PlayerText from '@components/Player/PlayerText';
+import PrxImage from '@components/PrxImage';
 
 export interface IListenPageProps extends IPageProps {
   data: IListenData;
 }
 
 const ListenPage = ({ data }: IListenPageProps) => {
-  const { bgImageUrl, episodeAudio, content, title } = data;
+  const { title, author, content, copyright, episodes, bgImageUrl } = data;
   return (
     <div className={styles.root}>
-      <AppBar />
-
-      <header className={styles.header}>
-        <BackgroundImage
-          imageUrl={bgImageUrl}
-          className={styles.headerBackground}
-        />
-        <div className={styles.headerPlayer}>
-          <Player audio={episodeAudio} imageUrl={bgImageUrl}>
-            <PlayerThumbnail layout="fixed" width={100} height={100} />
-            <PlayerText />
-            <PlayButton />
-          </Player>
-        </div>
-      </header>
-
-      <div className={styles.main}>
-        {/* Main Content */}
-        <h2>{title}</h2>
-        <p>{content}</p>
+      <div className={styles.background}>
+        <BackgroundImage imageUrl={bgImageUrl} />
       </div>
-      <footer className={styles.footer}>{/* footer */}</footer>
+      <div className={styles.main}>
+        <div className={styles.content}>
+          <h1
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '48px 1fr',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}
+          >
+            <PrxImage src={bgImageUrl} layout="raw" width={48} height={48} />
+            {title}
+          </h1>
+          <p>
+            <b>{author}</b>
+          </p>
+          {content}
+          <p>
+            <em>{copyright}</em>
+          </p>
+
+          <h2>Episodes</h2>
+          <ul
+            style={{
+              display: 'grid',
+              gap: '0.75rem',
+              listStyle: 'none',
+              paddingInlineStart: '1rem'
+            }}
+          >
+            {episodes.map(({ guid, title: episodeTitle, imageUrl }) => (
+              <li
+                key={guid}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '24px 1fr',
+                  alignItems: 'center',
+                  gap: '0.75rem'
+                }}
+              >
+                <PrxImage src={imageUrl} layout="raw" width={24} height={24} />
+                {episodeTitle}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // 1. Convert query params into embed config.
-  const config = parseEmbedParamsToConfig(query);
+  const config = parseListenParamsToConfig(query);
   // 2. If RSS feed URL is provided.
   const rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
   // 3. Parse config and RSS data into embed data.

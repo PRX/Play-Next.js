@@ -3,23 +3,24 @@
 @use './grid';
 
 .root {
-  @include page.page-grid(true);
+  color: colors.$white;
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
 }
 
 .header {
-  @include page.header(false, true);
-  display: grid;
-  place-content: center;
-
-  color: colors.$white;
-
-  background-color: colors.$grey-500;
 }
 
 .main {
-  @include page.content;
+  @include page.content-grid;
+}
+
+.content {
 }
 
 .footer {
-  @include page.footer;
 }
