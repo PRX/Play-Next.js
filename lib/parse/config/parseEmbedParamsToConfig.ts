@@ -1,8 +1,5 @@
-import type {
-  IEmbedConfig,
-  IEmbedParams
-} from '@interfaces/embed/IEmbedConfig';
-import { EmbedParamKeysMap } from '@interfaces/embed/IEmbedConfig';
+import type { IEmbedConfig, IEmbedParams } from '@interfaces/embed';
+import { EmbedParamKeysMap } from '@interfaces/embed';
 import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 

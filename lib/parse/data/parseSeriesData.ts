@@ -1,6 +1,6 @@
 import type Parser from 'rss-parser';
 import { IRssItem, ISeriesData } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import { IEmbedConfig } from '@interfaces/embed';
 import generateHtmlString from '@lib/generate/html/generateHtmlString';
 
 /**

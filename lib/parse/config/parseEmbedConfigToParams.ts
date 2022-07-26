@@ -1,8 +1,5 @@
-import type {
-  IEmbedConfig,
-  IEmbedParams
-} from '@interfaces/embed/IEmbedConfig';
-import { EmbedConfigKeysMap } from '@interfaces/embed/IEmbedConfig';
+import type { IEmbedConfig, IEmbedParams } from '@interfaces/embed';
+import { EmbedConfigKeysMap } from '@interfaces/embed';
 
 /**
  * Parse embed config object into query parameters object.

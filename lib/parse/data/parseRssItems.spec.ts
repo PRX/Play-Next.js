@@ -1,6 +1,6 @@
 import type Parser from 'rss-parser';
 import { IRssItem } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import { IEmbedConfig } from '@interfaces/embed';
 import parseRssItems from './parseRssItems';
 
 describe('lib/parse/data', () => {

@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { IRssProxyError } from '@interfaces/error/IRssProxyError';
+import { IRssProxyError } from '@interfaces/error';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Parser from 'rss-parser';

@@ -1,4 +1,4 @@
-import { IEmbedParams } from '@interfaces/embed/IEmbedConfig';
+import { IEmbedParams } from '@interfaces/embed';
 import parseEmbedParamsToConfig from './parseEmbedParamsToConfig';
 
 describe('lib/parse/config', () => {

@@ -1,6 +1,6 @@
 import type Parser from 'rss-parser';
-import type { IAudioData, IRssItem } from '@interfaces/data/IAudioData';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import type { IAudioData, IRssItem } from '@interfaces/data';
+import { IEmbedConfig } from '@interfaces/embed';
 import parseAudioData from './parseAudioData';
 
 /**
