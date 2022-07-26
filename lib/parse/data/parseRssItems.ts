@@ -15,7 +15,8 @@ const parseRssItems = (
 ) => {
   if (!rssData || !rssData.items) return undefined;
 
-  const { link: rssLink } = rssData;
+  const { link, image } = rssData;
+  const { url: imageUrl } = image || {};
   const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
     config;
   const rssItems = rssData.items.map(
@@ -67,7 +68,8 @@ const parseRssItems = (
   return resultItems.map(
     (item) =>
       ({
-        link: rssLink,
+        link,
+        imageUrl,
         ...(itemParser || parseAudioData)(item)
       } as IAudioData)
   );
