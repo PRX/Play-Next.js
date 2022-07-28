@@ -84,7 +84,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
                 <HtmlContent html={content} />
               </div>
               <div className={styles.podcastMenu} />
-              <div className={styles.podcastCopyright}>{copyright}</div>
+              {copyright && (
+                <div className={styles.podcastCopyright}>{copyright}</div>
+              )}
             </div>
           </header>
 
@@ -98,7 +100,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
                   <HtmlContent html={content} />
                 </div>
                 <div className={styles.podcastMenu} />
-                <div className={styles.podcastCopyright}>{copyright}</div>
+                {copyright && (
+                  <div className={styles.podcastCopyright}>{copyright}</div>
+                )}
               </div>
               <div className={styles.podcastEpisodes}>
                 <EpisodeList onEpisodeClick={handleEpisodeClick} />
