@@ -1,0 +1,283 @@
+@use '@styles/colors';
+@use '@styles/grid';
+
+$breakpointFull: 900px;
+
+$logoSize: 300px;
+$logoSizeMobile: 40px;
+
+$viewTransitionDuration: 300ms;
+
+:export {
+  --listen-background-color: #{colors.$black};
+
+  --listen-text-color: #{colors.$white};
+
+  --listen-divider-color: #{colors.$white-a-60};
+
+  breakpointFull: #{$breakpointFull};
+
+  logoSize: #{$logoSize};
+  logoSizeMobile: #{$logoSizeMobile};
+}
+
+.root {
+  --dim-scale: 0.9;
+  --dim-blur: 10px;
+  --dim-opacity: 0;
+
+  --gutter-size-block: 2.5rem;
+  --gutter-size-inline: clamp(3rem, 10vw, 5rem);
+
+  --backgroundImage-blur: 60px;
+  --backgroundImage-tint-opacity: 0.7;
+
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  height: 100vh;
+  overflow: hidden;
+  overflow-y: auto;
+
+  background-color: var(--listen-background-color);
+
+  color: var(--listen-text-color);
+
+  & > * {
+    position: relative;
+    grid-column: 1;
+    z-index: 1;
+  }
+
+  @media (min-width: $breakpointFull) {
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: 1fr min-content;
+    grid-template-areas:
+      'SIDEBAR MAIN'
+      'FOOTER FOOTER';
+    column-gap: 2.5rem;
+  }
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.header {
+  grid-row: 1;
+  position: sticky;
+  display: grid;
+  grid-template-columns: $logoSizeMobile 1fr;
+  gap: 0.75rem;
+  top: 0;
+  z-index: 9;
+
+  padding: 0.75rem;
+
+  border-bottom: 2px solid var(--listen-divider-color);
+
+  & .podcastInfo {
+    display: none;
+  }
+
+  @media (min-width: $breakpointFull) {
+    & {
+      grid-area: SIDEBAR;
+
+      grid-template-columns: none;
+      align-content: start;
+
+      padding-block-start: var(--gutter-size-block);
+      padding-inline-start: var(--gutter-size-inline, 2rem);
+      padding-inline-end: 0;
+    }
+
+    & .podcastInfo {
+      display: grid;
+      padding: 0;
+    }
+  }
+}
+
+.main {
+  @include grid.stacked;
+  grid-template-rows: 1fr min-content;
+  overflow: hidden;
+  transform-origin: center center;
+
+  @media (min-width: $breakpointFull) {
+    & {
+      grid-area: MAIN;
+    }
+  }
+}
+
+.footer {
+  position: sticky;
+  display: grid;
+  justify-content: end;
+  bottom: 0;
+  width: 100%;
+  z-index: 9;
+
+  padding: 0.75rem 1rem;
+
+  background-color: var(--listen-background-color);
+
+  @media (min-width: $breakpointFull) {
+    & {
+      grid-area: FOOTER;
+    }
+  }
+}
+
+.viewContainer {
+  @media (min-width: $breakpointFull) {
+    & {
+      padding-inline-end: var(--gutter-size-inline, 2rem);
+    }
+  }
+}
+
+.podcastLogo {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 1;
+
+  border: 2px solid var(--listen-divider-color);
+
+  @media (min-width: $breakpointFull) {
+    & {
+      width: $logoSize;
+      height: auto;
+    }
+  }
+}
+
+.podcastHeading {
+  display: grid;
+
+  > * {
+    margin: 0;
+  }
+
+  @media (min-width: $breakpointFull) {
+    gap: inherit;
+  }
+}
+
+.podcastTitle {
+  font-size: 1.25rem;
+
+  @media (min-width: $breakpointFull) {
+    font-size: 1.5rem;
+  }
+}
+
+.podcastAuthor {
+  font-size: 0.75rem;
+
+  @media (min-width: $breakpointFull) {
+    font-size: 1rem;
+  }
+}
+
+.podcastView {
+  display: grid;
+  overflow: visible;
+  overflow-y: auto;
+
+  :where([data-view]:not([data-view*='-init'])) & {
+    animation: dim $viewTransitionDuration ease-out forwards;
+  }
+
+  :where([data-view='episode-init']) & {
+    display: none;
+  }
+
+  :where([data-view='podcast']) & {
+    animation: sharpen $viewTransitionDuration ease-out forwards;
+  }
+}
+
+.podcastInfo {
+  display: grid;
+  gap: 0.75rem;
+
+  padding-block: 1.25rem;
+  padding-inline: 1rem;
+
+  @media (min-width: $breakpointFull) {
+    display: none;
+  }
+}
+
+.podcastContent {
+  & > :where(p) {
+    margin-block: 0;
+  }
+
+  & > * + :where(p) {
+    margin-block-start: 0.5rem;
+  }
+
+  @media (min-width: $breakpointFull) {
+    font-size: 1rem;
+  }
+}
+
+.podcastEpisodes {
+}
+
+.episodeView {
+  --dim-scale: 1;
+  --dim-translate-x: 50px;
+  --dim-blur: 10px;
+  --dim-opacity: 0;
+
+  :where([data-view]:not([data-view*='-init'])) & {
+    animation: dim $viewTransitionDuration ease-out forwards;
+  }
+
+  :where([data-view='podcast-init']) & {
+    display: none;
+  }
+
+  :where([data-view='episode']) & {
+    animation: sharpen $viewTransitionDuration ease-out forwards;
+  }
+}
+
+.player {
+  position: absolute;
+  bottom: 100%;
+  width: 100%;
+  z-index: 9;
+
+  background-color: hsl(187 75% 50% / 0.2);
+}
+
+@keyframes sharpen {
+  0% {
+    transform: scale(var(--dim-scale, 1)) translateX(var(--dim-translate-x, 0));
+    filter: blur(var(--dim-blur, 0));
+    opacity: (var(--dim-opacity, 1));
+  }
+  100% {
+    transform: scale(1) translateX(0);
+    filter: blur(0px) opacity(1);
+  }
+}
+
+@keyframes dim {
+  0% {
+    transform: scale(1) translateX(0);
+    filter: blur(0px) opacity(1);
+  }
+  100% {
+    transform: scale(var(--dim-scale, 1)) translateX(var(--dim-translate-x, 0));
+    filter: blur(var(--dim-blur, 0));
+    opacity: (var(--dim-opacity, 1));
+  }
+}

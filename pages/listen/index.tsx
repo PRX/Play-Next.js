@@ -4,76 +4,15 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IListenData } from '@interfaces/data';
-import type { IPageProps } from '@interfaces/page';
+import type { IListenPageProps } from '@interfaces/page';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseListenData from '@lib/parse/data/parseListenData';
-import styles from '@styles/Listen.module.scss';
-import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
-import PrxImage from '@components/PrxImage';
+import Listen from '@components/Listen';
 
-export interface IListenPageProps extends IPageProps {
-  data: IListenData;
-}
-
-const ListenPage = ({ data }: IListenPageProps) => {
-  const { title, author, content, copyright, episodes, bgImageUrl } = data;
-  return (
-    <div className={styles.root}>
-      <div className={styles.background}>
-        <BackgroundImage imageUrl={bgImageUrl} />
-      </div>
-      <div className={styles.main}>
-        <div className={styles.content}>
-          <h1
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '48px 1fr',
-              alignItems: 'center',
-              gap: '0.75rem'
-            }}
-          >
-            <PrxImage src={bgImageUrl} layout="raw" width={48} height={48} />
-            {title}
-          </h1>
-          <p>
-            <b>{author}</b>
-          </p>
-          {content}
-          <p>
-            <em>{copyright}</em>
-          </p>
-
-          <h2>Episodes</h2>
-          <ul
-            style={{
-              display: 'grid',
-              gap: '0.75rem',
-              listStyle: 'none',
-              paddingInlineStart: '1rem'
-            }}
-          >
-            {episodes.map(({ guid, title: episodeTitle, imageUrl }) => (
-              <li
-                key={guid}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '24px 1fr',
-                  alignItems: 'center',
-                  gap: '0.75rem'
-                }}
-              >
-                <PrxImage src={imageUrl} layout="raw" width={24} height={24} />
-                {episodeTitle}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
+const ListenPage = ({ data, config }: IListenPageProps) => (
+  <Listen data={data} config={config} />
+);
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // 1. Convert query params into embed config.

@@ -4,23 +4,21 @@
  */
 
 import type React from 'react';
-import { useContext } from 'react';
-import PlayerContext from '@contexts/PlayerContext';
 import MenuButton from '@components/MenuButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 
 export interface IShareFacebookButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  url: string;
+}
 
 const ShareFacebookButton: React.FC<IShareFacebookButtonProps> = ({
-  className
+  className,
+  url
 }) => {
-  const { state } = useContext(PlayerContext);
-  const { currentTrackIndex, tracks } = state;
-  const { link } = tracks[currentTrackIndex];
   const params = new URLSearchParams({
-    u: link
+    u: url
   });
   const shareUrl = `http://www.facebook.com/sharer.php?${params}`;
 

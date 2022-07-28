@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import ThemeVars from '@components/ThemeVars';
-import Marquee from '@components/Maquee';
+import Marquee from '@components/Marquee';
 import ExplicitIcon from '@svg/icons/Explicit.svg';
 import styles from './PlayerText.module.scss';
 

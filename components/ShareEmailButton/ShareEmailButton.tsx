@@ -4,21 +4,25 @@
  */
 
 import type React from 'react';
-import { useContext } from 'react';
-import PlayerContext from '@contexts/PlayerContext';
 import MenuButton from '@components/MenuButton';
 import EmailIcon from '@svg/icons/Email.svg';
 
 export interface IShareEmailButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  url: string;
+  subject: string;
+  body?: string;
+}
 
-const ShareEmailButton: React.FC<IShareEmailButtonProps> = ({ className }) => {
-  const { state } = useContext(PlayerContext);
-  const { currentTrackIndex, tracks } = state;
-  const { link, title } = tracks[currentTrackIndex];
+const ShareEmailButton: React.FC<IShareEmailButtonProps> = ({
+  className,
+  url,
+  subject,
+  body
+}) => {
   const params = new URLSearchParams({
-    subject: title,
-    body: `Check out this podcast episode! ${link}`
+    subject,
+    body: body ? `${body} ${url}` : `Check out this link! ${url}`
   });
   const shareUrl = `mailto:?${params}`.replaceAll('+', ' ');
 

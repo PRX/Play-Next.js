@@ -10,9 +10,9 @@ import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
 import ShareIcon from '@svg/icons/Share.svg';
 import CodeIcon from '@svg/icons/Code.svg';
-import ShareFacebookButton from '../ShareFacebookButton';
-import ShareTwitterButton from '../ShareTwitterButton';
-import ShareEmailButton from '../ShareEmailButton';
+import PlayerShareFacebookButton from '../PlayerShareFacebookButton';
+import PlayerShareTwitterButton from '../PlayerShareTwitterButton';
+import PlayerShareEmailButton from '../PlayerShareEmailButton';
 import CopyLinkButton from '../CopyLinkButton';
 import styles from './ShareMenu.module.scss';
 
@@ -45,11 +45,11 @@ const ShareMenu: React.FC<IShareMenuProps> = ({
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>
-          <ShareFacebookButton />
+          <PlayerShareFacebookButton />
 
-          <ShareTwitterButton />
+          <PlayerShareTwitterButton />
 
-          <ShareEmailButton />
+          <PlayerShareEmailButton />
 
           <CopyLinkButton />
 
