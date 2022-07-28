@@ -1,5 +1,4 @@
-import type { IRssItem } from '@interfaces/data';
-import type Parser from 'rss-parser';
+import type { IRss } from '@interfaces/data';
 import parseEmbedData from './parseEmbedData';
 
 describe('lib/parse/data', () => {
