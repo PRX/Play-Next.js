@@ -17,8 +17,11 @@ export interface IListenPageProps extends IPageProps {
   data: IListenData;
 }
 
-const ListenPage = ({ data }: IListenPageProps) => {
+const ListenPage = ({ data, config }: IListenPageProps) => {
+  const { episodeGuid } = config;
   const { title, author, content, copyright, episodes, bgImageUrl } = data;
+  const episode = episodes.find(({ guid }) => guid === episodeGuid);
+
   return (
     <div className={styles.root}>
       <div className={styles.background}>
@@ -26,49 +29,88 @@ const ListenPage = ({ data }: IListenPageProps) => {
       </div>
       <div className={styles.main}>
         <div className={styles.content}>
-          <h1
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '48px 1fr',
-              alignItems: 'center',
-              gap: '0.75rem'
-            }}
-          >
-            <PrxImage src={bgImageUrl} layout="raw" width={48} height={48} />
-            {title}
-          </h1>
-          <p>
-            <b>{author}</b>
-          </p>
-          {content}
-          <p>
-            <em>{copyright}</em>
-          </p>
-
-          <h2>Episodes</h2>
-          <ul
-            style={{
-              display: 'grid',
-              gap: '0.75rem',
-              listStyle: 'none',
-              paddingInlineStart: '1rem'
-            }}
-          >
-            {episodes.map(({ guid, title: episodeTitle, imageUrl }) => (
-              <li
-                key={guid}
+          {!episode ? (
+            <>
+              <h1
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '24px 1fr',
+                  gridTemplateColumns: '48px 1fr',
                   alignItems: 'center',
                   gap: '0.75rem'
                 }}
               >
-                <PrxImage src={imageUrl} layout="raw" width={24} height={24} />
-                {episodeTitle}
-              </li>
-            ))}
-          </ul>
+                <PrxImage
+                  src={bgImageUrl}
+                  layout="raw"
+                  width={48}
+                  height={48}
+                />
+                {title}
+              </h1>
+              <p>
+                <b>{author}</b>
+              </p>
+              {content}
+              {copyright && (
+                <p>
+                  <em>{copyright}</em>
+                </p>
+              )}
+
+              <h2>Episodes</h2>
+              <ul
+                style={{
+                  display: 'grid',
+                  gap: '0.75rem',
+                  listStyle: 'none',
+                  paddingInlineStart: '1rem'
+                }}
+              >
+                {episodes.map(({ guid, title: episodeTitle, imageUrl }) => (
+                  <li
+                    key={guid}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '24px 1fr',
+                      alignItems: 'center',
+                      gap: '0.75rem'
+                    }}
+                  >
+                    <PrxImage
+                      src={imageUrl}
+                      layout="raw"
+                      width={24}
+                      height={24}
+                    />
+                    {episodeTitle}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <>
+              <h1
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '48px 1fr',
+                  alignItems: 'center',
+                  gap: '0.75rem'
+                }}
+              >
+                <PrxImage
+                  src={episode.imageUrl}
+                  layout="raw"
+                  width={48}
+                  height={48}
+                />
+                {episode.title}
+              </h1>
+              <p>
+                <b>{author}</b>
+              </p>
+              {episode.content}
+            </>
+          )}
         </div>
       </div>
     </div>

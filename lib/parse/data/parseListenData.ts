@@ -52,7 +52,7 @@ const parseListenData = (
       link,
       title,
       content,
-      copyright,
+      ...(copyright && { copyright }),
       ...(rssItunesAuthor && { author: rssItunesAuthor }),
       ...(rssItunesOwner && { owner: rssItunesOwner }),
       ...(episodes && episodes.length && { episodes })
