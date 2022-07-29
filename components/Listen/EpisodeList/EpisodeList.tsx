@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import type { IListenEpisodeData } from '@interfaces/data';
 import {
   useCallback,
   useContext,
@@ -14,18 +15,13 @@ import {
 } from 'react';
 import clsx from 'clsx';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
-import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import formatDurationParts from '@lib/format/time/formatDurationParts';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
-import IconButton from '@components/IconButton';
 import PlayerContext from '@contexts/PlayerContext';
-import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
-import ExplicitIcon from '@svg/icons/Explicit.svg';
-import PlayIcon from '@svg/icons/PlayArrow.svg';
-import PauseIcon from '@svg/icons/Pause.svg';
 import SwapVertIcon from '@svg/icons/SwapVert.svg';
 import styles from './EpisodeList.module.scss';
+import EpisodeCard from './EpisodeCard';
 
 export interface IEpisodeListProps
   extends React.DetailedHTMLProps<
@@ -40,28 +36,22 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
   onEpisodeClick,
   ...props
 }) => {
-  const {
-    imageUrl: defaultThumbUrl,
-    state,
-    setTracks,
-    playTrack,
-    pause
-  } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex, playing } = state;
+  const { state, setTracks } = useContext(PlayerContext);
+  const { tracks } = state;
   const rootRef = useRef(null);
-  const [playlistStyles, setPlaylistStyles] = useState({});
+  const [episodeListStyles, setEpisodeListStyles] = useState({});
   const [reversed, setReversed] = useState(false);
-  const playlistDurationsInt = tracks?.map(({ duration }) =>
+  const episodesDurationsInt = tracks?.map(({ duration }) =>
     convertDurationStringToIntegerArray(duration)
   );
-  const playlistDurationSums = sumDurationParts(playlistDurationsInt);
-  const playlistDurationString = formatDurationParts(playlistDurationSums);
+  const episodesDurationSums = sumDurationParts(episodesDurationsInt);
+  const episodesDurationString = formatDurationParts(episodesDurationSums);
 
-  const updatePlaylistStyles = useCallback(() => {
+  const updateEpisodeListStyles = useCallback(() => {
     const rect = rootRef.current.getBoundingClientRect();
-    setPlaylistStyles({
-      '--playlist-top': `${rect.top}px`,
-      '--playlist-height': `${rect.height}px`
+    setEpisodeListStyles({
+      '--episodeList-top': `${rect.top}px`,
+      '--episodeList-height': `${rect.height}px`
     });
   }, []);
 
@@ -72,106 +62,31 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
     setTracks(reversedTracks);
   };
 
-  const handlePlayButtonClick = useCallback(
-    (index: number) => () => {
-      playTrack(index);
-    },
-    [playTrack]
-  );
-
-  const handlePauseButtonClick = useCallback(() => {
-    pause();
-  }, [pause]);
-
-  const handleEpisodeClick = useCallback(
-    (guid: string) => () => {
-      onEpisodeClick(guid);
-    },
-    [onEpisodeClick]
-  );
-
   const handleResize = useCallback(() => {
-    updatePlaylistStyles();
-  }, [updatePlaylistStyles]);
+    updateEpisodeListStyles();
+  }, [updateEpisodeListStyles]);
 
   const renderEpisodes = useMemo(
     () => (
       <>
-        {tracks.map((track, index) => {
-          const { guid, title, imageUrl, duration, explicit } = track;
-          const thumbSrc = imageUrl || defaultThumbUrl;
-          const trackDuration =
-            duration?.indexOf(':') !== -1
-              ? duration
-              : convertSecondsToDuration(parseInt(duration, 10));
-          return (
-            <div
-              className={clsx(styles.track, {
-                [styles.isCurrentTrack]: index === currentTrackIndex,
-                [styles.isExplicit]: explicit
-              })}
-              key={guid}
-            >
-              {thumbSrc ? (
-                <div className={styles.trackThumbnail}>
-                  <PrxImage
-                    src={thumbSrc}
-                    alt={`Thumbnail for "${title}".`}
-                    layout="raw"
-                    width={styles['--episodeList-thumbnail-size']}
-                    height={styles['--episodeList-thumbnail-size']}
-                    lazyRoot={rootRef}
-                  />
-                </div>
-              ) : (
-                <span />
-              )}
-              {playing && currentTrackIndex === index ? (
-                <IconButton onClick={handlePauseButtonClick}>
-                  <PauseIcon />
-                </IconButton>
-              ) : (
-                <IconButton onClick={handlePlayButtonClick(index)}>
-                  <PlayIcon />
-                </IconButton>
-              )}
-              <button
-                type="button"
-                className={styles.trackTitle}
-                onClick={handleEpisodeClick(guid)}
-              >
-                {title}
-              </button>
-              {explicit && (
-                <span className={styles.explicit}>
-                  <ExplicitIcon
-                    className={styles.explicit}
-                    aria-label="Explicit"
-                  />
-                </span>
-              )}
-              <span className={styles.trackDuration}>{trackDuration}</span>
-            </div>
-          );
-        })}
+        {(tracks as IListenEpisodeData[]).map((track, index) => (
+          <EpisodeCard
+            episode={track}
+            index={index}
+            onEpisodeClick={onEpisodeClick}
+            key={track.guid}
+          />
+        ))}
       </>
     ),
-    [
-      currentTrackIndex,
-      defaultThumbUrl,
-      handleEpisodeClick,
-      handlePauseButtonClick,
-      handlePlayButtonClick,
-      playing,
-      tracks
-    ]
+    [onEpisodeClick, tracks]
   );
 
   useEffect(() => {
-    updatePlaylistStyles();
+    updateEpisodeListStyles();
 
     setTimeout(() => {
-      updatePlaylistStyles();
+      updateEpisodeListStyles();
     }, 1000);
 
     window.addEventListener('resize', handleResize);
@@ -179,7 +94,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [handleResize, updatePlaylistStyles]);
+  }, [handleResize, updateEpisodeListStyles]);
 
   return (
     tracks && (
@@ -201,9 +116,13 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
             </span>
             {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}
           </button>
-          <span>{playlistDurationString}</span>
+          <span>{episodesDurationString}</span>
         </header>
-        <div ref={rootRef} className={styles.playlist} style={playlistStyles}>
+        <div
+          ref={rootRef}
+          className={styles.episodeList}
+          style={episodeListStyles}
+        >
           <div className={styles.tracks}>{renderEpisodes}</div>
         </div>
       </div>

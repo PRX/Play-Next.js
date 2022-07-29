@@ -1,24 +1,23 @@
 @use '@styles/colors';
 @use '@styles/grid';
+@use './Listen.use.scss' as *;
 
-$breakpointFull: 900px;
-
-$logoSize: 300px;
-$logoSizeMobile: 40px;
+$logo-size: 300px;
+$logo-size--mobile: 40px;
 
 $viewTransitionDuration: 300ms;
 
 :export {
-  --listen-background-color: #{colors.$black};
+  --listen-background-color: #{$listen-background-color};
 
-  --listen-text-color: #{colors.$white};
+  --listen-text-color: #{$listen-text-color};
 
-  --listen-divider-color: #{colors.$white-a-60};
+  --listen-divider-color: #{$listen-divider-color};
 
-  breakpointFull: #{$breakpointFull};
+  breakpointFull: #{$breakpoint-full};
 
-  logoSize: #{$logoSize};
-  logoSizeMobile: #{$logoSizeMobile};
+  logoSize: #{$logo-size};
+  logoSizeMobile: #{$logo-size--mobile};
 }
 
 .root {
@@ -42,13 +41,17 @@ $viewTransitionDuration: 300ms;
 
   color: var(--listen-text-color);
 
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
+
   & > * {
     position: relative;
     grid-column: 1;
     z-index: 1;
   }
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     grid-template-columns: min-content 1fr;
     grid-template-rows: 1fr min-content;
     grid-template-areas:
@@ -68,10 +71,12 @@ $viewTransitionDuration: 300ms;
   grid-row: 1;
   position: sticky;
   display: grid;
-  grid-template-columns: $logoSizeMobile 1fr;
+  grid-template-columns: $logo-size--mobile 1fr;
   gap: 0.75rem;
   top: 0;
   z-index: 9;
+  overflow: hidden;
+  overflow-y: auto;
 
   padding: 0.75rem;
 
@@ -81,7 +86,7 @@ $viewTransitionDuration: 300ms;
     display: none;
   }
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     & {
       grid-area: SIDEBAR;
 
@@ -106,7 +111,7 @@ $viewTransitionDuration: 300ms;
   overflow: hidden;
   transform-origin: center center;
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     & {
       grid-area: MAIN;
     }
@@ -125,7 +130,7 @@ $viewTransitionDuration: 300ms;
 
   background-color: var(--listen-background-color);
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     & {
       grid-area: FOOTER;
     }
@@ -133,8 +138,10 @@ $viewTransitionDuration: 300ms;
 }
 
 .viewContainer {
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     & {
+      display: grid;
+      overflow: hidden;
       padding-inline-end: var(--gutter-size-inline, 2rem);
     }
   }
@@ -147,9 +154,9 @@ $viewTransitionDuration: 300ms;
 
   border: 2px solid var(--listen-divider-color);
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     & {
-      width: $logoSize;
+      width: $logo-size;
       height: auto;
     }
   }
@@ -162,7 +169,7 @@ $viewTransitionDuration: 300ms;
     margin: 0;
   }
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     gap: inherit;
   }
 }
@@ -170,7 +177,7 @@ $viewTransitionDuration: 300ms;
 .podcastTitle {
   font-size: 1.25rem;
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     font-size: 1.5rem;
   }
 }
@@ -178,14 +185,19 @@ $viewTransitionDuration: 300ms;
 .podcastAuthor {
   font-size: 0.75rem;
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     font-size: 1rem;
   }
 }
 
+.podcastMenu {
+  display: flex;
+  align-items: center;
+}
+
 .podcastView {
   display: grid;
-  overflow: visible;
+  overflow: hidden;
   overflow-y: auto;
 
   :where([data-view]:not([data-view*='-init'])) & {
@@ -208,7 +220,7 @@ $viewTransitionDuration: 300ms;
   padding-block: 1.25rem;
   padding-inline: 1rem;
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     display: none;
   }
 }
@@ -222,12 +234,20 @@ $viewTransitionDuration: 300ms;
     margin-block-start: 0.5rem;
   }
 
-  @media (min-width: $breakpointFull) {
+  @media (min-width: $breakpoint-full) {
     font-size: 1rem;
   }
 }
 
 .podcastEpisodes {
+  @media (min-width: $breakpoint-full) {
+    & {
+      display: grid;
+      overflow: hidden;
+
+      padding-block-start: var(--gutter-size-block);
+    }
+  }
 }
 
 .episodeView {
@@ -246,6 +266,12 @@ $viewTransitionDuration: 300ms;
 
   :where([data-view='episode']) & {
     animation: sharpen $viewTransitionDuration ease-out forwards;
+  }
+
+  @media (min-width: $breakpoint-full) {
+    & {
+      padding-block-start: var(--gutter-size-block);
+    }
   }
 }
 

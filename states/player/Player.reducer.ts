@@ -11,7 +11,7 @@ import {
 
 export const playerInitialState: IPlayerState = {
   playing: false,
-  currentTrackIndex: 0,
+  currentTrackIndex: null,
   tracks: null,
   currentTime: null,
   muted: false,

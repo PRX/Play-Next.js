@@ -10,7 +10,7 @@ import EmailIcon from '@svg/icons/Email.svg';
 export interface IShareEmailButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   url: string;
-  subject: string;
+  subject?: string;
   body?: string;
 }
 
@@ -21,7 +21,7 @@ const ShareEmailButton: React.FC<IShareEmailButtonProps> = ({
   body
 }) => {
   const params = new URLSearchParams({
-    subject,
+    ...(subject && { subject }),
     body: body ? `${body} ${url}` : `Check out this link! ${url}`
   });
   const shareUrl = `mailto:?${params}`.replaceAll('+', ' ');

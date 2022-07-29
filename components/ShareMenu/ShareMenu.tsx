@@ -6,20 +6,20 @@
 import type React from 'react';
 import clsx from 'clsx';
 import Modal, { IModalProps } from '@components/Modal/Modal';
-import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
 import ShareIcon from '@svg/icons/Share.svg';
-import CodeIcon from '@svg/icons/Code.svg';
-import PlayerShareFacebookButton from '../PlayerShareFacebookButton';
-import PlayerShareTwitterButton from '../PlayerShareTwitterButton';
-import PlayerShareEmailButton from '../PlayerShareEmailButton';
-import CopyLinkButton from '../CopyLinkButton';
+import ShareFacebookButton from '../ShareFacebookButton';
+import ShareTwitterButton from '../ShareTwitterButton';
+import ShareEmailButton from '../ShareEmailButton';
 import styles from './ShareMenu.module.scss';
 
 export interface IShareMenuProps extends IModalProps {
   onOpen(): void;
   className?: string;
-  embedHtml?: string;
+  url?: string;
+  twitterTitle?: string;
+  emailSubject?: string;
+  emailBody?: string;
 }
 
 const ShareMenu: React.FC<IShareMenuProps> = ({
@@ -27,7 +27,10 @@ const ShareMenu: React.FC<IShareMenuProps> = ({
   onClose,
   isOpen,
   portalId,
-  embedHtml,
+  url,
+  twitterTitle,
+  emailSubject,
+  emailBody,
   className
 }) => {
   const handleClick = () => {
@@ -45,23 +48,11 @@ const ShareMenu: React.FC<IShareMenuProps> = ({
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>
-          <PlayerShareFacebookButton />
+          <ShareFacebookButton url={url} />
 
-          <PlayerShareTwitterButton />
+          <ShareTwitterButton url={url} text={twitterTitle} />
 
-          <PlayerShareEmailButton />
-
-          <CopyLinkButton />
-
-          {embedHtml && (
-            <MenuButton
-              action="clipboard"
-              clipboardText={embedHtml}
-              label="Embed Code"
-            >
-              <CodeIcon />
-            </MenuButton>
-          )}
+          <ShareEmailButton url={url} subject={emailSubject} body={emailBody} />
         </nav>
       </Modal>
     </>

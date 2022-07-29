@@ -40,7 +40,7 @@ import ReplayButton from '@components/Player/ReplayButton';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import styles from '@styles/Embed.module.scss';
-import ShareMenu from '@components/Player/ShareMenu';
+import PlayerShareMenu from '@components/Player/PlayerShareMenu';
 import FollowMenu from '@components/Player/FollowMenu';
 import SupportMenu from '@components/Player/SupportMenu';
 
@@ -88,8 +88,9 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
-  const currentTrackIndex = playlist?.findIndex(
-    (track) => track.guid === audio.guid
+  const currentTrackIndex = Math.max(
+    0,
+    playlist?.findIndex((track) => track.guid === audio.guid)
   );
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
@@ -358,7 +359,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         followUrls={followUrls}
                       />
 
-                      <ShareMenu
+                      <PlayerShareMenu
                         className={clsx(styles.menuButton, styles.shareButton)}
                         onOpen={handleShareButtonClick}
                         onClose={handleShareCloseClick}

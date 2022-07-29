@@ -35,7 +35,7 @@ const Player: React.FC<IPlayerProps> = ({
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
     tracks: initialTracks,
-    ...(startIndex && { currentTrackIndex: startIndex })
+    ...(startIndex >= 0 && { currentTrackIndex: startIndex })
   });
   const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
     state;
