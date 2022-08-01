@@ -13,6 +13,7 @@ import {
   useState
 } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import BackgroundImage from '@components/BackgroundImage';
 import HtmlContent from '@components/HtmlContent';
@@ -36,6 +37,7 @@ import Episode from './Episode';
 import FooterPlayer from './FooterPlayer';
 
 const Listen = ({ config, data }: IListenPageProps) => {
+  const router = useRouter();
   const { episodeGuid: configEpisodeGuid, accentColor } = config;
   const [state, dispatch] = useReducer(listenStateReducer, {
     ...listenInitialState,
@@ -82,7 +84,44 @@ const Listen = ({ config, data }: IListenPageProps) => {
       : [])
   ].join('');
 
+  const updateUrl = (guid?: string) => {
+    const { protocol, host } = window.location;
+    const baseUrl = `${protocol}//${host}/`;
+    const url = new URL(router.asPath, baseUrl);
+
+    url.searchParams.delete('ge');
+
+    if (guid) {
+      url.searchParams.set('ge', guid);
+    }
+
+    const newUrl = `${url.pathname}?${url.searchParams.toString()}`;
+
+    router.push(newUrl, newUrl, {
+      shallow: true
+    });
+  };
+
+  const handleUrlChange = useCallback((event: PopStateEvent) => {
+    const { protocol, host } = window.location;
+    const baseUrl = `${protocol}//${host}/`;
+    const url = new URL(event.state.as, baseUrl);
+    const guid = url.searchParams.get('ge');
+
+    if (guid) {
+      dispatch({
+        type: ListenActionTypes.LISTEN_VIEW_EPISODE,
+        payload: guid
+      });
+    } else {
+      dispatch({
+        type: ListenActionTypes.LISTEN_VIEW_PODCAST
+      });
+    }
+  }, []);
+
   const handleEpisodeClick = (guid: string) => {
+    updateUrl(guid);
     dispatch({
       type: ListenActionTypes.LISTEN_VIEW_EPISODE,
       payload: guid
@@ -90,6 +129,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   };
 
   const handleEpisodeBackClick = () => {
+    updateUrl();
     dispatch({
       type: ListenActionTypes.LISTEN_VIEW_PODCAST
     });
@@ -128,11 +168,13 @@ const Listen = ({ config, data }: IListenPageProps) => {
    */
   useEffect(() => {
     window.addEventListener('resize', handleResize);
+    window.addEventListener('popstate', handleUrlChange);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('popstate', handleUrlChange);
     };
-  }, [handleResize]);
+  }, [handleResize, handleUrlChange]);
 
   const renderMenu = useMemo(
     () => (

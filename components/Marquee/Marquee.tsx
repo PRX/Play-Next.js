@@ -16,6 +16,7 @@ const Marquee: React.FC<IMarqueeProps> = ({ children }) => {
   const [marqueeSpeed, setMarqueeSpeed] = useState(0);
   const contentRef = useRef(null);
   const rootRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   const updateMarqueeOffset = useCallback(() => {
     const rootRec = rootRef.current?.getBoundingClientRect();
@@ -34,7 +35,7 @@ const Marquee: React.FC<IMarqueeProps> = ({ children }) => {
   useEffect(() => {
     updateMarqueeOffset();
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       updateMarqueeOffset();
     }, 1000);
 
@@ -42,6 +43,7 @@ const Marquee: React.FC<IMarqueeProps> = ({ children }) => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutRef.current);
     };
   }, [handleResize, updateMarqueeOffset, children]);
 

@@ -298,14 +298,14 @@ $viewTransitionDuration: 300ms;
   }
   100% {
     transform: scale(1) translateX(0);
-    filter: blur(0px) opacity(1);
+    filter: blur(0) opacity(1);
   }
 }
 
 @keyframes dim {
   0% {
     transform: scale(1) translateX(0);
-    filter: blur(0px) opacity(1);
+    filter: blur(0) opacity(1);
   }
   100% {
     transform: scale(var(--dim-scale, 1)) translateX(var(--dim-translate-x, 0));
