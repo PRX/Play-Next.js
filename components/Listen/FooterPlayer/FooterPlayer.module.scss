@@ -1,0 +1,111 @@
+@use '@styles/colors';
+@use '@components/Listen/Listen.use.scss' as Listen;
+
+$footerPlayer-background-color: colors.$black-a-60;
+
+$footerPlayer-divider-color: var(--listen-divider-color, colors.$white-a-60);
+
+$footerPlayer-text-size--max: 1.25rem;
+$footerPlayer-text-size--min: 1rem;
+
+$footerPlayer-thumbnail-size: 60px;
+$footerPlayer-thumbnail-size--mobile: 24px;
+
+:export {
+  --footerPlayer-background-color: #{$footerPlayer-background-color};
+
+  --footerPlayer-divider-color: #{$footerPlayer-divider-color};
+
+  --footerPlayer-text-size--max: #{$footerPlayer-text-size--max};
+  --footerPlayer-text-size--min: #{$footerPlayer-text-size--min};
+
+  --footerPlayer-thumbnail-size: #{$footerPlayer-thumbnail-size};
+  --footerPlayer-thumbnail-size--mobile: #{$footerPlayer-thumbnail-size--mobile};
+}
+
+.root {
+  transition: transform 300ms ease-in-out;
+  transform: translateY(100%);
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: var(--footerPlayer-thumbnail-size--mobile) 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-template-areas:
+    'THUMB TITLE'
+    'CTRLS CTRLS'
+    'PROG PROG';
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
+
+  padding: 0.5rem;
+
+  background-color: var(--footerPlayer-background-color, colors.$black);
+
+  backdrop-filter: blur(30px);
+
+  &.isShown {
+    transform: translateY(0);
+  }
+
+  @media (min-width: Listen.$breakpoint-full) {
+    & {
+      grid-template-columns: var(--footerPlayer-thumbnail-size) 1fr min-content;
+      grid-template-rows: repeat(2, auto);
+      grid-template-areas:
+        'THUMB TITLE CTRLS'
+        'THUMB PROG CTRLS';
+      column-gap: 1rem;
+      row-gap: 0.25rem;
+
+      padding: 1rem 1.25rem;
+    }
+  }
+}
+
+.thumbnail {
+  grid-area: THUMB;
+  position: relative;
+  aspect-ratio: 1;
+
+  border-radius: 3px;
+  border: 1px solid var(--footerPlayer-divider-color);
+}
+
+.title {
+  grid-area: TITLE;
+
+  overflow: hidden;
+
+  font-size: clamp(
+    var(--footerPlayer-text-size--min),
+    3vw,
+    var(--footerPlayer-text-size--max)
+  );
+  font-weight: 700;
+
+  @media (min-width: Listen.$breakpoint-full) {
+    & {
+      font-size: var(--footerPlayer-text-size--max);
+    }
+  }
+}
+
+.controls {
+  --iconButton-size: clamp(36px, 10vw, 40px);
+  grid-area: CTRLS;
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress {
+  grid-area: PROG;
+}

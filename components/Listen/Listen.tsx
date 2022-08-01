@@ -4,7 +4,14 @@
  */
 
 import type React from 'react';
-import { useEffect, useMemo, useReducer } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState
+} from 'react';
 import Head from 'next/head';
 import clsx from 'clsx';
 import BackgroundImage from '@components/BackgroundImage';
@@ -22,12 +29,14 @@ import {
   listenStateReducer
 } from '@states/listen/Listen.reducer';
 import { ListenActionTypes } from '@states/listen/Listen.actions';
+import PrxDtLogo from '@svg/PRX-DT-Logo.svg';
 import EpisodeList from './EpisodeList';
 import styles from './Listen.module.scss';
 import Episode from './Episode';
+import FooterPlayer from './FooterPlayer';
 
 const Listen = ({ config, data }: IListenPageProps) => {
-  const { episodeGuid: configEpisodeGuid } = config;
+  const { episodeGuid: configEpisodeGuid, accentColor } = config;
   const [state, dispatch] = useReducer(listenStateReducer, {
     ...listenInitialState,
     view: configEpisodeGuid ? 'episode-init' : 'podcast-init',
@@ -55,10 +64,23 @@ const Listen = ({ config, data }: IListenPageProps) => {
     () => episodes && episodes.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]
   );
+  const footerPlayerRef = useRef<HTMLDivElement>();
+  const [gutterBlockEnd, setGutterBlockEnd] = useState(0);
   const logoSizes = [
     `(min-width: ${styles.breakpointFull}) ${styles.logoSize}`,
     `${styles.logoSizeMobile}`
   ].join(',');
+  const rootStyles = [
+    `--gutter-size-block-end: ${gutterBlockEnd}px;`,
+    ...(accentColor
+      ? [
+          `--accent-color:${accentColor[0].split(' ')[0]};`,
+          ...(accentColor.length > 1
+            ? [`--accent-gradient: ${accentColor.join(',')};`]
+            : [])
+        ]
+      : [])
+  ].join('');
 
   const handleEpisodeClick = (guid: string) => {
     dispatch({
@@ -96,6 +118,21 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const handleSupportCloseClick = () => {
     dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_SUPPORT_DIALOG });
   };
+
+  const handleResize = useCallback(() => {
+    setGutterBlockEnd(footerPlayerRef.current.getBoundingClientRect().height);
+  }, []);
+
+  /**
+   * Setup/clean up window events.
+   */
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleResize]);
 
   const renderMenu = useMemo(
     () => (
@@ -153,7 +190,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   return (
     <>
       <Head>
-        <style>{'body { overflow: hidden; }'}</style>
+        <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
       </Head>
       <ThemeVars theme="Listen" cssProps={styles} />
       <Player audio={episodes}>
@@ -211,8 +248,14 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
 
           <footer className={styles.footer}>
-            <div className={styles.player}>Player</div>
-            Hosted on PRX Dovetail
+            <FooterPlayer ref={footerPlayerRef} />
+            <div className={styles.footerMain}>
+              Hosted on{' '}
+              <PrxDtLogo
+                className={styles.logoPrxDt}
+                aria-label="PRX Dovetail"
+              />
+            </div>
           </footer>
         </div>
       </Player>

@@ -196,6 +196,7 @@ $episodeCard-divider-size: 1px;
 .main {
   display: grid;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .title {
@@ -270,16 +271,22 @@ $episodeCard-divider-size: 1px;
 }
 
 .info {
+  overflow: hidden;
+}
+
+.infoWrapper {
+  position: relative;
+  inset-inline-start: calc(var(--spacing) * -1);
   display: flex;
   flex-wrap: wrap;
   column-gap: var(--spacing);
 
-  white-space: nowrap;
+  & > * {
+    white-space: nowrap;
 
-  // & > * + * {
-  //   &::before {
-  //     content: '\2022';
-  //     margin-inline-end: var(--spacing);
-  //   }
-  // }
+    &::before {
+      content: '\2022';
+      margin-inline-end: var(--spacing);
+    }
+  }
 }

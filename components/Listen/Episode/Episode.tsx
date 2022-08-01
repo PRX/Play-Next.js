@@ -51,7 +51,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   const pubDateFormatted = useMemo(
     () =>
       pubDate &&
-      new Intl.DateTimeFormat([], { dateStyle: 'medium' }).format(
+      new Intl.DateTimeFormat([], { dateStyle: 'long' }).format(
         new Date(pubDate)
       ),
     [pubDate]
@@ -129,9 +129,11 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
               </span>
 
               <span className={styles.info}>
-                <span className={styles.pubDate}>{pubDateFormatted}</span>
-                <span className={styles.duration}>
-                  {episodesDurationString}
+                <span className={styles.infoWrapper}>
+                  <span className={styles.pubDate}>{pubDateFormatted}</span>
+                  <span className={styles.duration}>
+                    {episodesDurationString}
+                  </span>
                 </span>
               </span>
             </div>

@@ -95,7 +95,9 @@ $episode-header-text-size--min: 1rem;
 
   padding-inline: 1rem;
   padding-block-start: 1.25rem;
-  padding-block-end: var(--gutter-size-block-end, var(--gutter-size-block));
+  padding-block-end: calc(
+    var(--gutter-size-block-end, var(--gutter-size-block)) + 1rem
+  );
 
   @media (min-width: Listen.$breakpoint-full) {
     grid-template-columns: var(--episode-thumbnail-size) 1fr;
@@ -113,7 +115,7 @@ $episode-header-text-size--min: 1rem;
 
   position: relative;
   display: grid;
-  grid-template-columns: repeat(2, max-content);
+  grid-template-columns: auto min-content;
   grid-template-rows: var(--episode-thumbnail-size--mobile);
   grid-auto-rows: min-content;
   justify-content: space-between;
@@ -134,7 +136,6 @@ $episode-header-text-size--min: 1rem;
 
   @media (min-width: Listen.$breakpoint-full) {
     & {
-      grid-template-columns: max-content min-content;
       grid-template-rows: none;
       justify-content: space-between;
     }
@@ -149,6 +150,8 @@ $episode-header-text-size--min: 1rem;
   width: var(--episode-thumbnail-size--mobile);
   aspect-ratio: 1;
 
+  border: 1px solid var(--listen-divider-color);
+
   @media (min-width: Listen.$breakpoint-full) {
     & {
       position: absolute;
@@ -160,10 +163,9 @@ $episode-header-text-size--min: 1rem;
 }
 
 .headerMain {
-  display: grid;
-  grid-template-columns: min-content 1fr;
+  display: flex;
   align-items: center;
-  gap: var(--spacing);
+  column-gap: var(--spacing);
 }
 
 .controls {
@@ -172,20 +174,28 @@ $episode-header-text-size--min: 1rem;
 }
 
 .info {
-  display: grid;
+  overflow: hidden;
+}
 
-  @media (min-width: Listen.$breakpoint-full) {
-    & {
-      display: flex;
-      gap: var(--spacing);
-    }
-    & > * + * {
-      &::before {
-        content: '\2022';
-        margin-inline-end: var(--spacing);
-      }
+.infoWrapper {
+  position: relative;
+  inset-inline-start: calc(var(--spacing) * -1);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--spacing);
+
+  & > * {
+    white-space: nowrap;
+
+    &::before {
+      content: '\2022';
+      margin-inline-end: var(--spacing);
     }
   }
+}
+
+.menu {
+  justify-self: end;
 }
 
 .content {

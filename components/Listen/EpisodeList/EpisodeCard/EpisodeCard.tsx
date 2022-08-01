@@ -144,8 +144,12 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
             )}
 
             <span className={styles.info}>
-              <span className={styles.pubDate}>{pubDateFormatted}</span>
-              <span className={styles.duration}>{episodesDurationString}</span>
+              <div className={styles.infoWrapper}>
+                <span className={styles.pubDate}>{pubDateFormatted}</span>
+                <span className={styles.duration}>
+                  {episodesDurationString}
+                </span>
+              </div>
             </span>
           </div>
         </div>

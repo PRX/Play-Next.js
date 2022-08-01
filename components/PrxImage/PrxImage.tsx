@@ -46,6 +46,8 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
       complete: imageRef.current?.complete
     }));
 
+    if (!src) return null;
+
     return isTrusted || !isUrlString ? (
       <Image src={src} alt={alt} {...nextImageProps} {...other} />
     ) : (
