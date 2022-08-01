@@ -143,8 +143,8 @@ $episodeCard-divider-size: 1px;
         var(--accent-gradient, transparent)
       );
       background-attachment: fixed;
-      background-position: 0 var(--episodeList-top, 0);
-      background-size: 100% var(--episodeList-height, 100%);
+      background-position: 0 0;
+      background-size: 100% 100vh;
     }
   }
 

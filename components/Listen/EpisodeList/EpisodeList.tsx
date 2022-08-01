@@ -5,14 +5,7 @@
 
 import type React from 'react';
 import type { IListenEpisodeData } from '@interfaces/data';
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useContext, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
 import formatDurationParts from '@lib/format/time/formatDurationParts';
@@ -38,8 +31,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
 }) => {
   const { state, setTracks } = useContext(PlayerContext);
   const { tracks } = state;
-  const rootRef = useRef(null);
-  const [episodeListStyles, setEpisodeListStyles] = useState({});
+  const [episodeListStyles] = useState({});
   const [reversed, setReversed] = useState(false);
   const episodesDurationsInt = tracks?.map(({ duration }) =>
     convertDurationStringToIntegerArray(duration)
@@ -47,24 +39,12 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
   const episodesDurationSums = sumDurationParts(episodesDurationsInt);
   const episodesDurationString = formatDurationParts(episodesDurationSums);
 
-  const updateEpisodeListStyles = useCallback(() => {
-    const rect = rootRef.current.getBoundingClientRect();
-    setEpisodeListStyles({
-      '--episodeList-top': `${rect.top}px`,
-      '--episodeList-height': `${rect.height}px`
-    });
-  }, []);
-
   const handleSortClick = () => {
     const reversedTracks = [...tracks].reverse();
 
     setReversed(!reversed);
     setTracks(reversedTracks);
   };
-
-  const handleResize = useCallback(() => {
-    updateEpisodeListStyles();
-  }, [updateEpisodeListStyles]);
 
   const renderEpisodes = useMemo(
     () => (
@@ -81,20 +61,6 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
     ),
     [onEpisodeClick, tracks]
   );
-
-  useEffect(() => {
-    updateEpisodeListStyles();
-
-    setTimeout(() => {
-      updateEpisodeListStyles();
-    }, 1000);
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [handleResize, updateEpisodeListStyles]);
 
   return (
     tracks && (
@@ -118,11 +84,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
           </button>
           <span>{episodesDurationString}</span>
         </header>
-        <div
-          ref={rootRef}
-          className={styles.episodeList}
-          style={episodeListStyles}
-        >
+        <div className={styles.episodeList} style={episodeListStyles}>
           <div className={styles.tracks}>{renderEpisodes}</div>
         </div>
       </div>
