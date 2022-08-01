@@ -144,7 +144,7 @@ $episodeCard-divider-size: 1px;
       );
       background-attachment: fixed;
       background-position: 0 var(--episodeList-top, 0);
-      background-size: 100vw var(--episodeList-height, 100%);
+      background-size: 100% var(--episodeList-height, 100%);
     }
   }
 
