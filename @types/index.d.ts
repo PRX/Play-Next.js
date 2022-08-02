@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'types-wm';
+
 declare module '*.svg' {
   import React = require('react');
 

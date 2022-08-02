@@ -164,5 +164,56 @@ describe('states/player', () => {
         expect(result2.supportShown).toBe(false);
       });
     });
+
+    describe('`webMonetizationShown` actions', () => {
+      test('should set `webMonetizationShown` to true', () => {
+        const result = embedStateReducer(
+          {
+            ...embedInitialState
+          },
+          {
+            type: EmbedActionTypes.EMBED_SHOW_WEB_MONETIZATION_DIALOG
+          }
+        );
+
+        expect(result.webMonetizationShown).toBe(true);
+      });
+
+      test('should set `webMonetizationShown` to false', () => {
+        const result = embedStateReducer(
+          {
+            ...embedInitialState,
+            webMonetizationShown: true
+          },
+          {
+            type: EmbedActionTypes.EMBED_HIDE_WEB_MONETIZATION_DIALOG
+          }
+        );
+
+        expect(result.webMonetizationShown).toBe(false);
+      });
+
+      test('should toggle `webMonetizationShown`', () => {
+        const result1 = embedStateReducer(
+          {
+            ...embedInitialState
+          },
+          {
+            type: EmbedActionTypes.EMBED_TOGGLE_WEB_MONETIZATION_DIALOG_SHOWN
+          }
+        );
+        const result2 = embedStateReducer(
+          {
+            ...result1
+          },
+          {
+            type: EmbedActionTypes.EMBED_TOGGLE_WEB_MONETIZATION_DIALOG_SHOWN
+          }
+        );
+
+        expect(result1.webMonetizationShown).toBe(true);
+        expect(result2.webMonetizationShown).toBe(false);
+      });
+    });
   });
 });

@@ -37,17 +37,18 @@ import PlayerText from '@components/Player/PlayerText';
 import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PreviousButton from '@components/Player/PreviousButton';
 import ReplayButton from '@components/Player/ReplayButton';
-import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
-import CloseIcon from '@svg/icons/Close.svg';
-import styles from '@styles/Embed.module.scss';
 import ShareMenu from '@components/Player/ShareMenu';
 import FollowMenu from '@components/Player/FollowMenu';
 import SupportMenu from '@components/Player/SupportMenu';
+import WebMonetized from '@components/Player/WebMonetized';
+import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
+import CloseIcon from '@svg/icons/Close.svg';
+import styles from '@styles/Embed.module.scss';
 
 // Define dynamic component imports.
-const PrxLogo = dynamic(() => import('@svg/PRX-Logo-Horizontal.svg'));
+const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
 const PrxLogoColor = dynamic(
-  () => import('@svg/PRX-Logo-Horizontal-Color.svg')
+  () => import('@svg/logos/PRX-Logo-Horizontal-Color.svg')
 );
 const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 
@@ -65,11 +66,19 @@ export interface IEmbedLayoutBreakPoint {
 
 const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor, theme } = config;
-  const { audio, playlist, bgImageUrl, followUrls, supportUrls } = data;
+  const {
+    audio,
+    playlist,
+    bgImageUrl,
+    followUrls,
+    supportUrls,
+    paymentPointer
+  } = data;
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
-  const { shareShown, followShown, supportShown } = state;
-  const modalShown = shareShown || followShown || supportShown;
+  const { shareShown, followShown, supportShown, webMonetizationShown } = state;
+  const modalShown =
+    shareShown || followShown || supportShown || webMonetizationShown;
   const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
   const thumbnailSizeMobile = parseInt(
     styles['--player-thumbnail-size--mobile'],
@@ -197,6 +206,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
   const handleSupportCloseClick = () => {
     dispatch({ type: EmbedActionTypes.EMBED_HIDE_SUPPORT_DIALOG });
+  };
+
+  const handleWebMonetizationButtonClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_SHOW_WEB_MONETIZATION_DIALOG });
+  };
+
+  const handleWebMonetizationCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_WEB_MONETIZATION_DIALOG });
   };
 
   const handleResize = useCallback(() => {
@@ -383,6 +400,14 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
 
                   <div className={styles.progress}>
                     <PlayerProgress />
+                    <WebMonetized
+                      className={styles.monetized}
+                      onOpen={handleWebMonetizationButtonClick}
+                      onClose={handleWebMonetizationCloseClick}
+                      isOpen={webMonetizationShown}
+                      portalId="embed-modals"
+                      paymentPointer={paymentPointer}
+                    />
                   </div>
                 </div>
               </div>

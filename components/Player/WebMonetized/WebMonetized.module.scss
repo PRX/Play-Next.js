@@ -1,0 +1,224 @@
+@use '@styles/colors';
+@use '@styles/grid';
+
+.button {
+  --iconButton-color: #{colors.$white-a-50};
+
+  &.enabled {
+    --iconButton-color: var(--accent-color, #{colors.$secondary-500});
+    --iconButton-color--hover: var(--accent-color, #{colors.$secondary-500});
+  }
+
+  &.active {
+    @include grid.stacked('before');
+
+    &::before {
+      content: '';
+      border-radius: 50%;
+    }
+  }
+
+  &.pulse {
+    overflow: visible;
+    &::before {
+      animation-name: pulse;
+      animation-duration: 500ms;
+      animation-timing-function: ease-out;
+      animation-iteration-count: 1;
+      transform: scale(0.8);
+      outline-style: solid;
+      outline-color: transparent;
+    }
+  }
+}
+
+.content {
+  display: grid;
+  gap: 2rem;
+}
+
+.message {
+  display: grid;
+  gap: 0.5rem;
+
+  & > * {
+    margin-block: 0;
+    max-width: 50ch;
+  }
+
+  & > :is(h3, h4) {
+    font-size: 1.125rem;
+    text-transform: uppercase;
+  }
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+
+  background-color: colors.$white-a-50;
+}
+
+.providers {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1.25rem;
+
+  text-align: center;
+
+  & > * {
+    margin-block: 0;
+  }
+
+  & > :is(h3, h4) {
+    font-size: 1rem;
+  }
+}
+
+.provider {
+  width: 80px;
+}
+
+.monetized {
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+
+  & > * {
+    margin-block: 0;
+  }
+
+  & > :is(h3, h4) {
+    font-size: 1.125rem;
+    text-transform: uppercase;
+  }
+}
+
+.paymentStream {
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.paid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 0.25em 1em;
+
+  border: 2px solid colors.$white-a-50;
+  border-radius: 10px;
+
+  font-size: clamp(0.75rem, 2.5vw, 1rem);
+}
+
+.amount {
+  font-size: 2.25em;
+  font-weight: 700;
+}
+
+.stream {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 24px;
+  height: 24px;
+  overflow-y: hidden;
+  padding-inline: 7px;
+}
+
+.pip {
+  height: 24px;
+}
+
+.pipIcon {
+  backface-visibility: hidden;
+  transform-origin: center;
+  width: 10px;
+  background-color: colors.$white-a-50;
+  fill: transparent;
+
+  border-radius: 50%;
+
+  &.blipIn {
+    animation-name: pipBlipIn;
+    animation-duration: 300ms;
+    animation-iteration-count: 1;
+  }
+  &.blipOut {
+    animation-name: pipBlipOut;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+  }
+}
+
+.thumbnail {
+  aspect-ratio: 1;
+  position: relative;
+  width: clamp(74px, 13vw, 90px);
+  border: 2px solid colors.$white-a-50;
+  border-radius: 10px;
+
+  & > * {
+    border-radius: inherit;
+  }
+}
+
+@media (min-width: 800px) {
+  .content {
+    grid-template-columns: 2fr min-content 1fr;
+    gap: 3rem;
+  }
+
+  .divider {
+    width: 1px;
+    height: auto;
+  }
+
+  .providers {
+    position: sticky;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    outline-width: 0;
+    outline-color: colors.$white-a-50;
+  }
+  100% {
+    outline-width: 20px;
+    outline-color: transparent;
+  }
+}
+
+@keyframes pipBlipIn {
+  0% {
+    transform: scale(1) rotate(0.01deg);
+    fill: transparent;
+    background-color: colors.$white-a-50;
+  }
+  100% {
+    transform: scale(2.4) rotate(0.01deg);
+    fill: var(--accent-color, #{colors.$secondary-500});
+    background-color: transparent;
+  }
+}
+
+@keyframes pipBlipOut {
+  0% {
+    transform: scale(2.4) rotate(0.01deg);
+    fill: var(--accent-color, #{colors.$secondary-500});
+    background-color: transparent;
+  }
+  100% {
+    transform: scale(1) rotate(0.01deg);
+    fill: transparent;
+    background-color: colors.$white-a-50;
+  }
+}
