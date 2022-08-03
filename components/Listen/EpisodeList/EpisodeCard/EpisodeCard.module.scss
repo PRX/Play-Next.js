@@ -31,10 +31,11 @@ $episodeCard-thumbnail-border-color: colors.$white-a-50;
 $episodeCard-thumbnail-border-size: 2px;
 $episodeCard-thumbnail-size: 100px;
 $episodeCard-thumbnail-size--mobile: 40px;
+$episodeCard-thumbnail-icon-color: colors.$white;
 $episodeCard-thumbnail-tint-color: colors.$black-a-50;
 $episodeCard-thumbnail-tint-color--hover: colors.$black-a-70;
 
-$episodeCard-divider-color: var(--listen-divider-color, colors.$white-a-50);
+$episodeCard-divider-color: var(--listen-divider-color);
 $episodeCard-divider-size: 1px;
 
 :export {
@@ -64,6 +65,7 @@ $episodeCard-divider-size: 1px;
   --episodeCard-thumbnail-border-size: #{$episodeCard-thumbnail-border-size};
   --episodeCard-thumbnail-size: #{$episodeCard-thumbnail-size};
   --episodeCard-thumbnail-size--mobile: #{$episodeCard-thumbnail-size--mobile};
+  --episodeCard-thumbnail-icon-color: #{$episodeCard-thumbnail-icon-color};
   --episodeCard-thumbnail-tint-color: #{$episodeCard-thumbnail-tint-color};
   --episodeCard-thumbnail-tint-color--hover: #{$episodeCard-thumbnail-tint-color--hover};
 
@@ -179,7 +181,8 @@ $episodeCard-divider-size: 1px;
 .buttons {
   --iconButton-size: var(--episodeCard-thumbnail-size--mobile);
   --iconButton-padding: 0;
-  --iconButton-color: var(--episodeCard-text-color);
+  --iconButton-color: var(--episodeCard-thumbnail-icon-color);
+  --iconButton-color--hover: var(--episodeCard-thumbnail-icon-color);
   --iconButton-background-color: var(--episodeCard-thumbnail-tint-color);
   --iconButton-background-color--hover: var(
     --episodeCard-thumbnail-tint-color--hover

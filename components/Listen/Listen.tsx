@@ -38,7 +38,7 @@ import FooterPlayer from './FooterPlayer';
 
 const Listen = ({ config, data }: IListenPageProps) => {
   const router = useRouter();
-  const { episodeGuid: configEpisodeGuid, accentColor } = config;
+  const { episodeGuid: configEpisodeGuid, accentColor, theme } = config;
   const [state, dispatch] = useReducer(listenStateReducer, {
     ...listenInitialState,
     view: configEpisodeGuid ? 'episode-init' : 'podcast-init',
@@ -236,7 +236,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
       </Head>
       <ThemeVars theme="Listen" cssProps={styles} />
       <Player audio={episodes}>
-        <div className={styles.root} data-view={view}>
+        <div className={styles.root} data-view={view} data-theme={theme}>
           <div className={styles.background}>
             <BackgroundImage imageUrl={bgImageUrl} />
           </div>

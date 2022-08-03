@@ -1,5 +1,6 @@
 @use '@styles/colors';
 @use '@styles/grid';
+@use '@styles/theme';
 @use './Listen.use.scss' as *;
 
 $logo-size: 300px;
@@ -30,6 +31,53 @@ $viewTransitionDuration: 300ms;
 
   --backgroundImage-blur: 60px;
   --backgroundImage-tint-opacity: 0.7;
+
+  @include theme.light {
+    --listen-background-color: #{colors.$grey-100};
+
+    --listen-text-color: #{colors.$black};
+
+    --listen-divider-color: #{colors.$black-a-60};
+
+    // BackgroundImage
+    --backgroundImage-tint-color: #{colors.$white};
+    --backgroundImage-tint-opacity: 0.9;
+
+    // IconButton
+    --iconButton-background-color--hover: #{colors.$black-a-10};
+    --iconButton-outline-color--focus: #{colors.$black-a-10};
+    --iconButton-color: #{colors.$black-a-60};
+    --iconButton-color--promote: #{colors.$black-a-80};
+    --iconButton-color--hover: #{colors.$black};
+    --iconButton-color--focus: #{colors.$black};
+
+    // EpisodeList
+    --episodeList-text-color: #{colors.$grey-600};
+    --episodeList-text-color--active: #{colors.$black};
+    --episodeList-background-color: #{colors.$grey-50};
+    --episodeList-divider-color: #{colors.$black-a-10};
+    --episodeList-header-text-color: #{colors.$black};
+    --episodeList-header-icon-color: #{colors.$black-a-30};
+    --episodeList-header-icon-color--active: #{colors.$black};
+
+    // EpisodeCard
+    --episodeCard-divider-color: #{colors.$black-a-60};
+
+    // Episode
+    --episode-divider-color: #{colors.$black-a-60};
+
+    // FooterPlayer
+    --footerPlayer-background-color: #{colors.$white-a-60};
+
+    // PlayerProgress
+    --playerProgress-progress-color: #{colors.$secondary-500};
+    --playerProgress-handle-color: #{colors.$white-a-50};
+    --playerProgress-track-color: #{colors.$black-a-10};
+
+    // Modal
+    --modal-background-color: #{colors.$white-a-90};
+    --modal-text-color: #{colors.$black};
+  }
 
   display: grid;
   grid-template-rows: min-content 1fr min-content;
