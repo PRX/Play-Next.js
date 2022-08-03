@@ -29,7 +29,7 @@ const ListenPage = ({ data, config }: IListenPageProps) => {
     contentSnippet: episodeContent,
     imageUrl: episodeImage
   } = episode || ({} as IListenEpisodeData);
-  const title = !episode ? rssTitle : episodeTitle;
+  const title = !episode ? rssTitle : `${rssTitle} | ${episodeTitle}`;
   const link = !episode ? rssLink : episodeLink;
   const description = (!episode ? rssContent : episodeContent)?.replace(
     /<[^>]+>/g,
