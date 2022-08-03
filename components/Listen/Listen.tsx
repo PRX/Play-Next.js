@@ -243,7 +243,12 @@ const Listen = ({ config, data }: IListenPageProps) => {
 
           <header className={styles.header}>
             <div className={styles.podcastLogo}>
-              <PrxImage src={bgImageUrl} layout="fill" sizes={logoSizes} />
+              <PrxImage
+                src={bgImageUrl}
+                alt={`Logo for ${title}`}
+                layout="fill"
+                sizes={logoSizes}
+              />
             </div>
             <div className={styles.podcastHeading}>
               <h1 className={styles.podcastTitle}>
