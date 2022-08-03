@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "next dev --port=4300",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port=4300",
     "lint": "next lint",
     "test": "jest"
   },

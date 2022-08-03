@@ -4,7 +4,7 @@
  */
 
 import Head from 'next/head';
-import PrxLogo from '@svg/PRX-Logo-Horizontal.svg';
+import PrxLogo from '@svg/logos/PRX-Logo-Horizontal.svg';
 import styles from './AppBar.module.scss';
 
 const AppBar = () => (
