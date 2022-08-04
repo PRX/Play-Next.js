@@ -34,7 +34,7 @@ const parseRssItems = (
             // Inherit categories from channel when item is missing categories.
             ...((!item.categories &&
               !item.itunes?.categories &&
-              rssData.itunes?.categories) ||
+              rssData.itunes.categories) ||
               [])
           ]
             .map((c) => c.trim())
