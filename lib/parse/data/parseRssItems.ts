@@ -15,7 +15,10 @@ const parseRssItems = (
 ) => {
   if (!rssData || !rssData.items) return undefined;
 
-  const { link: rssLink } = rssData;
+  const { link, image, itunes } = rssData;
+  const { url: rssImageUrl } = image || {};
+  const { image: rssItunesImage } = itunes || {};
+  const imageUrl = rssItunesImage || rssImageUrl;
   const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
     config;
   const rssItems = rssData.items.map(
@@ -31,7 +34,7 @@ const parseRssItems = (
             // Inherit categories from channel when item is missing categories.
             ...((!item.categories &&
               !item.itunes?.categories &&
-              rssData.itunes?.categories) ||
+              rssData.itunes.categories) ||
               [])
           ]
             .map((c) => c.trim())
@@ -71,7 +74,8 @@ const parseRssItems = (
   return resultItems.map(
     (i) =>
       ({
-        link: rssLink,
+        link,
+        ...(imageUrl && { imageUrl }),
         ...parseAudioData(i)
       } as IAudioData)
   );

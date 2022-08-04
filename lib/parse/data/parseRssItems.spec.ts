@@ -11,7 +11,8 @@ describe('lib/parse/data', () => {
         categories: ['cat1', '  cat2', 'Cat3  '],
         itunes: {
           season: '1',
-          categories: ['cat4']
+          categories: ['cat4'],
+          image: 'ITUNES:IMAGE:1'
         }
       },
       {
@@ -39,7 +40,8 @@ describe('lib/parse/data', () => {
     const mockRssData: Parser.Output<IRssItem> = {
       title: 'TITLE',
       itunes: {
-        subtitle: 'SUBTITLE'
+        subtitle: 'SUBTITLE',
+        image: 'ITUNES:IMAGE:DEFAULT'
       },
       items: mockRssItems
     };
@@ -63,6 +65,25 @@ describe('lib/parse/data', () => {
       expect(result[0].guid).toBe('foo-1');
     });
 
+    test('should use channel image on item when item image is missing', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all' };
+      const result = parseRssItems(mockRssData, config);
+
+      expect(result[0].imageUrl).toBe('ITUNES:IMAGE:1');
+      expect(result[2].imageUrl).toBe('ITUNES:IMAGE:DEFAULT');
+    });
+
+    test('should handle missing itunes object', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all' };
+      const data = { ...mockRssData };
+      delete data.itunes;
+      const result = parseRssItems(data, config);
+
+      expect(result[0].imageUrl).toBe('ITUNES:IMAGE:1');
+      expect(result[2].imageUrl).toBeUndefined();
+      expect(result[4].categories).toBeUndefined();
+    });
+
     test('should consolidate and sanitize categories', () => {
       const config: IEmbedConfig = {};
       const result = parseRssItems(mockRssData, config);
@@ -76,7 +97,7 @@ describe('lib/parse/data', () => {
       ]);
     });
 
-    test('should always add categories from feed', () => {
+    test("should add categories from feed channel when item doesn't have categories.", () => {
       const config: IEmbedConfig = { showPlaylist: 'all' };
       const result = parseRssItems(
         {
@@ -88,10 +109,10 @@ describe('lib/parse/data', () => {
         config
       );
 
-      expect(result[0].categories).toContain('foo');
-      expect(result[1].categories).toContain('foo');
-      expect(result[2].categories).toContain('foo');
-      expect(result[3].categories).toContain('foo');
+      expect(result[0].categories).not.toContain('foo');
+      expect(result[1].categories).not.toContain('foo');
+      expect(result[2].categories).not.toContain('foo');
+      expect(result[3].categories).not.toContain('foo');
       expect(result[4].categories).toContain('foo');
     });
 
@@ -100,9 +121,18 @@ describe('lib/parse/data', () => {
       const result = parseRssItems(
         {
           ...mockRssData,
-          itunes: {
-            categories: ['cat1']
-          }
+          items: [
+            ...mockRssData.items.map((item) => ({
+              ...item,
+              itunes: {
+                ...(item.itunes || {}),
+                categories: [
+                  ...(item.itunes?.categories || []),
+                  ...(item.categories || [])
+                ]
+              }
+            }))
+          ]
         },
         config
       );
@@ -110,7 +140,8 @@ describe('lib/parse/data', () => {
       expect(result[0].categories.length).toBe(4);
       expect(result[1].categories.length).toBe(2);
       expect(result[2].categories.length).toBe(2);
-      expect(result[3].categories.length).toBe(2);
+      expect(result[3].categories.length).toBe(1);
+      expect(result[4].categories.length).toBe(0);
     });
 
     test('should only add categories when neither rss or itunes categories exist', () => {
