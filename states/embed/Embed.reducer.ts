@@ -9,14 +9,15 @@ import { EmbedActionTypes as ActionTypes, EmbedAction } from './Embed.actions';
 export const embedInitialState: IEmbedState = {
   shareShown: false,
   followShown: false,
-  supportShown: false
+  supportShown: false,
+  webMonetizationShown: false
 };
 
 export const embedStateReducer = (
   state: IEmbedState,
   action: EmbedAction
 ): IEmbedState => {
-  const { shareShown, followShown, supportShown } = state;
+  const { shareShown, followShown, supportShown, webMonetizationShown } = state;
 
   switch (action.type) {
     case ActionTypes.EMBED_SHOW_SHARE_DIALOG:
@@ -45,6 +46,15 @@ export const embedStateReducer = (
 
     case ActionTypes.EMBED_TOGGLE_SUPPORT_DIALOG_SHOWN:
       return { ...state, supportShown: !supportShown };
+
+    case ActionTypes.EMBED_SHOW_WEB_MONETIZATION_DIALOG:
+      return { ...state, webMonetizationShown: true };
+
+    case ActionTypes.EMBED_HIDE_WEB_MONETIZATION_DIALOG:
+      return { ...state, webMonetizationShown: false };
+
+    case ActionTypes.EMBED_TOGGLE_WEB_MONETIZATION_DIALOG_SHOWN:
+      return { ...state, webMonetizationShown: !webMonetizationShown };
 
     default:
       return state;

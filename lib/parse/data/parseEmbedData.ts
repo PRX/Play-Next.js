@@ -69,6 +69,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const followUrls = {
     ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
   };
+  const paymentPointer =
+    process.env.NODE_ENV === 'development' && process.env.PAYMENT_POINTER;
 
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),
@@ -79,7 +81,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
       shareUrl: showPlaylist ? rssShareUrl : audio.link,
       ...(rssItunesOwner && { owner: rssItunesOwner })
     }),
-    followUrls
+    followUrls,
+    ...(paymentPointer && { paymentPointer })
   };
 
   return data;

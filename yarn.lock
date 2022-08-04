@@ -6278,6 +6278,11 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
+types-wm@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/types-wm/-/types-wm-1.1.0.tgz#01b31b6689d77a3799bbe159ab5fd67159bf47eb"
+  integrity sha512-kGecZLoCh4ge8rcRsoMtLs4nuSyi8wl687EfAH9Iss602rFDU/Heih86Awv/6958GwxxDm8gLztkLkrUEsxXug==
+
 typescript@4.6.3:
   version "4.6.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.6.3.tgz"

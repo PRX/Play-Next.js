@@ -64,8 +64,16 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
             className={imageClassNames}
           />
         </div>
+      )) || (
         // eslint-disable-next-line @next/next/no-img-element
-      )) || <img ref={imageRef} src={src as string} alt={alt} {...other} />
+        <img
+          ref={imageRef}
+          src={src as string}
+          alt={alt}
+          className={className}
+          {...other}
+        />
+      )
     );
   }
 );

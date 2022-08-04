@@ -111,6 +111,8 @@ $player-thumbnail-size: 135px;
 }
 
 .playerContainer {
+  display: grid;
+
   .withCoverArt &,
   .withPlaylist & {
     position: relative;
@@ -154,7 +156,7 @@ $player-thumbnail-size: 135px;
     'PROG  PROG  PROG';
   align-content: stretch;
   gap: $player-gap;
-  margin: $player-padding;
+  padding: $player-padding;
 
   visibility: hidden;
 
@@ -301,6 +303,19 @@ $player-thumbnail-size: 135px;
 
 .progress {
   grid-area: PROG;
+
+  display: flex;
+  align-items: center;
+  gap: $player-gap;
+  height: var(--playerProgress-size);
+
+  & > :first-child {
+    flex-grow: 1;
+  }
+}
+
+.monetized {
+  --iconButton-size: 24px;
 }
 
 .playlist {
