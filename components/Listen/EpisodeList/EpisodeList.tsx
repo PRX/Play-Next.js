@@ -31,7 +31,6 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
 }) => {
   const { state, setTracks } = useContext(PlayerContext);
   const { tracks } = state;
-  const [episodeListStyles] = useState({});
   const [reversed, setReversed] = useState(false);
   const episodesDurationsInt = tracks?.map(({ duration }) =>
     convertDurationStringToIntegerArray(duration)
@@ -84,7 +83,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
           </button>
           <span>{episodesDurationString}</span>
         </header>
-        <div className={styles.episodeList} style={episodeListStyles}>
+        <div className={styles.episodeList}>
           <div className={styles.tracks}>{renderEpisodes}</div>
         </div>
       </div>

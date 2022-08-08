@@ -24,6 +24,7 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
   (props, ref) => {
     const { imageUrl: defaultThumbUrl, state } = useContext(PlayerContext);
     const { currentTrackIndex, tracks } = state;
+    const isShown = currentTrackIndex !== null && currentTrackIndex >= 0;
     const currentTrack = tracks[currentTrackIndex];
     const { imageUrl, title } = currentTrack || {};
     const thumbSrc = imageUrl || defaultThumbUrl;
@@ -38,9 +39,9 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
         <div
           ref={ref}
           className={clsx(styles.root, {
-            [styles.isShown]:
-              currentTrackIndex !== null && currentTrackIndex >= 0
+            [styles.isShown]: isShown
           })}
+          data-shown={isShown}
         >
           <div className={styles.thumbnail}>
             <PrxImage

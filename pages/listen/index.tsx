@@ -6,11 +6,12 @@
 import type { GetServerSideProps } from 'next';
 import type { IListenEpisodeData } from '@interfaces/data';
 import type { IListenPageProps } from '@interfaces/page';
+import Head from 'next/head';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
-import Head from 'next/head';
+import Player from '@components/Player';
 
 const ListenPage = ({ data, config }: IListenPageProps) => {
   const { episodeGuid } = config;
@@ -65,7 +66,10 @@ const ListenPage = ({ data, config }: IListenPageProps) => {
           </>
         )}
       </Head>
-      <Listen data={data} config={config} />
+
+      <Player audio={episodes}>
+        <Listen data={data} config={config} />
+      </Player>
     </>
   );
 };

@@ -4,6 +4,49 @@ $listen-background-color: colors.$black;
 
 $listen-text-color: colors.$white;
 
-$listen-divider-color: colors.$white-a-60;
+$listen-divider-color: colors.$white-a-20;
+
+$listen-scrollbar-width: 0.125rem;
+$listen-scrollbar-thumb-color: colors.$white-a-20;
+$listen-scrollbar-thumb-color--hover: colors.$white-a-60;
 
 $breakpoint-full: 900px;
+
+@mixin scrollbar {
+  & {
+    overflow: hidden;
+    overflow-y: auto;
+
+    padding-inline-end: 0.5rem;
+  }
+
+  &::-webkit-scrollbar {
+    width: var(--listen-scrollbar-width);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    transition: background-color 200ms linear;
+    background-color: transparent;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--listen-scrollbar-thumb-color);
+
+      &:hover {
+        background-color: var(--listen-scrollbar-thumb-color--hover);
+      }
+    }
+  }
+
+  @supports (scrollbar-color: white black) {
+    & {
+      scrollbar-color: var(--listen-scrollbar-thumb-color) transparent;
+      scrollbar-width: thin;
+    }
+  }
+}

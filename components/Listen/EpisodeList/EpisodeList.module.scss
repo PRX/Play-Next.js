@@ -91,13 +91,9 @@ $episodeList-header-icon-color--active: colors.$white;
 }
 
 .episodeList {
-  overflow: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  @include Listen.scrollbar;
 
-  padding-block-end: calc(
-    var(--gutter-size-block-end, var(--gutter-size-block)) + 1rem
-  );
+  padding-block-end: var(--gutter-size-block-end, var(--gutter-size-block));
 }
 
 .tracks {

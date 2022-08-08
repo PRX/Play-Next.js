@@ -6,6 +6,7 @@
 import type React from 'react';
 import {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useReducer,
@@ -15,10 +16,10 @@ import {
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import PlayerContext from '@contexts/PlayerContext';
 import BackgroundImage from '@components/BackgroundImage';
 import HtmlContent from '@components/HtmlContent';
 import Marquee from '@components/Marquee';
-import Player from '@components/Player';
 import FollowMenu from '@components/Player/FollowMenu';
 import ShareMenu from '@components/ShareMenu';
 import SupportMenu from '@components/Player/SupportMenu';
@@ -62,6 +63,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
     followUrls,
     supportUrls
   } = data;
+  const { state: playerState } = useContext(PlayerContext);
+  const { currentTrackIndex } = playerState;
+  const playerShown = currentTrackIndex !== null && currentTrackIndex >= 0;
   const episode = useMemo(
     () => episodes && episodes.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]
@@ -73,7 +77,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
     `${styles.logoSizeMobile}`
   ].join(',');
   const rootStyles = [
-    `--gutter-size-block-end: ${gutterBlockEnd}px;`,
+    `--gutter-size-block-end: ${playerShown ? gutterBlockEnd : 0}px;`,
     ...(accentColor
       ? [
           `--accent-color:${accentColor[0].split(' ')[0]};`,
@@ -235,27 +239,42 @@ const Listen = ({ config, data }: IListenPageProps) => {
         <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
       </Head>
       <ThemeVars theme="Listen" cssProps={styles} />
-      <Player audio={episodes}>
-        <div className={styles.root} data-view={view} data-theme={theme}>
-          <div className={styles.background}>
-            <BackgroundImage imageUrl={bgImageUrl} />
-          </div>
+      <div className={styles.root} data-view={view} data-theme={theme}>
+        <div className={styles.background}>
+          <BackgroundImage imageUrl={bgImageUrl} />
+        </div>
 
-          <header className={styles.header}>
-            <div className={styles.podcastLogo}>
-              <PrxImage
-                src={bgImageUrl}
-                alt={`Logo for ${title}`}
-                layout="fill"
-                sizes={logoSizes}
-              />
+        <header className={styles.header}>
+          <div className={styles.podcastLogo}>
+            <PrxImage
+              src={bgImageUrl}
+              alt={`Logo for ${title}`}
+              layout="fill"
+              sizes={logoSizes}
+            />
+          </div>
+          <div className={styles.podcastHeading}>
+            <h1 className={styles.podcastTitle}>
+              <Marquee>{title}</Marquee>
+            </h1>
+            <span className={styles.podcastAuthor}>{author}</span>
+          </div>
+          <div className={styles.podcastInfo}>
+            <div className={styles.podcastContent}>
+              <HtmlContent html={content} />
             </div>
-            <div className={styles.podcastHeading}>
-              <h1 className={styles.podcastTitle}>
-                <Marquee>{title}</Marquee>
-              </h1>
-              <span className={styles.podcastAuthor}>{author}</span>
-            </div>
+            <div className={styles.podcastMenu}>{renderMenu}</div>
+            {copyright && (
+              <div className={styles.podcastCopyright}>{copyright}</div>
+            )}
+          </div>
+        </header>
+
+        <div className={styles.main}>
+          <div
+            className={clsx(styles.viewContainer, styles.podcastView)}
+            {...(view.indexOf('podcast') === -1 && { inert: 'inert' })}
+          >
             <div className={styles.podcastInfo}>
               <div className={styles.podcastContent}>
                 <HtmlContent html={content} />
@@ -265,47 +284,27 @@ const Listen = ({ config, data }: IListenPageProps) => {
                 <div className={styles.podcastCopyright}>{copyright}</div>
               )}
             </div>
-          </header>
-
-          <div className={styles.main}>
-            <div
-              className={clsx(styles.viewContainer, styles.podcastView)}
-              {...(view.indexOf('podcast') === -1 && { inert: 'inert' })}
-            >
-              <div className={styles.podcastInfo}>
-                <div className={styles.podcastContent}>
-                  <HtmlContent html={content} />
-                </div>
-                <div className={styles.podcastMenu}>{renderMenu}</div>
-                {copyright && (
-                  <div className={styles.podcastCopyright}>{copyright}</div>
-                )}
-              </div>
-              <div className={styles.podcastEpisodes}>
-                <EpisodeList onEpisodeClick={handleEpisodeClick} />
-              </div>
-            </div>
-
-            <div
-              className={clsx(styles.viewContainer, styles.episodeView)}
-              {...(view.indexOf('episode') === -1 && { inert: 'inert' })}
-            >
-              <Episode data={episode} onClose={handleEpisodeBackClick} />
+            <div className={styles.podcastEpisodes}>
+              <EpisodeList onEpisodeClick={handleEpisodeClick} />
             </div>
           </div>
 
-          <footer className={styles.footer}>
-            <FooterPlayer ref={footerPlayerRef} />
-            <div className={styles.footerMain}>
-              Hosted on{' '}
-              <PrxDtLogo
-                className={styles.logoPrxDt}
-                aria-label="PRX Dovetail"
-              />
-            </div>
-          </footer>
+          <div
+            className={clsx(styles.viewContainer, styles.episodeView)}
+            {...(view.indexOf('episode') === -1 && { inert: 'inert' })}
+          >
+            <Episode data={episode} onClose={handleEpisodeBackClick} />
+          </div>
         </div>
-      </Player>
+
+        <footer className={styles.footer}>
+          <FooterPlayer ref={footerPlayerRef} />
+          <div className={styles.footerMain}>
+            Hosted on{' '}
+            <PrxDtLogo className={styles.logoPrxDt} aria-label="PRX Dovetail" />
+          </div>
+        </footer>
+      </div>
     </>
   );
 };

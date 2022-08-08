@@ -71,8 +71,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
       <ThemeVars theme="EpisodeCard" cssProps={styles} />
       <div
         className={clsx(styles.root, {
-          [styles.isCurrentTrack]: isCurrentTrack,
-          [styles.isExplicit]: explicit
+          [styles.isCurrentTrack]: isCurrentTrack
         })}
       >
         {thumbSrc ? (
