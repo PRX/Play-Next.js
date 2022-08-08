@@ -1,6 +1,7 @@
 @use '@styles/colors';
 
 :export {
+  --iconButton-background-color--hover: transparent;
   --iconButton-background-color--hover: #{colors.$white-a-10};
   --iconButton-outline-color--focus: #{colors.$white-a-10};
   --iconButton-outline-width--focus: 3px;
@@ -23,6 +24,8 @@
   padding: var(--iconButton-padding);
 
   border-radius: var(--iconButton-border-radius);
+
+  background-color: var(--iconButton-background-color);
 
   color: var(--iconButton-color);
   line-height: 0;

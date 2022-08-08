@@ -11,7 +11,7 @@ import {
 
 export const playerInitialState: IPlayerState = {
   playing: false,
-  currentTrackIndex: 0,
+  currentTrackIndex: null,
   tracks: null,
   currentTime: null,
   muted: false,
@@ -47,7 +47,22 @@ export const playerStateReducer = (
       };
 
     case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX:
-      return { ...state, currentTrackIndex: action.payload };
+      return {
+        ...state,
+        currentTrackIndex: Math.max(
+          0,
+          Math.min(action.payload, tracks.length - 1)
+        )
+      };
+
+    case ActionTypes.PLAYER_PLAY_EPISODE:
+      return {
+        ...state,
+        currentTrackIndex: Math.max(
+          0,
+          tracks.findIndex(({ guid }) => guid === action.payload)
+        )
+      };
 
     case ActionTypes.PLAYER_PLAY_TRACK:
       return { ...state, currentTrackIndex: action.payload, playing: true };

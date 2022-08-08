@@ -85,19 +85,19 @@ describe('states/player', () => {
         currentTrackIndex: 0,
         tracks: [
           {
-            guid: '1',
+            guid: 'GUID:1',
             url: '//foo.com/1.mp3',
             link: '//foo.com/1',
             title: 'Title 1'
           },
           {
-            guid: '2',
+            guid: 'GUID:2',
             url: '//foo.com/2.mp3',
             link: '//foo.com/2',
             title: 'Title 2'
           },
           {
-            guid: '3',
+            guid: 'GUID:3',
             url: '//foo.com/3.mp3',
             link: '//foo.com/3',
             title: 'Title 3'
@@ -106,17 +106,61 @@ describe('states/player', () => {
       };
 
       test('should set `currentTrackIndex`', () => {
-        const result = playerStateReducer(
+        const result1 = playerStateReducer(
           {
             ...mockState
           },
           {
             type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
-            payload: 3
+            payload: 1
+          }
+        );
+        const result2 = playerStateReducer(
+          {
+            ...mockState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
+            payload: -1
+          }
+        );
+        const result3 = playerStateReducer(
+          {
+            ...mockState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX,
+            payload: 5
           }
         );
 
-        expect(result.currentTrackIndex).toBe(3);
+        expect(result1.currentTrackIndex).toBe(1);
+        expect(result2.currentTrackIndex).toBe(0);
+        expect(result3.currentTrackIndex).toBe(2);
+      });
+
+      test('should look up episode index and set `currentTrackIndex`', () => {
+        const result1 = playerStateReducer(
+          {
+            ...mockState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PLAY_EPISODE,
+            payload: 'GUID:2'
+          }
+        );
+        const result2 = playerStateReducer(
+          {
+            ...mockState
+          },
+          {
+            type: PlayerActionTypes.PLAYER_PLAY_EPISODE,
+            payload: 'NOT_THERE'
+          }
+        );
+
+        expect(result1.currentTrackIndex).toBe(1);
+        expect(result2.currentTrackIndex).toBe(0);
       });
 
       test('should set `currentTrackIndex`, and `playing` true', () => {

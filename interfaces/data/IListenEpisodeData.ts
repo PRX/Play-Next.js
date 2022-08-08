@@ -16,6 +16,11 @@ export interface IListenEpisodeData extends IAudioData {
   content: string;
 
   /**
+   * Snippet of content used for meta tags descriptions.
+   */
+  contentSnippet: string;
+
+  /**
    * Date episode was published.
    */
   pubDate: string;

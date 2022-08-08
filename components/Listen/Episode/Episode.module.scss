@@ -1,0 +1,217 @@
+@use '@styles/colors';
+@use '@components/Listen/Listen.use.scss' as Listen;
+
+$episode-text-size--max: 1.25rem;
+$episode-text-size--min: 1rem;
+
+$episode-thumbnail-size: 120px;
+$episode-thumbnail-size--mobile: 50vw;
+
+$episode-divider-color: var(--listen-divider-color, colors.$white-a-60);
+$episode-divider-size: 2px;
+
+$episode-header-text-color: colors.$white;
+$episode-header-text-size--max: 1.25rem;
+$episode-header-text-size--min: 1rem;
+
+:export {
+  --episode-text-size--max: #{$episode-text-size--max};
+  --episode-text-size--min: #{$episode-text-size--min};
+
+  --episode-thumbnail-size: #{$episode-thumbnail-size};
+  --episode-thumbnail-size--mobile: #{$episode-thumbnail-size--mobile};
+
+  --episode-divider-color: #{$episode-divider-color};
+  --episode-divider-size: #{$episode-divider-size};
+
+  --episode-header-text-color: #{$episode-header-text-color};
+  --episode-header-text-size--max: #{$episode-header-text-size--max};
+  --episode-header-text-size--min: #{$episode-header-text-size--min};
+}
+
+.root {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  height: 100%;
+  overflow: hidden;
+}
+
+.nav {
+  --iconButton-size: 100%;
+
+  display: grid;
+  grid-template-columns: 2em 1fr;
+  gap: 0.5rem;
+  align-items: center;
+
+  padding-inline-start: 0.5rem;
+  padding-block: 0.5rem;
+
+  border-top-style: solid;
+  border-top-width: var(--episode-divider-size);
+  border-top-color: var(--episode-divider-color);
+
+  border-bottom-style: solid;
+  border-bottom-width: var(--episode-divider-size);
+  border-bottom-color: var(--episode-divider-color);
+
+  font-size: clamp(
+    var(--episode-header-text-size--min),
+    5vw,
+    var(--episode-header-text-size--max)
+  );
+
+  line-height: 1;
+
+  &.isExplicit {
+    grid-template-columns: 2em min-content 1fr;
+  }
+}
+
+.explicit {
+  fill: currentColor;
+  width: 1.5em;
+  line-height: 0;
+}
+
+.title {
+  overflow: hidden;
+
+  margin: 0;
+
+  padding-inline-end: 0.5rem;
+
+  font-size: inherit;
+}
+
+.main {
+  --gap: 1rem;
+
+  display: grid;
+  align-content: start;
+  gap: var(--gap);
+  overflow: hidden;
+  overflow-y: auto;
+
+  padding-inline: 1rem;
+  padding-block-start: 1.25rem;
+  padding-block-end: calc(
+    var(--gutter-size-block-end, var(--gutter-size-block)) + 1rem
+  );
+
+  @media (min-width: Listen.$breakpoint-full) {
+    grid-template-columns: var(--episode-thumbnail-size) 1fr;
+
+    padding-inline: 0;
+
+    & > * {
+      grid-column: 2;
+    }
+  }
+}
+
+.header {
+  --spacing: 0.25rem;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: auto min-content;
+  grid-template-rows: var(--episode-thumbnail-size--mobile);
+  grid-auto-rows: min-content;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap);
+
+  border-bottom: var(--episode-divider-size) solid var(--episode-divider-color);
+
+  padding-block-end: var(--gap);
+
+  color: var(--episodeCard-footer-text-color);
+  font-size: clamp(
+    var(--episodeCard-footer-text-size--min),
+    5vw,
+    var(--episodeCard-footer-text-size--max)
+  );
+  font-weight: 300;
+
+  @media (min-width: Listen.$breakpoint-full) {
+    & {
+      grid-template-rows: none;
+      justify-content: space-between;
+    }
+  }
+}
+
+.thumbnail {
+  grid-column: 1 / -1;
+  justify-self: center;
+
+  position: relative;
+  width: var(--episode-thumbnail-size--mobile);
+  aspect-ratio: 1;
+
+  border: 1px solid var(--listen-divider-color);
+
+  @media (min-width: Listen.$breakpoint-full) {
+    & {
+      position: absolute;
+      top: 0;
+      right: calc(100% + var(--gap));
+      width: var(--episode-thumbnail-size);
+    }
+  }
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+  column-gap: var(--spacing);
+}
+
+.controls {
+  --iconButton-size: 60px;
+  --iconButton-padding: 0;
+}
+
+.info {
+  overflow: hidden;
+}
+
+.infoWrapper {
+  position: relative;
+  inset-inline-start: calc(var(--spacing) * -1);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--spacing);
+
+  & > * {
+    white-space: nowrap;
+
+    &::before {
+      content: '\2022';
+      margin-inline-end: var(--spacing);
+    }
+  }
+}
+
+.menu {
+  justify-self: end;
+}
+
+.content {
+  max-width: 80ch;
+
+  font-size: clamp(
+    var(--episode-text-size--min),
+    1.5vw,
+    var(--episode-text-size--max)
+  );
+
+  & > :where(p) {
+    margin-block: 0;
+  }
+
+  & > * + :where(p) {
+    margin-block-start: 0.5rem;
+  }
+}

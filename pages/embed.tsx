@@ -37,7 +37,7 @@ import PlayerText from '@components/Player/PlayerText';
 import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PreviousButton from '@components/Player/PreviousButton';
 import ReplayButton from '@components/Player/ReplayButton';
-import ShareMenu from '@components/Player/ShareMenu';
+import PlayerShareMenu from '@components/Player/PlayerShareMenu';
 import FollowMenu from '@components/Player/FollowMenu';
 import SupportMenu from '@components/Player/SupportMenu';
 import WebMonetized from '@components/Player/WebMonetized';
@@ -97,8 +97,9 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
-  const currentTrackIndex = playlist?.findIndex(
-    (track) => track.guid === audio.guid
+  const currentTrackIndex = Math.max(
+    0,
+    playlist?.findIndex((track) => track.guid === audio.guid)
   );
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
@@ -375,7 +376,7 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
                         followUrls={followUrls}
                       />
 
-                      <ShareMenu
+                      <PlayerShareMenu
                         className={clsx(styles.menuButton, styles.shareButton)}
                         onOpen={handleShareButtonClick}
                         onClose={handleShareCloseClick}

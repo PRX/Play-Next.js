@@ -14,10 +14,15 @@ const parseListenEpisodeData = (rssEpisode?: IRssItem): IListenEpisodeData => {
     rssEpisode['content:encoded'] ||
     rssEpisode.content ||
     rssEpisode.itunes?.summary;
+  const contentSnippet =
+    rssEpisode['content:encodedSnippet'] ||
+    rssEpisode.contentSnippet ||
+    rssEpisode.itunes?.summary;
 
   const data: IListenEpisodeData = {
     ...episodeAudio,
     content,
+    contentSnippet,
     pubDate,
     ...(subtitle && { subtitle })
   };
