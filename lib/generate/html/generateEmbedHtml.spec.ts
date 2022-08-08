@@ -1,4 +1,4 @@
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import { IEmbedConfig } from '@interfaces/config';
 import generateEmbedHtml from './generateEmbedHtml';
 
 describe('lib/generate/html', () => {

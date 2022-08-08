@@ -14,7 +14,7 @@ $header-min-height: 300px;
     grid-template-rows: min-content 1fr min-content;
   }
   min-height: 100vh;
-  background-color: colors.$grey-100;
+  color: colors.$white;
 }
 
 @mixin content-grid {

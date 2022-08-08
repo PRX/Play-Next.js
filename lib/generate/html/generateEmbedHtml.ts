@@ -4,7 +4,7 @@
  * Generate embed HTML markup from embed config options.
  */
 
-import type { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import type { IEmbedConfig } from '@interfaces/config';
 import generateEmbedUrl from '@lib/generate/string/generateEmbedUrl';
 
 const generateEmbedHtml = (config: IEmbedConfig) => {

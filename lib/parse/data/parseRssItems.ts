@@ -1,6 +1,5 @@
-import type Parser from 'rss-parser';
-import type { IAudioData, IRssItem } from '@interfaces/data/IAudioData';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import type { IAudioData, IRss, IRssItem } from '@interfaces/data';
+import { IEmbedConfig } from '@interfaces/config';
 import parseAudioData from './parseAudioData';
 
 /**
@@ -10,8 +9,9 @@ import parseAudioData from './parseAudioData';
  * @returns Array of audio data items.
  */
 const parseRssItems = (
-  rssData: Parser.Output<IRssItem>,
-  config: IEmbedConfig
+  rssData: IRss,
+  config: IEmbedConfig,
+  itemParser?: Function
 ) => {
   if (!rssData || !rssData.items) return undefined;
 
@@ -72,11 +72,11 @@ const parseRssItems = (
   }
 
   return resultItems.map(
-    (i) =>
+    (item) =>
       ({
         link,
         ...(imageUrl && { imageUrl }),
-        ...parseAudioData(i)
+        ...(itemParser || parseAudioData)(item)
       } as IAudioData)
   );
 };

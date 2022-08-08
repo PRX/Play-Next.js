@@ -1,17 +1,20 @@
-import { IRssItem } from '@interfaces/data';
-import Parser from 'rss-parser';
+import { IRss } from '@interfaces/data';
 import parseListenData from './parseListenData';
 
 describe('lib/parse/data', () => {
   describe('parseListenData', () => {
-    const mockRssData: Parser.Output<IRssItem> = {
+    const mockRssData: IRss = {
       image: {
-        url: 'http://test.com/rss.png'
+        url: 'http://test.com/foo.png'
       },
-      title: 'Foo',
       link: 'http://test.com',
+      title: 'Foo',
+      description: 'DESCRIPTION',
+      copyright: 'COPYRIGHT',
       itunes: {
-        image: 'http://test.com/itunes.png',
+        author: 'John Doe',
+        summary: 'ITUNES:SUMMARY',
+        image: 'http://test.com/foo-3000.png',
         owner: {
           name: 'John Doe',
           email: 'email@address.com'
@@ -21,6 +24,7 @@ describe('lib/parse/data', () => {
         {
           guid: 'GUID:1',
           link: 'http://test.com/1',
+          pubDate: 'Wed, 16 Jun 2022 19:00:00 -0000',
           title: 'TITLE',
           'content:encoded': 'CONTENT:ENCODED',
           enclosure: {
@@ -34,151 +38,47 @@ describe('lib/parse/data', () => {
         {
           guid: 'GUID:2',
           link: 'http://test.com/2',
+          pubDate: 'Wed, 15 Jun 2022 11:00:00 -0000',
           title: 'TITLE',
           'content:encoded': 'CONTENT:ENCODED',
           enclosure: {
             url: 'http://test.com/e2.mp3'
           },
           itunes: {
-            subtitle: 'ITUNES:SUBTITLE',
+            subtitle: '',
+            summary: 'ITUNES:SUMMARY',
             image: 'http://test.com/e2.png'
           }
         }
       ]
     };
 
-    test('should use episode matching config guid as data source', () => {
+    test('should parse defined default values', () => {
       const result = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
+        { feedUrl: 'http://test.com/feed.rss' },
         {
           ...mockRssData
         }
       );
 
-      expect(result.episodeAudio.guid).toBe('GUID:1');
-      expect(result.content).toBe('CONTENT:ENCODED');
-      expect(result.title).toBe('ITUNES:SUBTITLE');
+      expect(result.bgImageUrl).toBe('http://test.com/foo.png');
+      expect(result.title).toBe('Foo');
+      expect(result.author).toBe('John Doe');
+      expect(result.owner).toStrictEqual({
+        name: 'John Doe',
+        email: 'email@address.com'
+      });
+      expect(result.copyright).toBe('COPYRIGHT');
+      expect(result.content).toBe('<p>ITUNES:SUMMARY</p>');
+      expect(result.link).toBe('http://test.com');
+      expect(result.followUrls.rss).toBe('http://test.com/feed.rss');
+      expect(result.episodes.length).toBe(2);
     });
 
-    test('should use itunes image url for `bgImageUrl` value', () => {
-      const rssData = {
-        ...mockRssData
-      };
-      delete rssData.image;
-      const result = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
-        rssData
-      );
+    test('should handle no rss data', () => {
+      const result = parseListenData({});
 
-      expect(result.bgImageUrl).toBe('http://test.com/itunes.png');
-    });
-
-    test('should use episode image url for `bgImageUrl` value', () => {
-      const rssData = {
-        ...mockRssData
-      };
-      delete rssData.image;
-      delete rssData.itunes;
-      const result = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
-        rssData
-      );
-
-      expect(result.bgImageUrl).toBe('http://test.com/e1.png');
-    });
-
-    test('should use episode content prop for `content` value', () => {
-      const result = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
-        {
-          ...mockRssData,
-          items: [
-            {
-              guid: 'GUID:1',
-              link: 'http://test.com/1',
-              title: 'TITLE',
-              content: 'CONTENT',
-              enclosure: {
-                url: 'http://test.com/e1.mp3'
-              },
-              itunes: {
-                subtitle: 'ITUNES:SUBTITLE',
-                image: 'http://test.com/e1.png'
-              }
-            }
-          ]
-        }
-      );
-
-      expect(result.content).toBe('CONTENT');
-    });
-
-    test('should use episode itunes summary prop for `content` value', () => {
-      const result = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
-        {
-          ...mockRssData,
-          items: [
-            {
-              guid: 'GUID:1',
-              link: 'http://test.com/1',
-              title: 'TITLE',
-              enclosure: {
-                url: 'http://test.com/e1.mp3'
-              },
-              itunes: {
-                subtitle: 'ITUNES:SUBTITLE',
-                summary: 'ITUNES:SUMMARY',
-                image: 'http://test.com/e1.png'
-              }
-            }
-          ]
-        }
-      );
-
-      expect(result.content).toBe('ITUNES:SUMMARY');
-    });
-
-    test('should use episode title for `title` value', () => {
-      const result1 = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
-        {
-          ...mockRssData,
-          items: [
-            {
-              guid: 'GUID:1',
-              link: 'http://test.com/1',
-              title: 'TITLE',
-              enclosure: {
-                url: 'http://test.com/e1.mp3'
-              },
-              itunes: {
-                summary: 'ITUNES:SUMMARY',
-                image: 'http://test.com/e1.png'
-              }
-            }
-          ]
-        }
-      );
-      const result2 = parseListenData(
-        { feedUrl: 'http://test.com/feed.rss', episodeGuid: 'GUID:1' },
-        {
-          ...mockRssData,
-          items: [
-            {
-              guid: 'GUID:1',
-              link: 'http://test.com/1',
-              title: 'TITLE',
-              enclosure: {
-                url: 'http://test.com/e1.mp3'
-              }
-            }
-          ]
-        }
-      );
-
-      expect(result1.title).toBe('TITLE');
-      expect(result2.title).toBe('TITLE');
+      expect(result).toStrictEqual({ followUrls: {} });
     });
   });
 });

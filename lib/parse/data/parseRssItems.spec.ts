@@ -1,6 +1,5 @@
-import type Parser from 'rss-parser';
-import { IRssItem } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/embed/IEmbedConfig';
+import { IRss, IRssItem } from '@interfaces/data';
+import { IEmbedConfig } from '@interfaces/config';
 import parseRssItems from './parseRssItems';
 
 describe('lib/parse/data', () => {
@@ -37,7 +36,7 @@ describe('lib/parse/data', () => {
         guid: 'foo-5'
       }
     ];
-    const mockRssData: Parser.Output<IRssItem> = {
+    const mockRssData: IRss = {
       title: 'TITLE',
       itunes: {
         subtitle: 'SUBTITLE',

@@ -1,4 +1,4 @@
-type FollowKey =
+export type FollowKey =
   | 'rss'
   | 'facebook'
   | 'twitter'
@@ -6,4 +6,4 @@ type FollowKey =
   | 'youtube'
   | 'spotify';
 
-export default FollowKey;
+export {};
