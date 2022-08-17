@@ -174,6 +174,8 @@ const Listen = ({ config, data }: IListenPageProps) => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('popstate', handleUrlChange);
 
+    handleResize(); // Trigger resize handler to initialize gutter end value.
+
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('popstate', handleUrlChange);
