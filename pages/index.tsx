@@ -11,13 +11,252 @@ const Home: NextPage = () => (
     </Head>
 
     <main className={styles.main}>
-      <PrxLogo className={styles.logo} />
-      <h1 className={styles.title}>
-        <span>P</span>
-        <span>l</span>
-        <span>a</span>
-        <span>y</span>
-      </h1>
+      <header>
+        <PrxLogo className={styles.logo} />
+        <h1>Play Documentation</h1>
+      </header>
+      <div>
+        <h1 className={styles.title}>Getting Started</h1>
+        <p>
+          To get started, use either a public RSS feed URL in the `uf`
+          parameter, or an audio Gfile URL in the `ua` parameter. Base Embed
+          URL:<code>https://play.prx.org/e</code>
+        </p>
+
+        <p>
+          IFrame Example:
+          <pre>
+            <code>
+              &lt;iframe
+              href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml”
+              width=”100%” height=”200” /&gt;
+            </code>
+          </pre>
+        </p>
+
+        <p>Note: Minimum height of your iframe should be 200px.</p>
+        <p>That is all you need to add the player to your page.</p>
+      </div>
+
+      <div>
+        <h2>Configuration Parameters</h2>
+        <p>
+          When setting up your embed, choose which set of configuration
+          parameters you want to use, and add them to the base embed URL path in
+          an <code>&lt;iframe&gt;</code> element in your content. The embed URL
+          supports the following query parameters.
+        </p>
+        <h3>RSS Feed Sourced Embed Parameters</h3>
+        <h4>uf</h4>
+        <p>
+          Must be a complete URL to a valid RSS feed. Feed items must include{' '}
+          <code>&lt;enclosure&gt;</code> elements containing links to the audio
+          files to play. By default, the player will display information for,
+          and play the audio for the first item in the feed. If your feed is a
+          list of podcast episodes, and the items are in reverse order (newer
+          episodes first) the embed will act as a latest episode player.
+        </p>
+        Example: <code>`uf=https://example.com/rss/feed.xml`</code>
+        <h4>us (Optional)</h4>
+        <p>
+          Provide an alternate subscription RSS feed URL to use in the pulayer
+          menu if it differs from the <code>&lt;`uf`&gt;</code> feed URL.
+        </p>
+        <p>
+          Example{' '}
+          <code>&lt;`uf=https://example.com/rss/subscribe-feed.xml`&gt;</code>
+        </p>
+        <h4>ge (Optional)</h4>
+        <p>
+          RSS item <code>&lt;`guid`&gt;</code> value. Selects which episode in
+          the feed to initially use in the player. Keep in mind that if your
+          feed has a capped length, ie. contains the latest 10 episodes,
+          eventually the targeted guid could no longer be in the feed. When this
+          happens, the player will fallback to playing the first item in the
+          feed. To avoid this behavior, ensure you provide an uncapped feed URL
+          in the `uf` parameter. Example:{' '}
+          <code>&lt;ge=0123456789abcdef&gt;</code>
+        </p>
+        <h4>ge (Optional)</h4>
+        <p>
+          RSS item &lt;`guid`&gt; value. Selects which episode in the feed to
+          initially use in the player. Keep in mind that if your feed has a
+          capped length, ie. contains the latest 10 episodes, eventually the
+          targeted guid could no longer be in the feed. When this happens, the
+          player will fallback to playing the first item in the feed. To avoid
+          this behavior, ensure you provide an uncapped feed URL in the `uf`
+          parameter. Example: <code>&lt;`ge=0123456789abcdef`&gt;</code>
+        </p>
+        <h4>sp (Optional)</h4>
+        <p>
+          Shows a playlist of items in the feed. Value should be the number of
+          items to show in the playlist, or `all` to show all items in the feed.
+          Requires `uf` parameter. Be sure to change your embed’s{' '}
+          <code>&lt;`iframe`&gt;</code> height to 600px or more to ensure
+          playlist items are visible. Examples:
+        </p>
+        <ul>
+          <li>
+            <code>`sp=10`</code>
+          </li>
+          <li>
+            <code>`sp=25`</code>
+          </li>
+          <li>
+            <code>`sp=all`</code>
+          </li>
+        </ul>
+        <h4>se (Optional)</h4>
+        <p>
+          Filter feed items to a specific season. Requires `uf` and `sp`
+          parameters. Example: <code>`se=2`</code>
+        </p>
+        <h4>ct (Optional)</h4>
+        <p>
+          Filter feed items to a specific category. Requires `uf` and `sp`
+          parameters. Example: <code>`ct=entertainment`</code>
+        </p>
+        <h3>Audio File Sourced Embed Players</h3>
+        <h4>ua</h4>
+        <p>
+          File to play in the embed. Must be a complete URL to an audio file.
+          When used with the `uf` parameter, this file will play instead of the
+          audio of the RSS item. Has no effect when used with `sp` parameter.
+          Example: <code>`ua=https://example.com/files/audio.mp3`</code>
+        </p>
+        <h4>tt</h4>
+        <p>
+          Title to display in player. Example:{' '}
+          <code>&lt;`tt=My+Audio+Title`&gt;</code>
+        </p>
+        <h4>ts</h4>
+        <p>
+          Subtitle to display in player. Example:{' '}
+          <code>&lt;`ts=Something+About+The+Audio`&gt;</code>
+        </p>
+        <h4>ue</h4>
+        <p>
+          Thumbnail image URL. Must be a complete URL to an image file. Example:{' '}
+          <code>&lt;`ue=https://example.com/files/thumbnail.jpg`&gt;</code>
+        </p>
+        <h3>Customization Parameters</h3>
+        <p>
+          These parameters are supported by both the RSS Feed and Audio File
+          embed players. All parameters are optional.
+        </p>
+        <h4>ui</h4>
+        <p>
+          Custom background image URL used in player. Must be a complete URL to
+          an image file. Example:{' '}
+          <code>`ue=https://example.com/files/background.jpg`</code>
+        </p>
+        <h4>ca</h4>
+        <p>
+          Enables a card style player, with a large thumbnail image above player
+          controls. Be sure to wrap the embed `&lt;iframe&gt;` with a responsive
+          wrapper `&lt;div&gt;` if you need the embed to scale responsively.
+          <h5>Responsive Card Wrapper Example:</h5>
+          <p>
+            ` &lt;div style=”width: 100%; height: calc(100% + 200px); position:
+            relative;”&gt; &lt;iframe href=”...&ca=1” style=”position: absolute;
+            inset: 0;” /&gt; &lt;/div&gt; `
+          </p>
+          <p>
+            When used with the `sp` parameter, increase the added pixel height
+            of the wrapper to 800px or more.
+          </p>
+          <h5>Responsive Card Wrapper With Playlist Example:</h5>
+          <p>
+            ` &lt;div style=”width: 100%; height: calc(100% + 800px); position:
+            relative;”&gt; &lt;iframe href=”...&ca=1” style=”position: absolute;
+            inset: 0;” /&gt; &lt;/div&gt; `
+          </p>
+          <h5>ac</h5>
+          <p>
+            Customize the accent color used in the player. Value must be a six
+            or eight character hex color string. Do NOT include the `#` prefix.
+            Example:
+          </p>
+          <ul>
+            <li>
+              Correct: <code>`ac=c3e5f1`</code>
+            </li>
+            <li>
+              Incorrect: <code>`ac=#c3e5f1`</code>
+            </li>
+          </ul>
+          <p>
+            Providing multiple `ac` parameters will result in your accent colors
+            used in a gradient. Add as many colors as you need. Want a rainbow
+            progress bar? You can do that. Elements that don’t support a
+            gradient will use the first accent color. Gradient Examples:
+            <code>`ac=c3e5f1&ac=fe42a3&ac=e3d819`</code>
+            Gradient colors are distributed evenly by default. Add a percentage
+            to the hex color to set a start position of that color.
+          </p>
+          <p>
+            Gradient with Positioned Colors Examples:
+            <code>`ac=CF3350&ac=CF3350+45%&ac=E7F5E0+55%&ac=E7F5E0`</code>
+          </p>
+          <h5>th</h5>
+          <p>Choose the color theme of the player. Value can be:</p>
+          <ul>
+            <li>
+              <code>`dark` (default)</code>
+            </li>
+            <li>
+              <code>`light`</code>
+            </li>
+            <li>
+              <code>`auto`</code>
+              Use the system color scheme of the user.
+            </li>
+          </ul>
+        </p>
+        <h2>Embed Examples</h2>
+        <h3>Basic RSS Player</h3>
+        <pre>
+          <code>
+            `&lt;iframe
+            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml”
+            width=”100%” height=”200” /&gt;`
+          </code>
+        </pre>
+        <h3>Card Style RSS Player</h3>
+        <h4>Fixed Size</h4>
+        <pre>
+          <code>
+            `&lt;iframe
+            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1”
+            width=”500” height=”700” /&gt;`
+          </code>
+        </pre>
+        <h5>Responsive</h5>
+        <p>
+          `&lt;div style=”width: 100%; height: calc(100% + 200px); position:
+          relative;”&gt; &lt;iframe
+          <code>
+            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1”
+          </code>
+          style=”position: absolute; inset: 0;” /&gt; &lt;/div&gt;
+        </p>
+        <h3>RSS Playlist</h3>
+        <pre>
+          <code>
+            `&lt;iframe
+            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&sp=20”
+            width=”100%” height=”600” &lt;/div&gt;`
+          </code>
+        </pre>
+        <h3>Basic Audio File Player</h3>
+        <pre>
+          <code>
+            `&lt;iframe
+            href=”https://play.prx.org/e?ua=https://example.com/files/audio.mp3&tt=My+Audio&ts+Something+about+the+audio%ue=https://example.com/files/thumbnail.jpg&ui=https://example.com/files/background.jpg”
+            width=”100%” height=”200” &lt;/div&gt;`
+          </code>
+        </pre>
+      </div>
     </main>
   </div>
 );
