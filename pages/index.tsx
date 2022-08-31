@@ -42,15 +42,21 @@ const Home: NextPage = () => (
       </nav>
 
       <div>
-        <h1 className={styles.title}>
+        <p>
+          Play is a customizable audio embed player provided by PRX. It can play
+          audio found in an RSS feed or a single audio file, and can be
+          customized to fit your brand or site theme.
+        </p>
+
+        <h2 className={styles.title}>
           <a href="#getting-started" id="getting-started">
             Getting Started
           </a>
-        </h1>
+        </h2>
         <p>
           To get started, use either a public RSS feed URL in the{' '}
-          <code>uf</code>
-          parameter, or an audio file URL in the <code>ua</code> parameter.
+          <code>uf</code> parameter, or an audio file URL in the <code>ua</code>{' '}
+          parameter.
         </p>
         <p>
           Base Embed URL: <code>https://play.prx.org/e</code>
@@ -59,9 +65,11 @@ const Home: NextPage = () => (
           IFrame Example:
           <pre>
             <code className="language-markup">
-              &lt;iframe
-              href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml”
-              width=”100%” height=”200” /&gt;
+              {`<iframe
+  href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml”
+  width=”100%”
+  height=”200”
+/>`}
             </code>
           </pre>
         </p>
@@ -117,8 +125,10 @@ const Home: NextPage = () => (
           targeted guid could no longer be in the feed. When this happens, the
           player will fallback to playing the first item in the feed. To avoid
           this behavior, ensure you provide an uncapped feed URL in the{' '}
-          <code>uf</code>
-          parameter. Example: <code>ge=0123456789abcdef</code>
+          <code>uf</code> parameter.
+        </p>
+        <p>
+          Example: <code>ge=0123456789abcdef</code>
         </p>
 
         <h4>ge (Optional)</h4>
@@ -129,8 +139,10 @@ const Home: NextPage = () => (
           targeted guid could no longer be in the feed. When this happens, the
           player will fallback to playing the first item in the feed. To avoid
           this behavior, ensure you provide an uncapped feed URL in the{' '}
-          <code>uf</code>
-          parameter. Example: <code>ge=0123456789abcdef</code>
+          <code>uf</code> parameter.
+        </p>
+        <p>
+          Example: <code>ge=0123456789abcdef</code>
         </p>
 
         <h4>sp (Optional)</h4>
@@ -157,7 +169,7 @@ const Home: NextPage = () => (
 
         <h4>se (Optional)</h4>
         <p>
-          Filter feed items to a specific season. Requires <code>uf</code> and
+          Filter feed items to a specific season. Requires <code>uf</code> and{' '}
           <code>sp</code> parameters.
         </p>
         <p>
@@ -166,7 +178,7 @@ const Home: NextPage = () => (
 
         <h4>ct (Optional)</h4>
         <p>
-          Filter feed items to a specific category. Requires <code>uf</code> and
+          Filter feed items to a specific category. Requires <code>uf</code> and{' '}
           <code>sp</code> parameters.
         </p>
         <p>
@@ -241,9 +253,12 @@ const Home: NextPage = () => (
         <h5>Responsive Card Wrapper Example</h5>
         <pre>
           <code className="language-markup">
-            &lt;div style=”width: 100%; height: calc(100% + 200px); position:
-            relative;”&gt; &lt;iframe href=”...&ca=1” style=”position: absolute;
-            inset: 0;” /&gt;&lt;/div&gt;
+            {`<div style=”width: 100%; height: calc(100% + 200px); position: relative;">
+  <iframe
+    href=”...&ca=1”
+    style=”position: absolute; inset: 0;”
+  />
+<div>`}
           </code>
         </pre>
         <p>
@@ -254,9 +269,12 @@ const Home: NextPage = () => (
         <h5>Responsive Card Wrapper With Playlist Example</h5>
         <pre>
           <code className="language-markup">
-            &lt;div style=”width: 100%; height: calc(100% + 800px); position:
-            relative;”&gt; &lt;iframe href=”...&ca=1” style=”position: absolute;
-            inset: 0;” /&gt;&lt;/div&gt;
+            {`<div style=”width: 100%; height: calc(100% + 800px); position: relative;”>
+  <iframe
+    href=”...&ca=1”
+    style=”position: absolute; inset: 0;”
+  />
+</div>`}
           </code>
         </pre>
 
@@ -264,8 +282,9 @@ const Home: NextPage = () => (
         <p>
           Customize the accent color used in the player. Value must be a six or
           eight character hex color string. Do NOT include the <code>#</code>{' '}
-          prefix. Example:
+          prefix.
         </p>
+        <p>Example:</p>
         <ul>
           <li>
             Correct: <code>ac=c3e5f1</code>
@@ -315,9 +334,11 @@ const Home: NextPage = () => (
         <h3>Basic RSS Player</h3>
         <pre>
           <code className="language-markup">
-            &lt;iframe
-            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml”
-            width=”100%” height=”200” /&gt;
+            {`<iframe
+  href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml”
+  width=”100%”
+  height=”200”
+/>`}
           </code>
         </pre>
 
@@ -325,37 +346,45 @@ const Home: NextPage = () => (
         <h4>Fixed Size</h4>
         <pre>
           <code className="language-markup">
-            &lt;iframe
-            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1”
-            width=”500” height=”700” /&gt;
+            {`<iframe
+  href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1”
+  width=”500”
+  height=”700”
+/>`}
           </code>
         </pre>
 
         <h4>Responsive</h4>
         <pre>
           <code className="language-markup">
-            &lt;div style=”width: 100%; height: calc(100% + 200px); position:
-            relative;”&gt; &lt;iframe
-            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1”
-            style=”position: absolute; inset: 0;” /&gt;&lt;/div&gt;
+            {`<div style=”width: 100%; height: calc(100% + 200px); position: relative;”>
+  <iframe
+    href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1”
+    style=”position: absolute; inset: 0;”
+  />
+</div>`}
           </code>
         </pre>
 
         <h3>RSS Playlist</h3>
         <pre>
           <code className="language-markup">
-            &lt;iframe
-            href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&sp=20”
-            width=”100%” height=”600” &lt;/div&gt;
+            {`<iframe
+  href=”https://play.prx.org/e?uf=https://example.com/rss/feed.xml&sp=20”
+  width=”100%”
+  height=”600”
+/>`}
           </code>
         </pre>
 
         <h3>Basic Audio File Player</h3>
         <pre>
           <code className="language-markup">
-            &lt;iframe
-            href=”https://play.prx.org/e?ua=https://example.com/files/audio.mp3&tt=My+Audio&ts+Something+about+the+audio%ue=https://example.com/files/thumbnail.jpg&ui=https://example.com/files/background.jpg”
-            width=”100%” height=”200” /&gt;
+            {`<iframe
+  href=”https://play.prx.org/e?ua=https://example.com/files/audio.mp3&tt=My+Audio&ts+Something+about+the+audio%ue=https://example.com/files/thumbnail.jpg&ui=https://example.com/files/background.jpg”
+  width=”100%”
+  height=”200”
+/>`}
           </code>
         </pre>
       </div>
