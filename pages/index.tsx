@@ -120,7 +120,9 @@ const Home: NextPage = () => {
               uf=https://example.com/rss/feed.xml
             </code>
           </pre>
-          <h4>us (Optional)</h4>
+          <h4>
+            us <span className={styles.badge}>Optional</span>
+          </h4>
           <p>
             Provide an alternate subscription RSS feed URL to use in the player
             menu if it differs from the{' '}
@@ -132,7 +134,9 @@ const Home: NextPage = () => {
               uf=https://example.com/rss/subscribe-feed.xml
             </code>
           </pre>
-          <h4>ge (Optional)</h4>
+          <h4>
+            ge <span className={styles.badge}>Optional</span>
+          </h4>
           <p>
             RSS item <code className="language-markup">guid</code> value.
             Selects which episode in the feed to initially use in the player.
@@ -147,7 +151,9 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">ge=0123456789abcdef</code>
           </pre>
-          <h4>ge (Optional)</h4>
+          <h4>
+            ge <span className={styles.badge}>Optional</span>
+          </h4>
           <p>
             RSS item <code className="language-markup">guid</code> value.
             Selects which episode in the feed to initially use in the player.
@@ -162,7 +168,9 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">ge=0123456789abcdef</code>
           </pre>
-          <h4>sp (Optional)</h4>
+          <h4>
+            sp <span className={styles.badge}>Optional</span>
+          </h4>
           <p>
             Shows a playlist of items in the feed. Value should be the number of
             items to show in the playlist, or{' '}
@@ -184,7 +192,9 @@ const Home: NextPage = () => {
               <code className="language-markup">sp=all</code>
             </li>
           </ul>
-          <h4>se (Optional)</h4>
+          <h4>
+            se <span className={styles.badge}>Optional</span>
+          </h4>
           <p>
             Filter feed items to a specific season. Requires{' '}
             <code className="language-markup">uf</code> and{' '}
@@ -194,7 +204,9 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">se=2</code>
           </pre>
-          <h4>ct (Optional)</h4>
+          <h4>
+            ct <span className={styles.badge}>Optional</span>
+          </h4>
           <p>
             Filter feed items to a specific category. Requires{' '}
             <code className="language-markup">uf</code> and{' '}
