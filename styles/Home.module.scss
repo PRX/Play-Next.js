@@ -3,8 +3,12 @@
 $breakpoint-desktop: 800px;
 
 .container {
-  padding-inline: 2rem;
+  padding: 2rem;
   background-color: #f5f5f5;
+
+  @media (min-width: $breakpoint-desktop) {
+    padding-block: 0;
+  }
 }
 
 .main {
