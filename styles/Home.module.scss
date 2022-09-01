@@ -3,7 +3,7 @@
 $breakpoint-desktop: 800px;
 
 .container {
-  padding: 2rem;
+  padding-inline: 2rem;
   background-color: #f5f5f5;
 }
 
@@ -12,14 +12,20 @@ $breakpoint-desktop: 800px;
     display: grid;
     grid-template-columns: 300px 1fr;
     grid-template-areas: 'SIDEBAR CONTENT';
+    align-items: start;
     gap: 1rem;
+    max-width: 1024px;
+    margin-inline: auto;
   }
 }
 
 .header {
   grid-area: SIDEBAR;
   text-align: center;
+
   @media (min-width: $breakpoint-desktop) {
+    position: sticky;
+    top: 2rem;
     text-align: left;
   }
 }
@@ -54,6 +60,16 @@ $breakpoint-desktop: 800px;
   & a {
     color: colors.$primary-500;
   }
+
+  @media (min-width: $breakpoint-desktop) {
+    & a {
+      color: inherit;
+
+      &:hover {
+        color: colors.$primary-500;
+      }
+    }
+  }
 }
 
 .logo {
@@ -87,6 +103,30 @@ $breakpoint-desktop: 800px;
     margin-block-start: 4rem;
   }
 
+  & :is(h2, h3) a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-bottom: 1px dotted transparent;
+
+    &::after {
+      content: '';
+      display: inline-block;
+      height: 1em;
+      aspect-ratio: 1;
+      background-image: url('/icons/Link.svg');
+      opacity: 0;
+    }
+
+    &:hover {
+      justify-content: start;
+      border-bottom-color: colors.$grey-300;
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+
   & h6 {
     font-size: 0.75rem;
     color: colors.$grey-500;
@@ -101,6 +141,7 @@ $breakpoint-desktop: 800px;
     display: grid;
     background-color: colors.$white;
     padding: 1.5rem;
+    margin-block: 2rem;
     box-shadow: 0px 1px 1px colors.$black-a-20;
   }
 }
