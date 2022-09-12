@@ -347,10 +347,10 @@ const Home: NextPage = () => {
             parameters will result in your accent colors used in a gradient. Add
             as many colors as you need. Want a rainbow progress bar? You can do
             that. Elements that don’t support a gradient will use the first
-            accent color. Gradient
+            accent color.
           </p>
 
-          <h6>Examples:</h6>
+          <h6>Gradient Examples:</h6>
           <pre>
             <code className="language-markup">
               ac=c3e5f1&ac=fe42a3&ac=e3d819
