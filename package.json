@@ -29,6 +29,7 @@
     "framer-motion": "^6.3.11",
     "htmlparser2": "^8.0.1",
     "next": "12.1.5",
+    "prismjs": "^1.29.0",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-html-parser": "^2.0.2",
