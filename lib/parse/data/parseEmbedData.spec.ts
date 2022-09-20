@@ -16,6 +16,15 @@ describe('lib/parse/data', () => {
           email: 'email@address.com'
         }
       },
+      podcast: {
+        value: {
+          valueRecipient: [
+            {
+              address: '$example.now/~alice'
+            }
+          ]
+        }
+      },
       items: [
         {
           guid: 'foo-bar',
@@ -91,6 +100,15 @@ describe('lib/parse/data', () => {
       );
 
       expect(result.audio.guid).toBe('foo-bar');
+    });
+
+    test('should get payment pointer from value recipient', () => {
+      const result = parseEmbedData(
+        { feedUrl: 'http://foo.com/feed.rss' },
+        mockRssData
+      );
+
+      expect(result.paymentPointer).toBe('$example.now/~alice');
     });
 
     test('should use item matching config guid as audio data', () => {

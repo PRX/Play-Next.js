@@ -10,4 +10,8 @@ export interface IRss extends Parser.Output<IRssItem> {
    * Copyright string.
    */
   copyright?: string;
+  podcast?: {
+    [key: string]: any;
+    value?: any;
+  };
 }
