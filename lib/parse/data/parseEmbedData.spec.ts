@@ -18,9 +18,13 @@ describe('lib/parse/data', () => {
       },
       podcast: {
         value: {
+          type: 'webmonetization',
+          method: 'ILP',
           valueRecipient: [
             {
-              address: '$example.now/~alice'
+              address: '$example.now/~alice',
+              type: 'paymentpointer',
+              split: 100
             }
           ]
         }
