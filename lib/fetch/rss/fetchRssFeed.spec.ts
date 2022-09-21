@@ -7,7 +7,7 @@ describe('lib/fetch/rss', () => {
     test('should retrieve rss with podcast:value', async () => {
       const feed = await fetchRssFeed(valueUrl);
       const item = feed.items[0];
-      expect(item.podcast).toBeUndefined;
+      expect(item.podcast).toBeUndefined();
 
       expect(feed.podcast).toStrictEqual({
         value: {
