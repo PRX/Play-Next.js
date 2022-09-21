@@ -1,6 +1,5 @@
 import Parser from 'rss-parser';
-import type { IRss } from '@interfaces/data';
-import type { IRssItem } from '@interfaces/data';
+import type { IRss, IRssItem } from '@interfaces/data';
 import {
   IRssPodcastValue,
   IRssPodcastValueRecipient
@@ -27,18 +26,19 @@ class RssProxyError extends Error {
   }
 }
 
-/**
- * Fetch and parse RSS feed URL.
- * @param feedUrl URL to request feed from.
- * @returns Promise for parsed IRSS data object.
- */
-const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
-  try {
-    const feed = await parser.parseURL(feedUrl);
-    return decoratePodcast(feed);
-  } catch (err) {
-    throw new RssProxyError(err.message, feedUrl);
-  }
+const extractPodcastValue = (data): IRssPodcastValue => {
+  const recipients: IRssPodcastValueRecipient[] = data['podcast:value']?.[
+    'podcast:valueRecipient'
+  ].map((recipient) => ({
+    ...recipient.$
+  }));
+
+  const podcastValue: IRssPodcastValue = data['podcast:value'] && {
+    ...data['podcast:value'].$,
+    ...(recipients?.length > 0 && { valueRecipients: recipients })
+  };
+
+  return podcastValue;
 };
 
 const decoratePodcast = (feed: Parser.Output<CustomFeed>): IRss => {
@@ -62,19 +62,18 @@ const decoratePodcast = (feed: Parser.Output<CustomFeed>): IRss => {
   return rssData;
 };
 
-const extractPodcastValue = (data): IRssPodcastValue => {
-  const recipients: IRssPodcastValueRecipient[] = data['podcast:value']?.[
-    'podcast:valueRecipient'
-  ].map((recipient) => ({
-    ...recipient.$
-  }));
-
-  const podcastValue: IRssPodcastValue = {
-    ...data['podcast:value']?.$,
-    ...{ valueRecipients: recipients }
-  };
-
-  return podcastValue;
+/**
+ * Fetch and parse RSS feed URL.
+ * @param feedUrl URL to request feed from.
+ * @returns Promise for parsed IRSS data object.
+ */
+const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
+  try {
+    const feed = await parser.parseURL(feedUrl);
+    return decoratePodcast(feed);
+  } catch (err) {
+    throw new RssProxyError(err.message, feedUrl);
+  }
 };
 
 export default fetchRssFeed;
