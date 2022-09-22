@@ -1,4 +1,3 @@
-import Parser from 'rss-parser';
 import {
   IRssPodcastValue,
   IRssPodcastValueRecipient
@@ -11,9 +10,6 @@ export const extractPodcastValue = (data): IRssPodcastValue => {
   ].map((recipient) => ({
     ...recipient.$
   }));
-
-  // console.log(data['podcast:value']);
-  // console.log(data['podcast:value']?.['podcast:valueRecipient']);
 
   const podcastValue: IRssPodcastValue = data['podcast:value'] && {
     ...data['podcast:value'].$,
