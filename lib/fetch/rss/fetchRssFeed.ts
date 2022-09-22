@@ -1,9 +1,6 @@
 import Parser from 'rss-parser';
-import type { IRss, IRssItem } from '@interfaces/data';
-import {
-  IRssPodcastValue,
-  IRssPodcastValueRecipient
-} from '@interfaces/data/IRssPodcast';
+import type { IRss } from '@interfaces/data';
+import { decoratePodcast } from './decoratePodcast';
 
 type CustomFeed = { 'podcast:value': any };
 type CustomItem = { 'podcast:value': any };
@@ -25,42 +22,6 @@ class RssProxyError extends Error {
     this.url = url;
   }
 }
-
-const extractPodcastValue = (data): IRssPodcastValue => {
-  const recipients: IRssPodcastValueRecipient[] = data['podcast:value']?.[
-    'podcast:valueRecipient'
-  ].map((recipient) => ({
-    ...recipient.$
-  }));
-
-  const podcastValue: IRssPodcastValue = data['podcast:value'] && {
-    ...data['podcast:value'].$,
-    ...(recipients?.length > 0 && { valueRecipients: recipients })
-  };
-
-  return podcastValue;
-};
-
-const decoratePodcast = (feed: Parser.Output<CustomFeed>): IRss => {
-  const feedItems: IRssItem[] = feed.items.map((item) => {
-    const itemVal = extractPodcastValue(item);
-    return {
-      ...item,
-      ...(itemVal && { podcast: { value: itemVal } })
-    } as IRssItem;
-  });
-
-  const feedVal = extractPodcastValue(feed);
-  const rssData: IRss = {
-    ...feed,
-    ...{ items: feedItems },
-    ...(feedVal && { podcast: { value: feedVal } })
-  };
-
-  delete rssData['podcast:value'];
-
-  return rssData;
-};
 
 /**
  * Fetch and parse RSS feed URL.
