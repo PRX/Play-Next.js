@@ -281,6 +281,12 @@ const Player: React.FC<IPlayerProps> = ({
   const handleHotkey = useCallback(
     (event: KeyboardEventWithTarget) => {
       const key = event.code || event.key;
+      const hasModifier =
+        event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
+
+      // Bail if modifier key is pressed to allow browser shortcuts to function.
+      if (hasModifier) return;
+
       switch (key) {
         case 'KeyS':
           audioElm.current.playbackRate = 3 - audioElm.current.playbackRate;
