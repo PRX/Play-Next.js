@@ -32,7 +32,7 @@ RUN yarn build
 FROM node:16-alpine AS runner
 WORKDIR /app
 
-LABEL org.prx.app="yes"
+LABEL org.prx.spire.publish.ecr="WEB_SERVER"
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
