@@ -138,25 +138,8 @@ const Home: NextPage = () => {
           <h6>Example </h6>
           <pre>
             <code className="language-markup">
-              uf=https://example.com/rss/subscribe-feed.xml
+              us=https://example.com/rss/subscribe-feed.xml
             </code>
-          </pre>
-          <h4>
-            ge <span className={styles.badge}>Optional</span>
-          </h4>
-          <p>
-            RSS item <code className="language-markup">guid</code> value.
-            Selects which episode in the feed to initially use in the player.
-            Keep in mind that if your feed has a capped length, ie. contains the
-            latest 10 episodes, eventually the targeted guid could no longer be
-            in the feed. When this happens, the player will fallback to playing
-            the first item in the feed. To avoid this behavior, ensure you
-            provide an uncapped feed URL in the{' '}
-            <code className="language-markup">uf</code> parameter.
-          </p>
-          <h6>Example: </h6>
-          <pre>
-            <code className="language-markup">ge=0123456789abcdef</code>
           </pre>
           <h4>
             ge <span className={styles.badge}>Optional</span>
