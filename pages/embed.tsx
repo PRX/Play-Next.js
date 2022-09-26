@@ -97,10 +97,12 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   const coverArtImage = imageUrl || bgImageUrl;
   const canShowCoverArt = showCoverArt && coverArtImage;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
-  const currentTrackIndex = Math.max(
-    0,
-    playlist?.findIndex((track) => track.guid === audio.guid)
-  );
+  const currentTrackIndex = !playlist
+    ? 0
+    : Math.max(
+        0,
+        playlist.findIndex((track) => track.guid === audio.guid)
+      );
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist

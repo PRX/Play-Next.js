@@ -28,7 +28,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   const { state, imageUrl: defaultImageUrl } = useContext(PlayerContext);
   const [isLoading, setIsLoading] = useState(false);
   const { tracks, currentTrackIndex } = state;
-  const { imageUrl, title } = tracks[currentTrackIndex];
+  const { imageUrl, title } = tracks[currentTrackIndex] || {};
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, className, {
     [styles.loaded]: !isLoading || imageRef.current.complete
