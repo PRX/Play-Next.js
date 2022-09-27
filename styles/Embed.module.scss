@@ -101,6 +101,21 @@ $player-thumbnail-size: 135px;
   }
 }
 
+.messageContainer {
+  @include grid.stacked;
+  place-items: center;
+
+  padding: 2rem;
+
+  color: var(--player-text-color);
+  font-size: clamp(1.25rem, 3.5vw, 3rem);
+  text-align: center;
+
+  & > p {
+    margin: 0;
+  }
+}
+
 .modals {
   position: absolute;
   inset: 0;

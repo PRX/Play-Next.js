@@ -162,11 +162,11 @@ describe('lib/parse/data', () => {
       expect(result[0].guid).toBe('foo-2');
     });
 
-    test('should use first item when specific item not found', () => {
+    test('should be undefined when specific item not found', () => {
       const config: IEmbedConfig = { episodeGuid: 'NOT-THERE' };
       const result = parseRssItems(mockRssData, config);
 
-      expect(result[0].guid).toBe('foo-1');
+      expect(result).toBeUndefined();
     });
 
     test('should return all items', () => {

@@ -42,34 +42,40 @@ const parseRssItems = (
         })
       } as IRssItem)
   );
-  const episodeIndex = rssItems.findIndex((item) => item.guid === episodeGuid);
-  let resultItems: IRssItem[];
+  const episode =
+    episodeGuid && rssItems.find((item) => item.guid === episodeGuid);
+  let resultItems: IRssItem[] = episode ? [episode] : [];
 
   if (showPlaylist) {
     resultItems = [
-      // Filter audio by season.
-      (items: IRssItem[]) =>
-        !playlistSeason
-          ? items
-          : items.filter((i) => i.itunes?.season === `${playlistSeason}`),
-      // Filter audio by category.
-      (items: IRssItem[]) =>
-        !playlistCategory
-          ? items
-          : items.filter((i) => {
-              const category = playlistCategory.toLowerCase();
-              const categories = i.categories?.map((c) => c.toLowerCase());
-              return categories?.indexOf(category) > -1;
-            }),
-      // Cap number of items to configured length.
-      (items: IRssItem[]) =>
-        showPlaylist === 'all' ? items : items.slice(0, showPlaylist)
-    ].reduce((a, f) => f(a), rssItems);
+      ...resultItems,
+      ...[
+        // Filter audio by season.
+        (items: IRssItem[]) =>
+          !playlistSeason
+            ? items
+            : items.filter((i) => i.itunes?.season === `${playlistSeason}`),
+        // Filter audio by category.
+        (items: IRssItem[]) =>
+          !playlistCategory
+            ? items
+            : items.filter((i) => {
+                const category = playlistCategory.toLowerCase();
+                const categories = i.categories?.map((c) => c.toLowerCase());
+                return categories?.indexOf(category) > -1;
+              }),
+        // Cap number of items to configured length.
+        (items: IRssItem[]) =>
+          showPlaylist === 'all' ? items : items.slice(0, showPlaylist)
+      ].reduce((a, f) => f(a), rssItems)
+    ];
   }
 
-  if (!resultItems?.length) {
-    resultItems = [rssItems[Math.max(0, episodeIndex)]];
+  if (!resultItems.length && episodeGuid) {
+    return undefined;
   }
+
+  resultItems = resultItems.length ? resultItems : [rssItems[0]];
 
   return resultItems.map(
     (item) =>
