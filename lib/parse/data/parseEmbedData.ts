@@ -25,10 +25,20 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
     title: rssTitle,
     link: rssShareUrl,
     image: rssImage,
+    podcast,
     itunes
   } = rssData || {};
   const { url: rssImageUrl } = rssImage || {};
   const { image: rssItunesImage, owner: rssItunesOwner } = itunes || {};
+  const { value: podcastValue } = podcast || {};
+  const podcastValueRecipient =
+    podcastValue &&
+    podcastValue.type === 'webmonetization' &&
+    podcastValue.valueRecipient?.[0];
+  const paymentPointer =
+    (process.env.NODE_ENV === 'development' && process.env.PAYMENT_POINTER) ||
+    podcastValueRecipient?.address;
+
   const audioItems = parseRssItems(rssData, config)?.map(
     (item) =>
       ({
@@ -69,8 +79,6 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const followUrls = {
     ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
   };
-  const paymentPointer =
-    process.env.NODE_ENV === 'development' && process.env.PAYMENT_POINTER;
 
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),

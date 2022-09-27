@@ -1,6 +1,16 @@
 import Parser from 'rss-parser';
+import type { IRss } from '@interfaces/data';
+import { decoratePodcast } from './decoratePodcast';
 
-const parser: Parser<Parser.Output<Parser.Item>, Parser.Item> = new Parser();
+type CustomFeed = { 'podcast:value': any };
+type CustomItem = { 'podcast:value': any };
+
+const parser: Parser<CustomFeed, CustomItem> = new Parser({
+  customFields: {
+    feed: ['podcast:value'],
+    item: ['podcast:value']
+  }
+});
 
 class RssProxyError extends Error {
   public url: string;
@@ -16,11 +26,12 @@ class RssProxyError extends Error {
 /**
  * Fetch and parse RSS feed URL.
  * @param feedUrl URL to request feed from.
- * @returns Parsed RSS data object.
+ * @returns Promise for parsed IRSS data object.
  */
-const fetchRssFeed = async (feedUrl: string) => {
+const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
   try {
-    return await parser.parseURL(feedUrl);
+    const feed = await parser.parseURL(feedUrl);
+    return decoratePodcast(feed);
   } catch (err) {
     throw new RssProxyError(err.message, feedUrl);
   }
