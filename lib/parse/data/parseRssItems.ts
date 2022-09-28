@@ -44,11 +44,10 @@ const parseRssItems = (
   );
   const episode =
     episodeGuid && rssItems.find((item) => item.guid === episodeGuid);
-  let resultItems: IRssItem[] = episode ? [episode] : [];
+  let resultItems: IRssItem[];
 
   if (showPlaylist) {
     resultItems = [
-      ...resultItems,
       ...[
         // Filter audio by season.
         (items: IRssItem[]) =>
@@ -64,24 +63,53 @@ const parseRssItems = (
                 const categories = i.categories?.map((c) => c.toLowerCase());
                 return categories?.indexOf(category) > -1;
               }),
+        // Prepend target episode if it was filtered out.
+        (items: IRssItem[]) => {
+          // No target episode, so just return items as they are.
+          if (!episode) return items;
+          // Get the index of the episode in the filtered items.
+          const episodeIndex = items.findIndex(
+            (item) => item.guid === episode.guid
+          );
+
+          if (episodeIndex > -1) {
+            // episode is in items.
+            // Make episode to first item.
+            return [
+              episode,
+              ...items.filter((item) => item.guid !== episode.guid)
+            ];
+          }
+
+          // episode was filtered out. Prepend it to items.
+          return [episode, ...items];
+        },
         // Cap number of items to configured length.
         (items: IRssItem[]) =>
           showPlaylist === 'all' ? items : items.slice(0, showPlaylist)
       ].reduce((a, f) => f(a), rssItems)
     ];
-  }
-
-  if (!resultItems.length && episodeGuid) {
+  } else if (episodeGuid && episode) {
+    // This is a regular embed for a specific episode, but it was found.
+    resultItems = [episode];
+  } else if (episodeGuid && !episode) {
+    // This is a regular embed for a specific episode, but it was not found.
     return undefined;
   }
 
-  resultItems = resultItems.length ? resultItems : [rssItems[0]];
+  // If we have no items at this point, just use the first one.
+  if (!resultItems?.length) {
+    resultItems = [rssItems[0]];
+  }
 
+  // Return resulting items as audio data.
   return resultItems.map(
     (item) =>
       ({
+        // Provide some default props inherited from feed.
         link,
         ...(imageUrl && { imageUrl }),
+        // Parse item into audio data, using passed parser if provided.
         ...(itemParser || parseAudioData)(item)
       } as IAudioData)
   );
