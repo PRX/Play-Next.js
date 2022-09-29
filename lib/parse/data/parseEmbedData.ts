@@ -79,16 +79,15 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const followUrls = {
     ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
   };
+  const shareUrl = showPlaylist ? rssShareUrl : audio.link || rssShareUrl;
 
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),
     ...(audioHasProps && { audio }),
     ...(playlist && playlist.length > 1 && { playlist }),
-    ...(feedUrl && {
-      rssTitle,
-      shareUrl: showPlaylist ? rssShareUrl : audio.link,
-      ...(rssItunesOwner && { owner: rssItunesOwner })
-    }),
+    ...(rssTitle && { rssTitle }),
+    ...(shareUrl && { shareUrl }),
+    ...(rssItunesOwner && { owner: rssItunesOwner }),
     followUrls,
     ...(paymentPointer && { paymentPointer })
   };

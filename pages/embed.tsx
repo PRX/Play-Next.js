@@ -4,8 +4,9 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IEmbedData } from '@interfaces/data';
-import type { IPageProps } from '@interfaces/page';
+import type { IRss } from '@interfaces/data';
+import type { IPageError } from '@interfaces/error';
+import type { IEmbedPageProps, IPageProps } from '@interfaces/page';
 import React, {
   useCallback,
   useEffect,
@@ -15,6 +16,7 @@ import React, {
 } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import Error from 'next/error';
 import clsx from 'clsx';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
@@ -54,17 +56,13 @@ const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
 
-export interface IEmbedPageProps extends IPageProps {
-  data: IEmbedData;
-}
-
 export interface IEmbedLayoutBreakPoint {
   name: string;
   minWidth: number;
   thumbnailSize: number;
 }
 
-const EmbedPage = ({ config, data }: IEmbedPageProps) => {
+const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   const { showCoverArt, showPlaylist, accentColor, theme } = config;
   const {
     audio,
@@ -241,6 +239,10 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
       window.removeEventListener('resize', handleResize);
     };
   }, [handleResize]);
+
+  if (error) {
+    return <Error statusCode={error.statusCode} title={error.message} />;
+  }
 
   return (
     <>
@@ -443,16 +445,40 @@ const EmbedPage = ({ config, data }: IEmbedPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
+  query,
+  res
+}) => {
   // 1. Convert query params into embed config.
   const config = parseEmbedParamsToConfig(query);
-  // 2. If RSS feed URL is provided.
-  const rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
+
+  // 2. If RSS feed URL is provided...
+  let rssData: IRss;
+  let error: IPageError;
+  try {
+    // ...try to fetch the feed...
+    rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
+  } catch (e) {
+    switch (e.name) {
+      case 'RssProxyError':
+        // ...and handle any RssProxyError as a 400.
+        res.statusCode = 400;
+        error = {
+          statusCode: 400,
+          message: 'Bad Feed URL Provided'
+        };
+        break;
+      default:
+        // ...otherwise throw the caught error so we can get 5XX alarms for anything else.
+        throw e;
+    }
+  }
+
   // 3. Parse config and RSS data into embed data.
   const data = parseEmbedData(config, rssData);
 
   return {
-    props: { config, data }
+    props: { config, data, ...(error && { error }) }
   };
 };
 
