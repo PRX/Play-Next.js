@@ -106,6 +106,15 @@ describe('lib/parse/data', () => {
       expect(result.audio.guid).toBe('foo-bar');
     });
 
+    test('should not have audio data when guid is not in feed', () => {
+      const result = parseEmbedData(
+        { feedUrl: 'http://foo.com/feed.rss', episodeGuid: 'NOT-THERE' },
+        mockRssData
+      );
+
+      expect(result.audio).toBeUndefined();
+    });
+
     test('should get payment pointer from value recipient', () => {
       const result = parseEmbedData(
         { feedUrl: 'http://foo.com/feed.rss' },
@@ -113,6 +122,21 @@ describe('lib/parse/data', () => {
       );
 
       expect(result.paymentPointer).toBe('$example.now/~alice');
+    });
+
+    test('should not set payment pointer when missing value recipient', () => {
+      const data = { ...mockRssData };
+      delete data.podcast.value.valueRecipient;
+      const result = parseEmbedData(
+        { feedUrl: 'http://foo.com/feed.rss' },
+        data
+      );
+
+      if (process.env.PAYMENT_POINTER) {
+        expect(result.paymentPointer).toBe(process.env.PAYMENT_POINTER);
+      } else {
+        expect(result.paymentPointer).toBeUndefined();
+      }
     });
 
     test('should use item matching config guid as audio data', () => {

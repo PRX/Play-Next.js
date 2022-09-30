@@ -162,11 +162,11 @@ describe('lib/parse/data', () => {
       expect(result[0].guid).toBe('foo-2');
     });
 
-    test('should use first item when specific item not found', () => {
+    test('should be undefined when specific item not found', () => {
       const config: IEmbedConfig = { episodeGuid: 'NOT-THERE' };
       const result = parseRssItems(mockRssData, config);
 
-      expect(result[0].guid).toBe('foo-1');
+      expect(result).toBeUndefined();
     });
 
     test('should return all items', () => {
@@ -203,6 +203,29 @@ describe('lib/parse/data', () => {
       expect(result.length).toBe(2);
       expect(result[0].guid).toBe('foo-1');
       expect(result[1].guid).toBe('foo-3');
+    });
+
+    test('should return target episode as first item', () => {
+      const config: IEmbedConfig = {
+        showPlaylist: 'all',
+        episodeGuid: 'foo-3'
+      };
+      const result = parseRssItems(mockRssData, config);
+
+      expect(result.length).toBe(mockRssItems.length);
+      expect(result[0].guid).toBe('foo-3');
+    });
+
+    test('should episode as first item when it would have been filtered out.', () => {
+      const config: IEmbedConfig = {
+        showPlaylist: 'all',
+        playlistSeason: 1,
+        episodeGuid: 'foo-5'
+      };
+      const result = parseRssItems(mockRssData, config);
+
+      expect(result.length).toBe(3);
+      expect(result[0].guid).toBe('foo-5');
     });
 
     test('should return first item when playlist has no results', () => {
