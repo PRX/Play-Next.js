@@ -6,7 +6,10 @@
  */
 
 const generateAudioUrl = (audioUrl: string) => {
-  const url = new URL(audioUrl);
+  const audioUrlWithProtocol = /^\/\//.test(audioUrl)
+    ? `https:${audioUrl}`
+    : audioUrl;
+  const url = new URL(audioUrlWithProtocol);
 
   if (!url.searchParams.get('_from')) {
     url.searchParams.set('_from', 'play.prx.org');
