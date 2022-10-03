@@ -15,5 +15,11 @@ describe('lib/generate/string', () => {
 
       expect(result).toMatch('http://foo.com/bar.mp3?_from=AcmePlayer');
     });
+
+    test('should add `https` protocol when one is not present.', () => {
+      const result = generateAudioUrl('//foo.com/bar.mp3');
+
+      expect(result).toMatch('https://foo.com/bar.mp3?_from=play.prx.org');
+    });
   });
 });
