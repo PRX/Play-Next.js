@@ -41,7 +41,7 @@ const PlayerShareMenu: React.FC<IPlayerShareMenuProps> = ({
         className={clsx(className)}
         onClick={handleClick}
       >
-        <ShareIcon aria-label="Share" />
+        <ShareIcon aria-label="Share" title="Share" />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>

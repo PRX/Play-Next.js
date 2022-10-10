@@ -88,6 +88,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
                   aria-label="Pause"
+                  title="Pause"
                 >
                   <PauseIcon />
                 </IconButton>
@@ -96,6 +97,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                   className={styles.play}
                   onClick={handlePlayButtonClick}
                   aria-label="Play"
+                  title="Play"
                 >
                   <PlayIcon />
                 </IconButton>
@@ -123,6 +125,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
                   aria-label="Pause"
+                  title="Pause"
                 >
                   <PauseCircleIcon />
                 </IconButton>
@@ -131,6 +134,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                   className={styles.play}
                   onClick={handlePlayButtonClick}
                   aria-label="Play"
+                  title="Play"
                 >
                   <PlayCircleIcon />
                 </IconButton>
@@ -142,6 +146,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <ExplicitIcon
                   className={styles.explicit}
                   aria-label="Explicit"
+                  title="Explicit"
                 />
               </span>
             )}

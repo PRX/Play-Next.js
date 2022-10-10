@@ -45,7 +45,7 @@ const FollowMenu: React.FC<IFollowMenuProps> = ({
         className={clsx(className)}
         href={followUrlsEntries[0][1]}
       >
-        <IconComponent aria-label={label} />
+        <IconComponent aria-label={label} title={label} />
       </IconButton>
     );
   }
@@ -57,7 +57,7 @@ const FollowMenu: React.FC<IFollowMenuProps> = ({
         className={clsx(className)}
         onClick={handleClick}
       >
-        <AddIcon aria-label="Follow" />
+        <AddIcon aria-label="Follow" title="Follow" />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>

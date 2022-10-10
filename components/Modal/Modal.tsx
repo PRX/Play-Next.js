@@ -57,7 +57,7 @@ const Modal: React.FC<IModalProps> = ({
           className={styles.closeButton}
           onClick={handleClick}
         >
-          <CloseIcon aria-label="Close" />
+          <CloseIcon aria-label="Close" title="Close" />
         </IconButton>
 
         <div className={styles.content}>{children}</div>

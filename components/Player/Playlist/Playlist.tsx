@@ -94,7 +94,10 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                 [styles.down]: reversed
               })}
             >
-              <SwapVertIcon aria-label="Swap episode order" />
+              <SwapVertIcon
+                aria-label="Swap episode order"
+                title="Swap episode order"
+              />
             </span>
             {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}
           </button>
@@ -139,6 +142,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                       <ExplicitIcon
                         className={styles.explicit}
                         aria-label="Explicit"
+                        title="Explicit"
                       />
                     </span>
                   )}

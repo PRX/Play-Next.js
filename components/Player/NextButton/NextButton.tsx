@@ -21,7 +21,7 @@ const NextButton: React.FC<INextButtonProps> = ({ ...props }) => {
 
   return (
     <IconButton {...props} type="button" onClick={handleClick}>
-      <NextIcon aria-label="Next Track" />
+      <NextIcon aria-label="Next Track" title="Next Track" />
     </IconButton>
   );
 };

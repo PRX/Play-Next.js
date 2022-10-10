@@ -31,7 +31,11 @@ const PlayerText: React.FC<IPlayerTextProps> = () => {
     <div className={clsx(styles.root, { [styles.isExplicit]: explicit })}>
       <ThemeVars theme="PlayerText" cssProps={styles} />
       {explicit && (
-        <ExplicitIcon className={styles.explicit} aria-label="Explicit" />
+        <ExplicitIcon
+          className={styles.explicit}
+          aria-label="Explicit"
+          title="Explicit"
+        />
       )}
       <h2 className={styles.title}>
         <Marquee>{title}</Marquee>

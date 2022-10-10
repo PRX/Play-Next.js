@@ -168,6 +168,7 @@ const MenuButton: React.FC<IMenuButtonProps> = ({
         className={classNames}
         aria-describedby={promptId}
         aria-label={prompt}
+        title={prompt}
       >
         {children}
       </IconButton>
