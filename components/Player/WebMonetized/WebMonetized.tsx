@@ -204,7 +204,7 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
         className={buttonClasses}
         onClick={handleClick}
       >
-        <MonetizationIcon aria-label="Web Monetization" />
+        <MonetizationIcon title="Web Monetization" />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         {!monetizationState ? (
@@ -222,7 +222,7 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
             <div className={styles.providers}>
               <h4>Web Monetization Providers</h4>
               <a href="https://coil.com" target="_blank" rel="noreferrer">
-                <CoilLogo className={styles.provider} aria-label="Coil" />
+                <CoilLogo className={styles.provider} title="Coil" />
               </a>
             </div>
           </div>

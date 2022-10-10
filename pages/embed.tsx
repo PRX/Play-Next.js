@@ -319,12 +319,9 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
                       type="button"
                       className={clsx(styles.iconButton, styles.moreButton)}
                       onClick={handleMoreButtonClick}
+                      title={!showMenu ? 'Show menu' : 'Close Menu'}
                     >
-                      {!showMenu ? (
-                        <MoreHorizIcon aria-label="Show menu" />
-                      ) : (
-                        <CloseIcon aria-label="Close menu" />
-                      )}
+                      {!showMenu ? <MoreHorizIcon /> : <CloseIcon />}
                     </IconButton>
                   </div>
 
@@ -346,14 +343,17 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
 
                       <ReplayButton
                         className={clsx(styles.button, styles.replayButton)}
+                        title="Replay"
                       />
 
                       <PlayButton
                         className={clsx(styles.button, styles.playButton)}
+                        title="Play"
                       />
 
                       <ForwardButton
                         className={clsx(styles.button, styles.replayButton)}
+                        title="Forward"
                       />
 
                       {canShowPlaylist && (

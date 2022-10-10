@@ -21,7 +21,7 @@ const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
 
   return (
     <IconButton {...props} type="button" onClick={handleClick}>
-      <PreviousIcon aria-label="Previous Track" />
+      <PreviousIcon aria-label="Previous Track" title="Previous Track" />
     </IconButton>
   );
 };

@@ -48,7 +48,7 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
         className={clsx(className)}
         href={followUrlsEntries[0][1]}
       >
-        <IconComponent aria-label={label} />
+        <IconComponent aria-label={label} title={label} />
       </IconButton>
     );
   }
@@ -59,8 +59,9 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
         type="button"
         className={clsx(className)}
         onClick={handleClick}
+        title="Support"
       >
-        <FavoriteIcon aria-label="Support" />
+        <FavoriteIcon />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>
