@@ -48,6 +48,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   return (
     srcUrl && (
       <div
+        title={`Thumbnail for "${title}".`}
         className={rootClassNames}
         style={{
           ...(layout !== 'fill' && {

@@ -87,6 +87,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
             type="button"
             className={styles.button}
             onClick={handleSortClick}
+            title="Swap Episode Order"
           >
             <span
               className={clsx(styles.buttonIcon, {
@@ -94,10 +95,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                 [styles.down]: reversed
               })}
             >
-              <SwapVertIcon
-                aria-label="Swap episode order"
-                title="Swap episode order"
-              />
+              <SwapVertIcon />
             </span>
             {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}
           </button>
@@ -142,7 +140,6 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                       <ExplicitIcon
                         className={styles.explicit}
                         aria-label="Explicit"
-                        title="Explicit"
                       />
                     </span>
                   )}

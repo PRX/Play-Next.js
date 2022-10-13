@@ -12,7 +12,7 @@ import NextIcon from '@svg/icons/Next.svg';
 export interface INextButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-const NextButton: React.FC<INextButtonProps> = ({ ...props }) => {
+const NextButton: React.FC<INextButtonProps> = (props) => {
   const { nextTrack } = useContext(PlayerContext);
 
   const handleClick = () => {
@@ -20,8 +20,13 @@ const NextButton: React.FC<INextButtonProps> = ({ ...props }) => {
   };
 
   return (
-    <IconButton {...props} type="button" onClick={handleClick}>
-      <NextIcon aria-label="Next Track" title="Next Track" />
+    <IconButton
+      title="Next Episode"
+      {...props}
+      type="button"
+      onClick={handleClick}
+    >
+      <NextIcon />
     </IconButton>
   );
 };

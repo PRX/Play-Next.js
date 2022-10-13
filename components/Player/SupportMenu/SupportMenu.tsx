@@ -48,7 +48,7 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
         className={clsx(className)}
         href={followUrlsEntries[0][1]}
       >
-        <IconComponent aria-label={label} title={label} />
+        <IconComponent title={label} />
       </IconButton>
     );
   }
@@ -56,10 +56,10 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
   return (
     <>
       <IconButton
+        title="Support Us"
         type="button"
         className={clsx(className)}
         onClick={handleClick}
-        title="Support"
       >
         <FavoriteIcon />
       </IconButton>

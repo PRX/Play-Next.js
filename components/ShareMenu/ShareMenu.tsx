@@ -40,10 +40,10 @@ const ShareMenu: React.FC<IShareMenuProps> = ({
   return (
     <>
       <IconButton
+        title="Share"
         type="button"
         className={clsx(className)}
         onClick={handleClick}
-        title="Share"
       >
         <ShareIcon />
       </IconButton>

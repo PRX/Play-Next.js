@@ -241,7 +241,7 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   }, [handleResize]);
 
   if (error) {
-    return <Error statusCode={error.statusCode} title={error.message} />;
+    return <Error statusCode={error.statusCode} />;
   }
 
   return (
@@ -343,17 +343,14 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
 
                       <ReplayButton
                         className={clsx(styles.button, styles.replayButton)}
-                        title="Replay"
                       />
 
                       <PlayButton
                         className={clsx(styles.button, styles.playButton)}
-                        title="Play"
                       />
 
                       <ForwardButton
                         className={clsx(styles.button, styles.replayButton)}
-                        title="Forward"
                       />
 
                       {canShowPlaylist && (

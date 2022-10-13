@@ -41,11 +41,12 @@ const FollowMenu: React.FC<IFollowMenuProps> = ({
     const { IconComponent, label } = optionsMap.get(followUrlsEntries[0][0]);
     return (
       <IconButton
+        title={label}
         type="button"
         className={clsx(className)}
         href={followUrlsEntries[0][1]}
       >
-        <IconComponent aria-label={label} title={label} />
+        <IconComponent />
       </IconButton>
     );
   }
@@ -53,11 +54,12 @@ const FollowMenu: React.FC<IFollowMenuProps> = ({
   return (
     <>
       <IconButton
+        title="Follow Menu"
         type="button"
         className={clsx(className)}
         onClick={handleClick}
       >
-        <AddIcon aria-label="Follow" title="Follow" />
+        <AddIcon />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>

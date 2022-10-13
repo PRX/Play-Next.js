@@ -77,6 +77,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
         {thumbSrc ? (
           <div className={styles.thumbnail}>
             <PrxImage
+              title={`Thumbnail for "${title}".`}
               src={thumbSrc}
               alt={`Thumbnail for "${title}".`}
               layout="fill"
@@ -87,7 +88,6 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
-                  title="Pause"
                 >
                   <PauseIcon />
                 </IconButton>
@@ -95,7 +95,6 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
-                  title="Play"
                 >
                   <PlayIcon />
                 </IconButton>
@@ -122,7 +121,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
-                  title="Pause"
+                  title="Pause This Episode"
                 >
                   <PauseCircleIcon />
                 </IconButton>
@@ -130,7 +129,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
-                  title="Play"
+                  title="Play This Episode"
                 >
                   <PlayCircleIcon />
                 </IconButton>
@@ -138,7 +137,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
             </span>
 
             {explicit && (
-              <span className={styles.explicit}>
+              <span className={styles.explicit} aria-label="Explicit">
                 <ExplicitIcon className={styles.explicit} />
               </span>
             )}
