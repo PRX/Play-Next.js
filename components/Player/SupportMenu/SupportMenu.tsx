@@ -32,23 +32,24 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
   supportUrls,
   className
 }) => {
-  const followUrlsEntries = Object.entries(supportUrls || {});
+  const supportUrlsEntries = Object.entries(supportUrls || {});
 
   const handleClick = () => {
     onOpen();
   };
 
-  if (!followUrlsEntries.length) return null;
+  if (!supportUrlsEntries.length) return null;
 
-  if (followUrlsEntries.length === 1) {
-    const { IconComponent, label } = optionsMap.get(followUrlsEntries[0][0]);
+  if (supportUrlsEntries.length === 1) {
+    const { IconComponent, label } = optionsMap.get(supportUrlsEntries[0][0]);
     return (
       <IconButton
+        title={label}
         type="button"
         className={clsx(className)}
-        href={followUrlsEntries[0][1]}
+        href={supportUrlsEntries[0][1]}
       >
-        <IconComponent title={label} />
+        <IconComponent />
       </IconButton>
     );
   }
@@ -56,7 +57,7 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
   return (
     <>
       <IconButton
-        title="Support Us"
+        title="Support"
         type="button"
         className={clsx(className)}
         onClick={handleClick}
@@ -65,7 +66,7 @@ const SupportMenu: React.FC<ISupportMenuProps> = ({
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>
-          {followUrlsEntries.map(([key, url]) => {
+          {supportUrlsEntries.map(([key, url]) => {
             const { IconComponent, label } = optionsMap.get(key);
             return (
               <MenuButton action="link" label={label} linkHref={url} key={key}>

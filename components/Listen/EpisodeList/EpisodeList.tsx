@@ -54,7 +54,6 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
             index={index}
             onEpisodeClick={onEpisodeClick}
             key={track.guid}
-            title="test"
           />
         ))}
       </>

@@ -137,8 +137,11 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
             </span>
 
             {explicit && (
-              <span className={styles.explicit} aria-label="Explicit">
-                <ExplicitIcon className={styles.explicit} />
+              <span className={styles.explicit}>
+                <ExplicitIcon
+                  aria-label="Explicit Content"
+                  className={styles.explicit}
+                />
               </span>
             )}
 

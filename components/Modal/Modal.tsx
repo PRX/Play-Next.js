@@ -52,7 +52,7 @@ const Modal: React.FC<IModalProps> = ({
       <ThemeVars theme="Modal" cssProps={styles} />
       <div className={styles.root}>
         <IconButton
-          title={!isOpen ? 'Open Share Menu' : 'Close Share Menu'}
+          title="Close"
           ref={closeButtonRef}
           type="button"
           className={styles.closeButton}

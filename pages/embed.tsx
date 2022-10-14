@@ -241,7 +241,7 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   }, [handleResize]);
 
   if (error) {
-    return <Error statusCode={error.statusCode} />;
+    return <Error statusCode={error.statusCode} title={error.message} />;
   }
 
   return (
