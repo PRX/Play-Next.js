@@ -64,7 +64,10 @@ const StreamPip: React.FC<React.HTMLProps<SVGElement>> = ({ className }) => {
 
   return (
     <span ref={ref} className={styles.pip} key={useId()}>
-      <MonetizationIcon className={clsx(styles.pipIcon, className)} />
+      <MonetizationIcon
+        className={clsx(styles.pipIcon, className)}
+        aria-hidden
+      />
     </span>
   );
 };
@@ -199,12 +202,13 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
         )}
       </Head>
       <IconButton
+        title="Web Monetization"
         ref={buttonRef}
         type="button"
         className={buttonClasses}
         onClick={handleClick}
       >
-        <MonetizationIcon aria-label="Web Monetization" />
+        <MonetizationIcon />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         {!monetizationState ? (

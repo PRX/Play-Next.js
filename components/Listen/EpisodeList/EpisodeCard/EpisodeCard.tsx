@@ -77,6 +77,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
         {thumbSrc ? (
           <div className={styles.thumbnail}>
             <PrxImage
+              title={`Thumbnail for "${title}".`}
               src={thumbSrc}
               alt={`Thumbnail for "${title}".`}
               layout="fill"
@@ -87,7 +88,6 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
-                  aria-label="Pause"
                 >
                   <PauseIcon />
                 </IconButton>
@@ -95,7 +95,6 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
-                  aria-label="Play"
                 >
                   <PlayIcon />
                 </IconButton>
@@ -122,7 +121,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
-                  aria-label="Pause"
+                  title="Pause This Episode"
                 >
                   <PauseCircleIcon />
                 </IconButton>
@@ -130,7 +129,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
-                  aria-label="Play"
+                  title="Play This Episode"
                 >
                   <PlayCircleIcon />
                 </IconButton>
@@ -140,8 +139,8 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
             {explicit && (
               <span className={styles.explicit}>
                 <ExplicitIcon
+                  aria-label="Explicit Content"
                   className={styles.explicit}
-                  aria-label="Explicit"
                 />
               </span>
             )}

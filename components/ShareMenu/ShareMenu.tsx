@@ -40,11 +40,12 @@ const ShareMenu: React.FC<IShareMenuProps> = ({
   return (
     <>
       <IconButton
+        title="Share"
         type="button"
         className={clsx(className)}
         onClick={handleClick}
       >
-        <ShareIcon aria-label="Share" />
+        <ShareIcon />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
         <nav className={styles.nav}>

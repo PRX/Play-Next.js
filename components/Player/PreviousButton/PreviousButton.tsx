@@ -20,8 +20,13 @@ const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
   };
 
   return (
-    <IconButton {...props} type="button" onClick={handleClick}>
-      <PreviousIcon aria-label="Previous Track" />
+    <IconButton
+      title="Play Previous Track"
+      {...props}
+      type="button"
+      onClick={handleClick}
+    >
+      <PreviousIcon />
     </IconButton>
   );
 };

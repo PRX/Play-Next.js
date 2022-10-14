@@ -30,13 +30,13 @@ const PlayerText: React.FC<IPlayerTextProps> = () => {
   return (
     <div className={clsx(styles.root, { [styles.isExplicit]: explicit })}>
       <ThemeVars theme="PlayerText" cssProps={styles} />
-      {explicit && (
-        <ExplicitIcon className={styles.explicit} aria-label="Explicit" />
-      )}
-      <h2 className={styles.title}>
+      {explicit && <ExplicitIcon className={styles.explicit} />}
+      <h2 className={styles.title} title={title}>
         <Marquee>{title}</Marquee>
       </h2>
-      <p className={styles.subtitle}>{wrapWords(subtitle)}</p>
+      <p title={subtitle} className={styles.subtitle}>
+        {wrapWords(subtitle)}
+      </p>
     </div>
   );
 };

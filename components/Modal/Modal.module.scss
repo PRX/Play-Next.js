@@ -27,7 +27,8 @@ $modal-text-color: colors.$white;
 .closeButton {
   align-self: start;
   position: sticky;
-  top: 5px;
+  top: 0.5rem;
+  right: 0.5rem;
 
   margin-inline-start: auto;
 }

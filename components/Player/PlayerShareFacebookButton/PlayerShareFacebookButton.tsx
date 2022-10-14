@@ -18,7 +18,13 @@ const PlayerShareFacebookButton: React.FC<IPlayerShareFacebookButtonProps> = ({
   const { currentTrackIndex, tracks } = state;
   const { link } = tracks[currentTrackIndex];
 
-  return <ShareFacebookButton className={className} url={link} />;
+  return (
+    <ShareFacebookButton
+      title="Share on Facebook"
+      className={className}
+      url={link}
+    />
+  );
 };
 
 export default PlayerShareFacebookButton;

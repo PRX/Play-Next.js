@@ -20,8 +20,13 @@ const ReplayButton: React.FC<IReplayButtonProps> = ({ ...props }) => {
   };
 
   return (
-    <IconButton {...props} type="button" onClick={handleClick}>
-      <ReplayIcon aria-label="Replay last 5 seconds" />
+    <IconButton
+      title="Replay Last 5 Seconds"
+      {...props}
+      type="button"
+      onClick={handleClick}
+    >
+      <ReplayIcon />
     </IconButton>
   );
 };

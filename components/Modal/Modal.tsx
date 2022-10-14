@@ -52,12 +52,13 @@ const Modal: React.FC<IModalProps> = ({
       <ThemeVars theme="Modal" cssProps={styles} />
       <div className={styles.root}>
         <IconButton
+          title="Close"
           ref={closeButtonRef}
           type="button"
           className={styles.closeButton}
           onClick={handleClick}
         >
-          <CloseIcon aria-label="Close" />
+          <CloseIcon />
         </IconButton>
 
         <div className={styles.content}>{children}</div>

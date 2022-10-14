@@ -28,15 +28,12 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
       <ThemeVars theme="PlayButton" cssProps={styles} />
       <IconButton
         className={styles.root}
+        title={!playing ? 'Play' : 'Pause'}
         {...props}
         type="button"
         onClick={handleClick}
       >
-        {!playing ? (
-          <PlayArrowIcon aria-label="Play" />
-        ) : (
-          <PauseIcon aria-label="Pause" />
-        )}
+        {!playing ? <PlayArrowIcon /> : <PauseIcon />}
       </IconButton>
     </>
   );

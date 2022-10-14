@@ -77,7 +77,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
                 [styles.down]: reversed
               })}
             >
-              <SwapVertIcon aria-label="Swap episode order" />
+              <SwapVertIcon aria-label="Swap Episode Order" />
             </span>
             {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}
           </button>
