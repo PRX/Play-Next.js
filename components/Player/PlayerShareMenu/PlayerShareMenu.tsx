@@ -15,6 +15,7 @@ import PlayerShareTwitterButton from '../PlayerShareTwitterButton';
 import PlayerShareEmailButton from '../PlayerShareEmailButton';
 import CopyLinkButton from '../CopyLinkButton';
 import styles from './PlayerShareMenu.module.scss';
+import FileDownloadButton from '../FileDownloadButton';
 
 export interface IPlayerShareMenuProps extends IModalProps {
   onOpen(): void;
@@ -53,6 +54,8 @@ const PlayerShareMenu: React.FC<IPlayerShareMenuProps> = ({
           <PlayerShareEmailButton />
 
           <CopyLinkButton />
+
+          <FileDownloadButton />
 
           {embedHtml && (
             <MenuButton
