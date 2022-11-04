@@ -34,7 +34,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const podcastValueRecipient =
     podcastValue &&
     podcastValue.type === 'webmonetization' &&
-    podcastValue.valueRecipient?.[0];
+    podcastValue.valueRecipients?.[0];
   const paymentPointer =
     podcastValueRecipient?.address ||
     (process.env.NODE_ENV !== 'production' && process.env.PAYMENT_POINTER);

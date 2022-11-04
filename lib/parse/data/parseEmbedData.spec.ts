@@ -20,7 +20,7 @@ describe('lib/parse/data', () => {
         value: {
           type: 'webmonetization',
           method: 'ILP',
-          valueRecipient: [
+          valueRecipients: [
             {
               address: '$example.now/~alice',
               type: 'paymentpointer',
@@ -126,7 +126,7 @@ describe('lib/parse/data', () => {
 
     test('should not set payment pointer when missing value recipient', () => {
       const data = { ...mockRssData };
-      delete data.podcast.value.valueRecipient;
+      delete data.podcast.value.valueRecipients;
       const result = parseEmbedData(
         { feedUrl: 'http://foo.com/feed.rss' },
         data

@@ -16,5 +16,5 @@ export interface IRssPodcastValue {
   type: string;
   method: string;
   suggested?: number;
-  valueRecipient: IRssPodcastValueRecipient[];
+  valueRecipients: IRssPodcastValueRecipient[];
 }
