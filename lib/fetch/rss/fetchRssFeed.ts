@@ -2,12 +2,12 @@ import Parser from 'rss-parser';
 import type { IRss } from '@interfaces/data';
 import { decoratePodcast } from './decoratePodcast';
 
-type CustomFeed = { 'podcast:value': any };
+type CustomFeed = { 'podcast:value': any; 'itunes:type': string };
 type CustomItem = { 'podcast:value': any };
 
 const parser: Parser<CustomFeed, CustomItem> = new Parser({
   customFields: {
-    feed: ['podcast:value'],
+    feed: ['podcast:value', 'itunes:type'],
     item: ['podcast:value']
   }
 });
@@ -26,12 +26,23 @@ class RssProxyError extends Error {
 /**
  * Fetch and parse RSS feed URL.
  * @param feedUrl URL to request feed from.
- * @returns Promise for parsed IRSS data object.
+ * @returns Promise for parsed IRss data object.
  */
 const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
   try {
     const feed = await parser.parseURL(feedUrl);
-    return decoratePodcast(feed);
+
+    const result = {
+      ...decoratePodcast(feed),
+      ...(feed['itunes:type'] && {
+        itunes: {
+          ...feed.itunes,
+          type: feed['itunes:type']
+        }
+      })
+    };
+
+    return result;
   } catch (err) {
     throw new RssProxyError(err.message, feedUrl);
   }

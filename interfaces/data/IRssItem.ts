@@ -4,6 +4,7 @@
 
 import type Parser from 'rss-parser';
 import { IRssPodcastValue } from './IRssPodcast';
+
 export interface IRssItem extends Parser.Item {
   [key: string]: any;
   itunes?: {

@@ -235,5 +235,59 @@ describe('lib/parse/data', () => {
       expect(result.length).toBe(1);
       expect(result[0].guid).toBe('foo-1');
     });
+
+    test('should return items sorted by season then episode in ascending order', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all' };
+      const result = parseRssItems(
+        {
+          ...mockRssData,
+          itunes: {
+            type: 'serial'
+          },
+          items: [
+            {
+              guid: 'GUID:2:1',
+              itunes: {
+                season: '2',
+                episode: '1'
+              }
+            },
+            {
+              guid: 'GUID:1:2',
+              itunes: {
+                season: '1',
+                episode: '2'
+              }
+            },
+            {
+              guid: 'GUID:1:1',
+              itunes: {
+                episode: '1'
+              }
+            },
+            {
+              guid: 'GUID:2:2',
+              itunes: {
+                season: '2',
+                episode: '2'
+              }
+            },
+            {
+              guid: 'GUID:1:3',
+              itunes: {
+                episode: '3'
+              }
+            }
+          ]
+        },
+        config
+      );
+
+      expect(result[0].guid).toBe('GUID:1:1');
+      expect(result[1].guid).toBe('GUID:1:2');
+      expect(result[2].guid).toBe('GUID:1:3');
+      expect(result[3].guid).toBe('GUID:2:1');
+      expect(result[4].guid).toBe('GUID:2:2');
+    });
   });
 });
