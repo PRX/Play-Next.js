@@ -302,8 +302,12 @@ const Listen = ({ config, data }: IListenPageProps) => {
         <footer className={styles.footer}>
           <FooterPlayer ref={footerPlayerRef} />
           <div className={styles.footerMain}>
-            Hosted on{' '}
-            <PrxDtLogo className={styles.logoPrxDt} aria-label="PRX Dovetail" />
+            <a href="https://dovetail.prx.org" target="_blank" rel="noreferrer">
+              <PrxDtLogo
+                className={styles.logoPrxDt}
+                aria-label="PRX Dovetail"
+              />
+            </a>
           </div>
         </footer>
       </div>
