@@ -88,10 +88,20 @@ const parseRssItems = (
         (items: IRssItem[]) =>
           rssItunesType === 'serial'
             ? [...items].sort((a, b) => {
-                const { season: aSeason = '1', episode: aEpisode } = a.itunes;
-                const { season: bSeason = '1', episode: bEpisode } = b.itunes;
+                const {
+                  season: aSeason = '1',
+                  episode: aEpisode,
+                  episodeType: aEpisodeType
+                } = a.itunes;
+                const {
+                  season: bSeason = '1',
+                  episode: bEpisode,
+                  episodeType: bEpisodeType
+                } = b.itunes;
 
                 if (aSeason === bSeason) {
+                  if (aEpisodeType === 'trailer') return -1;
+                  if (bEpisodeType === 'trailer') return 1;
                   return parseInt(aEpisode, 10) - parseInt(bEpisode, 10);
                 }
 

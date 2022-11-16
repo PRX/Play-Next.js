@@ -3,12 +3,16 @@ import type { IRss } from '@interfaces/data';
 import { decoratePodcast } from './decoratePodcast';
 
 type CustomFeed = { 'podcast:value': any; 'itunes:type': string };
-type CustomItem = { 'podcast:value': any };
+type CustomItem = {
+  'podcast:value': any;
+  itunes: any;
+  'itunes:episodeType': string;
+};
 
 const parser: Parser<CustomFeed, CustomItem> = new Parser({
   customFields: {
     feed: ['podcast:value', 'itunes:type'],
-    item: ['podcast:value']
+    item: ['podcast:value', 'itunes:episodeType']
   }
 });
 
@@ -38,7 +42,14 @@ const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
         itunes: {
           ...feed.itunes,
           type: feed['itunes:type']
-        }
+        },
+        items: feed.items.map((item) => ({
+          ...item,
+          itunes: {
+            ...item.itunes,
+            episodeType: item['itunes:episodeType']
+          }
+        }))
       })
     };
 
