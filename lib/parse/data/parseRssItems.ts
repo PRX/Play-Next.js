@@ -17,7 +17,7 @@ const parseRssItems = (
 
   const { link, image, itunes } = rssData;
   const { url: rssImageUrl } = image || {};
-  const { image: rssItunesImage } = itunes || {};
+  const { image: rssItunesImage, type: rssItunesType } = itunes || {};
   const imageUrl = rssItunesImage || rssImageUrl;
   const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
     config;
@@ -84,6 +84,30 @@ const parseRssItems = (
           // episode was filtered out. Prepend it to items.
           return [episode, ...items];
         },
+        // Sort Serial feed items.
+        (items: IRssItem[]) =>
+          rssItunesType === 'serial'
+            ? [...items].sort((a, b) => {
+                const {
+                  season: aSeason = '1',
+                  episode: aEpisode,
+                  episodeType: aEpisodeType
+                } = a.itunes;
+                const {
+                  season: bSeason = '1',
+                  episode: bEpisode,
+                  episodeType: bEpisodeType
+                } = b.itunes;
+
+                if (aSeason === bSeason) {
+                  if (aEpisodeType === 'trailer') return -1;
+                  if (bEpisodeType === 'trailer') return 1;
+                  return parseInt(aEpisode, 10) - parseInt(bEpisode, 10);
+                }
+
+                return parseInt(aSeason, 10) - parseInt(bSeason, 10);
+              })
+            : items,
         // Cap number of items to configured length.
         (items: IRssItem[]) =>
           showPlaylist === 'all' ? items : items.slice(0, showPlaylist)
