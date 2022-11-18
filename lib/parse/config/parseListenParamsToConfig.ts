@@ -1,6 +1,7 @@
 import type { IListenConfig, IListenParams } from '@interfaces/config';
 import { EmbedParamKeysMap } from '@interfaces/config';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
+import parseAccentColorParam from './parseAccentColorParam';
 
 /**
  * Parse query parameters into listen config object.
@@ -32,15 +33,7 @@ const parseListenParamsToConfig = (params: IListenParams): IListenConfig => {
         case 'accentColor':
           return {
             ...a,
-            [prop]: (Array.isArray(v) ? (v as string[]) : [v])
-              .map((ac) =>
-                /^[a-f0-9]{2}[a-f0-9]{2}[a-f0-9]{2}(?:[a-f0-9]{2})?(?:\s1?\d?\d%)?$/i.test(
-                  ac
-                )
-                  ? `#${ac}`
-                  : null
-              )
-              .filter((ac) => !!ac)
+            [prop]: parseAccentColorParam(v)
           };
 
         default:

@@ -2,6 +2,7 @@ import type { IEmbedConfig, IEmbedParams } from '@interfaces/config';
 import { EmbedParamKeysMap } from '@interfaces/config';
 import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
+import parseAccentColorParam from './parseAccentColorParam';
 
 /**
  * Parse query parameters into player config object.
@@ -39,15 +40,7 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
         case 'accentColor':
           return {
             ...a,
-            [prop]: (Array.isArray(v) ? (v as string[]) : [v])
-              .map((ac) =>
-                /^[a-f0-9]{2}[a-f0-9]{2}[a-f0-9]{2}(?:[a-f0-9]{2})?(?:\s1?\d?\d%)?$/i.test(
-                  ac
-                )
-                  ? `#${ac}`
-                  : null
-              )
-              .filter((ac) => !!ac)
+            [prop]: parseAccentColorParam(v)
           };
 
         default:
