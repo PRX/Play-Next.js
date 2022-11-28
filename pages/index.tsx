@@ -291,7 +291,7 @@ const Home: NextPage = () => {
     href="...&ca=1"
     style="position: absolute; inset: 0;"
   />
-<div>`}
+</div>`}
             </code>
           </pre>
           <p>
@@ -307,7 +307,7 @@ const Home: NextPage = () => {
     href="...&ca=1"
     style="position: absolute; inset: 0;"
   />
-</div>}
+</div>`}
             </code>
           </pre>
           <h4>ac</h4>
