@@ -127,6 +127,7 @@ $player-thumbnail-size: 135px;
 
 .playerContainer {
   display: grid;
+  padding: $player-padding;
 
   .withCoverArt &,
   .withPlaylist & {
@@ -171,7 +172,6 @@ $player-thumbnail-size: 135px;
     'PROG  PROG  PROG';
   align-content: stretch;
   gap: $player-gap;
-  padding: $player-padding;
 
   visibility: hidden;
 
