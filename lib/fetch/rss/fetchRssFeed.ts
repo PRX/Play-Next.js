@@ -40,8 +40,6 @@ const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
   try {
     const feed = await parser.parseURL(feedUrl);
 
-    console.log(feed['podcast:value']);
-
     const result = {
       ...decoratePodcast(feed),
       ...(feed['itunes:type'] && {
