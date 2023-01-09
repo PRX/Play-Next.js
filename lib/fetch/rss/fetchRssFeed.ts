@@ -11,7 +11,11 @@ type CustomItem = {
 
 const parser: Parser<CustomFeed, CustomItem> = new Parser({
   customFields: {
-    feed: ['podcast:value', 'itunes:type'],
+    feed: [
+      // @ts-ignore
+      ['podcast:value', 'podcast:value', { keepArray: true }],
+      'itunes:type'
+    ],
     item: ['podcast:value', 'itunes:episodeType']
   }
 });
@@ -35,6 +39,8 @@ class RssProxyError extends Error {
 const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
   try {
     const feed = await parser.parseURL(feedUrl);
+
+    console.log(feed['podcast:value']);
 
     const result = {
       ...decoratePodcast(feed),
