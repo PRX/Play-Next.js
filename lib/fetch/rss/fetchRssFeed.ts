@@ -11,7 +11,11 @@ type CustomItem = {
 
 const parser: Parser<CustomFeed, CustomItem> = new Parser({
   customFields: {
-    feed: ['podcast:value', 'itunes:type'],
+    feed: [
+      // @ts-ignore
+      ['podcast:value', 'podcast:value', { keepArray: true }],
+      'itunes:type'
+    ],
     item: ['podcast:value', 'itunes:episodeType']
   }
 });

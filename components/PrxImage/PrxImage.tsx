@@ -39,6 +39,7 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
       layout,
       lazyRoot,
       objectFit,
+      onLoad,
       onLoadingComplete
     };
 
@@ -59,7 +60,6 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
             src={src as string}
             alt={alt}
             style={{ objectFit }}
-            onLoad={onLoad}
             {...other}
             className={imageClassNames}
           />
@@ -71,6 +71,7 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
           src={src as string}
           alt={alt}
           className={className}
+          onLoad={onLoad}
           {...other}
         />
       )

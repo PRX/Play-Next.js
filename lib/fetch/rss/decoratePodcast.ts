@@ -5,14 +5,20 @@ import {
 import type { IRss, IRssItem } from '@interfaces/data';
 
 export const extractPodcastValue = (data): IRssPodcastValue => {
-  const recipients: IRssPodcastValueRecipient[] = data['podcast:value']?.[
+  const podcastValueWmIlp = (data['podcast:value'] as any[])?.find(
+    ({ $: { type, method } }) => type === 'webmonetization' && method === 'ILP'
+  );
+
+  if (!podcastValueWmIlp) return undefined;
+
+  const recipients: IRssPodcastValueRecipient[] = podcastValueWmIlp[
     'podcast:valueRecipient'
-  ].map((recipient) => ({
+  ]?.map((recipient) => ({
     ...recipient.$
   }));
 
-  const podcastValue: IRssPodcastValue = data['podcast:value'] && {
-    ...data['podcast:value'].$,
+  const podcastValue: IRssPodcastValue = {
+    ...podcastValueWmIlp.$,
     ...(recipients?.length > 0 && { valueRecipients: recipients })
   };
 
