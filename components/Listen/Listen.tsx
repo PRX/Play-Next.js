@@ -227,6 +227,11 @@ const Listen = ({ config, data }: IListenPageProps) => {
     ]
   );
 
+  const renderPlaylist = useMemo(
+    () => <EpisodeList onEpisodeClick={handleEpisodeClick} />,
+    [handleEpisodeClick]
+  );
+
   useEffect(() => {
     if (view === 'episode' && !episode) {
       dispatch({
@@ -287,7 +292,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
               )}
             </div>
             <div className={styles.podcastEpisodes}>
-              <EpisodeList onEpisodeClick={handleEpisodeClick} />
+              {view.indexOf('podcast') !== -1 && renderPlaylist}
             </div>
           </div>
 
