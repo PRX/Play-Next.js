@@ -13,7 +13,6 @@ import {
   useRef,
   useState
 } from 'react';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
@@ -237,9 +236,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
 
   return (
     <>
-      <Head>
-        <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
-      </Head>
+      <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
       <ThemeVars theme="Listen" cssProps={styles} />
       <div className={styles.root} data-view={view} data-theme={theme}>
         <div className={styles.background}>
@@ -287,7 +284,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
               )}
             </div>
             <div className={styles.podcastEpisodes}>
-              <EpisodeList onEpisodeClick={handleEpisodeClick} />
+              {view.indexOf('podcast') !== -1 && (
+                <EpisodeList onEpisodeClick={handleEpisodeClick} />
+              )}
             </div>
           </div>
 

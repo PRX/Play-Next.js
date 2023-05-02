@@ -4,7 +4,6 @@
  */
 
 import type React from 'react';
-import Head from 'next/head';
 
 export interface IThemeVarsProps {
   theme: string;
@@ -24,11 +23,9 @@ const ThemeVars: React.FC<IThemeVarsProps> = ({
 
   return (
     hasCssVars && (
-      <Head>
-        <style key={`ThemeVars:${key}`}>{`:root {\n  ${cssVars.join(
-          '\n  '
-        )}\n}`}</style>
-      </Head>
+      <style key={`ThemeVars:${key}`}>{`:root {\n  ${cssVars.join(
+        '\n  '
+      )}\n}`}</style>
     )
   );
 };
