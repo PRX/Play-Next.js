@@ -82,7 +82,7 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">
               {`<iframe
-  href="https://play.prx.org/e?uf=https://example.com/rss/feed.xml"
+  src="https://play.prx.org/e?uf=https://example.com/rss/feed.xml"
   width="100%"
   height="200"
 />`}
@@ -288,7 +288,7 @@ const Home: NextPage = () => {
             <code className="language-markup">
               {`<div style="width: 100%; height: calc(100% + 200px); position: relative;">
   <iframe
-    href="...&ca=1"
+    src="...&ca=1"
     style="position: absolute; inset: 0;"
   />
 </div>`}
@@ -304,7 +304,7 @@ const Home: NextPage = () => {
             <code className="language-markup">
               {`<div style="width: 100%; height: calc(100% + 800px); position: relative;">
   <iframe
-    href="...&ca=1"
+    src="...&ca=1"
     style="position: absolute; inset: 0;"
   />
 </div>`}
@@ -374,7 +374,7 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">
               {`<iframe
-  href="https://play.prx.org/e?uf=https://example.com/rss/feed.xml"
+  src="https://play.prx.org/e?uf=https://example.com/rss/feed.xml"
   width="100%"
   height="200"
 />`}
@@ -385,7 +385,7 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">
               {`<iframe
-  href="https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1"
+  src="https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1"
   width="500"
   height="700"
 />`}
@@ -396,7 +396,7 @@ const Home: NextPage = () => {
             <code className="language-markup">
               {`<div style="width: 100%; height: calc(100% + 200px); position: relative;">
   <iframe
-    href="https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1"
+    src="https://play.prx.org/e?uf=https://example.com/rss/feed.xml&ca=1"
     style="position: absolute; inset: 0;"
   />
 </div>`}
@@ -406,7 +406,7 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">
               {`<iframe
-  href="https://play.prx.org/e?uf=https://example.com/rss/feed.xml&sp=20"
+  src="https://play.prx.org/e?uf=https://example.com/rss/feed.xml&sp=20"
   width="100%"
   height="600"
 />`}
@@ -416,7 +416,7 @@ const Home: NextPage = () => {
           <pre>
             <code className="language-markup">
               {`<iframe
-  href="https://play.prx.org/e?ua=https://example.com/files/audio.mp3&tt=My+Audio&ts+Something+about+the+audio%ue=https://example.com/files/thumbnail.jpg&ui=https://example.com/files/background.jpg"
+  src="https://play.prx.org/e?ua=https://example.com/files/audio.mp3&tt=My+Audio&ts+Something+about+the+audio%ue=https://example.com/files/thumbnail.jpg&ui=https://example.com/files/background.jpg"
   width="100%"
   height="200"
 />`}
