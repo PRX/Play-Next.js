@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps<
   let error: IPageError;
   try {
     // ...try to fetch the feed...
-    rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
+    rssData = config.feedUrl ? await fetchRssFeed(config.feedUrl) : null;
   } catch (e) {
     switch (e.name) {
       case 'RssProxyError':
