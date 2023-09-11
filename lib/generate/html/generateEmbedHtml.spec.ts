@@ -35,7 +35,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch(/src="[^"]+"/);
       expect(result).toMatch(/[?&]sp=10/);
       expect(result).toMatch('width="100%"');
-      expect(result).toMatch('height="600"');
+      expect(result).toMatch('height="581"');
       expect(result).toMatch('frameborder="0"');
       expect(result).toMatch('scrolling="no"');
       expect(result).toMatch('allow="monetization"');
@@ -53,7 +53,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch(/src="[^"]+"/);
       expect(result).toMatch(/[?&]ca=1/);
       expect(result).toMatch(
-        'div style="position: relative; height: 0; width: 100%; padding-top: calc(100% + 200px);"'
+        'position: relative; height: 0; width: 100%; min-width: 300px; padding-top: calc(100% + 200px);'
       );
       expect(result).toMatch('width="100%"');
       expect(result).toMatch('height="100%"');
@@ -77,7 +77,7 @@ describe('lib/generate/html', () => {
       expect(result).toMatch(/[?&]ca=1/);
       expect(result).toMatch(/[?&]sp=15/);
       expect(result).toMatch(
-        'div style="position: relative; height: 0; width: 100%; padding-top: calc(100% + 600px);"'
+        'position: relative; height: 0; width: 100%; min-width: 300px; padding-top: calc(100% + 581px);'
       );
       expect(result).toMatch('width="100%"');
       expect(result).toMatch('height="100%"');
