@@ -141,6 +141,8 @@ export interface IEmbedConfig {
   showCoverArt?: boolean;
   accentColor?: string[];
   theme?: 'light' | 'dark' | 'auto';
+  isPrivate?: boolean;
+  maxWidth?: number;
 }
 
 /**

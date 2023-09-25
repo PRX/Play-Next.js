@@ -30,7 +30,10 @@ const Player: React.FC<IPlayerProps> = ({
   imageUrl,
   children
 }) => {
-  const initialTracks = Array.isArray(audio) ? audio : [audio];
+  const initialTracks = useMemo(
+    () => (Array.isArray(audio) ? audio : [audio]),
+    [audio]
+  );
   const audioElm = useRef<HTMLAudioElement>();
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
@@ -445,6 +448,10 @@ const Player: React.FC<IPlayerProps> = ({
     },
     [pauseAudio]
   );
+
+  useEffect(() => {
+    setTracks(initialTracks);
+  }, [initialTracks]);
 
   return (
     audioElm && (
