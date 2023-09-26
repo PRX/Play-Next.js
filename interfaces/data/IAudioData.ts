@@ -22,6 +22,13 @@ export interface IAudioData {
   url: string;
 
   /**
+   * Source URL for the preview audio file.
+   * Should be used for playback when provided.
+   * Do NOT include this in shared URL's or HTML markup.
+   */
+  previewUrl: string;
+
+  /**
    * Title to be displayed in player.
    */
   title: string;
