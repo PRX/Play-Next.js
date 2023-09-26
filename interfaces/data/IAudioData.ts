@@ -26,7 +26,7 @@ export interface IAudioData {
    * Should be used for playback when provided.
    * Do NOT include this in shared URL's or HTML markup.
    */
-  previewUrl: string;
+  previewUrl?: string;
 
   /**
    * Title to be displayed in player.
