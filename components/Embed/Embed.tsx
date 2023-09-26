@@ -56,7 +56,7 @@ export interface IEmbedLayoutBreakPoint {
 }
 
 const Embed = ({ config, data }: IEmbedProps) => {
-  const { showCoverArt, showPlaylist, accentColor, theme, isPrivate } = config;
+  const { showCoverArt, showPlaylist, accentColor, theme } = config;
   const {
     audio,
     playlist,
@@ -377,7 +377,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                         embedHtml={embedHtml}
                         isOpen={shareShown}
                         portalId="embed-modals"
-                        isPrivate={isPrivate}
                       />
 
                       <SupportMenu
