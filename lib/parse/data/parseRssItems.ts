@@ -123,11 +123,11 @@ const parseRssItems = (
 
   // If we have no items at this point, just use the first one.
   if (!resultItems?.length) {
-    resultItems = [rssItems[0]];
+    resultItems = rssItems[0] && [rssItems[0]];
   }
 
-  // Return resulting items as audio data.
-  return resultItems.map(
+  // Return resulting items as audio data or `undefined`.
+  return resultItems?.map(
     (item) =>
       ({
         // Provide some default props inherited from feed.
