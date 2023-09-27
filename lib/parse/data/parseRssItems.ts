@@ -13,7 +13,7 @@ const parseRssItems = (
   config: IEmbedConfig,
   itemParser?: Function
 ) => {
-  if (!rssData || !rssData.items) return undefined;
+  if (!rssData || !rssData.items?.length) return undefined;
 
   const { link, image, itunes } = rssData;
   const { url: rssImageUrl } = image || {};
@@ -42,6 +42,7 @@ const parseRssItems = (
         })
       } as IRssItem)
   );
+
   const episode =
     episodeGuid && rssItems.find((item) => item.guid === episodeGuid);
   let resultItems: IRssItem[];
