@@ -1,6 +1,6 @@
 /**
- * @file [episodeId].tsx
- * Landing page to listen to individual episode.
+ * @file listen/index.tsx
+ * Landing page for podcast using RSS data.
  */
 
 import type { GetServerSideProps } from 'next';
@@ -25,7 +25,7 @@ const ListenPage = ({ data, config, error }: IListenPageProps) => {
     episodes
   } = data;
   const episode =
-    episodeGuid && episodes.find(({ guid }) => guid === episodeGuid);
+    episodeGuid && episodes?.find(({ guid }) => guid === episodeGuid);
   const {
     title: episodeTitle,
     link: episodeLink,

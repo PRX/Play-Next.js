@@ -236,6 +236,19 @@ describe('lib/parse/data', () => {
       expect(result[0].guid).toBe('foo-1');
     });
 
+    test('should return undefined when rss has no items', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all', playlistSeason: 999 };
+      const result = parseRssItems(
+        {
+          ...mockRssData,
+          items: []
+        },
+        config
+      );
+
+      expect(result).toBeUndefined();
+    });
+
     test('should return items sorted by season then episode in ascending order', () => {
       const config: IEmbedConfig = { showPlaylist: 'all' };
       const result = parseRssItems(
