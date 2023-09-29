@@ -17,6 +17,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
     title: configTitle,
     subtitle: configSubtitle,
     audioUrl: configAudioUrl,
+    audioUrlPreview: configAudioUrlPreview,
     episodeGuid: configEpisodeGuid,
     episodeImageUrl: configImageUrl,
     showPlaylist
@@ -69,6 +70,9 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
     ...(configTitle && { title: configTitle }),
     ...(configSubtitle && { subtitle: configSubtitle }),
     ...(configAudioUrl && { url: generateAudioUrl(configAudioUrl) }),
+    ...(configAudioUrlPreview && {
+      previewUrl: generateAudioUrl(configAudioUrlPreview)
+    }),
     ...(configImageUrl && { imageUrl: configImageUrl })
   };
   const audioHasProps = Object.keys(audio).length > 0 && !!audio.url;

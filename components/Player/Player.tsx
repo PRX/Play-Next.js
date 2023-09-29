@@ -48,7 +48,8 @@ const Player: React.FC<IPlayerProps> = ({
     [currentTrack.duration]
   );
   const isLastTrack = currentTrackIndex === tracks.length - 1;
-  const { url } = currentTrack;
+  const { url, previewUrl } = currentTrack;
+  const currentTrackUrl = previewUrl || url;
 
   const boundedTime = useCallback(
     (time: number) =>
@@ -437,9 +438,9 @@ const Player: React.FC<IPlayerProps> = ({
   }, [currentTime]);
 
   useEffect(() => {
-    loadAudio(url);
+    loadAudio(currentTrackUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [currentTrackUrl]);
 
   useEffect(
     () => () => {

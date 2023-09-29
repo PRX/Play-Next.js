@@ -28,6 +28,14 @@ export interface IEmbedParams extends ParsedUrlQuery {
   ua?: string | string[];
 
   /**
+   * Use to provide a preview safe audio URL.
+   *
+   * Do NOT include when generating share URL's.
+   * (eg. clipboard copied URL, embed iframe URL params).
+   */
+  uap?: string | string[];
+
+  /**
    * Use to override URL of image initial shown as player background.
    */
   ui?: string | string[];
@@ -126,6 +134,7 @@ export interface IEmbedConfig {
   subtitle?: string;
   ctaTitle?: string;
   audioUrl?: string;
+  audioUrlPreview?: string;
   imageUrl?: string;
   episodeImageUrl?: string;
   feedUrl?: string;
@@ -141,7 +150,6 @@ export interface IEmbedConfig {
   showCoverArt?: boolean;
   accentColor?: string[];
   theme?: 'light' | 'dark' | 'auto';
-  isPrivate?: boolean;
   maxWidth?: number;
 }
 
@@ -154,6 +162,7 @@ EmbedParamKeysMap.set('tt', 'title');
 EmbedParamKeysMap.set('ts', 'subtitle');
 EmbedParamKeysMap.set('tc', 'ctaTitle');
 EmbedParamKeysMap.set('ua', 'audioUrl');
+EmbedParamKeysMap.set('uap', 'audioUrlPreview');
 EmbedParamKeysMap.set('ui', 'imageUrl');
 EmbedParamKeysMap.set('ue', 'episodeImageUrl');
 EmbedParamKeysMap.set('uf', 'feedUrl');
@@ -172,6 +181,10 @@ EmbedParamKeysMap.set('th', 'theme');
 
 /**
  * Map of embed config property keys to embed parameter keys.
+ *
+ * Leave out any config key that should not persist when generating share
+ * URL's.
+ * (eg. clipboard copied URL, embed iframe URL params).
  */
 export const EmbedConfigKeysMap: Map<keyof IEmbedConfig, keyof IEmbedParams> =
   new Map();

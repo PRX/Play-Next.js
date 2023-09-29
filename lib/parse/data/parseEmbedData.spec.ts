@@ -80,6 +80,7 @@ describe('lib/parse/data', () => {
         title: 'Foo',
         subtitle: 'Foo to the bar',
         audioUrl: 'http://foo.com/foo.mp3',
+        audioUrlPreview: 'http://preview.foo.com/foo.mp3',
         imageUrl: 'http://foo.com/bg.png',
         episodeImageUrl: 'http://foo.com/foo.png',
         subscribeUrl: 'http://foo.com/feed.rss'
@@ -90,6 +91,7 @@ describe('lib/parse/data', () => {
         title: 'Foo',
         subtitle: 'Foo to the bar',
         url: 'http://foo.com/foo.mp3?_from=play.prx.org',
+        previewUrl: 'http://preview.foo.com/foo.mp3?_from=play.prx.org',
         imageUrl: 'http://foo.com/foo.png'
       });
       expect(result.followUrls.rss).toBe('http://foo.com/feed.rss');
