@@ -31,7 +31,7 @@ const Player: React.FC<IPlayerProps> = ({
   children
 }) => {
   const initialTracks = useMemo(
-    () => (Array.isArray(audio) ? audio : [audio]),
+    () => (audio && (Array.isArray(audio) ? audio : [audio])) || [],
     [audio]
   );
   const audioElm = useRef<HTMLAudioElement>();
