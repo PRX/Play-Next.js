@@ -34,10 +34,7 @@ const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
   };
 
   function handlePostMessage(e: MessageEvent) {
-    if (
-      !/^https?:\/\/(feeder)(\.staging)?\.prx\.(org|tech|test)$/.test(e.origin)
-    )
-      return;
+    if (!/\.prx\.(org|tech|test)$/.test(e.origin)) return;
 
     setNewConfig((prevConfig) => ({
       ...prevConfig,
