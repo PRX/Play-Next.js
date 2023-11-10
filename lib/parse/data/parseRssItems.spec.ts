@@ -8,6 +8,7 @@ describe('lib/parse/data', () => {
       {
         guid: 'foo-1',
         categories: ['cat1', '  cat2', 'Cat3  '],
+        enclosure: { url: 'ENCLOSURE:URL' },
         itunes: {
           season: '1',
           categories: ['cat4'],
@@ -16,24 +17,28 @@ describe('lib/parse/data', () => {
       },
       {
         guid: 'foo-2',
-        categories: ['cat1', 'cat2']
+        categories: ['cat1', 'cat2'],
+        enclosure: { url: 'ENCLOSURE:URL' }
       },
       {
         guid: 'foo-3',
         categories: ['cat1', 'cat3'],
+        enclosure: { url: 'ENCLOSURE:URL' },
         itunes: {
           season: '1'
         }
       },
       {
         guid: 'foo-4',
+        enclosure: { url: 'ENCLOSURE:URL' },
         itunes: {
           season: '2',
           categories: ['cat2']
         }
       },
       {
-        guid: 'foo-5'
+        guid: 'foo-5',
+        enclosure: { url: 'ENCLOSURE:URL' }
       }
     ];
     const mockRssData: IRss = {
@@ -260,6 +265,7 @@ describe('lib/parse/data', () => {
           items: [
             {
               guid: 'GUID:2:1',
+              enclosure: { url: 'ENCLOSURE:URL' },
               itunes: {
                 season: '2',
                 episode: '1'
@@ -267,6 +273,7 @@ describe('lib/parse/data', () => {
             },
             {
               guid: 'GUID:1:2',
+              enclosure: { url: 'ENCLOSURE:URL' },
               itunes: {
                 season: '1',
                 episode: '2'
@@ -274,12 +281,14 @@ describe('lib/parse/data', () => {
             },
             {
               guid: 'GUID:1:1',
+              enclosure: { url: 'ENCLOSURE:URL' },
               itunes: {
                 episode: '1'
               }
             },
             {
               guid: 'GUID:2:2',
+              enclosure: { url: 'ENCLOSURE:URL' },
               itunes: {
                 season: '2',
                 episode: '2'
@@ -287,6 +296,7 @@ describe('lib/parse/data', () => {
             },
             {
               guid: 'GUID:1:3',
+              enclosure: { url: 'ENCLOSURE:URL' },
               itunes: {
                 episode: '3'
               }
@@ -301,6 +311,24 @@ describe('lib/parse/data', () => {
       expect(result[2].guid).toBe('GUID:1:3');
       expect(result[3].guid).toBe('GUID:2:1');
       expect(result[4].guid).toBe('GUID:2:2');
+    });
+
+    test('should filter out items w/o enclosure', () => {
+      const config: IEmbedConfig = { showPlaylist: 'all' };
+      const result = parseRssItems(
+        {
+          ...mockRssData,
+          items: [
+            ...mockRssData.items,
+            {
+              guid: 'GUID:NO_ENCLOSURE'
+            }
+          ]
+        },
+        config
+      );
+
+      expect(result[0].guid).not.toBe('GUID:NO_ENCLOSURE');
     });
   });
 });

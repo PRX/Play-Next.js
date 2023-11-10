@@ -21,27 +21,29 @@ const parseRssItems = (
   const imageUrl = rssItunesImage || rssImageUrl;
   const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
     config;
-  const rssItems = rssData.items.map(
-    (item) =>
-      ({
-        ...item,
-        ...((rssData.itunes?.categories ||
-          item.categories ||
-          item.itunes?.categories) && {
-          categories: [
-            ...(item.categories || []),
-            ...((item.itunes?.categories as string[]) || []),
-            // Inherit categories from channel when item is missing categories.
-            ...((!item.categories &&
-              !item.itunes?.categories &&
-              rssData.itunes.categories) ||
-              [])
-          ]
-            .map((c) => c.trim())
-            .reduce((a, c) => (a.indexOf(c) === -1 ? [...a, c] : a), [])
-        })
-      } as IRssItem)
-  );
+  const rssItems = rssData.items
+    .filter((item) => !!item.enclosure)
+    .map(
+      (item) =>
+        ({
+          ...item,
+          ...((rssData.itunes?.categories ||
+            item.categories ||
+            item.itunes?.categories) && {
+            categories: [
+              ...(item.categories || []),
+              ...((item.itunes?.categories as string[]) || []),
+              // Inherit categories from channel when item is missing categories.
+              ...((!item.categories &&
+                !item.itunes?.categories &&
+                rssData.itunes.categories) ||
+                [])
+            ]
+              .map((c) => c.trim())
+              .reduce((a, c) => (a.indexOf(c) === -1 ? [...a, c] : a), [])
+          })
+        } as IRssItem)
+    );
 
   const episode =
     episodeGuid && rssItems.find((item) => item.guid === episodeGuid);
