@@ -17,6 +17,8 @@ const ShareFacebookButton: React.FC<IShareFacebookButtonProps> = ({
   className,
   url
 }) => {
+  if (!url) return null;
+
   const params = new URLSearchParams({
     u: url
   });
