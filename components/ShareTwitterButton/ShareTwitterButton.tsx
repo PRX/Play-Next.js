@@ -19,6 +19,8 @@ const ShareTwitterButton: React.FC<IShareTwitterButtonProps> = ({
   url,
   text
 }) => {
+  if (!url) return null;
+
   const params = new URLSearchParams({
     url,
     ...(text && { text })

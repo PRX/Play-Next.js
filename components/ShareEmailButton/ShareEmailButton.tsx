@@ -20,6 +20,8 @@ const ShareEmailButton: React.FC<IShareEmailButtonProps> = ({
   subject,
   body
 }) => {
+  if (!url) return null;
+
   const params = new URLSearchParams({
     ...(subject && { subject }),
     body: body ? `${body} ${url}` : `Check out this link! ${url}`

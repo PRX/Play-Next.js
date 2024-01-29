@@ -58,6 +58,7 @@ export interface IEmbedLayoutBreakPoint {
 const Embed = ({ config, data }: IEmbedProps) => {
   const { showCoverArt, showPlaylist, accentColor, theme } = config;
   const {
+    mode,
     audio,
     playlist,
     bgImageUrl,
@@ -65,6 +66,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
     supportUrls,
     paymentPointer
   } = data;
+  const isPreview = mode === 'preview';
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const { shareShown, followShown, supportShown, webMonetizationShown } = state;
@@ -94,11 +96,13 @@ const Embed = ({ config, data }: IEmbedProps) => {
         0,
         playlist.findIndex((track) => track.guid === audio.guid)
       );
+  const currentTrack = playlist?.[currentTrackIndex] || audio;
+  const showShareMenu = !!currentTrack?.link || !isPreview;
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
   });
-  const embedHtml = generateEmbedHtml(config);
+  const embedHtml = !isPreview && generateEmbedHtml(config);
   const rootStyles = [
     ...(accentColor
       ? [
@@ -354,8 +358,10 @@ const Embed = ({ config, data }: IEmbedProps) => {
                           inert: 'inert'
                         })}
                       style={{
-                        // Initialize hidden to prevent content flash.
-                        visibility: 'hidden'
+                        // Initialize hidden in compact layout to prevent content flash.
+                        ...(playerLayout?.name === 'compact' && {
+                          visibility: 'hidden'
+                        })
                       }}
                     >
                       <FollowMenu
@@ -370,14 +376,20 @@ const Embed = ({ config, data }: IEmbedProps) => {
                         followUrls={followUrls}
                       />
 
-                      <PlayerShareMenu
-                        className={clsx(styles.menuButton, styles.shareButton)}
-                        onOpen={handleShareButtonClick}
-                        onClose={handleShareCloseClick}
-                        embedHtml={embedHtml}
-                        isOpen={shareShown}
-                        portalId="embed-modals"
-                      />
+                      {showShareMenu && (
+                        <PlayerShareMenu
+                          className={clsx(
+                            styles.menuButton,
+                            styles.shareButton
+                          )}
+                          onOpen={handleShareButtonClick}
+                          onClose={handleShareCloseClick}
+                          embedHtml={embedHtml}
+                          downloadable={!isPreview}
+                          isOpen={shareShown}
+                          portalId="embed-modals"
+                        />
+                      )}
 
                       <SupportMenu
                         className={clsx(

@@ -9,6 +9,11 @@ import type { IAudioData } from './IAudioData';
  */
 export interface IEmbedData {
   /**
+   * Mode the player will be initialized with.
+   */
+  mode?: 'default' | 'preview';
+
+  /**
    * Audio data player will be initialized with.
    */
   audio: IAudioData;

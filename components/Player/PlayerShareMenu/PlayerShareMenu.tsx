@@ -21,6 +21,7 @@ export interface IPlayerShareMenuProps extends IModalProps {
   onOpen(): void;
   className?: string;
   embedHtml?: string;
+  downloadable?: boolean;
 }
 
 const PlayerShareMenu: React.FC<IPlayerShareMenuProps> = ({
@@ -29,6 +30,7 @@ const PlayerShareMenu: React.FC<IPlayerShareMenuProps> = ({
   isOpen,
   portalId,
   embedHtml,
+  downloadable = true,
   className
 }) => {
   const handleClick = () => {
@@ -55,7 +57,7 @@ const PlayerShareMenu: React.FC<IPlayerShareMenuProps> = ({
 
           <CopyLinkButton />
 
-          <FileDownloadButton />
+          {downloadable && <FileDownloadButton />}
 
           {embedHtml && (
             <MenuButton

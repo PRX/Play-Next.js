@@ -4,7 +4,7 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IRss } from '@interfaces/data';
+import type { IEmbedData, IRss } from '@interfaces/data';
 import type { IPageError } from '@interfaces/error';
 import type { IPreviewPageProps } from '@interfaces/page';
 import { useEffect, useState } from 'react';
@@ -23,14 +23,15 @@ import generateEmbedHtml, {
 const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
   const [newConfig, setNewConfig] = useState(config);
   const data = parseEmbedData(newConfig, rssData);
-  const embedData = {
+  const embedData: IEmbedData = {
     ...data,
     ...(newConfig.showPlaylist &&
       newConfig.showPlaylist !== 'all' &&
       newConfig.showPlaylist > 1 &&
       data.playlist && {
         playlist: data.playlist.slice(0, newConfig.showPlaylist)
-      })
+      }),
+    mode: 'preview'
   };
 
   function handlePostMessage(e: MessageEvent) {

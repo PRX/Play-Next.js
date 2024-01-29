@@ -17,6 +17,8 @@ const CopyLinkButton: React.FC<ICopyLinkButtonProps> = ({ className }) => {
   const { currentTrackIndex, tracks } = state;
   const { link } = tracks[currentTrackIndex];
 
+  if (!link) return null;
+
   return (
     <MenuButton
       className={className}
