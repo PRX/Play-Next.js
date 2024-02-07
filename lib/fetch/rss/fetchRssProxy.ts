@@ -1,4 +1,5 @@
 import { IRss } from '@interfaces/data';
+import RssProxyError from './RssProxyError';
 
 const fetchRssProxy = async (feedUrl: string) => {
   const apiProxyBaseUrl =
@@ -7,9 +8,14 @@ const fetchRssProxy = async (feedUrl: string) => {
 
   apiProxyUrl.searchParams.set('u', feedUrl);
 
-  const rssData = await fetch(apiProxyUrl.toString()).then((resp) =>
-    resp.ok ? resp.json() : null
-  );
+  const response = await fetch(apiProxyUrl.toString());
+
+  if (!response.ok) {
+    const { error } = await response.json();
+    throw new RssProxyError(error?.message, feedUrl);
+  }
+
+  const rssData = await response.json();
 
   return rssData as IRss;
 };

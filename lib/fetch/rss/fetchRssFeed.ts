@@ -1,6 +1,7 @@
 import Parser from 'rss-parser';
 import type { IRss } from '@interfaces/data';
 import { decoratePodcast } from './decoratePodcast';
+import RssProxyError from './RssProxyError';
 
 type CustomFeed = { 'podcast:value': any; 'itunes:type': string };
 type CustomItem = {
@@ -19,17 +20,6 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
     item: ['podcast:value', 'itunes:episodeType']
   }
 });
-
-class RssProxyError extends Error {
-  public url: string;
-
-  constructor(message: string, url: string) {
-    super(message);
-    this.name = 'RssProxyError';
-    this.message = message;
-    this.url = url;
-  }
-}
 
 /**
  * Fetch and parse RSS feed URL.
