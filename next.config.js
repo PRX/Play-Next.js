@@ -34,6 +34,15 @@ const nextConfig = {
             value: 'public, max-age=300'
           }
         ]
+      },
+      {
+        source: '/api/proxy/rss',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=90'
+          }
+        ]
       }
     ];
   },
