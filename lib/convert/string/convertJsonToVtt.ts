@@ -22,23 +22,57 @@ const convertJsonToVtt = (json: string | IRssPodcastTranscriptJson) => {
     'WEBVTT',
     ...segments
       .filter(({ body }) => !!body?.trim().length)
-      .reduce((a, s) => {
-        if (!a.length) return [s];
+      .reduce((a, currentSegment, index, all) => {
+        if (!a.length) return [currentSegment];
 
         const aClone = [...a];
-        const segment = aClone.pop();
-        const startsWithPunctuation = /^(?:\.|,|\?)/.test(s.body);
+        const previousSegment = aClone.pop();
+        const nextSegment = all.at(index + 1);
+        const startsWithPunctuation = /^(?:\.|,|\?)/.test(currentSegment.body);
+        const speakerChanged =
+          previousSegment.speaker !== currentSegment.speaker;
+        const previousSegmentOverlaps =
+          previousSegment.endTime > currentSegment.startTime;
+        const nextSegmentOverlaps =
+          nextSegment && nextSegment.startTime < currentSegment.endTime;
 
-        // When speaker changes or body exceeds character limit, start merging a new segment.
-        if (
-          segment.speaker !== s.speaker ||
-          (segment.body.length >= cueBodyCharacterLimit &&
-            !startsWithPunctuation)
-        ) {
-          return [...a, s];
+        // Merge overlapping segments.
+        if (previousSegmentOverlaps && !speakerChanged) {
+          return [
+            ...aClone,
+            {
+              ...previousSegment,
+              endTime: currentSegment.endTime,
+              body: [previousSegment.body, currentSegment.body].join('\n')
+            }
+          ];
         }
 
-        const lines = segment.body.split('\n');
+        /**
+         * Append current segment for future merges when:
+         * - Speaker changes
+         * - Body exceeds character limit
+         * - Next segment starts before the current segment ends
+         */
+        if (
+          speakerChanged ||
+          (previousSegment.body.length >= cueBodyCharacterLimit &&
+            !startsWithPunctuation) ||
+          nextSegmentOverlaps
+        ) {
+          return [
+            ...a,
+            {
+              ...currentSegment,
+              startTime: Math.max(
+                currentSegment.startTime,
+                previousSegment.endTime
+              )
+            }
+          ];
+        }
+
+        const lines = previousSegment.body.split('\n');
         let lastLine = lines.pop();
         if (
           lastLine.length > cueBodyLineCharacterLimit &&
@@ -48,12 +82,14 @@ const convertJsonToVtt = (json: string | IRssPodcastTranscriptJson) => {
           lastLine = '';
         }
 
-        lines.push(`${lastLine}${startsWithPunctuation ? '' : ' '}${s.body}`);
-        segment.body = lines.join('\n');
+        lines.push(
+          `${lastLine}${startsWithPunctuation ? '' : ' '}${currentSegment.body}`
+        );
+        previousSegment.body = lines.join('\n');
 
-        segment.endTime = s.endTime;
+        previousSegment.endTime = currentSegment.endTime;
 
-        return [...aClone, segment];
+        return [...aClone, previousSegment];
       }, [])
       .map((segment, index) => {
         const label = index + 1;

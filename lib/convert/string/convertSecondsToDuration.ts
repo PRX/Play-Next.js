@@ -23,7 +23,11 @@ const convertSecondsToDuration = (
     fractionDigits,
     fractionDelimiter = '.'
   } = options || {};
-  let duration = '00:00';
+  let duration = forceHours ? '00:00:00' : '00:00';
+
+  if (showMilliseconds) {
+    duration += `${fractionDelimiter}${'0'.padEnd(fractionDigits, '0')}`;
+  }
 
   if (typeof inputSeconds === 'string' && inputSeconds.indexOf(':') > -1) {
     return inputSeconds;
@@ -38,10 +42,11 @@ const convertSecondsToDuration = (
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = Math.floor(totalSeconds) % 60;
+
     duration = [
-      ...(hours || forceHours
-        ? [!hours || padHours ? String(hours).padStart(2, '0') : hours]
-        : []),
+      ...(hours
+        ? [padHours ? String(hours).padStart(2, '0') : hours]
+        : (forceHours && ['00']) || []),
       String(minutes).padStart(2, '0'),
       String(seconds).padStart(2, '0')
     ].join(':');

@@ -28,10 +28,12 @@ describe('lib/convert/string', () => {
       const result1 = convertSecondsToDuration(42, { forceHours: true });
       const result2 = convertSecondsToDuration(105, { forceHours: true });
       const result3 = convertSecondsToDuration(3616, { forceHours: true });
+      const result4 = convertSecondsToDuration(0, { forceHours: true });
 
       expect(result1).toBe('00:00:42');
       expect(result2).toBe('00:01:45');
       expect(result3).toBe('1:00:16');
+      expect(result4).toBe('00:00:00');
     });
 
     test('should show padded hours.', () => {
@@ -64,18 +66,27 @@ describe('lib/convert/string', () => {
     });
 
     test('should show milliseconds.', () => {
-      const result = convertSecondsToDuration(4.02, { showMilliseconds: true });
+      const result1 = convertSecondsToDuration(4.02, {
+        showMilliseconds: true
+      });
+      const result2 = convertSecondsToDuration(0, { showMilliseconds: true });
 
-      expect(result).toBe('00:04.02');
+      expect(result1).toBe('00:04.02');
+      expect(result2).toBe('00:00.0');
     });
 
     test('should show padded milliseconds.', () => {
-      const result = convertSecondsToDuration(4.02, {
+      const result1 = convertSecondsToDuration(4.02, {
+        showMilliseconds: true,
+        fractionDigits: 3
+      });
+      const result2 = convertSecondsToDuration(0, {
         showMilliseconds: true,
         fractionDigits: 3
       });
 
-      expect(result).toBe('00:04.020');
+      expect(result1).toBe('00:04.020');
+      expect(result2).toBe('00:00.000');
     });
 
     test('should use custom fractional separator.', () => {
