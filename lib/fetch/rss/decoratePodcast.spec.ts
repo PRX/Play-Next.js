@@ -1,5 +1,6 @@
 import {
   decoratePodcast,
+  extractPodcastTranscript,
   extractPodcastValue
 } from '@lib/fetch/rss/decoratePodcast';
 
@@ -39,6 +40,20 @@ describe('lib/fetch/rss', () => {
         ]
       }
     ];
+    const mockPodcastTranscript = [
+      {
+        $: {
+          url: 'http://foo.com/transcript',
+          type: 'text/html'
+        }
+      },
+      {
+        $: {
+          url: 'http://foo.com/transcript.srt',
+          type: 'application/srt'
+        }
+      }
+    ];
 
     const mockItem = {
       guid: 'foo-bar',
@@ -46,9 +61,10 @@ describe('lib/fetch/rss', () => {
       title: 'Foo Bar'
     };
 
-    const mockItemValue = {
+    const mockItemWithPodcastProps = {
       ...mockItem,
-      ...{ 'podcast:value': mockPodcastValue }
+      'podcast:value': mockPodcastValue,
+      'podcast:transcript': mockPodcastTranscript
     };
 
     const mockRss = {
@@ -59,7 +75,7 @@ describe('lib/fetch/rss', () => {
     test('should extract podcast:value usable for webmonetization', () => {
       expect(extractPodcastValue(mockItem)).toBeUndefined();
 
-      expect(extractPodcastValue(mockItemValue)).toStrictEqual({
+      expect(extractPodcastValue(mockItemWithPodcastProps)).toStrictEqual({
         type: 'webmonetization',
         method: 'ILP',
         valueRecipients: [
@@ -78,10 +94,25 @@ describe('lib/fetch/rss', () => {
       ).toBeUndefined();
     });
 
-    test('should parse and decorate podcast:value items', () => {
+    test('should extract podcast:transcript prop', () => {
+      expect(extractPodcastTranscript(mockItem)).toBeUndefined();
+
+      expect(extractPodcastTranscript(mockItemWithPodcastProps)).toStrictEqual([
+        {
+          url: 'http://foo.com/transcript',
+          type: 'text/html'
+        },
+        {
+          url: 'http://foo.com/transcript.srt',
+          type: 'application/srt'
+        }
+      ]);
+    });
+
+    test('should parse and decorate podcast props', () => {
       const feed = decoratePodcast({
         ...mockRss,
-        items: [mockItem, mockItemValue]
+        items: [mockItem, mockItemWithPodcastProps]
       });
       expect(feed.items[0].podcast).toBeUndefined();
       expect(feed.items[1].podcast).toStrictEqual({
@@ -96,7 +127,17 @@ describe('lib/fetch/rss', () => {
               split: '100'
             }
           ]
-        }
+        },
+        transcript: [
+          {
+            url: 'http://foo.com/transcript',
+            type: 'text/html'
+          },
+          {
+            url: 'http://foo.com/transcript.srt',
+            type: 'application/srt'
+          }
+        ]
       });
 
       expect(feed.podcast).toStrictEqual({

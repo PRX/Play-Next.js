@@ -3,5 +3,5 @@
  */
 
 export interface IRssProxyError extends Error {
-  url: string;
+  url?: string;
 }

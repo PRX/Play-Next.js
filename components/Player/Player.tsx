@@ -50,6 +50,9 @@ const Player: React.FC<IPlayerProps> = ({
   const isLastTrack = currentTrackIndex === tracks.length - 1;
   const { url, previewUrl } = currentTrack;
   const currentTrackUrl = previewUrl || url;
+  const transcript = currentTrack?.transcripts?.find(
+    (t) => !!['vtt', 'srt', 'json'].find((n) => t.type.includes(n))
+  );
 
   const boundedTime = useCallback(
     (time: number) =>
@@ -383,11 +386,34 @@ const Player: React.FC<IPlayerProps> = ({
     [audioElm, playing, seekBy, seekTo, seekToRelative, volumeDown, volumeUp]
   );
 
+  function handleCueChange() {
+    const textTrack = [...(audioElm.current?.textTracks || [])].find(
+      (track) => track.mode === 'showing'
+    );
+
+    [...(textTrack.activeCues || [])].forEach((c: VTTCue) => {
+      console.log(c.text, c);
+    });
+  }
+
   useEffect(() => {
     // Initialize audio element.
     if (!audioElm.current) {
-      audioElm.current = new Audio();
+      // audioElm.current = new Audio();
     }
+
+    [...audioElm.current.textTracks].forEach((track) => {
+      console.log(track);
+      if (track.kind === 'captions') {
+        // eslint-disable-next-line no-param-reassign
+        // track.mode = track.mode !== 'showing' ? 'showing' : 'hidden';
+      }
+    });
+
+    audioElm.current.textTracks[0]?.addEventListener(
+      'cuechange',
+      handleCueChange
+    );
 
     // Setup event handlers on audio element.
     audioElm.current.addEventListener('play', handlePlay);
@@ -406,6 +432,11 @@ const Player: React.FC<IPlayerProps> = ({
         handleLoadedMetadata
       );
       audioElm.current.removeEventListener('ended', handleEnded);
+
+      audioElm.current.textTracks[0]?.removeEventListener(
+        'cuechange',
+        handleCueChange
+      );
 
       window.removeEventListener('keydown', handleHotkey);
     };
@@ -457,6 +488,16 @@ const Player: React.FC<IPlayerProps> = ({
   return (
     audioElm && (
       <PlayerContext.Provider value={playerContextValue}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <audio ref={audioElm}>
+          {transcript && (
+            <track
+              kind="captions"
+              src={`/api/proxy/transcript?u=${transcript.url}`}
+              default
+            />
+          )}
+        </audio>
         {children}
       </PlayerContext.Provider>
     )

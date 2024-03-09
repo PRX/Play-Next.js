@@ -4,7 +4,7 @@
 
 import Parser from 'rss-parser';
 import { IRssItem } from './IRssItem';
-import { IRssPodcastValue } from './IRssPodcast';
+import { IRssPodcast } from './IRssPodcast';
 
 export interface IRss extends Parser.Output<IRssItem> {
   /**
@@ -12,8 +12,8 @@ export interface IRss extends Parser.Output<IRssItem> {
    */
   copyright?: string;
 
-  podcast?: {
-    [key: string]: any;
-    value?: IRssPodcastValue;
-  };
+  /**
+   * Podcast namespace object.
+   */
+  podcast?: IRssPodcast;
 }

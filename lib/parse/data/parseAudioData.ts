@@ -14,7 +14,8 @@ const parseAudioData = ({
   title,
   itunes,
   enclosure,
-  categories
+  categories,
+  podcast
 }: IRssItem): IAudioData => ({
   guid,
   ...(link && { link }),
@@ -31,6 +32,9 @@ const parseAudioData = ({
     ...(itunes.explicit && {
       explicit: convertStringToBoolean(itunes.explicit)
     })
+  }),
+  ...(podcast?.transcript && {
+    transcripts: podcast.transcript
   })
 });
 
