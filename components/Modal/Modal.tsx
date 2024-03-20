@@ -11,9 +11,10 @@ import Portal from '@components/Portal';
 import CloseIcon from '@svg/icons/Close.svg';
 import styles from './Modal.module.scss';
 
-export interface IModalProps extends React.PropsWithChildren<{}> {
+export interface IModalProps
+  extends React.PropsWithChildren<{ className?: string }> {
   isOpen: boolean;
-  onClose: Function;
+  onClose?(): void;
   portalId?: string;
 }
 
@@ -26,12 +27,14 @@ const Modal: React.FC<IModalProps> = ({
   const closeButtonRef = useRef<HTMLButtonElement>();
 
   const handleClick = () => {
-    onClose();
+    if (onClose) {
+      onClose();
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.code || event.key;
-    if (key === 'Escape') {
+    if (key === 'Escape' && onClose) {
       onClose();
     }
   };

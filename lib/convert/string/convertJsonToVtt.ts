@@ -5,6 +5,20 @@ import convertSecondsToDuration, {
 
 /**
  * Convert JSON transcript to WebVTT transcript.
+ *
+ * Patterns to account for:
+ * - Segment pre word
+ *   - Can include 0 second segment for space between words. Should be filtered out to make merging of all patterns consistent.
+ *   - Punctuation included in 0 seconds segments. Line character limits should be lax to prevent lines from starting with punctuation.
+ * - Multiple segments with same or overlapping times. (This should not occur with per word pattern.)
+ *   - If same speaker:
+ *     - Merge segments into same cue with new line.
+ *     - Observe line limits with lax with line character limits and start new cues as needed.
+ *     - Use earliest start time and latest end time of colliding segments.
+ *   - If new speaker:
+ *     - Start new cue.
+ *     - Adjust start time to be end time of previous cue.
+ *
  * @param srt JSON transcript string or object.
  * @returns WebVTT transcript string.
  */

@@ -14,7 +14,6 @@ import styles from './SupportMenu.module.scss';
 
 export interface ISupportMenuProps extends IModalProps {
   onOpen(): void;
-  className?: string;
   supportUrls: { [key: string]: string };
 }
 

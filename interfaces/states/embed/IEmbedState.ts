@@ -5,6 +5,11 @@
 
 export interface IEmbedState {
   /**
+   * Flag to show closed captions dialog.
+   */
+  closedCaptionsShown: boolean;
+
+  /**
    * Flag to show share menu dialog.
    */
   shareShown: boolean;

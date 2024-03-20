@@ -29,6 +29,7 @@ $modal-text-color: colors.$white;
   position: sticky;
   top: 0.5rem;
   right: 0.5rem;
+  z-index: 999;
 
   margin-inline-start: auto;
 }

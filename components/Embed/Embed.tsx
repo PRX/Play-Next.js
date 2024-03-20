@@ -39,6 +39,7 @@ import WebMonetized from '@components/Player/WebMonetized';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import styles from '@styles/Embed.module.scss';
+import ClosedCaptionDialog from '@components/Player/ClosedCaptionDialog';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
@@ -69,7 +70,13 @@ const Embed = ({ config, data }: IEmbedProps) => {
   const isPreview = mode === 'preview';
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
-  const { shareShown, followShown, supportShown, webMonetizationShown } = state;
+  const {
+    closedCaptionsShown,
+    shareShown,
+    followShown,
+    supportShown,
+    webMonetizationShown
+  } = state;
   const modalShown =
     shareShown || followShown || supportShown || webMonetizationShown;
   const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
@@ -177,6 +184,14 @@ const Embed = ({ config, data }: IEmbedProps) => {
 
   const handleMoreButtonClick = () => {
     setShowMenu(!showMenu);
+  };
+
+  const handleClosedCaptionButtonClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_SHOW_CLOSED_CAPTIONS_DIALOG });
+  };
+
+  const handleClosedCaptionCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_CLOSED_CAPTIONS_DIALOG });
   };
 
   const handleFollowButtonClick = () => {
@@ -364,6 +379,18 @@ const Embed = ({ config, data }: IEmbedProps) => {
                         })
                       }}
                     >
+                      <ClosedCaptionDialog
+                        className={clsx(
+                          styles.menuButton,
+                          styles.closedCaptionsButton
+                        )}
+                        speakerColors={accentColor}
+                        onOpen={handleClosedCaptionButtonClick}
+                        onClose={handleClosedCaptionCloseClick}
+                        isOpen={closedCaptionsShown}
+                        portalId="embed-closed-caption-modal"
+                      />
+
                       <FollowMenu
                         className={clsx(
                           styles.menuButton,
@@ -417,6 +444,16 @@ const Embed = ({ config, data }: IEmbedProps) => {
                     />
                   </div>
                 </div>
+
+                {closedCaptionsShown && (
+                  <div
+                    className={styles.modals}
+                    id="embed-closed-caption-modal"
+                    {...(!closedCaptionsShown && {
+                      inert: 'inert'
+                    })}
+                  />
+                )}
               </div>
 
               {canShowPlaylist && (

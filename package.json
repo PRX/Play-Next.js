@@ -13,6 +13,8 @@
   "license": "AGPL-3.0",
   "scripts": {
     "dev": "next dev --port=4300",
+    "dev:caniuse:update-db": "npx browserslist@latest --update-db",
+    "dev:start": "yarn dev:caniuse:update-db ; yarn dev",
     "build": "next build",
     "start": "next start --port=4300",
     "lint": "next lint",

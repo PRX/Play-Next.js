@@ -48,9 +48,9 @@ const Player: React.FC<IPlayerProps> = ({
     [currentTrack.duration]
   );
   const isLastTrack = currentTrackIndex === tracks.length - 1;
-  const { url, previewUrl } = currentTrack;
+  const { url, previewUrl, transcripts } = currentTrack;
   const currentTrackUrl = previewUrl || url;
-  const transcript = currentTrack?.transcripts?.find(
+  const transcript = transcripts?.find(
     (t) => !!['vtt', 'srt', 'json'].find((n) => t.type.includes(n))
   );
 
@@ -386,57 +386,34 @@ const Player: React.FC<IPlayerProps> = ({
     [audioElm, playing, seekBy, seekTo, seekToRelative, volumeDown, volumeUp]
   );
 
-  function handleCueChange() {
-    const textTrack = [...(audioElm.current?.textTracks || [])].find(
-      (track) => track.mode === 'showing'
-    );
-
-    [...(textTrack.activeCues || [])].forEach((c: VTTCue) => {
-      console.log(c.text, c);
-    });
-  }
-
   useEffect(() => {
+    const audioElmTemp = audioElm;
+
     // Initialize audio element.
     if (!audioElm.current) {
       // audioElm.current = new Audio();
     }
 
-    [...audioElm.current.textTracks].forEach((track) => {
-      console.log(track);
-      if (track.kind === 'captions') {
-        // eslint-disable-next-line no-param-reassign
-        // track.mode = track.mode !== 'showing' ? 'showing' : 'hidden';
-      }
-    });
-
-    audioElm.current.textTracks[0]?.addEventListener(
-      'cuechange',
-      handleCueChange
-    );
-
     // Setup event handlers on audio element.
-    audioElm.current.addEventListener('play', handlePlay);
-    audioElm.current.addEventListener('pause', handlePause);
-    audioElm.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audioElm.current.addEventListener('ended', handleEnded);
+    audioElmTemp.current.addEventListener('play', handlePlay);
+    audioElmTemp.current.addEventListener('pause', handlePause);
+    audioElmTemp.current.addEventListener(
+      'loadedmetadata',
+      handleLoadedMetadata
+    );
+    audioElmTemp.current.addEventListener('ended', handleEnded);
 
     window.addEventListener('keydown', handleHotkey);
 
     return () => {
       // Cleanup event handlers between dependency changes.
-      audioElm.current.removeEventListener('play', handlePlay);
-      audioElm.current.removeEventListener('pause', handlePause);
-      audioElm.current.removeEventListener(
+      audioElmTemp.current.removeEventListener('play', handlePlay);
+      audioElmTemp.current.removeEventListener('pause', handlePause);
+      audioElmTemp.current.removeEventListener(
         'loadedmetadata',
         handleLoadedMetadata
       );
-      audioElm.current.removeEventListener('ended', handleEnded);
-
-      audioElm.current.textTracks[0]?.removeEventListener(
-        'cuechange',
-        handleCueChange
-      );
+      audioElmTemp.current.removeEventListener('ended', handleEnded);
 
       window.removeEventListener('keydown', handleHotkey);
     };

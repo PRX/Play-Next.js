@@ -7,6 +7,7 @@ import { IEmbedState } from '@interfaces/states/embed';
 import { EmbedActionTypes as ActionTypes, EmbedAction } from './Embed.actions';
 
 export const embedInitialState: IEmbedState = {
+  closedCaptionsShown: false,
   shareShown: false,
   followShown: false,
   supportShown: false,
@@ -17,9 +18,24 @@ export const embedStateReducer = (
   state: IEmbedState,
   action: EmbedAction
 ): IEmbedState => {
-  const { shareShown, followShown, supportShown, webMonetizationShown } = state;
+  const {
+    closedCaptionsShown,
+    shareShown,
+    followShown,
+    supportShown,
+    webMonetizationShown
+  } = state;
 
   switch (action.type) {
+    case ActionTypes.EMBED_SHOW_CLOSED_CAPTIONS_DIALOG:
+      return { ...state, closedCaptionsShown: true };
+
+    case ActionTypes.EMBED_HIDE_CLOSED_CAPTIONS_DIALOG:
+      return { ...state, closedCaptionsShown: false };
+
+    case ActionTypes.EMBED_TOGGLE_CLOSED_CAPTIONS_DIALOG_SHOWN:
+      return { ...state, closedCaptionsShown: !closedCaptionsShown };
+
     case ActionTypes.EMBED_SHOW_SHARE_DIALOG:
       return { ...state, shareShown: true };
 
