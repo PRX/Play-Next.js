@@ -2,6 +2,11 @@
 @use '@styles/theme';
 
 .root {
+  --_cc-speaker--color: var(
+    --cc-speaker--color,
+    var(--accent-color, #{colors.$secondary-500})
+  );
+
   position: absolute;
   inset: 0;
   display: grid;
@@ -26,10 +31,6 @@
 }
 
 .caption {
-  --_cc-speaker--color: var(
-    --cc-speaker--color,
-    var(--accent-color, #{colors.$secondary-500})
-  );
   grid-column: left-column;
   display: grid;
   animation: fade-out linear forwards;
@@ -62,6 +63,8 @@
 }
 
 .captionBody {
+  --_cc-body--background-color: var(--cc-body--background-color);
+  --_cc-body--background-blur: var(--cc-body--background-blur, 0);
   --_cc-body--border-width: 1px;
   position: relative;
   isolation: isolate;
@@ -71,6 +74,9 @@
   margin: 0;
   padding-block: 0.75em;
   padding-inline: calc(1em - var(--_cc-body--border-width));
+
+  background-color: var(--_cc-body--background-color);
+  backdrop-filter: blur(var(--_cc-body--background-blur));
 
   border-color: var(--_cc-speaker--color);
   border-style: solid;

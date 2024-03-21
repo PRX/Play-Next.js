@@ -20,6 +20,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
+import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
 import styles from './ClosedCaptionsFeed.module.scss';
 
 export interface IClosedCaptionsProps {
@@ -191,10 +192,10 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
 
-  const cueIndex = [...(currentCue?.track.cues || [])].findIndex(
+  const cueIndex = [...(currentCue?.track?.cues || [])].findIndex(
     (c) => c.id === currentCue.id
   );
-  const recentCues = [...(currentCue?.track.cues || [])].slice(
+  const recentCues = [...(currentCue?.track?.cues || [])].slice(
     0, // Math.max(cueIndex - 20, 0),
     cueIndex + 1
   ) as VTTCue[];
@@ -203,7 +204,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const getCuePositions = useMemo(
     () => () => {
       const positionsMap = new Map<string, CuePosition>();
-      const cues = [...(currentCue?.track.cues || [])] as VTTCue[];
+      const cues = [...(currentCue?.track?.cues || [])] as VTTCue[];
 
       if (cues.length) {
         let previousSpeaker = getCueSpeaker(cues[0]);
@@ -235,11 +236,12 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
     if (speaker && !speakersColorMap.current.has(speaker)) {
       const speakerNumber = speakersColorMap.current.size;
-      const speakerColor =
-        speakerNumber > -1
-          ? speakerColors?.[speakerNumber] ||
-            `hsl(${35 + 81 * speakerNumber}, 100%, 50%)`
-          : null;
+      const speakerColor = generateSpeakerColor(
+        speakerNumber,
+        speakerColors,
+        35,
+        81
+      );
 
       speakersColorMap.current.set(speaker, speakerColor);
     }
@@ -255,8 +257,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     );
 
     [...(textTrack.activeCues || [])].forEach((c: VTTCue) => {
-      // console.log(c.text, c);
-
       setCurrentCue(c);
     });
   }, [audioElm?.textTracks]);

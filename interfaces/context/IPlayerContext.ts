@@ -6,9 +6,12 @@
  */
 
 import { IAudioData } from '@interfaces/data';
+import type { IPlayerState } from '@interfaces/states';
+import type { IPlayerAction } from '@states/player/Player.actions';
 import type { IStateContext } from './IStateContext';
 
-export interface IPlayerContext extends IStateContext {
+export interface IPlayerContext
+  extends IStateContext<IPlayerState, IPlayerAction> {
   audioElm: HTMLAudioElement;
   imageUrl: string;
   play(): void;

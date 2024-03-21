@@ -4,7 +4,9 @@
  *
  */
 
-import React, { useEffect, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
+import clsx from 'clsx';
 import ThemeVars from '@components/ThemeVars';
 import IconButton from '@components/IconButton';
 import Portal from '@components/Portal';
@@ -22,7 +24,8 @@ const Modal: React.FC<IModalProps> = ({
   children,
   isOpen,
   onClose,
-  portalId = 'modal-portal-wrapper'
+  portalId = 'modal-portal-wrapper',
+  className
 }) => {
   const closeButtonRef = useRef<HTMLButtonElement>();
 
@@ -53,7 +56,7 @@ const Modal: React.FC<IModalProps> = ({
   return !isOpen ? null : (
     <Portal wrapperId={portalId}>
       <ThemeVars theme="Modal" cssProps={styles} />
-      <div className={styles.root}>
+      <div className={clsx(styles.root, className)}>
         <IconButton
           title="Close"
           ref={closeButtonRef}

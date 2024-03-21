@@ -20,6 +20,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
+import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
 import PlayButton from '../PlayButton';
 import PlayerProgress from '../PlayerProgress';
 import ReplayButton from '../ReplayButton';
@@ -53,11 +54,12 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   }
 
   const speakerNumber = [...speakers.current].indexOf(speaker);
-  const speakerColor =
-    speakerNumber > -1
-      ? speakerColors?.[speakerNumber] ||
-        `hsl(${35 + 81 * speakerNumber}, 100%, 50%)`
-      : null;
+  const speakerColor = generateSpeakerColor(
+    speakerNumber,
+    speakerColors,
+    35,
+    81
+  );
 
   const cueSegments = useMemo(
     () =>
@@ -98,8 +100,6 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
       );
 
       [...(textTrack.activeCues || [])].forEach((c: VTTCue) => {
-        // console.log(c.text, c);
-
         currentCue?.removeEventListener('exit', handleCueEnd);
         c.addEventListener('exit', handleCueEnd);
 

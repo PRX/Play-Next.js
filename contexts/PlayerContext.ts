@@ -1,6 +1,6 @@
 /**
  * @file PlayerContext.js
- * Creates context for cta region data.
+ * Creates context for player data.
  */
 
 import type { IPlayerContext } from '@interfaces/context';

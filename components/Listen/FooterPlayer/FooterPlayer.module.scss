@@ -38,6 +38,7 @@ $footerPlayer-thumbnail-size--mobile: 24px;
     'THUMB TITLE'
     'CTRLS CTRLS'
     'PROG PROG';
+  align-items: center;
   column-gap: 0.5rem;
   row-gap: 0.25rem;
 
@@ -75,9 +76,16 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   border: 1px solid var(--footerPlayer-divider-color);
 }
 
-.title {
+.info {
   grid-area: TITLE;
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
 
+.title {
   overflow: hidden;
 
   font-size: clamp(
@@ -90,6 +98,38 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   @media (min-width: Listen.$breakpoint-full) {
     & {
       font-size: var(--footerPlayer-text-size--max);
+    }
+  }
+}
+
+.closedCaptionsButton {
+  --iconButton-size: 24px;
+}
+
+.closedCaptionModal {
+  @media (min-width: Listen.$breakpoint-full) {
+    --cc-body--background-color: var(--modal-background-color);
+    --cc-body--background-blur: 10px;
+
+    width: 80%;
+    max-width: 900px;
+    left: auto;
+    right: 0;
+
+    container-type: inline-size;
+    bottom: var(--gutter-size-block-end);
+    background: none;
+    backdrop-filter: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      // display: none;
+      background-color: var(--modal-background-color);
+      backdrop-filter: blur(var(--modal-background-blur, 0));
+      mask-image: linear-gradient(to right, transparent, #ffffff 20%);
     }
   }
 }

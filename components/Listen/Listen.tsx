@@ -15,6 +15,7 @@ import {
 } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import ListenContext from '@contexts/ListenContext';
 import PlayerContext from '@contexts/PlayerContext';
 import BackgroundImage from '@components/BackgroundImage';
 import HtmlContent from '@components/HtmlContent';
@@ -47,6 +48,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const {
     view,
     episodeGuid,
+    closedCaptionsShown,
     podcastFollowShown,
     podcastShareShown,
     podcastSupportShown
@@ -166,6 +168,15 @@ const Listen = ({ config, data }: IListenPageProps) => {
     setGutterBlockEnd(footerPlayerRef.current.getBoundingClientRect().height);
   }, []);
 
+  const listenContextProps = useMemo(
+    () => ({
+      state,
+      dispatch,
+      config
+    }),
+    [config, state]
+  );
+
   /**
    * Setup/clean up window events.
    */
@@ -189,7 +200,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onOpen={handleFollowButtonClick}
           onClose={handleFollowCloseClick}
           isOpen={podcastFollowShown}
-          portalId="embed-modals"
+          portalId="listen-modals"
           followUrls={followUrls}
         />
 
@@ -198,7 +209,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onOpen={handleShareButtonClick}
           onClose={handleShareCloseClick}
           isOpen={podcastShareShown}
-          portalId="embed-modals"
+          portalId="listen-modals"
           url={link}
           twitterTitle={title}
           emailSubject={title}
@@ -210,7 +221,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onOpen={handleSupportButtonClick}
           onClose={handleSupportCloseClick}
           isOpen={podcastSupportShown}
-          portalId="embed-modals"
+          portalId="listen-modals"
           supportUrls={supportUrls}
         />
       </>
@@ -235,7 +246,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   }, [view, episode]);
 
   return (
-    <>
+    <ListenContext.Provider value={listenContextProps}>
       <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
       <ThemeVars theme="Listen" cssProps={styles} />
       <div className={styles.root} data-view={view} data-theme={theme}>
@@ -296,6 +307,13 @@ const Listen = ({ config, data }: IListenPageProps) => {
           >
             <Episode data={episode} onClose={handleEpisodeBackClick} />
           </div>
+
+          {closedCaptionsShown && (
+            <div
+              className={clsx(styles.closedCaptionsFeed)}
+              id="listen-closed-caption-modal"
+            />
+          )}
         </div>
 
         <footer className={styles.footer}>
@@ -310,7 +328,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
         </footer>
       </div>
-    </>
+    </ListenContext.Provider>
   );
 };
 

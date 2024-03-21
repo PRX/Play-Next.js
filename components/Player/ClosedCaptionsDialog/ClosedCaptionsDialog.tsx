@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Modal, { type IModalProps } from '@components/Modal/Modal';
 import IconButton from '@components/IconButton';
@@ -13,6 +13,7 @@ import ClosedCaptionIcon from '@svg/icons/ClosedCaption.svg';
 
 export interface IClosedCaptionDialogProps extends IModalProps {
   onOpen(): void;
+  modalClassName?: string;
 }
 
 const ClosedCaptionsDialog: React.FC<IClosedCaptionDialogProps> = ({
@@ -21,16 +22,30 @@ const ClosedCaptionsDialog: React.FC<IClosedCaptionDialogProps> = ({
   isOpen,
   portalId,
   className,
+  modalClassName,
   children
 }) => {
   const { audioElm } = useContext(PlayerContext);
-  const hasCaptionsTextTracks = [...(audioElm?.textTracks || [])].find(
+  const [, setHasTextTrack] = useState(!!audioElm?.textTracks.length);
+  const hasCaptionsTextTracks = !![...(audioElm?.textTracks || [])].find(
     (t) => t.kind === 'captions'
   );
 
   const handleClick = () => {
     onOpen();
   };
+
+  const handleTextTrackChange = () => {
+    setHasTextTrack(true);
+  };
+
+  useEffect(() => {
+    audioElm?.textTracks.addEventListener('change', handleTextTrackChange);
+
+    return () => {
+      audioElm?.textTracks.removeEventListener('change', handleTextTrackChange);
+    };
+  }, [audioElm]);
 
   if (!hasCaptionsTextTracks) return null;
 
@@ -44,7 +59,12 @@ const ClosedCaptionsDialog: React.FC<IClosedCaptionDialogProps> = ({
       >
         <ClosedCaptionIcon />
       </IconButton>
-      <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
+      <Modal
+        className={modalClassName}
+        onClose={onClose}
+        isOpen={isOpen}
+        portalId={portalId}
+      >
         {children}
       </Modal>
     </>

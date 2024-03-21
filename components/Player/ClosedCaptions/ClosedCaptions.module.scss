@@ -2,6 +2,11 @@
 @use '@styles/theme';
 
 .root {
+  --_cc-speaker--color: var(
+    --cc-speaker--color,
+    var(--accent-color, #{colors.$secondary-500})
+  );
+
   position: absolute;
   inset: 1rem 1.5rem;
   display: grid;
@@ -22,25 +27,21 @@
   }
 }
 
-.speaker {
-  color: var(--cc-speaker--color, var(--accent-color, colors.$secondary-500));
-  font-weight: bold;
-
-  @include theme.light-child {
-    color: color-mix(
-      in lab,
-      var(--cc-speaker--color, var(--accent-color, colors.$secondary-500)),
-      black 20%
-    );
-  }
-}
-
 .caption {
   margin: 0;
 
   font-size: clamp(1rem, 2vw, 2rem);
   text-align: center;
   text-wrap: balance;
+}
+
+.speaker {
+  color: var(--_cc-speaker--color);
+  font-weight: bold;
+
+  @include theme.light-child {
+    color: color-mix(in lab, var(--_cc-speaker--color), black 20%);
+  }
 }
 
 .segment {

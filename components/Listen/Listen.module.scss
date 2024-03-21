@@ -346,6 +346,9 @@ $viewTransitionDuration: 300ms;
   }
 }
 
+.closedCaptionsFeed {
+}
+
 @keyframes sharpen {
   0% {
     transform: scale(var(--dim-scale, 1)) translateX(var(--dim-translate-x, 0));

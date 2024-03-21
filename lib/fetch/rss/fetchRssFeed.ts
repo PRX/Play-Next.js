@@ -36,8 +36,6 @@ const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
   try {
     const feed = await parser.parseURL(feedUrl);
 
-    console.log(feed.items[0]?.['podcast:transcript']);
-
     const decoratedFeed = decoratePodcast(feed);
     const result = {
       ...decoratedFeed,
@@ -55,8 +53,6 @@ const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
         }))
       })
     };
-
-    console.log(result.items[0]);
 
     return result;
   } catch (err) {
