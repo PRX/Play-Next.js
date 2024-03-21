@@ -31,11 +31,19 @@ export interface IClosedCaptionsProps {
   speakerColors?: string[];
 }
 
+const getCurrentCue = (audioElm: HTMLAudioElement) => {
+  const textTrack = [...(audioElm?.textTracks || [])].find(
+    (track) => track.mode === 'showing'
+  );
+
+  return [...(textTrack.activeCues || [])].at(0) as VTTCue;
+};
+
 const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   const { audioElm, state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const [currentTime, setCurrentTime] = useState(audioElm?.currentTime || 0);
-  const [currentCue, setCurrentCue] = useState<VTTCue>();
+  const [currentCue, setCurrentCue] = useState<VTTCue>(getCurrentCue(audioElm));
   const [cueEnded, setCueEnded] = useState(false);
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
