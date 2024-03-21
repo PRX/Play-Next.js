@@ -28,6 +28,7 @@ import IconButton from '@components/IconButton';
 import ForwardButton from '@components/Player/ForwardButton';
 import NextButton from '@components/Player/NextButton';
 import Player from '@components/Player';
+import ClosedCaptionsDialog from '@components/Player/ClosedCaptionsDialog';
 import PlayerText from '@components/Player/PlayerText';
 import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PreviousButton from '@components/Player/PreviousButton';
@@ -39,7 +40,8 @@ import WebMonetized from '@components/Player/WebMonetized';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import styles from '@styles/Embed.module.scss';
-import ClosedCaptionDialog from '@components/Player/ClosedCaptionDialog';
+import ClosedCaptions from '@components/Player/ClosedCaptions';
+import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
@@ -105,6 +107,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
       );
   const currentTrack = playlist?.[currentTrackIndex] || audio;
   const showShareMenu = !!currentTrack?.link || !isPreview;
+  const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
+  const showClosedCaptionFeed = closedCaptionsShown && canShowCoverArt;
+  const showClosedCaptionDialog = !showClosedCaptionFeed && closedCaptionsShown;
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
@@ -187,7 +192,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
   };
 
   const handleClosedCaptionButtonClick = () => {
-    dispatch({ type: EmbedActionTypes.EMBED_SHOW_CLOSED_CAPTIONS_DIALOG });
+    dispatch({
+      type: EmbedActionTypes.EMBED_TOGGLE_CLOSED_CAPTIONS_DIALOG_SHOWN
+    });
   };
 
   const handleClosedCaptionCloseClick = () => {
@@ -281,6 +288,16 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   })}
                 >
                   <CoverArt />
+
+                  {showClosedCaptionFeed && (
+                    <div
+                      className={clsx(styles.modals, styles.closedCaptionsFeed)}
+                      id="embed-closed-caption-modal"
+                      {...(!closedCaptionsShown && {
+                        inert: 'inert'
+                      })}
+                    />
+                  )}
                 </div>
               )}
 
@@ -379,17 +396,28 @@ const Embed = ({ config, data }: IEmbedProps) => {
                         })
                       }}
                     >
-                      <ClosedCaptionDialog
-                        className={clsx(
-                          styles.menuButton,
-                          styles.closedCaptionsButton
-                        )}
-                        speakerColors={accentColor}
-                        onOpen={handleClosedCaptionButtonClick}
-                        onClose={handleClosedCaptionCloseClick}
-                        isOpen={closedCaptionsShown}
-                        portalId="embed-closed-caption-modal"
-                      />
+                      {showClosedCaptionsButton && (
+                        <ClosedCaptionsDialog
+                          className={clsx(
+                            styles.menuButton,
+                            styles.closedCaptionsButton,
+                            {
+                              [styles.closedCaptionsEnabled]:
+                                closedCaptionsShown
+                            }
+                          )}
+                          onOpen={handleClosedCaptionButtonClick}
+                          onClose={handleClosedCaptionCloseClick}
+                          isOpen={closedCaptionsShown}
+                          portalId="embed-closed-caption-modal"
+                        >
+                          {showClosedCaptionFeed ? (
+                            <ClosedCaptionsFeed speakerColors={accentColor} />
+                          ) : (
+                            <ClosedCaptions speakerColors={accentColor} />
+                          )}
+                        </ClosedCaptionsDialog>
+                      )}
 
                       <FollowMenu
                         className={clsx(
@@ -445,7 +473,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   </div>
                 </div>
 
-                {closedCaptionsShown && (
+                {showClosedCaptionDialog && (
                   <div
                     className={styles.modals}
                     id="embed-closed-caption-modal"

@@ -44,14 +44,16 @@
 }
 
 .segment {
-  opacity: 0.5;
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0.5;
 
-  @include theme.light-child {
-    opacity: 0.3;
-  }
+    @include theme.light-child {
+      opacity: 0.3;
+    }
 
-  &.spoken {
-    opacity: 1;
+    &.spoken {
+      opacity: 1;
+    }
   }
 }
 

@@ -1,0 +1,134 @@
+@use '@styles/colors';
+@use '@styles/theme';
+
+.root {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: end;
+  z-index: 0;
+  padding-block-start: 30cqb;
+  padding-block-end: 2rem;
+  padding-inline: 5rem;
+
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.captions {
+  display: grid;
+  grid-template-columns: [left-column-start] 1fr [right-column-start] 3fr [left-column-end] 1fr [right-column-end];
+  grid-template-rows: 1fr;
+  grid-auto-rows: auto;
+  align-content: end;
+  gap: 0.75rem;
+  min-height: 100%;
+}
+
+.caption {
+  --_cc-speaker--color: var(
+    --cc-speaker--color,
+    var(--accent-color, #{colors.$secondary-500})
+  );
+  grid-column: left-column;
+  display: grid;
+  animation: fade-out linear forwards;
+  animation-timeline: view();
+  animation-range-start: 30cqb;
+  scroll-snap-align: end;
+
+  &[data-position='right'] {
+    grid-column: right-column;
+    justify-items: end;
+  }
+
+  .noSpeakers & {
+    grid-column: 1 / -1;
+  }
+}
+
+.speaker {
+  padding-block-start: 1rem;
+  padding-block-end: 0.5rem;
+  padding-inline: 0.5rem;
+
+  color: var(--_cc-speaker--color);
+  font-size: clamp(1rem, 3cqi, 1.3rem);
+  font-weight: bold;
+
+  @include theme.light-child {
+    color: color-mix(in lab, var(--_cc-speaker--color), black 20%);
+  }
+}
+
+.captionBody {
+  --_cc-body--border-width: 1px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transform: translateZ(0);
+
+  margin: 0;
+  padding-block: 0.75em;
+  padding-inline: calc(1em - var(--_cc-body--border-width));
+
+  border-color: var(--_cc-speaker--color);
+  border-style: solid;
+  border-width: var(--_cc-body--border-width);
+  border-radius: 4px;
+
+  font-size: clamp(1rem, 3cqi, 2rem);
+  text-align: start;
+  text-wrap: balance;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity linear 200ms;
+    background-image: linear-gradient(
+      to right,
+      var(--_cc-speaker--color),
+      transparent 50%
+    );
+  }
+
+  &:where(:hover, :focus-visible) {
+    &::before {
+      opacity: 0.3;
+    }
+  }
+
+  .noSpeakers [data-ended] & {
+    border-color: transparent;
+  }
+
+  [data-current] & {
+    transition: border-color linear 100ms 1s;
+    --_cc-body--border-width: 3px;
+  }
+}
+
+.segment {
+  [data-current] & {
+    @media (prefers-reduced-motion: no-preference) {
+      opacity: 0.5;
+
+      @include theme.light-child {
+        opacity: 0.3;
+      }
+
+      &[data-spoken='true'] {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
