@@ -12,23 +12,42 @@ $episodeList-header-text-color: colors.$white;
 $episodeList-header-icon-color: colors.$white-a-50;
 $episodeList-header-icon-color--active: colors.$white;
 
-:export {
-  --episodeList-text-color: #{$episodeList-text-color};
-  --episodeList-text-color--active: #{$episodeList-text-color--active};
-
-  --episodeList-divider-color: #{$episodeList-divider-color};
-  --episodeList-divider-size: #{$episodeList-divider-size};
-
-  --episodeList-header-text-color: #{$episodeList-header-text-color};
-  --episodeList-header-icon-color: #{$episodeList-header-icon-color};
-  --episodeList-header-icon-color--active: #{$episodeList-header-icon-color--active};
-}
-
 .root {
+  --_episodeList-text-color: var(
+    --episodeList-text-color,
+    #{$episodeList-text-color}
+  );
+  --_episodeList-text-color--active: var(
+    --episodeList-text-color--active,
+    #{$episodeList-text-color--active}
+  );
+
+  --_episodeList-divider-color: var(
+    --episodeList-divider-color,
+    #{$episodeList-divider-color}
+  );
+  --_episodeList-divider-size: var(
+    --episodeList-divider-size,
+    #{$episodeList-divider-size}
+  );
+
+  --_episodeList-header-text-color: var(
+    --episodeList-header-text-color,
+    #{$episodeList-header-text-color}
+  );
+  --_episodeList-header-icon-color: var(
+    --episodeList-header-icon-color,
+    #{$episodeList-header-icon-color}
+  );
+  --_episodeList-header-icon-color--active: var(
+    --episodeList-header-icon-color--active,
+    #{$episodeList-header-icon-color--active}
+  );
+
   display: grid;
   grid-template-rows: min-content 1fr;
 
-  color: var(--episodeList-header-text-color);
+  color: var(--_episodeList-header-text-color);
 
   @media (min-width: Listen.$breakpoint-full) {
     & {
@@ -50,12 +69,12 @@ $episodeList-header-icon-color--active: colors.$white;
   padding-inline: 1rem;
 
   border-top-style: solid;
-  border-top-width: var(--episodeList-divider-size);
-  border-top-color: var(--episodeList-divider-color);
+  border-top-width: var(--_episodeList-divider-size);
+  border-top-color: var(--_episodeList-divider-color);
 
   border-bottom-style: solid;
-  border-bottom-width: var(--episodeList-divider-size);
-  border-bottom-color: var(--episodeList-divider-color);
+  border-bottom-width: var(--_episodeList-divider-size);
+  border-bottom-color: var(--_episodeList-divider-color);
 
   background-color: var(--listen-background-color, colors.$black-a-90);
 
@@ -80,18 +99,19 @@ $episodeList-header-icon-color--active: colors.$white;
 }
 
 .buttonIcon {
-  fill: var(--episodeList-header-icon-color);
+  fill: var(--_episodeList-header-icon-color);
 
   &.up {
-    --up-fill-color: var(--episodeList-header-icon-color--active);
+    --up-fill-color: var(--_episodeList-header-icon-color--active);
   }
   &.down {
-    --down-fill-color: var(--episodeList-header-icon-color--active);
+    --down-fill-color: var(--_episodeList-header-icon-color--active);
   }
 }
 
 .episodeList {
   @include Listen.scrollbar;
+  container-type: inline-size;
 
   padding-block-end: var(--gutter-size-block-end, var(--gutter-size-block));
 }
@@ -99,6 +119,4 @@ $episodeList-header-icon-color--active: colors.$white;
 .tracks {
   display: grid;
   align-content: start;
-  overflow: hidden;
-  overflow-y: auto;
 }

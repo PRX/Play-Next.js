@@ -34,9 +34,10 @@ import {
 import { ListenActionTypes } from '@states/listen/Listen.actions';
 import PrxDtLogo from '@svg/PRX-DT-Logo.svg';
 import EpisodeList from './EpisodeList';
-import styles from './Listen.module.scss';
 import Episode from './Episode';
 import FooterPlayer from './FooterPlayer';
+import styles from './Listen.module.scss';
+import episodeCardStyles from './EpisodeList/EpisodeCard/EpisodeCard.module.scss';
 
 const Listen = ({ config, data }: IListenPageProps) => {
   const router = useRouter();
@@ -87,6 +88,12 @@ const Listen = ({ config, data }: IListenPageProps) => {
       })
     })
   } as CSSProperties;
+  const accentColorKeyframes = [...accentColor]
+    .reverse()
+    .map((color, index, all) => {
+      const percent = (index / (all.length - 1)) * 100;
+      return [percent, color];
+    });
 
   const updateUrl = (guid?: string) => {
     const { protocol, host } = window.location;
@@ -247,7 +254,11 @@ const Listen = ({ config, data }: IListenPageProps) => {
   return (
     <ListenContext.Provider value={listenContextProps}>
       <ThemeVars theme="Listen" cssProps={styles} />
-      <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
+      <style>{`:root {  } body { overflow: hidden; } @keyframes ${
+        episodeCardStyles['episode-card-highlight']
+      } { ${accentColorKeyframes
+        .map(([p, c]) => `${p}% { background-color: ${c}; }`)
+        .join(' ')} }`}</style>
       <div
         className={styles.root}
         data-view={view}

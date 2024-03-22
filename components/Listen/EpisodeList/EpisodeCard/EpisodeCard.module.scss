@@ -170,7 +170,7 @@ $episodeCard-corner-radius: 5px;
   grid-template-columns: min-content 1fr;
   grid-gap: $padding-h;
   align-items: start;
-  overflow: hidden;
+  // overflow: hidden;
 
   margin: 0;
   padding: $padding-v $padding-h;
@@ -240,6 +240,14 @@ $episodeCard-corner-radius: 5px;
       background-position: 0 0;
       background-size: 100% 100vh;
       border-radius: var(--_episodeCard-corner-radius);
+
+      @supports (animation-timeline: view()) {
+        background-image: unset;
+        animation: episode-card-highlight linear both;
+        animation-timeline: view();
+        animation-range-start: contain var(--gutter-size-block-end);
+        animation-range-end: exit 1px;
+      }
     }
   }
 
