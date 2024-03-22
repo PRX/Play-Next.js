@@ -470,7 +470,7 @@ const Player: React.FC<IPlayerProps> = ({
           {transcript && (
             <track
               kind="captions"
-              src={`/api/proxy/transcript?u=${transcript.url}`}
+              src={`/api/proxy/transcript/vtt?u=${transcript.url}`}
               default
             />
           )}

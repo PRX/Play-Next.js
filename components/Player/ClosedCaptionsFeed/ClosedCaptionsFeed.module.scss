@@ -1,7 +1,17 @@
 @use '@styles/colors';
 @use '@styles/theme';
+@use '@components/Listen/Listen.use.scss' as Listen;
 
 .root {
+  --_cc-feed--gutter-start: var(
+    --cc-feed--gutter-start,
+    var(--cc-feed--gutter, 5rem)
+  );
+  --_cc-feed--gutter-end: var(
+    --cc-feed--gutter-end,
+    var(--cc-feed--gutter, 5rem)
+  );
+
   position: absolute;
   inset: 0;
   display: grid;
@@ -9,7 +19,8 @@
   z-index: 0;
   padding-block-start: 30cqb;
   padding-block-end: 2rem;
-  padding-inline: 5rem;
+  padding-inline-start: var(--_cc-feed--gutter-start);
+  padding-inline-end: var(--_cc-feed--gutter-end);
 
   overflow: hidden;
   overflow-y: auto;
@@ -17,11 +28,11 @@
 
 .captions {
   display: grid;
-  grid-template-columns: [left-column-start] 1fr [right-column-start] 3fr [left-column-end] 1fr [right-column-end];
+  grid-template-columns: [full-width-start] 0px [left-column-start] 1fr [right-column-start] 3fr [left-column-end] 1fr [right-column-end] 0px [full-width-end];
   grid-template-rows: 1fr;
   grid-auto-rows: auto;
   align-content: end;
-  gap: 0.75rem;
+  row-gap: 0.75rem;
   min-height: 100%;
 }
 
@@ -31,12 +42,12 @@
     var(--accent-color, #{colors.$secondary-500})
   );
 
-  grid-column: left-column;
+  grid-column: full-width;
   display: grid;
+  justify-items: start;
   scroll-snap-align: end;
 
   &[data-position='right'] {
-    grid-column: right-column;
     justify-items: end;
   }
 
@@ -53,6 +64,16 @@
     &:where(:hover, :focus-within) {
       animation: none;
       opacity: 1;
+    }
+  }
+
+  @media (min-width: Listen.$breakpoint-full) {
+    grid-column: left-column;
+    justify-items: start;
+
+    &[data-position='right'] {
+      grid-column: right-column;
+      justify-items: end;
     }
   }
 }

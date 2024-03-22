@@ -111,17 +111,16 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 }
 
 .closedCaptionModal {
-  @media (min-width: Listen.$breakpoint-full) {
-    --cc-body--background-color: var(--modal-background-color);
-    --cc-body--background-blur: 10px;
+  bottom: var(--gutter-size-block-end);
 
-    width: 80%;
+  @media (min-width: Listen.$breakpoint-full) {
+    width: 100%;
     max-width: 900px;
+    top: 0;
     left: auto;
     right: 0;
 
     container-type: inline-size;
-    bottom: var(--gutter-size-block-end);
     background: none;
     backdrop-filter: none;
 
@@ -135,6 +134,10 @@ $footerPlayer-thumbnail-size--mobile: 24px;
       backdrop-filter: blur(var(--modal-background-blur, 0));
       mask-image: linear-gradient(to right, transparent, #ffffff 20%);
     }
+  }
+
+  @media (min-width: Listen.$breakpoint-full-wide) {
+    width: calc(100% - 180px);
   }
 }
 

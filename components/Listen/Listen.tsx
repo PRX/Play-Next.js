@@ -4,6 +4,8 @@
  */
 
 import type React from 'react';
+import type { CSSProperties } from 'react';
+import type { IListenPageProps } from '@interfaces/page';
 import {
   useCallback,
   useContext,
@@ -25,7 +27,6 @@ import ShareMenu from '@components/ShareMenu';
 import SupportMenu from '@components/Player/SupportMenu';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
-import { IListenPageProps } from '@interfaces/page';
 import {
   listenInitialState,
   listenStateReducer
@@ -77,17 +78,15 @@ const Listen = ({ config, data }: IListenPageProps) => {
     `(min-width: ${styles.breakpointFull}) ${styles.logoSize}`,
     `${styles.logoSizeMobile}`
   ].join(',');
-  const rootStyles = [
-    `--gutter-size-block-end: ${playerShown ? gutterBlockEnd : 0}px;`,
-    ...(accentColor
-      ? [
-          `--accent-color:${accentColor[0].split(' ')[0]};`,
-          ...(accentColor.length > 1
-            ? [`--accent-gradient: ${accentColor.join(',')};`]
-            : [])
-        ]
-      : [])
-  ].join('');
+  const rootStyles = {
+    '--gutter-size-block-end': `${playerShown ? gutterBlockEnd : 0}px`,
+    ...(accentColor && {
+      '--accent-color': `${accentColor[0].split(' ')[0]}`,
+      ...(accentColor.length > 1 && {
+        '--accent-gradient': `${accentColor.join(',')}`
+      })
+    })
+  } as CSSProperties;
 
   const updateUrl = (guid?: string) => {
     const { protocol, host } = window.location;
@@ -247,9 +246,14 @@ const Listen = ({ config, data }: IListenPageProps) => {
 
   return (
     <ListenContext.Provider value={listenContextProps}>
-      <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
       <ThemeVars theme="Listen" cssProps={styles} />
-      <div className={styles.root} data-view={view} data-theme={theme}>
+      <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
+      <div
+        className={styles.root}
+        data-view={view}
+        data-theme={theme}
+        style={rootStyles}
+      >
         <div className={styles.background}>
           <BackgroundImage imageUrl={bgImageUrl} />
         </div>

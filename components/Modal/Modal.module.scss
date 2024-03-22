@@ -12,6 +12,8 @@ $modal-text-color: colors.$white;
 }
 
 .root {
+  --_modal-button--visibility: var(--modal-button--visibility, initial);
+
   @include grid.stacked;
   position: absolute;
   inset: 0;
@@ -25,6 +27,7 @@ $modal-text-color: colors.$white;
 }
 
 .closeButton {
+  visibility: var(--_modal-button--visibility);
   align-self: start;
   position: sticky;
   top: 0.5rem;

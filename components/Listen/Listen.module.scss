@@ -347,6 +347,15 @@ $viewTransitionDuration: 300ms;
 }
 
 .closedCaptionsFeed {
+  --modal-button--visibility: hidden;
+  --cc-feed--gutter: 1rem;
+
+  @media (min-width: $breakpoint-full) {
+    --modal-button--visibility: visible;
+    --cc-feed--gutter: unset;
+    --cc-body--background-color: var(--modal-background-color);
+    --cc-body--background-blur: 10px;
+  }
 }
 
 @keyframes sharpen {

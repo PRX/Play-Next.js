@@ -11,6 +11,8 @@ $listen-scrollbar-thumb-color: colors.$white-a-20;
 $listen-scrollbar-thumb-color--hover: colors.$white-a-60;
 
 $breakpoint-full: 900px;
+$breakpoint-full-wide: 1200px;
+$breakpoint-ultra: 1800px;
 
 @mixin scrollbar {
   & {
