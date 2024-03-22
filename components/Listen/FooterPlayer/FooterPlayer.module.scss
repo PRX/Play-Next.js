@@ -106,6 +106,10 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   --iconButton-size: 24px;
 }
 
+.closedCaptionsEnabled {
+  color: var(--accent-color, #{colors.$secondary-500});
+}
+
 .closedCaptionModal {
   @media (min-width: Listen.$breakpoint-full) {
     --cc-body--background-color: var(--modal-background-color);

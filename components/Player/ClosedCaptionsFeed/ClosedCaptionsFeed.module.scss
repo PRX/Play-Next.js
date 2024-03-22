@@ -2,11 +2,6 @@
 @use '@styles/theme';
 
 .root {
-  --_cc-speaker--color: var(
-    --cc-speaker--color,
-    var(--accent-color, #{colors.$secondary-500})
-  );
-
   position: absolute;
   inset: 0;
   display: grid;
@@ -31,6 +26,11 @@
 }
 
 .caption {
+  --_cc-speaker--color: var(
+    --cc-speaker--color,
+    var(--accent-color, #{colors.$secondary-500})
+  );
+
   grid-column: left-column;
   display: grid;
   animation: fade-out linear forwards;
