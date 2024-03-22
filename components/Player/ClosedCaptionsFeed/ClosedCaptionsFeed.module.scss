@@ -33,11 +33,7 @@
 
   grid-column: left-column;
   display: grid;
-  animation: fade-out linear forwards;
-  animation-timeline: view();
-  animation-range-start: 30cqb;
   scroll-snap-align: end;
-  transition: opacity linear 200ms;
 
   &[data-position='right'] {
     grid-column: right-column;
@@ -48,9 +44,16 @@
     grid-column: 1 / -1;
   }
 
-  &:where(:hover, :focus-within) {
-    animation: none;
-    opacity: 1;
+  @supports (animation-timeline: view()) {
+    animation: fade-out linear forwards;
+    animation-timeline: view();
+    animation-range-start: 30cqb;
+    transition: opacity linear 200ms;
+
+    &:where(:hover, :focus-within) {
+      animation: none;
+      opacity: 1;
+    }
   }
 }
 
