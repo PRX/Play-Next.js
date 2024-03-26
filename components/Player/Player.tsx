@@ -472,6 +472,7 @@ const Player: React.FC<IPlayerProps> = ({
               kind="captions"
               src={`/api/proxy/transcript/vtt?u=${transcript.url}`}
               default
+              key={transcript.url}
             />
           )}
         </audio>

@@ -46,8 +46,6 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
       `${styles['--footerPlayer-thumbnail-size--mobile']}`
     ].join(',');
 
-    console.log(transcripts);
-
     const handleClosedCaptionButtonClick = () => {
       listenDispatch({
         type: ListenActionTypes.LISTEN_PLAYER_TOGGLE_CLOSED_CAPTIONS_DIALOG_SHOWN

@@ -26,7 +26,8 @@ const generateSpeakerColor = (
 ) => {
   const presetColor = presetColors?.[speakerNumber];
   const hue =
-    baseHue + hueShiftAmount * (speakerNumber - (presetColors?.length || 0));
+    baseHue +
+    hueShiftAmount * Math.max(speakerNumber - (presetColors?.length || 0), 0);
   // Color should be pure saturated colors. Let CSS apply `color-mix` to adjust
   // color for contrast.
   const color = `hsl(${hue} 100% 50%)`;

@@ -21,6 +21,7 @@ import {
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
+import getVttCueSpeaker from '@lib/parse/dom/getVttCueSpeaker';
 import styles from './ClosedCaptionsFeed.module.scss';
 
 export interface IClosedCaptionsProps {
@@ -43,16 +44,8 @@ type SegmentProps = {
   inCurrentCue: boolean;
 };
 
-const getCueSpeaker = (cue: VTTCue) =>
-  cue?.text.match(/^(?:<v\s+([^>]+)>)/)?.[1] || null;
-
-const getCurrentCue = (audioElm: HTMLAudioElement) => {
-  const textTrack = [...(audioElm?.textTracks || [])].find(
-    (track) => track.mode === 'showing'
-  );
-
-  return [...(textTrack.activeCues || [])].at(0) as VTTCue;
-};
+const getCurrentCue = (textTrack: TextTrack) =>
+  [...(textTrack?.activeCues || [])].at(0) as VTTCue;
 
 const Segment = ({ data, inCurrentCue }: SegmentProps) => {
   const { audioElm } = useContext(PlayerContext);
@@ -92,7 +85,7 @@ const Caption = ({
   isCurrent
 }: CaptionProps) => {
   const { seekTo } = useContext(PlayerContext);
-  const [cueEnded, setCueEnded] = useState(false);
+  const [cueEnded, setCueEnded] = useState(!isCurrent);
   const [, speaker, caption] =
     cue.text.replace('\n', ' ').match(/^(?:<v\s+([^>]+)>)?(.+)/) || [];
   const cueSegments = useMemo(
@@ -129,9 +122,10 @@ const Caption = ({
     ...(isCurrent && {
       'data-current': ''
     }),
-    ...(cueEnded && {
-      'data-ended': ''
-    }),
+    ...(cueEnded &&
+      isCurrent && {
+        'data-ended': ''
+      }),
     ...(color && {
       style: { '--cc-speaker--color': color } as CSSProperties
     })
@@ -188,7 +182,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
   const scrollAreaRef = useRef<HTMLDivElement>();
 
-  const [currentCue, setCurrentCue] = useState<VTTCue>(getCurrentCue(audioElm));
+  const [currentCue, setCurrentCue] = useState<VTTCue>();
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
 
@@ -201,81 +195,94 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   ) as VTTCue[];
   const speakersColorMap = useRef(new Map<string, string>());
 
-  const getCuePositions = useMemo(
-    () => () => {
-      const positionsMap = new Map<string, CuePosition>();
-      const cues = [...(currentCue?.track?.cues || [])] as VTTCue[];
+  const cuePositions = useMemo(() => {
+    const positionsMap = new Map<string, CuePosition>();
+    const cues = [...(currentCue?.track?.cues || [])] as VTTCue[];
 
-      if (cues.length) {
-        let previousSpeaker = getCueSpeaker(cues[0]);
-        let currentPosition: CuePosition = 'left';
+    if (cues.length) {
+      let previousSpeaker = getVttCueSpeaker(cues[0]);
+      let currentPosition: CuePosition = 'left';
 
-        cues.forEach((cue) => {
-          const cueSpeaker = getCueSpeaker(cue);
+      cues.forEach((cue) => {
+        const cueSpeaker = getVttCueSpeaker(cue);
 
-          if (cueSpeaker !== previousSpeaker) {
-            previousSpeaker = cueSpeaker;
-            currentPosition = currentPosition === 'left' ? 'right' : 'left';
+        if (cueSpeaker !== previousSpeaker) {
+          if (!speakersColorMap.current.has(cueSpeaker)) {
+            const speakerNumber = speakersColorMap.current.size;
+            const speakerColor = generateSpeakerColor(
+              speakerNumber,
+              speakerColors,
+              35,
+              81
+            );
+            speakersColorMap.current.set(cueSpeaker, speakerColor);
           }
 
-          positionsMap.set(cue.id, currentPosition);
-        });
-      }
+          previousSpeaker = cueSpeaker;
+          currentPosition = currentPosition === 'left' ? 'right' : 'left';
+        }
 
-      return positionsMap;
-    },
-    [currentCue]
-  );
-  const cuePositions = getCuePositions();
+        positionsMap.set(cue.id, currentPosition);
+      });
+    }
+
+    return positionsMap;
+  }, [currentCue, speakerColors]);
 
   const { transcripts } = currentTrack;
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 
-  recentCues.forEach((cue) => {
-    const speaker = getCueSpeaker(cue);
-
-    if (speaker && !speakersColorMap.current.has(speaker)) {
-      const speakerNumber = speakersColorMap.current.size;
-      const speakerColor = generateSpeakerColor(
-        speakerNumber,
-        speakerColors,
-        35,
-        81
-      );
-
-      speakersColorMap.current.set(speaker, speakerColor);
-    }
-  });
-
   const captionsClassNames = clsx(styles.captions, {
-    [styles.noSpeakers]: !speakersColorMap.current.size
+    [styles.noSpeakers]: speakersColorMap.current.size <= 1
   });
 
-  const updateCurrentCue = useCallback(() => {
-    const textTrack = [...(audioElm?.textTracks || [])].find(
-      (track) => track.mode === 'showing'
-    );
+  const updateCurrentCue = useCallback((textTrack: TextTrack) => {
+    const cue = getCurrentCue(textTrack);
 
-    [...(textTrack.activeCues || [])].forEach((c: VTTCue) => {
-      setCurrentCue(c);
-    });
-  }, [audioElm?.textTracks]);
+    // Fallback to previous cue to prevent captions not being rendered during
+    // pauses in dialog (no active cues.)
+    setCurrentCue((previousCue) => cue || previousCue);
+  }, []);
 
   const handleCueChange = useMemo(
-    () => () => {
-      updateCurrentCue();
+    () => (e: Event) => {
+      updateCurrentCue(e.target as TextTrack);
     },
     [updateCurrentCue]
+  );
+
+  const handleAddTrack = useMemo(
+    () => (e: TrackEvent) => {
+      updateCurrentCue(e.track);
+      // eslint-disable-next-line no-param-reassign
+      e.track.mode = 'showing';
+      e.track.addEventListener('cuechange', handleCueChange);
+    },
+    [handleCueChange, updateCurrentCue]
+  );
+
+  const handleRemoveTrack = useMemo(
+    () => () => {
+      // Clear current cue when tracks are about to change.
+      setCurrentCue(null);
+    },
+    []
   );
 
   /**
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    [...(audioElm?.textTracks || [])].forEach((track) => {
+    const textTracks = audioElm?.textTracks;
+
+    textTracks.addEventListener('addtrack', handleAddTrack);
+    textTracks.addEventListener('removetrack', handleRemoveTrack);
+
+    [...(textTracks || [])].forEach((track) => {
       if (track.kind === 'captions') {
         track.addEventListener('cuechange', handleCueChange);
-        updateCurrentCue();
+
+        updateCurrentCue(track);
       }
     });
 
@@ -325,7 +332,10 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     scrollAreaElement.addEventListener('touchend', handleTouchEnd);
 
     return () => {
-      [...(audioElm?.textTracks || [])].forEach((track) => {
+      textTracks.removeEventListener('addtrack', handleAddTrack);
+      textTracks.removeEventListener('removetrack', handleRemoveTrack);
+
+      [...(textTracks || [])].forEach((track) => {
         if (track.kind === 'captions') {
           track.removeEventListener('cuechange', handleCueChange);
         }
@@ -342,7 +352,13 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
       scrollAreaElement.removeEventListener('touchmove', handleTouchMove);
       scrollAreaElement.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [audioElm, handleCueChange, updateCurrentCue]);
+  }, [
+    audioElm,
+    handleAddTrack,
+    handleCueChange,
+    handleRemoveTrack,
+    updateCurrentCue
+  ]);
 
   useEffect(() => {
     if (!transcriptJson?.url) return;
@@ -356,7 +372,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     })();
   }, [transcriptJson?.url]);
 
-  const previousSpeaker = useRef(getCueSpeaker(currentCue));
+  const previousSpeaker = useRef(getVttCueSpeaker(currentCue));
   let lastSpeakerChangeIndex = 0;
 
   if (!transcripts) return null;
@@ -364,10 +380,10 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   return (
     <div ref={scrollAreaRef} className={styles.root}>
       <div className={captionsClassNames} aria-hidden>
-        <span />
+        <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
         {!!recentCues?.length &&
           recentCues.map((cue, index) => {
-            const cueSpeaker = getCueSpeaker(cue);
+            const cueSpeaker = getVttCueSpeaker(cue);
             const speakerChanged = cueSpeaker !== previousSpeaker.current;
             // Show speaker when speaker changes or every 5 cues od the same speaker.
             const showSpeaker =
@@ -387,7 +403,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
                 showSpeaker={showSpeaker}
                 position={cuePositions.get(cue.id) || 'left'}
                 isCurrent={isCurrent}
-                key={cue.id || cue.text}
+                key={cue.id}
               />
             );
           })}

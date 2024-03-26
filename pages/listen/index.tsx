@@ -24,8 +24,9 @@ const ListenPage = ({ data, config, error }: IListenPageProps) => {
     bgImageUrl: rssImage,
     episodes
   } = data;
-  const episode =
-    episodeGuid && episodes?.find(({ guid }) => guid === episodeGuid);
+  const episodeIndex =
+    episodeGuid && episodes?.findIndex(({ guid }) => guid === episodeGuid);
+  const episode = episodes[episodeIndex];
   const {
     title: episodeTitle,
     link: episodeLink,
@@ -73,7 +74,7 @@ const ListenPage = ({ data, config, error }: IListenPageProps) => {
         )}
       </Head>
 
-      <Player audio={episodes}>
+      <Player audio={episodes} startIndex={episodeIndex}>
         <Listen data={data} config={config} />
       </Player>
     </>

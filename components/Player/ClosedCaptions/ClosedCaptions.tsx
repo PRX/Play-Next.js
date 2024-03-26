@@ -21,6 +21,7 @@ import {
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
+import getVttCueSpeaker from '@lib/parse/dom/getVttCueSpeaker';
 import PlayButton from '../PlayButton';
 import PlayerProgress from '../PlayerProgress';
 import ReplayButton from '../ReplayButton';
@@ -31,19 +32,14 @@ export interface IClosedCaptionsProps {
   speakerColors?: string[];
 }
 
-const getCurrentCue = (audioElm: HTMLAudioElement) => {
-  const textTrack = [...(audioElm?.textTracks || [])].find(
-    (track) => track.mode === 'showing'
-  );
-
-  return [...(textTrack.activeCues || [])].at(0) as VTTCue;
-};
+const getCurrentCue = (textTrack: TextTrack) =>
+  [...(textTrack?.activeCues || [])].at(0) as VTTCue;
 
 const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   const { audioElm, state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const [currentTime, setCurrentTime] = useState(audioElm?.currentTime || 0);
-  const [currentCue, setCurrentCue] = useState<VTTCue>(getCurrentCue(audioElm));
+  const [currentCue, setCurrentCue] = useState<VTTCue>();
   const [cueEnded, setCueEnded] = useState(false);
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
@@ -55,19 +51,27 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   });
   const [, speaker, caption] =
     currentCue?.text.replace('\n', ' ').match(/^(?:<v\s+([^>]+)>)?(.+)/) || [];
-  const speakers = useRef(new Set<string>());
+  const speakersColorMap = useRef(new Map<string, string>());
 
-  if (speaker) {
-    speakers.current.add(speaker);
+  // console.log(currentCue, cueIndex, recentCues);
+
+  const cues = [...(currentCue?.track?.cues || [])] as VTTCue[];
+
+  if (cues.length) {
+    cues.forEach((cue) => {
+      const cueSpeaker = getVttCueSpeaker(cue);
+      if (!speakersColorMap.current.has(cueSpeaker)) {
+        const speakerNumber = speakersColorMap.current.size;
+        const speakerColor = generateSpeakerColor(
+          speakerNumber,
+          speakerColors,
+          35,
+          81
+        );
+        speakersColorMap.current.set(cueSpeaker, speakerColor);
+      }
+    });
   }
-
-  const speakerNumber = [...speakers.current].indexOf(speaker);
-  const speakerColor = generateSpeakerColor(
-    speakerNumber,
-    speakerColors,
-    35,
-    81
-  );
 
   const cueSegments = useMemo(
     () =>
@@ -101,21 +105,41 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
     setCueEnded(true);
   };
 
+  const updateCurrentCue = useCallback((textTrack: TextTrack) => {
+    const cue = getCurrentCue(textTrack);
+
+    // Fallback to previous cue to prevent captions not being rendered during
+    // pauses in dialog (no active cues.)
+    setCurrentCue((previousCue) => {
+      previousCue?.removeEventListener('exit', handleCueEnd);
+      cue?.addEventListener('exit', handleCueEnd);
+      return cue || previousCue;
+    });
+  }, []);
+
   const handleCueChange = useMemo(
-    () => () => {
-      const textTrack = [...(audioElm?.textTracks || [])].find(
-        (track) => track.mode === 'showing'
-      );
-
-      [...(textTrack.activeCues || [])].forEach((c: VTTCue) => {
-        currentCue?.removeEventListener('exit', handleCueEnd);
-        c.addEventListener('exit', handleCueEnd);
-
-        setCueEnded(false);
-        setCurrentCue(c);
-      });
+    () => (e: Event) => {
+      updateCurrentCue(e.target as TextTrack);
     },
-    [audioElm?.textTracks, currentCue]
+    [updateCurrentCue]
+  );
+
+  const handleAddTrack = useMemo(
+    () => (e: TrackEvent) => {
+      updateCurrentCue(e.track);
+      // eslint-disable-next-line no-param-reassign
+      e.track.mode = 'showing';
+      e.track.addEventListener('cuechange', handleCueChange);
+    },
+    [handleCueChange, updateCurrentCue]
+  );
+
+  const handleRemoveTrack = useMemo(
+    () => () => {
+      // Clear current cue when tracks are about to change.
+      setCurrentCue(null);
+    },
+    []
   );
 
   const handleUpdate = useCallback(() => {
@@ -126,13 +150,19 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    audioElm?.addEventListener('timeupdate', handleUpdate);
+    const textTracks = audioElm?.textTracks;
 
-    [...(audioElm?.textTracks || [])].forEach((track) => {
+    textTracks.addEventListener('addtrack', handleAddTrack);
+    textTracks.addEventListener('removetrack', handleRemoveTrack);
+
+    [...(textTracks || [])].forEach((track) => {
       if (track.kind === 'captions') {
         track.addEventListener('cuechange', handleCueChange);
+        updateCurrentCue(track);
       }
     });
+
+    audioElm?.addEventListener('timeupdate', handleUpdate);
 
     return () => {
       audioElm?.removeEventListener('timeupdate', handleUpdate);
@@ -143,7 +173,14 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
         }
       });
     };
-  }, [audioElm, handleCueChange, handleUpdate]);
+  }, [
+    audioElm,
+    handleAddTrack,
+    handleCueChange,
+    handleRemoveTrack,
+    handleUpdate,
+    updateCurrentCue
+  ]);
 
   useEffect(() => {
     if (!transcriptJson?.url) return;
@@ -162,7 +199,11 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   return (
     <div
       className={styles.root}
-      style={{ '--cc-speaker--color': speakerColor } as CSSProperties}
+      style={
+        {
+          '--cc-speaker--color': speakersColorMap.current.get(speaker)
+        } as CSSProperties
+      }
     >
       <div className={captionsClassNames} aria-hidden>
         {currentCue && (

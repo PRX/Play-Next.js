@@ -113,7 +113,7 @@
   border-width: var(--_cc-body--border-width);
   border-radius: 4px;
 
-  font-size: clamp(1rem, 3cqi, 2rem);
+  font-size: clamp(1rem, 3cqi, 1.5rem);
   text-align: start;
   text-wrap: balance;
 
@@ -137,13 +137,18 @@
     }
   }
 
-  .noSpeakers [data-ended] & {
+  .noSpeakers :not([data-current]) > & {
+    transition: none;
     border-color: transparent;
   }
 
   [data-current] & {
-    transition: border-color linear 100ms 1s;
     --_cc-body--border-width: 3px;
+  }
+
+  .noSpeakers [data-current][data-ended] > & {
+    transition: border-color linear 100ms 1s;
+    border-color: transparent;
   }
 }
 
