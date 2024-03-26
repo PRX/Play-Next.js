@@ -88,7 +88,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
       })
     })
   } as CSSProperties;
-  const accentColorKeyframes = [...accentColor]
+  const accentColorKeyframes = [...(accentColor || [])]
     .reverse()
     .map((color, index, all) => {
       const percent = (index / (all.length - 1)) * 100;
