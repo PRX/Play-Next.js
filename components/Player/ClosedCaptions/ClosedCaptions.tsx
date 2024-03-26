@@ -101,24 +101,28 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
     [transcriptData?.segments, currentCue, speaker]
   );
 
-  const handleCueEnd = () => {
+  const handleCueEnd = useCallback(() => {
     setCueEnded(true);
-  };
-
-  const updateCurrentCue = useCallback((textTrack: TextTrack) => {
-    const cue = getCurrentCue(textTrack);
-
-    // Fallback to previous cue to prevent captions not being rendered during
-    // pauses in dialog (no active cues.)
-    setCurrentCue((previousCue) => {
-      previousCue?.removeEventListener('exit', handleCueEnd);
-      cue?.addEventListener('exit', handleCueEnd);
-      return cue || previousCue;
-    });
   }, []);
+
+  const updateCurrentCue = useCallback(
+    (textTrack: TextTrack) => {
+      const cue = getCurrentCue(textTrack);
+
+      // Fallback to previous cue to prevent captions not being rendered during
+      // pauses in dialog (no active cues.)
+      setCurrentCue((previousCue) => {
+        previousCue?.removeEventListener('exit', handleCueEnd);
+        cue?.addEventListener('exit', handleCueEnd);
+        return cue || previousCue;
+      });
+    },
+    [handleCueEnd]
+  );
 
   const handleCueChange = useMemo(
     () => (e: Event) => {
+      setCueEnded(false);
       updateCurrentCue(e.target as TextTrack);
     },
     [updateCurrentCue]
@@ -138,13 +142,15 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
     () => () => {
       // Clear current cue when tracks are about to change.
       setCurrentCue(null);
+      setCueEnded(false);
     },
     []
   );
 
   const handleUpdate = useCallback(() => {
     setCurrentTime(audioElm?.currentTime);
-  }, [audioElm?.currentTime]);
+    setCueEnded(currentCue?.endTime < audioElm?.currentTime);
+  }, [audioElm?.currentTime, currentCue?.endTime]);
 
   /**
    * Setup audio element event handlers.
