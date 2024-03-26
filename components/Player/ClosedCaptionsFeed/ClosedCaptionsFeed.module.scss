@@ -11,12 +11,15 @@
     --cc-feed--gutter-end,
     var(--cc-feed--gutter, 5rem)
   );
+  --_cc-feed--max-width: var(--cc-feed--max-width, auto);
 
   position: absolute;
   inset: 0;
   display: grid;
+  justify-content: stretch;
   align-content: end;
   z-index: 0;
+
   padding-block-start: 30cqb;
   padding-block-end: 2rem;
   padding-inline-start: var(--_cc-feed--gutter-start);
@@ -34,6 +37,10 @@
   align-content: end;
   row-gap: 0.75rem;
   min-height: 100%;
+  width: 100%;
+  max-width: var(--_cc-feed--max-width);
+
+  margin-inline: auto;
 }
 
 .caption {
@@ -53,6 +60,10 @@
 
   .noSpeakers & {
     grid-column: 1 / -1;
+  }
+
+  &[data-current] ~ & {
+    opacity: 0.3;
   }
 
   @supports (animation-timeline: view()) {
@@ -113,7 +124,7 @@
   border-width: var(--_cc-body--border-width);
   border-radius: 4px;
 
-  font-size: clamp(1rem, 3cqi, 1.5rem);
+  font-size: clamp(1rem, 4.5cqi, 1.5rem);
   text-align: start;
   text-wrap: balance;
 

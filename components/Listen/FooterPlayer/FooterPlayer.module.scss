@@ -115,29 +115,11 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 
   @media (min-width: Listen.$breakpoint-full) {
     width: 100%;
-    max-width: 900px;
     top: 0;
     left: auto;
     right: 0;
 
     container-type: inline-size;
-    background: none;
-    backdrop-filter: none;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      // display: none;
-      background-color: var(--modal-background-color);
-      backdrop-filter: blur(var(--modal-background-blur, 0));
-      mask-image: linear-gradient(to right, transparent, #ffffff 20%);
-    }
-  }
-
-  @media (min-width: Listen.$breakpoint-full-wide) {
-    width: calc(100% - 180px);
   }
 }
 

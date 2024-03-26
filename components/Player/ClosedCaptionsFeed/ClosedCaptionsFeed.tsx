@@ -191,7 +191,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   );
   const recentCues = [...(currentCue?.track?.cues || [])].slice(
     0, // Math.max(cueIndex - 20, 0),
-    cueIndex + 1
+    cueIndex + 3
   ) as VTTCue[];
   const speakersColorMap = useRef(new Map<string, string>());
 

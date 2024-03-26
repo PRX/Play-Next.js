@@ -214,4 +214,22 @@ $episode-header-text-size--min: 1rem;
   & > * + :where(p) {
     margin-block-start: 0.5rem;
   }
+
+  a {
+    color: var(--accent-color, colors.$primary-500);
+
+    &:where(:focus-visible) {
+      outline-width: 1px;
+      outline-style: dotted;
+      outline-offset: 3px;
+      outline-color: var(--accent-color-2, currentColor);
+      box-shadow: none;
+    }
+
+    &:where(:hover) {
+      text-decoration: underline;
+      text-decoration-color: var(--accent-color-2, currentColor);
+      text-underline-offset: 0.2em;
+    }
+  }
 }

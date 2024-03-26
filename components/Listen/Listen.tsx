@@ -16,6 +16,7 @@ import {
   useState
 } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import clsx from 'clsx';
 import ListenContext from '@contexts/ListenContext';
 import PlayerContext from '@contexts/PlayerContext';
@@ -73,6 +74,17 @@ const Listen = ({ config, data }: IListenPageProps) => {
     () => episodes && episodes.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]
   );
+  const {
+    title: episodeTitle,
+    imageUrl: episodeImage,
+    content: episodeContent
+  } = episode || {};
+  const pageTitle = [title, episodeTitle].filter((v) => !!v).join(' | ');
+  const imageUrl = !episode ? bgImageUrl : episodeImage;
+  const description = (!episode ? content : episodeContent)?.replace(
+    /<[^>]+>/g,
+    ''
+  );
   const footerPlayerRef = useRef<HTMLDivElement>();
   const [gutterBlockEnd, setGutterBlockEnd] = useState(0);
   const logoSizes = [
@@ -84,6 +96,13 @@ const Listen = ({ config, data }: IListenPageProps) => {
     ...(accentColor && {
       '--accent-color': `${accentColor[0].split(' ')[0]}`,
       ...(accentColor.length > 1 && {
+        ...accentColor.slice(1).reduce(
+          (a, c, i) => ({
+            ...a,
+            [`--accent-color-${i + 2}`]: `${c.split(' ')[0]}`
+          }),
+          {}
+        ),
         '--accent-gradient': `${accentColor.join(',')}`
       })
     })
@@ -253,6 +272,29 @@ const Listen = ({ config, data }: IListenPageProps) => {
 
   return (
     <ListenContext.Provider value={listenContextProps}>
+      <Head>
+        <title>{pageTitle}</title>
+        <link rel="canonical" href={link} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:url" content={link} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:url" content={link} />
+        {description && (
+          <>
+            <meta name="description" content={description} />
+            <meta property="og:description" content={description} />
+            <meta name="twitter:description" content={description} />
+          </>
+        )}
+        {imageUrl && (
+          <>
+            <meta property="og:image" content={imageUrl} />
+            <meta name="twitter:image" content={imageUrl} />
+          </>
+        )}
+      </Head>
       <ThemeVars theme="Listen" cssProps={styles} />
       <style>{`:root {  } body { overflow: hidden; } @keyframes ${
         episodeCardStyles['episode-card-highlight']

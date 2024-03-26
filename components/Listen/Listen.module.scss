@@ -349,6 +349,7 @@ $viewTransitionDuration: 300ms;
 .closedCaptionsFeed {
   --modal-button--visibility: hidden;
   --cc-feed--gutter: 1rem;
+  --cc-feed--max-width: calc(65ch + 1.5rem);
 
   @media (min-width: $breakpoint-full) {
     --modal-button--visibility: visible;
