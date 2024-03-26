@@ -12,11 +12,12 @@
     var(--cc-feed--gutter, 5rem)
   );
   --_cc-feed--max-width: var(--cc-feed--max-width, auto);
+  --_cc-feed--justify-content: var(--cc-feed--justify-content, center);
 
   position: absolute;
   inset: 0;
   display: grid;
-  justify-content: stretch;
+  justify-content: var(--_cc-feed--justify-content);
   align-content: end;
   z-index: 0;
 
@@ -40,7 +41,7 @@
   width: 100%;
   max-width: var(--_cc-feed--max-width);
 
-  margin-inline: auto;
+  margin-inline-start: auto;
 }
 
 .caption {

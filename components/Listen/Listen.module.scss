@@ -168,8 +168,8 @@ $viewTransitionDuration: 300ms;
 .main {
   @include grid.stacked;
   grid-template-rows: 1fr min-content;
-  overflow: hidden;
   transform-origin: center center;
+  max-height: 100vh;
 
   @media (min-width: $breakpoint-full) {
     & {
@@ -354,6 +354,7 @@ $viewTransitionDuration: 300ms;
   @media (min-width: $breakpoint-full) {
     --modal-button--visibility: visible;
     --cc-feed--gutter: unset;
+    --cc-feed--gutter-start: calc(40ch + 2.5rem);
     --cc-body--background-color: var(--modal-background-color);
     --cc-body--background-blur: 10px;
   }
