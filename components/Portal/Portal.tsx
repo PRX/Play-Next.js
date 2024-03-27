@@ -3,27 +3,45 @@
  * Wrapper component to render children using React portal.
  */
 
-import { useLayoutEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-function createWrapperAndAppendToBody(wrapperId) {
+export type PortalProps = {
+  children: React.ReactNode;
+  wrapperId?: string;
+  prependToBody?: boolean;
+};
+
+function createWrapperAndAppendToBody(
+  wrapperId: string,
+  prependToBody?: boolean
+) {
   const wrapperElement = document.createElement('div');
   wrapperElement.setAttribute('id', wrapperId);
-  document.body.appendChild(wrapperElement);
+  if (prependToBody) {
+    document.body.prepend(wrapperElement);
+  } else {
+    document.body.appendChild(wrapperElement);
+  }
   return wrapperElement;
 }
 
-const Portal = ({ children, wrapperId = 'portal-wrapper' }) => {
+const Portal = ({
+  children,
+  wrapperId = 'portal-wrapper',
+  prependToBody
+}: PortalProps) => {
   const [wrapperElement, setWrapperElement] = useState(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let element = document.getElementById(wrapperId);
     let wrapperWasGenerated = false;
 
     // Create missing wrapper element. Flag that it was created by this hook.
     if (!element) {
       wrapperWasGenerated = true;
-      element = createWrapperAndAppendToBody(wrapperId);
+      element = createWrapperAndAppendToBody(wrapperId, prependToBody);
     }
 
     setWrapperElement(element);
@@ -34,9 +52,9 @@ const Portal = ({ children, wrapperId = 'portal-wrapper' }) => {
         element.parentNode.removeChild(element);
       }
     };
-  }, [wrapperId]);
+  }, [prependToBody, wrapperId]);
 
-  return wrapperElement && createPortal(children, wrapperElement);
+  return wrapperElement && createPortal(children, wrapperElement, wrapperId);
 };
 
 export default Portal;

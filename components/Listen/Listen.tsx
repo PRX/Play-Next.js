@@ -209,7 +209,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('popstate', handleUrlChange);
 
-    handleResize(); // Trigger resize handler to initialize gutter end value.
+    window.setTimeout(() => {
+      handleResize(); // Trigger resize handler to initialize gutter end value.
+    }, 200);
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -357,21 +359,20 @@ const Listen = ({ config, data }: IListenPageProps) => {
               )}
             </div>
           </div>
-
           <div
             className={clsx(styles.viewContainer, styles.episodeView)}
             {...(view.indexOf('episode') === -1 && { inert: 'inert' })}
           >
             <Episode data={episode} onClose={handleEpisodeBackClick} />
           </div>
-
-          {closedCaptionsShown && (
-            <div
-              className={clsx(styles.closedCaptionsFeed)}
-              id="listen-closed-caption-modal"
-            />
-          )}
         </div>
+
+        {closedCaptionsShown && (
+          <div
+            className={clsx(styles.closedCaptionsFeed)}
+            id="listen-closed-caption-modal"
+          />
+        )}
 
         <footer className={styles.footer}>
           <FooterPlayer ref={footerPlayerRef} />

@@ -20,6 +20,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
+import ThemeVars from '@components/ThemeVars';
 import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
 import getVttCueSpeaker from '@lib/parse/dom/getVttCueSpeaker';
 import styles from './ClosedCaptionsFeed.module.scss';
@@ -85,7 +86,7 @@ const Caption = ({
   isCurrent
 }: CaptionProps) => {
   const { seekTo } = useContext(PlayerContext);
-  const [cueEnded, setCueEnded] = useState(!isCurrent);
+  const [cueEnded, setCueEnded] = useState(false);
   const [, speaker, caption] =
     cue.text.replace('\n', ' ').match(/^(?:<v\s+([^>]+)>)?(.+)/) || [];
   const cueSegments = useMemo(
@@ -379,6 +380,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
   return (
     <div ref={scrollAreaRef} className={styles.root}>
+      <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
       <div className={captionsClassNames} aria-hidden>
         <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
         {!!recentCues?.length &&

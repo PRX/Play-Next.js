@@ -9,6 +9,7 @@ $modal-text-color: colors.$white;
   --modal-background-color: #{$modal-background-color};
   --modal-background-blur: #{$modal-background-blur};
   --modal-text-color: #{$modal-text-color};
+  --modal-content-padding: 2rem;
 }
 
 .root {
@@ -40,5 +41,20 @@ $modal-text-color: colors.$white;
 .content {
   display: grid;
   place-content: center;
-  padding: 2rem;
+  padding-inline-start: var(
+    --modal-content-padding-inline-start,
+    var(--modal-content-padding-inline, var(--modal-content-padding))
+  );
+  padding-inline-end: var(
+    --modal-content-padding-inline-end,
+    var(--modal-content-padding-inline, var(--modal-content-padding))
+  );
+  padding-block-start: var(
+    --modal-content-padding-block-start,
+    var(--modal-content-padding-block, var(--modal-content-padding))
+  );
+  padding-block-end: var(
+    --modal-content-padding-block-end,
+    var(--modal-content-padding-block, var(--modal-content-padding))
+  );
 }

@@ -3,6 +3,7 @@
  * Injects a theme's custom CSS properties into `:root`.
  */
 
+import Portal from '@components/Portal';
 import type React from 'react';
 
 export interface IThemeVarsProps {
@@ -20,12 +21,13 @@ const ThemeVars: React.FC<IThemeVarsProps> = ({
     // Convert key/value pairs to css property strings.
     .map(([cp, value]) => `${cp}: ${value};`);
   const hasCssVars = cssVars.length || null;
+  const wrapperId = `ThemeVars:${key}`;
 
   return (
     hasCssVars && (
-      <style key={`ThemeVars:${key}`}>{`:root {\n  ${cssVars.join(
-        '\n  '
-      )}\n}`}</style>
+      <Portal wrapperId={wrapperId} prependToBody>
+        <style>{`:root {\n  ${cssVars.join('\n  ')}\n}`}</style>
+      </Portal>
     )
   );
 };

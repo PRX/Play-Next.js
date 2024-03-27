@@ -2,6 +2,13 @@
 @use '@styles/theme';
 @use '@components/Listen/Listen.use.scss' as Listen;
 
+$caption-body-padding: 0.75em;
+$feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
+
+:export {
+  --cc-feed--max-width: #{$feed-max-width};
+}
+
 .root {
   --_cc-feed--gutter-start: var(
     --cc-feed--gutter-start,
@@ -11,11 +18,28 @@
     --cc-feed--gutter-end,
     var(--cc-feed--gutter, 5rem)
   );
-  --_cc-feed--max-width: var(--cc-feed--max-width, auto);
+  --_cc-feed--max-width: var(--cc-feed--max-width);
   --_cc-feed--justify-content: var(--cc-feed--justify-content, center);
+  --_cc-feed--inset: var(--cc-feed--inset, 0);
+  --_cc-feed--top: var(--cc-feed--top, var(--_cc-feed--inset));
+  --_cc-feed--right: var(--cc-feed--right, var(--_cc-feed--inset));
+  --_cc-feed--bottom: var(--cc-feed--bottom, var(--_cc-feed--inset));
+  --_cc-feed--left: var(--cc-feed--left, var(--_cc-feed--inset));
+  --_cc-feed--margin-inline: var(--cc-feed--margin-inline, auto);
+  --_cc-feed--margin-inline-start: var(
+    --cc-feed--margin-inline-start,
+    var(--_cc-feed--margin-inline)
+  );
+  --_cc-feed--margin-inline-end: var(
+    --cc-feed--margin-inline-end,
+    var(--_cc-feed--margin-inline)
+  );
 
   position: absolute;
-  inset: 0;
+  top: var(--_cc-feed--top);
+  right: var(--_cc-feed--right);
+  bottom: var(--_cc-feed--bottom);
+  left: var(--_cc-feed--left);
   display: grid;
   justify-content: var(--_cc-feed--justify-content);
   align-content: end;
@@ -41,7 +65,8 @@
   width: 100%;
   max-width: var(--_cc-feed--max-width);
 
-  margin-inline-start: auto;
+  margin-inline-start: var(--_cc-feed--margin-inline-start);
+  margin-inline-end: var(--_cc-feed--margin-inline-end);
 }
 
 .caption {

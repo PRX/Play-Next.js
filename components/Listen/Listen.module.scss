@@ -6,9 +6,14 @@
 $logo-size: 12.5rem;
 $logo-size--mobile: 2.5rem;
 
+$sidebar-width: 40ch;
+
 $viewTransitionDuration: 300ms;
 
 :export {
+  --listen-sidebar-width: #{$sidebar-width};
+  --listen-column-gap: 2.5rem;
+
   --listen-background-color: #{$listen-background-color};
 
   --listen-text-color: #{$listen-text-color};
@@ -35,6 +40,8 @@ $viewTransitionDuration: 300ms;
 
   --backgroundImage-blur: 60px;
   --backgroundImage-tint-opacity: 0.7;
+
+  color-scheme: dark;
 
   @include theme.light {
     --listen-background-color: #{colors.$grey-100};
@@ -84,10 +91,12 @@ $viewTransitionDuration: 300ms;
     // Modal
     --modal-background-color: #{colors.$white-a-90};
     --modal-text-color: #{colors.$black};
+
+    color-scheme: light;
   }
 
   display: grid;
-  grid-template-rows: min-content 1fr min-content;
+  grid-template-rows: min-content [main-start] 1fr [main-end] min-content;
   height: 100vh;
   overflow: hidden;
   // overflow-y: auto;
@@ -107,12 +116,12 @@ $viewTransitionDuration: 300ms;
   }
 
   @media (min-width: $breakpoint-full) {
-    grid-template-columns: 40ch 2fr;
+    grid-template-columns: var(--listen-sidebar-width, #{$sidebar-width}) 2fr;
     grid-template-rows: 1fr min-content;
     grid-template-areas:
       'SIDEBAR MAIN'
       'FOOTER FOOTER';
-    column-gap: 2.5rem;
+    column-gap: var(--listen-column-gap);
   }
 }
 
@@ -167,9 +176,10 @@ $viewTransitionDuration: 300ms;
 
 .main {
   @include grid.stacked;
+  grid-row: main;
   grid-template-rows: 1fr min-content;
   transform-origin: center center;
-  max-height: 100vh;
+  overflow: hidden;
 
   @media (min-width: $breakpoint-full) {
     & {
@@ -349,14 +359,23 @@ $viewTransitionDuration: 300ms;
 .closedCaptionsFeed {
   --modal-button--visibility: hidden;
   --cc-feed--gutter: 1rem;
-  --cc-feed--max-width: calc(65ch + 1.5rem);
+  --cc-feed--bottom: var(--gutter-size-block-end);
+
+  grid-row: main;
 
   @media (min-width: $breakpoint-full) {
     --modal-button--visibility: visible;
     --cc-feed--gutter: unset;
-    --cc-feed--gutter-start: calc(40ch + 2.5rem);
+    --cc-feed--gutter-start: 2rem;
+    --cc-feed--left: calc(
+      var(--listen-sidebar-width) + var(--listen-column-gap)
+    );
+    --cc-feed--margin-inline-end: 0;
     --cc-body--background-color: var(--modal-background-color);
     --cc-body--background-blur: 10px;
+
+    grid-column: SIDEBAR-start / MAIN-end;
+    grid-row: 1;
   }
 }
 

@@ -111,21 +111,16 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 }
 
 .closedCaptionModal {
-  bottom: var(--gutter-size-block-end);
-
   @media (min-width: Listen.$breakpoint-full) {
-    --modal-background-blur: 20px;
+    --modal-background-blur: 16px;
+    --cc-feed--gutter: 5rem;
     --cc-feed--justify-content: end;
     container-type: inline-size;
-    width: 100vw;
-    top: 0;
-    left: auto;
-    right: 0;
 
     background-color: transparent;
     background-image: linear-gradient(
       to left,
-      var(--modal-background-color) calc(65ch + 1.5rem),
+      var(--modal-background-color) var(--cc-feed--max-width),
       transparent
     );
   }

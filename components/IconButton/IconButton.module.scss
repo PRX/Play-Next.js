@@ -32,6 +32,8 @@
 
   > svg {
     fill: currentColor;
+    width: auto;
+    height: auto;
   }
 
   > svg[class*='fa-'] {
