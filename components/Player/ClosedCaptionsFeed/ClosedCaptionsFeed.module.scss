@@ -140,15 +140,14 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   margin: 0;
   padding-block: 0.75em;
-  padding-inline: calc(1em - var(--_cc-body--border-width));
+  padding-inline: 1em;
 
   background-color: var(--_cc-body--background-color);
   backdrop-filter: blur(var(--_cc-body--background-blur));
 
-  border-color: var(--_cc-speaker--color);
-  border-style: solid;
-  border-width: var(--_cc-body--border-width);
   border-radius: 4px;
+
+  box-shadow: 0 0 0 var(--_cc-body--border-width) var(--_cc-speaker--color);
 
   font-size: clamp(1rem, 4.5cqi, 1.5rem);
   text-align: start;
@@ -176,16 +175,21 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   .noSpeakers :not([data-current]) > & {
     transition: none;
-    border-color: transparent;
+    box-shadow: none;
   }
 
   [data-current] & {
     --_cc-body--border-width: 3px;
+    opacity: 1;
+  }
+
+  [data-current][data-ended] & {
+    --_cc-body--border-width: 1px;
+    transition: box-shadow linear 100ms 1s;
   }
 
   .noSpeakers [data-current][data-ended] > & {
-    transition: border-color linear 100ms 1s;
-    border-color: transparent;
+    box-shadow: none;
   }
 }
 
