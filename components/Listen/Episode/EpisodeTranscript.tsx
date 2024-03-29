@@ -137,7 +137,7 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
       const newIsCurrentBlock =
         startTime <= ae.currentTime + 0.2 && endTime >= ae.currentTime - 0.2;
       const newHasEnded = endTime < ae.currentTime + 0.1;
-      const newCurrentSegmentIndex = segments.findLastIndex(
+      const newCurrentSegmentIndex = segments?.findLastIndex(
         (segment) => segment.startTime <= ae.currentTime
       );
 
