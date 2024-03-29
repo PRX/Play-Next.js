@@ -12,7 +12,7 @@ Luke Skywalker: No! That's impossible.
 
 `;
 
-    const mockSrtNoCueLables = `00:01:23,456 --> 00:01:32,100
+    const mockSrtNoCueLabels = `00:01:23,456 --> 00:01:32,100
 Darth Vader: No, I am your father.
 
 00:01:32,456 --> 00:01:34,321
@@ -37,7 +37,7 @@ Luke Skywalker: No! That's impossible.
     });
 
     test("should add numeric cue labels when srt cues don't have labels", () => {
-      const result = convertSrtToVtt(mockSrtNoCueLables);
+      const result = convertSrtToVtt(mockSrtNoCueLabels);
 
       expect(result).toEqual(mockVttResult);
     });

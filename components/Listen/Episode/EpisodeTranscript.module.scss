@@ -1,0 +1,176 @@
+@use '@styles/colors';
+
+@property --segment--opacity {
+  syntax: '<number>';
+  inherits: false;
+}
+
+.root {
+  overflow: hidden;
+  overflow-y: auto;
+  padding-inline: var(--gap);
+  padding-block-end: calc(
+    var(--gutter-size-block-end, var(--gutter-size-block)) + var(--gap) * 2
+  );
+}
+
+.heading {
+  padding-inline: var(--gap);
+  padding-block: 2rem;
+  margin-block-start: 3rem;
+  border-block-start: 3px solid var(--episode-divider-color);
+  border-block-end: 1px solid var(--episode-divider-color);
+}
+
+.body {
+  opacity: 0.7;
+}
+
+.speakerBlock {
+  --_speaker-block--indicator--width: var(
+    --speaker-block--indicator--width,
+    4px
+  );
+
+  transform: translateZ(0);
+
+  scroll-snap-type: y mandatory;
+  scroll-snap-align: start;
+
+  position: relative;
+  max-width: 120ch;
+
+  margin-block: 1rem;
+
+  padding-inline-start: calc(
+    var(--gap, 1rem) + var(--_speaker-block--indicator--width)
+  );
+  padding-inline-end: var(--gap, 1rem);
+
+  &::before {
+    content: '';
+    transform-origin: top;
+    transform: scaleY(0);
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--_speaker-block--indicator--width);
+    background-color: var(--accent-color, #{colors.$secondary-500});
+  }
+
+  &[data-ended] {
+    --segment--opacity: 0.7;
+
+    &::before {
+      animation: current-indicator-hide 500ms ease-out forwards;
+    }
+  }
+
+  &[data-current] {
+    &::before {
+      animation: current-indicator-show 500ms ease-out forwards;
+    }
+
+    & ~ * {
+      --segment--opacity: 0.4;
+    }
+  }
+}
+
+.speakerHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 3ch;
+
+  margin-block: 3rem 1rem;
+
+  font-size: 1.25rem;
+}
+
+.speakerHeadingTime {
+  --iconButton-size: 1.5em;
+  display: flex;
+  align-items: center;
+  gap: 0.5ch;
+
+  min-height: calc(var(--iconButton-size) + var(--iconButton-padding) * 2);
+
+  font-size: 1rem;
+  font-weight: 100;
+}
+
+.segment {
+  all: unset;
+
+  --_segment--opacity: var(--segment--opacity, 0.4);
+
+  display: inline;
+  padding: 0;
+
+  opacity: var(--_segment--opacity);
+
+  &:not(:where(.space, :has(+ .space))) {
+    &::after {
+      content: '\00a0';
+    }
+  }
+
+  &:where(button) {
+    cursor: pointer;
+  }
+
+  &:has(~ [data-spoken]) {
+    --segment--opacity: 1;
+    animation: segment-fade-out 1s 500ms linear forwards;
+  }
+
+  &[data-spoken]:not(:has(~ [data-spoken])) {
+    --segment--opacity: 1;
+    animation: none;
+    text-decoration: underline;
+    text-decoration-color: var(--accent-color, #{colors.$secondary-500});
+    text-underline-offset: 3px;
+  }
+
+  &:where(:hover, :focus-visible) {
+    opacity: 1;
+    color: var(--accent-color, #{colors.$secondary-500});
+  }
+}
+
+@keyframes segment-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.7;
+  }
+}
+
+@keyframes current-indicator-show {
+  from {
+    transform-origin: top;
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform-origin: top;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes current-indicator-hide {
+  from {
+    transform-origin: bottom;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  to {
+    transform-origin: bottom;
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}

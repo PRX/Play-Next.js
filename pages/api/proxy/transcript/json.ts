@@ -1,12 +1,12 @@
 /**
- * Proxy for VTT transcript file URL's for use in audio track element in Player component.
+ * Proxy for JSON transcript file URL's for use in audio track element in Player component.
  *
  * See Podcast Namespace Transcript documentation: https://github.com/Podcastindex-org/podcast-namespace/blob/main/transcripts/transcripts.md
  *
- * Response Type: WebVTT
- * Supported Conversions: SRT, JSON
+ * Response Type: JSON
+ * Supported Conversions: SRT, VTT
  *
- * TODO: Add conversion for HTML transcripts. May be able to do HTML > JSON > VTT using `html-to-json-parser`.
+ * TODO: Add conversion for HTML transcripts. May be able to do HTML > JSON (HTML parsed) > JSON (transcript) using `html-to-json-parser`.
  */
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
@@ -14,8 +14,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { TranscriptTypeConversion } from '@interfaces/data';
 import type { IRssProxyError } from '@interfaces/error';
-import convertJsonToVtt from '@lib/convert/string/convertJsonToVtt';
 import convertSrtToVtt from '@lib/convert/string/convertSrtToVtt';
+import convertVttToJson from '@lib/convert/string/convertVttToJson';
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,28 +39,29 @@ export default async function handler(
     const conversions: TranscriptTypeConversion[] = [
       {
         check: (ct: string, t: string) =>
-          /(?:application|text)\/vtt/i.test(ct) || t.startsWith('WEBVTT'),
+          /(?:application|text)\/json/i.test(ct) || t.startsWith('{'),
         convert: (t: string) => t
       },
       {
         check: (ct: string, t: string) =>
-          /(?:application|text)\/srt/i.test(ct) || t.includes('-->'),
-        convert: (t: string) => convertSrtToVtt(t)
+          /(?:application|text)\/vtt/i.test(ct) || t.startsWith('WEBVTT'),
+        convert: (t: string) => JSON.stringify(convertVttToJson(t))
       },
       {
         check: (ct: string, t: string) =>
-          /(?:application|text)\/json/i.test(ct) || t.startsWith('{'),
-        convert: (t: string) => convertJsonToVtt(t)
+          /(?:application|text)\/srt/i.test(ct) || t.includes('-->'),
+        convert: (t: string) =>
+          JSON.stringify(convertVttToJson(convertSrtToVtt(t)))
       }
     ];
-    const vttResponseBody = conversions
+    const jsonResponseBody = conversions
       .find(({ check }) => check(contentType, transcriptAsText))
       ?.convert(transcriptAsText);
 
     res
       .status(200)
-      .setHeader('Content-Type', 'text/vtt')
-      .send(vttResponseBody || 'WEBVTT');
+      .setHeader('Content-Type', 'text/json')
+      .send(jsonResponseBody || 'WEBVTT');
   } catch (error) {
     res.status(400).json({
       error: {

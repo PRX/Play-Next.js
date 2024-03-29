@@ -1,4 +1,5 @@
 @use '@styles/colors';
+@use '@styles/grid';
 @use '@components/Listen/Listen.use.scss' as Listen;
 
 $episode-text-size--max: 1.25rem;
@@ -13,6 +14,8 @@ $episode-divider-size: 2px;
 $episode-header-text-color: colors.$white;
 $episode-header-text-size--max: 1.25rem;
 $episode-header-text-size--min: 1rem;
+
+$episode-breakpoint--full: 120ch;
 
 :export {
   --episode-text-size--max: #{$episode-text-size--max};
@@ -30,8 +33,11 @@ $episode-header-text-size--min: 1rem;
 }
 
 .root {
+  container-type: inline-size;
+  container-name: episode-root;
   display: grid;
   grid-template-rows: min-content 1fr;
+  gap: 0;
   height: 100%;
   overflow: hidden;
 }
@@ -88,35 +94,41 @@ $episode-header-text-size--min: 1rem;
   --gap: 1rem;
 
   display: grid;
+  grid-template-rows: [thumbnail-start] var(--episode-thumbnail-size--mobile) [thumbnail-end] [header-start] min-content [header-end] [main-start] auto [main-end];
+  grid-template-columns: none;
   align-content: start;
   gap: var(--gap);
   overflow: hidden;
   overflow-y: auto;
 
-  padding-inline: 1rem;
-  padding-block-start: 1.25rem;
-  padding-block-end: calc(
-    var(--gutter-size-block-end, var(--gutter-size-block)) + 1rem
-  );
+  outline: solid 1px white;
+
+  padding-inline: 0;
+
+  & > * {
+    grid-column: 1;
+  }
 
   @media (min-width: Listen.$breakpoint-full) {
     grid-template-columns: var(--episode-thumbnail-size) 1fr;
+    grid-template-rows: min-content 1fr;
+    row-gap: 0;
+    overflow-y: hidden;
+    height: 100%;
 
     padding-inline: 0;
-
-    & > * {
-      grid-column: 2;
-    }
   }
 }
 
 .header {
   --spacing: 0.25rem;
 
-  position: relative;
+  position: sticky;
+  top: 0;
   display: grid;
+  z-index: 9;
+  isolation: isolate;
   grid-template-columns: auto min-content;
-  grid-template-rows: var(--episode-thumbnail-size--mobile);
   grid-auto-rows: min-content;
   justify-content: space-between;
   align-items: center;
@@ -124,7 +136,7 @@ $episode-header-text-size--min: 1rem;
 
   border-bottom: var(--episode-divider-size) solid var(--episode-divider-color);
 
-  padding-block-end: var(--gap);
+  padding: var(--gap);
 
   color: var(--episodeCard-footer-text-color);
   font-size: clamp(
@@ -134,16 +146,32 @@ $episode-header-text-size--min: 1rem;
   );
   font-weight: 300;
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    background-color: colors.$black-a-70;
+    backdrop-filter: blur(30px);
+  }
+
   @media (min-width: Listen.$breakpoint-full) {
-    & {
-      grid-template-rows: none;
-      justify-content: space-between;
+    grid-row: 1;
+    grid-column: 2;
+    grid-template-rows: none;
+    justify-content: space-between;
+    align-self: center;
+
+    border-bottom: none;
+
+    &::before {
+      content: none;
     }
   }
 }
 
 .thumbnail {
-  grid-column: 1 / -1;
   justify-self: center;
 
   position: relative;
@@ -152,13 +180,18 @@ $episode-header-text-size--min: 1rem;
 
   border: 1px solid var(--listen-divider-color);
 
+  margin-block-start: var(--gap);
+
   @media (min-width: Listen.$breakpoint-full) {
-    & {
-      position: absolute;
-      top: 0;
-      right: calc(100% + var(--gap));
-      width: var(--episode-thumbnail-size);
-    }
+    grid-row: 1;
+    grid-column: 1;
+    transform: translateZ(0);
+    position: sticky;
+    top: var(--gap);
+    // right: calc(100% + var(--gap));
+    width: var(--episode-thumbnail-size);
+
+    margin-block-end: var(--gap);
   }
 }
 
@@ -198,14 +231,66 @@ $episode-header-text-size--min: 1rem;
   justify-self: end;
 }
 
+.viewNav {
+  display: flex;
+  gap: 1rem;
+}
+
+.viewNavButton {
+  font-weight: 500;
+  text-transform: capitalize;
+  opacity: 0.7;
+
+  &:where(:focus) {
+    outline: none;
+  }
+
+  &:where(:hover, :focus-visible) {
+    opacity: 1;
+  }
+}
+
 .content {
-  max-width: 80ch;
+  position: relative;
+
+  & > * {
+    scroll-snap-type: y proximity;
+    scroll-snap-align: start;
+    // TODO: Figure out how to not magic number this offset.
+    scroll-margin-top: calc(132px + var(--gap) - var(--episode-divider-size));
+  }
+
+  @media (min-width: Listen.$breakpoint-full) {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    overflow: hidden;
+    overflow-y: auto;
+
+    padding-block-end: calc(
+      var(--gutter-size-block-end, var(--gutter-size-block)) + var(--gap) * 2
+    );
+
+    border-top: var(--episode-divider-size) solid var(--episode-divider-color);
+
+    & > * {
+      scroll-margin-top: 0;
+    }
+  }
+}
+
+.description {
+  padding: var(--gap);
 
   font-size: clamp(
     var(--episode-text-size--min),
     1.5vw,
     var(--episode-text-size--max)
   );
+
+  & > * {
+    max-width: 80ch;
+    margin-inline-end: auto;
+  }
 
   & > :where(p) {
     margin-block: 0;
@@ -231,5 +316,34 @@ $episode-header-text-size--min: 1rem;
       text-decoration-color: var(--accent-color-2, currentColor);
       text-underline-offset: 0.2em;
     }
+  }
+}
+
+@container episode-root (width > #{Listen.$breakpoint-full}) {
+  .thumbnail {
+    grid-row: 1 / -1;
+  }
+
+  .content {
+    grid-column: 2;
+  }
+}
+
+@keyframes episode-view-show {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes episode-view-hide {
+  to {
+    transform: scale(0.9);
+    opacity: 0;
+    filter: blur(20px);
   }
 }

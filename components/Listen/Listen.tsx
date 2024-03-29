@@ -135,7 +135,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const handleUrlChange = useCallback((event: PopStateEvent) => {
     const { protocol, host } = window.location;
     const baseUrl = `${protocol}//${host}/`;
-    const url = new URL(event.state.as, baseUrl);
+    const url = new URL(event.state?.as, baseUrl);
     const guid = url.searchParams.get('ge');
 
     if (guid) {

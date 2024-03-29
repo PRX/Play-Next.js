@@ -302,7 +302,7 @@ const Player: React.FC<IPlayerProps> = ({
           toggleMute();
           break;
         case 'Space':
-          if (event.target.nodeName !== 'BUTTON') {
+          if (!['A', 'BUTTON'].includes(event.target.nodeName)) {
             togglePlayPause();
           }
           break;

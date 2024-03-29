@@ -2,7 +2,10 @@
  * Defines audio data interfaces and types.
  */
 
-import { IRssPodcastTranscript } from './IRssPodcast';
+import {
+  IRssPodcastTranscript,
+  IRssPodcastTranscriptJson
+} from './IRssPodcast';
 
 /**
  * Audio data interface.
@@ -69,4 +72,9 @@ export interface IAudioData {
    * Available transcripts od the audio.
    */
   transcripts?: IRssPodcastTranscript[];
+
+  /**
+   * Parsed JSON version of transcript.
+   */
+  transcriptData?: IRssPodcastTranscriptJson;
 }
