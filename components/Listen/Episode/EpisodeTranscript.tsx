@@ -39,12 +39,37 @@ type PlayBlockBtnProps = {
   startTime: number;
 };
 
+const isScrollable = (node: Element) => {
+  if (!(node instanceof HTMLElement || node instanceof SVGElement)) {
+    return false;
+  }
+  const style = getComputedStyle(node);
+  return ['overflow', 'overflow-x', 'overflow-y'].some((propertyName) => {
+    const value = style.getPropertyValue(propertyName);
+    return value === 'auto' || value === 'scroll';
+  });
+};
+
+export const getScrollParent = (node: Element): Element => {
+  let currentParent = node.parentElement;
+  while (currentParent) {
+    if (isScrollable(currentParent)) {
+      return currentParent;
+    }
+    currentParent = currentParent.parentElement;
+  }
+  return document.scrollingElement || document.documentElement;
+};
+
 const PlayBlockBtn = ({ startTime }: PlayBlockBtnProps) => {
-  const { seekTo, play } = useContext(PlayerContext);
+  const { seekTo, play, state } = useContext(PlayerContext);
 
   const handleClick = () => {
-    play();
     seekTo(startTime);
+
+    if (!state.playing) {
+      play();
+    }
   };
 
   return (
@@ -113,6 +138,8 @@ const Segment = ({ data, isSpoken, inCurrentBlock }: SegmentProps) => {
 };
 
 const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
+  const currentBlockRef = useRef<HTMLDivElement>();
+  const scrollElementRef = useRef<Element>();
   const firstSegment = segments.at(0);
   const lastSegment = segments.at(segments.length - 1);
   const { startTime } = firstSegment;
@@ -121,14 +148,36 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
   const [isCurrentBlock, setIsCurrentBlock] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>();
+  const [showJumpButton, setShowJumpButton] = useState(false);
   const rootProps = {
     className: clsx(styles.speakerBlock),
     ...(isCurrentBlock && {
+      ref: currentBlockRef,
       'data-current': ''
     }),
     ...(hasEnded && {
       'data-ended': ''
     })
+  } as Partial<
+    React.DetailedHTMLProps<
+      React.HTMLAttributes<HTMLDivElement>,
+      HTMLDivElement
+    >
+  >;
+
+  const scrollToCurrentBlock = (
+    blockElement: HTMLDivElement,
+    smooth?: boolean
+  ) => {
+    setShowJumpButton(false);
+    blockElement.scrollIntoView({
+      block: 'center',
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  };
+
+  const handleJumpBtnClick = () => {
+    scrollToCurrentBlock(currentBlockRef.current);
   };
 
   useEffect(() => {
@@ -144,42 +193,85 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
       setCurrentSegmentIndex(newCurrentSegmentIndex);
       setIsCurrentBlock(newIsCurrentBlock);
       setHasEnded(newHasEnded);
+
+      if (isCurrentBlock && currentBlockRef.current) {
+        const currentBlockRect =
+          currentBlockRef.current?.getBoundingClientRect();
+        const scrollingElement = scrollElementRef.current;
+        const scrollAreaRect = scrollingElement.getBoundingClientRect();
+        const isOnScreen =
+          !!currentBlockRect &&
+          currentBlockRect?.bottom < scrollAreaRect.bottom &&
+          currentBlockRect?.top > scrollAreaRect.top;
+        const isOffTop =
+          !!currentBlockRect &&
+          currentBlockRect?.bottom > scrollAreaRect.top &&
+          currentBlockRect?.top < scrollAreaRect.top;
+        const isOffBottom =
+          !!currentBlockRect &&
+          currentBlockRect?.bottom > scrollAreaRect.bottom &&
+          currentBlockRect?.top < scrollAreaRect.bottom;
+
+        if (
+          (isOnScreen || isOffTop || isOffBottom) &&
+          !!scrollingElement?.scrollTop
+        ) {
+          scrollToCurrentBlock(currentBlockRef.current, true);
+        } else {
+          setShowJumpButton(true);
+        }
+      }
     }
+
+    scrollElementRef.current =
+      scrollElementRef.current ||
+      (currentBlockRef.current && getScrollParent(currentBlockRef.current));
 
     audioElm?.addEventListener('timeupdate', handleTimeUpdate);
 
     return () => {
       audioElm?.removeEventListener('timeupdate', handleTimeUpdate);
     };
-  }, [audioElm, endTime, segments, startTime]);
+  }, [audioElm, endTime, isCurrentBlock, segments, startTime]);
 
   return (
-    <div {...rootProps}>
-      <h3 className={styles.speakerHeading}>
-        {speaker && (
-          <span className={styles.speakerHeadingSpeaker}>{speaker}</span>
-        )}
-        <span className={styles.speakerHeadingTime}>
-          {convertSecondsToDuration(startTime)}
-          <PlayBlockBtn startTime={startTime} />
-        </span>
-      </h3>
-      {useMemo(
-        () =>
-          segments.map((segment, index) => {
-            const key = `${segment.body}:${segment.startTime}:${index}`;
-            return (
-              <Segment
-                data={segment}
-                key={key}
-                isSpoken={index <= currentSegmentIndex}
-                inCurrentBlock={isCurrentBlock}
-              />
-            );
-          }),
-        [currentSegmentIndex, isCurrentBlock, segments]
+    <>
+      {showJumpButton && isCurrentBlock && (
+        <button
+          type="button"
+          className={styles.jumpButton}
+          onClick={handleJumpBtnClick}
+        >
+          Scroll to current caption
+        </button>
       )}
-    </div>
+      <div {...rootProps}>
+        <h3 className={styles.speakerHeading}>
+          {speaker && (
+            <span className={styles.speakerHeadingSpeaker}>{speaker}</span>
+          )}
+          <span className={styles.speakerHeadingTime}>
+            {convertSecondsToDuration(startTime)}
+            <PlayBlockBtn startTime={startTime} />
+          </span>
+        </h3>
+        {useMemo(
+          () =>
+            segments.map((segment, index) => {
+              const key = `${segment.body}:${segment.startTime}:${index}`;
+              return (
+                <Segment
+                  data={segment}
+                  key={key}
+                  isSpoken={index <= currentSegmentIndex}
+                  inCurrentBlock={isCurrentBlock}
+                />
+              );
+            }),
+          [currentSegmentIndex, isCurrentBlock, segments]
+        )}
+      </div>
+    </>
   );
 };
 
@@ -255,8 +347,6 @@ const EpisodeTranscript: React.FC<IEpisodeTranscriptProps> = ({
     [hasMultipleSpeakers, segments]
   );
 
-  const scrollAreaRef = useRef<HTMLDivElement>();
-
   useEffect(() => {
     const newIsCurrentTrack = episode.guid === currentTrack.guid;
     setIsCurrentTrack(newIsCurrentTrack);
@@ -265,7 +355,7 @@ const EpisodeTranscript: React.FC<IEpisodeTranscriptProps> = ({
   if (!speakerBlocks?.length) return null;
 
   return (
-    <div ref={scrollAreaRef} className={clsx(className, styles.root)}>
+    <div className={clsx(className, styles.root)}>
       <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
       <h2 className={styles.heading}>Transcript</h2>
       {speakerBlocks.map((speakerBlockProps, index) => {

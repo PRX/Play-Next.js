@@ -106,6 +106,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
 
   useEffect(() => {
     if (!transcriptData && transcripts?.length) {
+      setTranscript(null);
       setTimeout(() => {
         (async () => {
           const response = await fetchAudioTranscriptData(data);
