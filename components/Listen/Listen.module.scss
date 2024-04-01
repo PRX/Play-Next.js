@@ -289,6 +289,10 @@ $viewTransitionDuration: 300ms;
   :where([data-view='podcast']) & {
     animation: sharpen $viewTransitionDuration ease-out;
   }
+
+  @media (min-width: $breakpoint-full) {
+    grid-template-rows: none;
+  }
 }
 
 .podcastInfo {
