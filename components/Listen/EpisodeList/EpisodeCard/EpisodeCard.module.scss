@@ -172,7 +172,8 @@ $episodeCard-corner-radius: 5px;
   align-items: start;
   // overflow: hidden;
 
-  margin: 0;
+  margin-inline: $padding-h;
+  margin-block: 0;
   padding: $padding-v $padding-h;
 
   border-top-style: solid;
@@ -239,6 +240,7 @@ $episodeCard-corner-radius: 5px;
       background-attachment: fixed;
       background-position: 0 0;
       background-size: 100% 100vh;
+
       border-radius: var(--_episodeCard-corner-radius);
 
       @supports (animation-timeline: view()) {

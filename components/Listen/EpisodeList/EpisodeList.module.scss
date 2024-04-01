@@ -110,10 +110,13 @@ $episodeList-header-icon-color--active: colors.$white;
 }
 
 .episodeList {
-  @include Listen.scrollbar;
   container-type: inline-size;
 
   padding-block-end: var(--gutter-size-block-end, var(--gutter-size-block));
+
+  @media (min-width: Listen.$breakpoint-full) {
+    @include Listen.scrollbar;
+  }
 }
 
 .tracks {

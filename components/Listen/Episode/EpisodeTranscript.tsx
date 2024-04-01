@@ -165,19 +165,21 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
     >
   >;
 
-  const scrollToCurrentBlock = (
-    blockElement: HTMLDivElement,
-    smooth?: boolean
-  ) => {
+  const scrollToCurrentBlock = (smooth?: boolean) => {
+    const lastSpokenElm = currentBlockRef.current?.querySelector(
+      '[data-spoken]:not(:has(~ [data-spoken]))'
+    );
+
     setShowJumpButton(false);
-    blockElement.scrollIntoView({
+
+    lastSpokenElm?.scrollIntoView({
       block: 'center',
       behavior: smooth ? 'smooth' : 'auto'
     });
   };
 
   const handleJumpBtnClick = () => {
-    scrollToCurrentBlock(currentBlockRef.current);
+    scrollToCurrentBlock();
   };
 
   useEffect(() => {
@@ -199,24 +201,15 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
           currentBlockRef.current?.getBoundingClientRect();
         const scrollingElement = scrollElementRef.current;
         const scrollAreaRect = scrollingElement.getBoundingClientRect();
-        const isOnScreen =
-          !!currentBlockRect &&
-          currentBlockRect?.bottom < scrollAreaRect.bottom &&
-          currentBlockRect?.top > scrollAreaRect.top;
-        const isOffTop =
-          !!currentBlockRect &&
-          currentBlockRect?.bottom > scrollAreaRect.top &&
-          currentBlockRect?.top < scrollAreaRect.top;
-        const isOffBottom =
-          !!currentBlockRect &&
-          currentBlockRect?.bottom > scrollAreaRect.bottom &&
-          currentBlockRect?.top < scrollAreaRect.bottom;
+        const offScreen =
+          (!!currentBlockRect &&
+            currentBlockRect?.top > scrollAreaRect.bottom) ||
+          currentBlockRect?.bottom < scrollAreaRect.top;
 
-        if (
-          (isOnScreen || isOffTop || isOffBottom) &&
-          !!scrollingElement?.scrollTop
-        ) {
-          scrollToCurrentBlock(currentBlockRef.current, true);
+        if (!offScreen && scrollingElement.scrollTop) {
+          scrollToCurrentBlock(true);
+          // } else if (onScreen && !!scrollingElement?.scrollTop) {
+          //   scrollToCurrentBlock(currentBlockRef.current, true);
         } else {
           setShowJumpButton(true);
         }

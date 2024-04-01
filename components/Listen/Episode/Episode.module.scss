@@ -252,6 +252,9 @@ $episode-breakpoint--full: 120ch;
 
 .content {
   position: relative;
+  padding-block-end: calc(
+    var(--gutter-size-block-end, var(--gutter-size-block)) + var(--gap)
+  );
 
   & > * {
     scroll-snap-type: y proximity;

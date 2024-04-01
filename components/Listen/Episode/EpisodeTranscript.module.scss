@@ -1,4 +1,5 @@
 @use '@styles/colors';
+@use '@components/Listen/Listen.use.scss' as Listen;
 
 @property --segment--opacity {
   syntax: '<number>';
@@ -52,8 +53,6 @@
   );
 
   transform: translateZ(0);
-
-  scroll-margin-block-end: calc(var(--gutter-size-block-end) + var(--gap));
 
   position: relative;
   max-width: 120ch;
@@ -155,6 +154,10 @@
   &:where(:hover, :focus-visible) {
     opacity: 1;
     color: var(--accent-color, #{colors.$secondary-500});
+  }
+
+  @media (min-width: Listen.$breakpoint-full) {
+    scroll-margin-block-end: calc(var(--gutter-size-block-end) + var(--gap));
   }
 }
 

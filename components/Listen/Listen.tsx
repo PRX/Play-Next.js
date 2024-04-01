@@ -332,7 +332,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
             <div className={styles.podcastContent}>
               <HtmlContent html={content} />
             </div>
-            <div className={styles.podcastMenu}>{renderMenu}</div>
+            <nav className={styles.podcastMenu}>{renderMenu}</nav>
             {copyright && (
               <div className={styles.podcastCopyright}>{copyright}</div>
             )}
@@ -354,9 +354,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
               )}
             </div>
             <div className={styles.podcastEpisodes}>
-              {view.indexOf('podcast') !== -1 && (
-                <EpisodeList onEpisodeClick={handleEpisodeClick} />
-              )}
+              <EpisodeList onEpisodeClick={handleEpisodeClick} />
+              {/* {view.indexOf('podcast') !== -1 && (
+              )} */}
             </div>
           </div>
           <div

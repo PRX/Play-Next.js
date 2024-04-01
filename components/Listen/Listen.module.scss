@@ -220,11 +220,9 @@ $viewTransitionDuration: 300ms;
 
 .viewContainer {
   @media (min-width: $breakpoint-full) {
-    & {
-      display: grid;
-      overflow: hidden;
-      padding-inline-end: var(--gutter-size-inline, 2rem);
-    }
+    display: grid;
+    overflow: hidden;
+    padding-inline-end: var(--gutter-size-inline, 2rem);
   }
 }
 
@@ -236,10 +234,8 @@ $viewTransitionDuration: 300ms;
   border: 2px solid var(--listen-divider-color);
 
   @media (min-width: $breakpoint-full) {
-    & {
-      width: $logo-size;
-      height: auto;
-    }
+    width: $logo-size;
+    height: auto;
   }
 }
 
@@ -278,6 +274,7 @@ $viewTransitionDuration: 300ms;
 
 .podcastView {
   display: grid;
+  grid-template-rows: min-content auto;
   overflow: hidden;
   overflow-y: auto;
 
@@ -290,7 +287,7 @@ $viewTransitionDuration: 300ms;
   }
 
   :where([data-view='podcast']) & {
-    animation: sharpen $viewTransitionDuration ease-out forwards;
+    animation: sharpen $viewTransitionDuration ease-out;
   }
 }
 
@@ -346,7 +343,7 @@ $viewTransitionDuration: 300ms;
   }
 
   :where([data-view='episode']) & {
-    animation: sharpen $viewTransitionDuration ease-out forwards;
+    animation: sharpen $viewTransitionDuration ease-out;
   }
 
   @media (min-width: $breakpoint-full) {
@@ -387,14 +384,16 @@ $viewTransitionDuration: 300ms;
   }
   100% {
     transform: scale(1) translateX(0);
-    filter: blur(0) opacity(1);
+    filter: blur(0);
+    opacity: 1;
   }
 }
 
 @keyframes dim {
   0% {
     transform: scale(1) translateX(0);
-    filter: blur(0) opacity(1);
+    filter: blur(0);
+    opacity: 1;
   }
   100% {
     transform: scale(var(--dim-scale, 1)) translateX(var(--dim-translate-x, 0));
