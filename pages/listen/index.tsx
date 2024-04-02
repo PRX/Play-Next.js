@@ -66,25 +66,25 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   const data = parseListenData(config, rssData);
 
   // 4. Fetch requested episodes transcript and convert to JSON.
-  const episodeIndex =
-    episodeGuid && data.episodes.findIndex(({ guid }) => episodeGuid === guid);
-  const episode = data.episodes[episodeIndex];
-  const transcriptData = await fetchAudioTranscriptData(episode);
+  // const episodeIndex =
+  //   episodeGuid && data.episodes.findIndex(({ guid }) => episodeGuid === guid);
+  // const episode = data.episodes[episodeIndex];
+  // const transcriptData = await fetchAudioTranscriptData(episode);
 
-  if (transcriptData) {
-    return {
-      props: {
-        config,
-        data: {
-          ...data,
-          episodes: data.episodes.map((e, index) =>
-            index !== episodeIndex ? e : { ...e, transcriptData }
-          )
-        },
-        ...(error && { error })
-      }
-    };
-  }
+  // if (transcriptData) {
+  //   return {
+  //     props: {
+  //       config,
+  //       data: {
+  //         ...data,
+  //         episodes: data.episodes.map((e, index) =>
+  //           index !== episodeIndex ? e : { ...e, transcriptData }
+  //         )
+  //       },
+  //       ...(error && { error })
+  //     }
+  //   };
+  // }
 
   return {
     props: { config, data, ...(error && { error }) }

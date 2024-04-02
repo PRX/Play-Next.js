@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Modal, { type IModalProps } from '@components/Modal/Modal';
 import IconButton from '@components/IconButton';
@@ -26,28 +26,35 @@ const ClosedCaptionsDialog: React.FC<IClosedCaptionDialogProps> = ({
   children
 }) => {
   const { audioElm } = useContext(PlayerContext);
-  const [, setHasTextTrack] = useState(!!audioElm?.textTracks.length);
-  const hasCaptionsTextTracks = !![...(audioElm?.textTracks || [])].find(
-    (t) => t.kind === 'captions'
-  );
+  const [hasTextTracks, setHasTextTrack] = useState(false);
 
   const handleClick = () => {
     onOpen();
   };
 
-  const handleTextTrackChange = () => {
-    setHasTextTrack(true);
-  };
+  const handleTextTrackChange = useCallback(() => {
+    setHasTextTrack(!!audioElm?.textTracks.length);
+  }, [audioElm?.textTracks.length]);
 
   useEffect(() => {
-    audioElm?.textTracks.addEventListener('change', handleTextTrackChange);
+    // FIX: Firefox doesn't initialize audio element tracks nor fires change events
+    // on initial load. Update state after a timeout to detect if text tracks
+    // exist on audio element.
+    setTimeout(() => {
+      handleTextTrackChange();
+    }, 0);
+
+    audioElm?.textTracks?.addEventListener('change', handleTextTrackChange);
 
     return () => {
-      audioElm?.textTracks.removeEventListener('change', handleTextTrackChange);
+      audioElm?.textTracks?.removeEventListener(
+        'change',
+        handleTextTrackChange
+      );
     };
-  }, [audioElm]);
+  }, [audioElm, handleTextTrackChange]);
 
-  if (!hasCaptionsTextTracks) return null;
+  if (!hasTextTracks) return null;
 
   return (
     <>

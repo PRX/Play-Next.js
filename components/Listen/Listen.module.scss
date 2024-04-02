@@ -241,6 +241,7 @@ $viewTransitionDuration: 300ms;
 
 .podcastHeading {
   display: grid;
+  overflow: hidden;
 
   > * {
     margin: 0;
@@ -252,6 +253,8 @@ $viewTransitionDuration: 300ms;
 }
 
 .podcastTitle {
+  overflow: hidden;
+
   font-size: 1.25rem;
 
   @media (min-width: $breakpoint-full) {
