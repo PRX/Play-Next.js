@@ -4,15 +4,17 @@
  */
 
 import type React from 'react';
-import type { IAudioData, IListenEpisodeData } from '@interfaces/data';
 import type {
-  IRssPodcastTranscriptJson,
-  IRssPodcastTranscriptJsonSegment
-} from '@interfaces/data/IRssPodcast';
+  IAudioData,
+  IListenEpisodeData,
+  IRssPodcastTranscriptJsonSegment,
+  SpeakerSegmentsBlock
+} from '@interfaces/data';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import IconButton from '@components/IconButton';
 import PlayerContext from '@contexts/PlayerContext';
+import Skeleton from '@components/Skeleton';
 import ThemeVars from '@components/ThemeVars';
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import PlayCircleIcon from '@svg/icons/PlayCircle.svg';
@@ -20,14 +22,12 @@ import styles from './EpisodeTranscript.module.scss';
 
 export interface IEpisodeTranscriptProps {
   className?: string;
-  data: IRssPodcastTranscriptJson;
+  data: SpeakerSegmentsBlock[];
   episode: IListenEpisodeData;
+  loading?: boolean;
 }
 
-type SpeakerBlockProps = {
-  segments: IRssPodcastTranscriptJsonSegment[];
-  speaker?: string;
-};
+type SpeakerBlockProps = SpeakerSegmentsBlock;
 
 type SegmentProps = {
   data: IRssPodcastTranscriptJsonSegment;
@@ -186,10 +186,10 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
     function handleTimeUpdate(e: Event) {
       const ae = e.target as HTMLAudioElement;
       const newIsCurrentBlock =
-        startTime <= ae.currentTime + 0.2 && endTime >= ae.currentTime - 0.2;
-      const newHasEnded = endTime < ae.currentTime + 0.1;
+        startTime <= ae.currentTime && endTime >= ae.currentTime;
+      const newHasEnded = endTime < ae.currentTime;
       const newCurrentSegmentIndex = segments?.findLastIndex(
-        (segment) => segment.startTime <= ae.currentTime
+        (segment) => segment.startTime <= ae.currentTime + 0.1
       );
 
       setCurrentSegmentIndex(newCurrentSegmentIndex);
@@ -256,23 +256,24 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
                 <Segment
                   data={segment}
                   key={key}
-                  isSpoken={index <= currentSegmentIndex}
+                  isSpoken={hasEnded || index <= currentSegmentIndex}
                   inCurrentBlock={isCurrentBlock}
                 />
               );
             }),
-          [currentSegmentIndex, isCurrentBlock, segments]
+          [currentSegmentIndex, hasEnded, isCurrentBlock, segments]
         )}
       </div>
     </>
   );
 };
 
-const EpisodeTranscript: React.FC<IEpisodeTranscriptProps> = ({
+const EpisodeTranscript = ({
   className,
   data,
-  episode
-}) => {
+  episode,
+  loading
+}: IEpisodeTranscriptProps) => {
   const { state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const currentTrack = useMemo(
@@ -281,77 +282,35 @@ const EpisodeTranscript: React.FC<IEpisodeTranscriptProps> = ({
   );
   const [isCurrentTrack, setIsCurrentTrack] = useState(false);
 
-  const { segments } = data;
-  const hasMultipleSpeakers =
-    segments.filter(({ speaker }) => !!speaker).length > 1;
-  const speakerBlocks = useMemo(
-    () =>
-      segments
-        ?.reduce((a, segment) => {
-          const aClone = [...a];
-          const previousSegment = aClone.pop();
-          const isSpace = segment.body.trim().length === 0;
-
-          if (
-            !previousSegment ||
-            isSpace ||
-            segment.startTime > previousSegment.endTime
-          ) {
-            return [...a, segment];
-          }
-
-          const updatedSegment = {
-            ...previousSegment,
-            body: previousSegment.body + segment.body
-          };
-
-          return [...aClone, updatedSegment];
-        }, [] as IRssPodcastTranscriptJsonSegment[])
-        .reduce((a, segment) => {
-          const aClone = [...a];
-          const previousBlock = aClone.pop();
-          const lastSegment = previousBlock?.segments.at(
-            previousBlock.segments.length - 1
-          );
-          const speakerChanged = previousBlock?.speaker !== segment.speaker;
-          const sentenceEnded = /[.?]$/.test(lastSegment?.body || '');
-          const breakSegment =
-            (hasMultipleSpeakers && speakerChanged) ||
-            (!hasMultipleSpeakers && sentenceEnded);
-
-          if (breakSegment) {
-            return [
-              ...a,
-              {
-                speaker: segment.speaker,
-                segments: [segment]
-              }
-            ];
-          }
-
-          return [
-            ...aClone,
-            {
-              ...previousBlock,
-              segments: [...(previousBlock?.segments || []), segment]
-            }
-          ];
-        }, [] as SpeakerBlockProps[]),
-    [hasMultipleSpeakers, segments]
-  );
-
   useEffect(() => {
     const newIsCurrentTrack = episode.guid === currentTrack.guid;
     setIsCurrentTrack(newIsCurrentTrack);
   }, [currentTrack, episode.guid]);
 
-  if (!speakerBlocks?.length) return null;
+  if (!data?.length && !loading) return null;
+
+  if (loading) {
+    return (
+      <>
+        {[...new Array(10).fill(0).keys()].map((k) => (
+          <div className={styles.speakerBlock} key={k}>
+            <h3 className={styles.speakerHeading}>
+              <Skeleton className={styles.speakerHeadingSpeaker} width="10ch" />
+              <Skeleton className={styles.speakerHeadingTime} width="4.5ch" />
+            </h3>
+            <Skeleton />
+            <Skeleton />
+            <Skeleton width="40%" />
+          </div>
+        ))}
+      </>
+    );
+  }
 
   return (
     <div className={clsx(className, styles.root)}>
       <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
-      <h2 className={styles.heading}>Transcript</h2>
-      {speakerBlocks.map((speakerBlockProps, index) => {
+      {data.map((speakerBlockProps, index) => {
         const { speaker, segments: blockSegments } = speakerBlockProps;
         const firstSegment = blockSegments.at(0);
         const { startTime } = firstSegment;

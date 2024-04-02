@@ -281,6 +281,14 @@ $episode-breakpoint--full: 120ch;
   }
 }
 
+.heading {
+  padding-inline: var(--gap);
+  padding-block: 2rem;
+  margin-block-start: 3rem;
+  border-block-start: 3px solid var(--episode-divider-color);
+  border-block-end: 1px solid var(--episode-divider-color);
+}
+
 .description {
   padding: var(--gap);
 

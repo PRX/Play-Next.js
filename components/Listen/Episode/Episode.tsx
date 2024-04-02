@@ -6,7 +6,7 @@
 import type React from 'react';
 import type {
   IListenEpisodeData,
-  IRssPodcastTranscriptJson
+  SpeakerSegmentsBlock
 } from '@interfaces/data';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
@@ -56,17 +56,20 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
     pubDate,
     content,
     link,
-    transcripts,
-    transcriptData
+    transcripts
   } = data || {};
   const index = useMemo(
     () => tracks.findIndex((track) => track.guid === guid),
     [guid, tracks]
   );
-  const [transcript, setTranscript] =
-    useState<IRssPodcastTranscriptJson>(transcriptData);
+  const [transcript, setTranscript] = useState<
+    SpeakerSegmentsBlock[] | null | false
+  >();
   const isCurrentTrack = index === currentTrackIndex;
-  const showViewNav = !!transcript?.segments.length;
+  const hasTranscripts = !!transcripts?.length;
+  const transcriptLoading = hasTranscripts && transcript === null;
+  const showTranscript = hasTranscripts && transcript !== false;
+  const showViewNav = showTranscript;
   const thumbSrc = imageUrl || defaultThumbUrl;
   const thumbSizes = [
     `(min-width: ${listenStyles.breakpointFull}) ${styles['--episode-thumbnail-size']}`,
@@ -105,7 +108,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   };
 
   useEffect(() => {
-    if (!transcriptData && transcripts?.length) {
+    if (transcripts?.length) {
       setTranscript(null);
 
       setTimeout(() => {
@@ -113,11 +116,11 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
           const response = await fetchAudioTranscriptData(data);
 
           setView('description');
-          setTranscript(response);
+          setTranscript(response || false);
         })();
       }, 1000);
     }
-  }, [data, transcriptData, transcripts?.length]);
+  }, [data, transcripts]);
 
   if (!data) return null;
 
@@ -213,9 +216,14 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
               <HtmlContent html={content} />
             </div>
 
-            {transcript && (
+            {showTranscript && (
               <div id="transcript" className={styles.transcript}>
-                <EpisodeTranscript data={transcript} episode={data} />
+                <h2 className={styles.heading}>Transcript</h2>
+                <EpisodeTranscript
+                  data={transcript}
+                  episode={data}
+                  loading={transcriptLoading}
+                />
               </div>
             )}
           </div>

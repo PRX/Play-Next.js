@@ -61,7 +61,7 @@ export default async function handler(
     res
       .status(200)
       .setHeader('Content-Type', 'text/json')
-      .send(jsonResponseBody || 'WEBVTT');
+      .send(jsonResponseBody || 'null');
   } catch (error) {
     res.status(400).json({
       error: {
