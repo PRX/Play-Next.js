@@ -17,7 +17,9 @@ import PlayerContext from '@contexts/PlayerContext';
 import Skeleton from '@components/Skeleton';
 import ThemeVars from '@components/ThemeVars';
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
+import getScrollParent from '@lib/parse/dom/getScrollParent';
 import PlayCircleIcon from '@svg/icons/PlayCircle.svg';
+import VerticalAlignCenterIcon from '@svg/icons/VerticalAlignCenter.svg';
 import styles from './EpisodeTranscript.module.scss';
 
 export interface IEpisodeTranscriptProps {
@@ -37,28 +39,6 @@ type SegmentProps = {
 
 type PlayBlockBtnProps = {
   startTime: number;
-};
-
-const isScrollable = (node: Element) => {
-  if (!(node instanceof HTMLElement || node instanceof SVGElement)) {
-    return false;
-  }
-  const style = getComputedStyle(node);
-  return ['overflow', 'overflow-x', 'overflow-y'].some((propertyName) => {
-    const value = style.getPropertyValue(propertyName);
-    return value === 'auto' || value === 'scroll';
-  });
-};
-
-export const getScrollParent = (node: Element): Element => {
-  let currentParent = node.parentElement;
-  while (currentParent) {
-    if (isScrollable(currentParent)) {
-      return currentParent;
-    }
-    currentParent = currentParent.parentElement;
-  }
-  return document.scrollingElement || document.documentElement;
 };
 
 const PlayBlockBtn = ({ startTime }: PlayBlockBtnProps) => {
@@ -165,12 +145,21 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
     >
   >;
 
+  const checkCurrentBlockOffScreen = () => {
+    const currentBlockRect = currentBlockRef.current?.getBoundingClientRect();
+    const scrollingElement = scrollElementRef.current;
+    const scrollAreaRect = scrollingElement.getBoundingClientRect();
+    const offScreen =
+      (!!currentBlockRect && currentBlockRect?.top > scrollAreaRect.bottom) ||
+      currentBlockRect?.bottom < scrollAreaRect.top;
+
+    return offScreen;
+  };
+
   const scrollToCurrentBlock = (smooth?: boolean) => {
     const lastSpokenElm = currentBlockRef.current?.querySelector(
       '[data-spoken]:not(:has(~ [data-spoken]))'
     );
-
-    setShowJumpButton(false);
 
     lastSpokenElm?.scrollIntoView({
       block: 'center',
@@ -183,7 +172,15 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
   };
 
   useEffect(() => {
-    function handleTimeUpdate(e: Event) {
+    const handleScroll = () => {
+      if (checkCurrentBlockOffScreen()) {
+        setShowJumpButton(true);
+      } else {
+        setShowJumpButton(false);
+      }
+    };
+
+    const handleTimeUpdate = (e: Event) => {
       const ae = e.target as HTMLAudioElement;
       const newIsCurrentBlock =
         startTime <= ae.currentTime && endTime >= ae.currentTime;
@@ -197,33 +194,24 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
       setHasEnded(newHasEnded);
 
       if (isCurrentBlock && currentBlockRef.current) {
-        const currentBlockRect =
-          currentBlockRef.current?.getBoundingClientRect();
-        const scrollingElement = scrollElementRef.current;
-        const scrollAreaRect = scrollingElement.getBoundingClientRect();
-        const offScreen =
-          (!!currentBlockRect &&
-            currentBlockRect?.top > scrollAreaRect.bottom) ||
-          currentBlockRect?.bottom < scrollAreaRect.top;
-
-        if (!offScreen && scrollingElement.scrollTop) {
+        if (!checkCurrentBlockOffScreen()) {
           scrollToCurrentBlock(true);
-          // } else if (onScreen && !!scrollingElement?.scrollTop) {
-          //   scrollToCurrentBlock(currentBlockRef.current, true);
         } else {
           setShowJumpButton(true);
         }
       }
-    }
+    };
 
     scrollElementRef.current =
       scrollElementRef.current ||
       (currentBlockRef.current && getScrollParent(currentBlockRef.current));
 
     audioElm?.addEventListener('timeupdate', handleTimeUpdate);
+    scrollElementRef.current?.addEventListener('scroll', handleScroll);
 
     return () => {
       audioElm?.removeEventListener('timeupdate', handleTimeUpdate);
+      scrollElementRef.current?.removeEventListener('scroll', handleScroll);
     };
   }, [audioElm, endTime, isCurrentBlock, segments, startTime]);
 
@@ -235,6 +223,7 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
           className={styles.jumpButton}
           onClick={handleJumpBtnClick}
         >
+          <VerticalAlignCenterIcon />
           Scroll to current caption
         </button>
       )}
@@ -295,12 +284,14 @@ const EpisodeTranscript = ({
         {[...new Array(10).fill(0).keys()].map((k) => (
           <div className={styles.speakerBlock} key={k}>
             <h3 className={styles.speakerHeading}>
-              <Skeleton className={styles.speakerHeadingSpeaker} width="10ch" />
-              <Skeleton className={styles.speakerHeadingTime} width="4.5ch" />
+              <Skeleton
+                className={styles.speakerHeadingSpeaker}
+                width="10ch"
+                height="1.5rem"
+              />
+              <Skeleton width="4.5ch" />
             </h3>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton width="40%" />
+            <Skeleton lines={3} />
           </div>
         ))}
       </>

@@ -22,7 +22,15 @@
     --jump-button--color,
     var(--accent-color, #{colors.$secondary-500})
   );
+  --_jump-button--background-color: color-mix(
+    in lch,
+    var(--jump-button--background-color, var(--listen-background-color)) 60%,
+    transparent
+  );
   position: fixed;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
   left: 50%;
   bottom: calc(var(--gutter-size-block-end) + var(--gap));
   transform: translateX(-50%);
@@ -30,12 +38,24 @@
 
   padding: 0.5rem 1rem;
 
-  background-color: var(--listen-background-color);
+  background-color: var(--_jump-button--background-color);
 
   border: 2px solid var(--_jump-button--color);
   border-radius: 100vw;
 
   color: var(--_jump-button--color);
+
+  & > svg {
+    width: 1.5em;
+  }
+
+  &:where(:hover, :focus-visible) {
+    --jump-button--background-color: color-mix(
+      in lch,
+      var(--_jump-button--color) 10%,
+      var(--listen-background-color)
+    );
+  }
 }
 
 .speakerBlock {
@@ -91,6 +111,7 @@
 .speakerHeading {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 3ch;
 
   margin-block: 3rem 1rem;

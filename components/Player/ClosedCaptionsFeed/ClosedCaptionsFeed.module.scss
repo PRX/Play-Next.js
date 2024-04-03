@@ -40,9 +40,9 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
   right: var(--_cc-feed--right);
   bottom: var(--_cc-feed--bottom);
   left: var(--_cc-feed--left);
-  display: grid;
+  display: block;
   justify-content: var(--_cc-feed--justify-content);
-  align-content: end;
+  // align-content: end;
   z-index: 0;
 
   padding-block-start: 30cqb;
@@ -52,6 +52,27 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   overflow: hidden;
   overflow-y: auto;
+}
+
+.jumpButton {
+  --_jump-button--color: var(
+    --jump-button--color,
+    var(--accent-color, #{colors.$secondary-500})
+  );
+  --iconButton-color--hover: var(--_jump-button--color);
+  --iconButton-size: 1.75rem;
+
+  position: fixed;
+  right: 1rem;
+  bottom: calc(var(--gutter-size-block-end) + 1rem);
+  z-index: 9;
+
+  background-color: var(--listen-background-color);
+
+  border: 2px solid var(--_jump-button--color);
+  border-radius: 100vw;
+
+  color: var(--_jump-button--color);
 }
 
 .captions {
@@ -88,7 +109,7 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
     grid-column: 1 / -1;
   }
 
-  &[data-current] ~ & {
+  &[data-current] ~ &:not(:where(:hover, :focus-visible)) {
     opacity: 0.3;
   }
 
@@ -98,7 +119,9 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
     animation-range-start: 30cqb;
     transition: opacity linear 200ms;
 
-    &:where(:hover, :focus-within) {
+    transform: translateZ(0);
+
+    &:hover(:hover, :focus-visible) {
       animation: none;
       opacity: 1;
     }

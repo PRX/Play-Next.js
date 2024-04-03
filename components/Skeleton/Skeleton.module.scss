@@ -1,5 +1,5 @@
 .root {
-  --_skeleton--width: var(--skeleton--width, auto);
+  --_skeleton--width: var(--skeleton--width, 100%);
   --_skeleton--height: var(--skeleton--height, 1em);
   --_skeleton--color: var(--skeleton--color, currentColor);
   --_skeleton--base-color: color-mix(
@@ -43,9 +43,14 @@
     background-size: 100%;
   }
 
-  & + & {
-    margin-top: 0.5em;
+  .wrapper &:last-child {
+    --skeleton--width: 40%;
   }
+}
+
+.wrapper {
+  display: grid;
+  gap: calc(var(--_skeleton--height, 1em) * 0.35);
 }
 
 @keyframes shimmer {

@@ -363,7 +363,11 @@ const Listen = ({ config, data }: IListenPageProps) => {
             className={clsx(styles.viewContainer, styles.episodeView)}
             {...(view.indexOf('episode') === -1 && { inert: 'inert' })}
           >
-            <Episode data={episode} onClose={handleEpisodeBackClick} />
+            <Episode
+              key={episode?.guid}
+              data={episode}
+              onClose={handleEpisodeBackClick}
+            />
           </div>
         </div>
 

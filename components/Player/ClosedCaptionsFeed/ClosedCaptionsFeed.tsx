@@ -20,9 +20,12 @@ import {
 } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
+import IconButton from '@components/IconButton';
 import ThemeVars from '@components/ThemeVars';
 import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
+import getScrollParent from '@lib/parse/dom/getScrollParent';
 import getVttCueSpeaker from '@lib/parse/dom/getVttCueSpeaker';
+import VerticalAlignCenterIcon from '@svg/icons/VerticalAlignCenter.svg';
 import styles from './ClosedCaptionsFeed.module.scss';
 
 export interface IClosedCaptionsProps {
@@ -85,8 +88,10 @@ const Caption = ({
   position,
   isCurrent
 }: CaptionProps) => {
+  const currentCaptionRef = useRef<HTMLDivElement>();
+  const scrollElementRef = useRef<Element>();
   const { seekTo } = useContext(PlayerContext);
-  const [cueEnded, setCueEnded] = useState(false);
+  const [showJumpButton, setShowJumpButton] = useState(false);
   const [, speaker, caption] =
     cue.text.replace('\n', ' ').match(/^(?:<v\s+([^>]+)>)?(.+)/) || [];
   const cueSegments = useMemo(
@@ -123,13 +128,33 @@ const Caption = ({
     ...(isCurrent && {
       'data-current': ''
     }),
-    ...(cueEnded &&
-      isCurrent && {
-        'data-ended': ''
-      }),
     ...(color && {
       style: { '--cc-speaker--color': color } as CSSProperties
-    })
+    }),
+    ...(isCurrent && { ref: currentCaptionRef })
+  };
+
+  const scrollToCurrentBlock = (smooth?: boolean) => {
+    currentCaptionRef.current?.scrollIntoView({
+      block: 'center',
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  };
+
+  const checkCurrentCaptionOffScreen = () => {
+    const currentBlockRect = currentCaptionRef.current?.getBoundingClientRect();
+    const scrollingElement = scrollElementRef.current;
+    const scrollAreaRect = scrollingElement.getBoundingClientRect();
+    const offScreen =
+      (!!currentBlockRect && currentBlockRect?.top > scrollAreaRect.bottom) ||
+      currentBlockRect?.bottom < scrollAreaRect.top;
+
+    return offScreen;
+  };
+
+  const handleJumpBtnClick = () => {
+    setShowJumpButton(false);
+    scrollToCurrentBlock();
   };
 
   function handleClick() {
@@ -137,40 +162,79 @@ const Caption = ({
   }
 
   useEffect(() => {
-    function handleCueExit() {
-      setCueEnded(true);
+    scrollElementRef.current =
+      scrollElementRef.current ||
+      (currentCaptionRef.current && getScrollParent(currentCaptionRef.current));
+
+    const handleScroll = () => {
+      if (checkCurrentCaptionOffScreen()) {
+        setShowJumpButton(true);
+      } else {
+        setShowJumpButton(false);
+      }
+    };
+
+    if (isCurrent && currentCaptionRef.current) {
+      if (!checkCurrentCaptionOffScreen()) {
+        scrollToCurrentBlock(true);
+      } else {
+        setShowJumpButton(true);
+      }
+
+      scrollElementRef.current?.addEventListener('scroll', handleScroll);
     }
 
-    cue.addEventListener('exit', handleCueExit);
-
     return () => {
-      cue.removeEventListener('exit', handleCueExit);
+      scrollElementRef.current?.removeEventListener('scroll', handleScroll);
     };
-  }, [cue]);
+  }, [isCurrent]);
+
+  useEffect(() => {
+    scrollToCurrentBlock();
+  }, []);
 
   if (!hasText) return null;
 
   return (
-    <div {...rootProps}>
-      {showSpeaker && speaker && (
-        <cite className={styles.speaker}>{speaker}</cite>
+    <>
+      {showJumpButton && isCurrent && (
+        <IconButton
+          type="button"
+          className={styles.jumpButton}
+          style={
+            {
+              ...(color && {
+                '--jump-button--color': color,
+                '--iconButton-color': color
+              })
+            } as CSSProperties
+          }
+          onClick={handleJumpBtnClick}
+        >
+          <VerticalAlignCenterIcon />
+        </IconButton>
       )}
-      <button
-        type="button"
-        className={styles.captionBody}
-        onClick={handleClick}
-      >
-        {hasSegments
-          ? cueSegments.map((s) => (
-              <Segment
-                data={s}
-                inCurrentCue={isCurrent}
-                key={`${s.body}:${s.startTime}`}
-              />
-            ))
-          : caption}
-      </button>
-    </div>
+      <div {...rootProps}>
+        {showSpeaker && speaker && (
+          <cite className={styles.speaker}>{speaker}</cite>
+        )}
+        <button
+          type="button"
+          className={styles.captionBody}
+          onClick={handleClick}
+        >
+          {hasSegments
+            ? cueSegments.map((s) => (
+                <Segment
+                  data={s}
+                  inCurrentCue={isCurrent}
+                  key={`${s.body}:${s.startTime}`}
+                />
+              ))
+            : caption}
+        </button>
+      </div>
+    </>
   );
 };
 
@@ -187,12 +251,9 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
 
-  const cueIndex = [...(currentCue?.track?.cues || [])].findIndex(
-    (c) => c.id === currentCue.id
-  );
   const recentCues = [...(currentCue?.track?.cues || [])].slice(
-    0, // Math.max(cueIndex - 20, 0),
-    cueIndex + 3
+    0 // Math.max(cueIndex - 20, 0),
+    // cueIndex + 3
   ) as VTTCue[];
   const speakersColorMap = useRef(new Map<string, string>());
 
@@ -287,51 +348,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
       }
     });
 
-    const scrollAreaElement = scrollAreaRef.current;
-    let touchMoving = false;
-    let touchTimeout: ReturnType<typeof setTimeout>;
-
-    function handleScrollAreaAddScrolling() {
-      scrollAreaElement.style.setProperty('display', 'block');
-
-      if (touchMoving) return;
-
-      scrollAreaElement.scrollTop =
-        scrollAreaElement.scrollHeight - scrollAreaElement.clientHeight;
-    }
-
-    function handleScrollAreaRemoveScrolling() {
-      if (touchMoving) return;
-
-      scrollAreaElement.style.removeProperty('display');
-    }
-
-    function handleTouchMove() {
-      touchMoving = true;
-    }
-
-    function handleTouchEnd() {
-      if (touchTimeout) {
-        clearTimeout(touchTimeout);
-      }
-
-      touchTimeout = setTimeout(() => {
-        touchMoving = false;
-        handleScrollAreaRemoveScrolling();
-      }, 5000);
-    }
-
-    scrollAreaElement.addEventListener(
-      'pointerenter',
-      handleScrollAreaAddScrolling
-    );
-    scrollAreaElement.addEventListener(
-      'pointerleave',
-      handleScrollAreaRemoveScrolling
-    );
-    scrollAreaElement.addEventListener('touchmove', handleTouchMove);
-    scrollAreaElement.addEventListener('touchend', handleTouchEnd);
-
     return () => {
       textTracks.removeEventListener('addtrack', handleAddTrack);
       textTracks.removeEventListener('removetrack', handleRemoveTrack);
@@ -341,17 +357,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
           track.removeEventListener('cuechange', handleCueChange);
         }
       });
-
-      scrollAreaElement.removeEventListener(
-        'pointerenter',
-        handleScrollAreaAddScrolling
-      );
-      scrollAreaElement.removeEventListener(
-        'pointerleave',
-        handleScrollAreaRemoveScrolling
-      );
-      scrollAreaElement.removeEventListener('touchmove', handleTouchMove);
-      scrollAreaElement.removeEventListener('touchend', handleTouchEnd);
     };
   }, [
     audioElm,
@@ -374,7 +379,35 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   }, [transcriptJson?.url]);
 
   const previousSpeaker = useRef(getVttCueSpeaker(currentCue));
-  let lastSpeakerChangeIndex = 0;
+
+  const renderedCaptions = useMemo(() => {
+    let lastSpeakerChangeIndex = 0;
+    return recentCues?.map((cue, index) => {
+      const cueSpeaker = getVttCueSpeaker(cue);
+      const speakerChanged = cueSpeaker !== previousSpeaker.current;
+      // Show speaker when speaker changes or every 5 cues od the same speaker.
+      const showSpeaker =
+        speakerChanged || !((index - lastSpeakerChangeIndex) % 5);
+      const isCurrent = cue.id === currentCue.id;
+
+      if (speakerChanged) {
+        lastSpeakerChangeIndex = index;
+        previousSpeaker.current = cueSpeaker;
+      }
+
+      return (
+        <Caption
+          cue={cue}
+          segments={transcriptData?.segments}
+          colors={speakersColorMap.current}
+          showSpeaker={showSpeaker}
+          position={cuePositions.get(cue.id) || 'left'}
+          isCurrent={isCurrent}
+          key={cue.id}
+        />
+      );
+    });
+  }, [cuePositions, currentCue?.id, recentCues, transcriptData?.segments]);
 
   if (!transcripts) return null;
 
@@ -383,32 +416,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
       <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
       <div className={captionsClassNames} aria-hidden>
         <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
-        {!!recentCues?.length &&
-          recentCues.map((cue, index) => {
-            const cueSpeaker = getVttCueSpeaker(cue);
-            const speakerChanged = cueSpeaker !== previousSpeaker.current;
-            // Show speaker when speaker changes or every 5 cues od the same speaker.
-            const showSpeaker =
-              speakerChanged || !((index - lastSpeakerChangeIndex) % 5);
-            const isCurrent = cue.id === currentCue.id;
-
-            if (speakerChanged) {
-              lastSpeakerChangeIndex = index;
-              previousSpeaker.current = cueSpeaker;
-            }
-
-            return (
-              <Caption
-                cue={cue}
-                segments={transcriptData?.segments}
-                colors={speakersColorMap.current}
-                showSpeaker={showSpeaker}
-                position={cuePositions.get(cue.id) || 'left'}
-                isCurrent={isCurrent}
-                key={cue.id}
-              />
-            );
-          })}
+        {renderedCaptions}
       </div>
     </div>
   );

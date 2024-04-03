@@ -64,7 +64,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   );
   const [transcript, setTranscript] = useState<
     SpeakerSegmentsBlock[] | null | false
-  >();
+  >(null);
   const isCurrentTrack = index === currentTrackIndex;
   const hasTranscripts = !!transcripts?.length;
   const transcriptLoading = hasTranscripts && transcript === null;
@@ -109,16 +109,12 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
 
   useEffect(() => {
     if (transcripts?.length) {
-      setTranscript(null);
+      (async () => {
+        const response = await fetchAudioTranscriptData(data);
 
-      setTimeout(() => {
-        (async () => {
-          const response = await fetchAudioTranscriptData(data);
-
-          setView('description');
-          setTranscript(response || false);
-        })();
-      }, 1000);
+        setView('description');
+        setTranscript(response || false);
+      })();
     }
   }, [data, transcripts]);
 
