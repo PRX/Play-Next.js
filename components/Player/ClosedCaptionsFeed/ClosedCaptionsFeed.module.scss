@@ -64,7 +64,7 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   position: fixed;
   right: 1rem;
-  bottom: calc(var(--gutter-size-block-end) + 1rem);
+  bottom: calc(var(--gutter-size-block-end, 0rem) + 1rem);
   z-index: 9;
 
   background-color: var(--listen-background-color);
