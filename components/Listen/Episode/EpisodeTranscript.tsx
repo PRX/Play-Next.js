@@ -10,7 +10,14 @@ import type {
   IRssPodcastTranscriptJsonSegment,
   SpeakerSegmentsBlock
 } from '@interfaces/data';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  KeyboardEventHandler,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import clsx from 'clsx';
 import IconButton from '@components/IconButton';
 import PlayerContext from '@contexts/PlayerContext';
@@ -71,6 +78,15 @@ const Segment = ({ data, isSpoken, inCurrentBlock }: SegmentProps) => {
     seekTo(startTime);
   }
 
+  const handleKeyDown: KeyboardEventHandler<HTMLSpanElement> = (e) => {
+    if (['ENTER', ' '].includes(e.key.toUpperCase())) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      seekTo(startTime);
+    }
+  };
+
   const rootProps = {
     className: clsx(styles.segment, {
       [styles.punctuation]: isPunctuation,
@@ -81,39 +97,20 @@ const Segment = ({ data, isSpoken, inCurrentBlock }: SegmentProps) => {
     ...(hasWords && { onClick: handleClick })
   };
 
-  /**
-   * Setup audio element event handlers.
-   */
-  // useEffect(() => {
-  //   const handleUpdate = (e: Event) => {
-  //     const ae = e.target as HTMLAudioElement;
-  //     const newIsSpoken = startTime <= ae.currentTime + 0.1;
-  //     if (newIsSpoken !== isSpoken) {
-  //       setIsSpoken(newIsSpoken);
-  //     }
-  //   };
-
-  //   if (inCurrentCue && hasWords) {
-  //     setIsSpoken(startTime <= audioElm?.currentTime);
-  //     audioElm?.addEventListener('timeupdate', handleUpdate);
-  //   } else {
-  //     setIsSpoken(false);
-  //     audioElm?.removeEventListener('timeupdate', handleUpdate);
-  //   }
-
-  //   return () => {
-  //     audioElm?.removeEventListener('timeupdate', handleUpdate);
-  //   };
-  // }, [audioElm, hasWords, inCurrentCue, isSpoken, startTime]);
-
   if (!hasWords) {
     return <span {...rootProps}>{body}</span>;
   }
 
   return (
-    <button type="button" {...rootProps}>
+    <span
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      {...rootProps}
+    >
       {body}
-    </button>
+    </span>
   );
 };
 
@@ -157,9 +154,9 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
   };
 
   const scrollToCurrentBlock = (smooth?: boolean) => {
-    const lastSpokenElm = currentBlockRef.current?.querySelector(
-      '[data-spoken]:not(:has(~ [data-spoken]))'
-    );
+    const lastSpokenElm = [
+      ...(currentBlockRef.current?.querySelectorAll('[data-spoken]') || [])
+    ].pop();
 
     lastSpokenElm?.scrollIntoView({
       block: 'center',
@@ -194,7 +191,10 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
       setHasEnded(newHasEnded);
 
       if (isCurrentBlock && currentBlockRef.current) {
-        if (!checkCurrentBlockOffScreen()) {
+        if (
+          !checkCurrentBlockOffScreen() &&
+          scrollElementRef.current?.scrollTop
+        ) {
           scrollToCurrentBlock(true);
         } else {
           setShowJumpButton(true);
