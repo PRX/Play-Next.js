@@ -53,8 +53,6 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
     currentCue?.text.replace('\n', ' ').match(/^(?:<v\s+([^>]+)>)?(.+)/) || [];
   const speakersColorMap = useRef(new Map<string, string>());
 
-  // console.log(currentCue, cueIndex, recentCues);
-
   const cues = [...(currentCue?.track?.cues || [])] as VTTCue[];
 
   if (cues.length) {

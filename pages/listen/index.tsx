@@ -9,7 +9,6 @@ import type { IListenPageProps, IPageProps } from '@interfaces/page';
 import Error from 'next/error';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
-import fetchAudioTranscriptData from '@lib/fetch/transcript/fetchAudioTranscriptData';
 import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
 import Player from '@components/Player';
@@ -38,7 +37,6 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
 }) => {
   // 1. Convert query params into embed config.
   const config = parseListenParamsToConfig(query);
-  const { episodeGuid } = config;
 
   // 2. If RSS feed URL is provided...
   let rssData: IRss;
@@ -64,27 +62,6 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
 
   // 3. Parse config and RSS data into embed
   const data = parseListenData(config, rssData);
-
-  // 4. Fetch requested episodes transcript and convert to JSON.
-  // const episodeIndex =
-  //   episodeGuid && data.episodes.findIndex(({ guid }) => episodeGuid === guid);
-  // const episode = data.episodes[episodeIndex];
-  // const transcriptData = await fetchAudioTranscriptData(episode);
-
-  // if (transcriptData) {
-  //   return {
-  //     props: {
-  //       config,
-  //       data: {
-  //         ...data,
-  //         episodes: data.episodes.map((e, index) =>
-  //           index !== episodeIndex ? e : { ...e, transcriptData }
-  //         )
-  //       },
-  //       ...(error && { error })
-  //     }
-  //   };
-  // }
 
   return {
     props: { config, data, ...(error && { error }) }
