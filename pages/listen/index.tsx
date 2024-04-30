@@ -8,7 +8,7 @@ import type { IRss } from '@interfaces/data';
 import type { IListenPageProps, IPageProps } from '@interfaces/page';
 import Error from 'next/error';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
-import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
+import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
 import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
 import Player from '@components/Player';
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   let error: IPageError;
   try {
     // ...try to fetch the feed...
-    rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
+    rssData = config.feedUrl && (await fetchRssProxy(config.feedUrl));
   } catch (e) {
     switch (e.name) {
       case 'RssProxyError':
