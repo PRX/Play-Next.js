@@ -299,13 +299,11 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
 .loader {
   grid-column: full-width;
-  align-self: end;
+  place-self: center;
   position: relative;
   display: grid;
-  place-content: end;
+  place-content: center;
   place-items: center;
-  width: 100%;
-  height: 100%;
 
   & > * {
     grid-column: 1 / -1;
