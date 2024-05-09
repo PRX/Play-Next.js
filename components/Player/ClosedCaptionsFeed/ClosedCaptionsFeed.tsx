@@ -366,6 +366,7 @@ const Caption = ({
         </span>
       </h3>
       <div className={styles.captionBody} ref={bodyRef}>
+        <div className={styles.bodyHighlight} />
         {cues.map((cue) => (
           <CaptionCue
             cue={cue}

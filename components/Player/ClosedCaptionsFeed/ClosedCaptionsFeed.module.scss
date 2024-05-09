@@ -181,7 +181,6 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   transform: translateZ(0);
 
   margin: 0;
@@ -199,6 +198,26 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
   text-align: start;
   text-wrap: balance;
 
+  [data-speaker] & {
+    --_cc-body--border-width: 1px;
+    transition: box-shadow linear 100ms;
+  }
+
+  :is([data-current]) & {
+    --_cc-body--border-width: 3px;
+  }
+
+  :where([data-complete]) & {
+    transition: box-shadow linear 100ms 200ms;
+  }
+}
+
+.bodyHighlight {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+
   &::before {
     content: '';
     position: absolute;
@@ -213,23 +232,10 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
     );
   }
 
-  &:where(:hover, :focus-visible) {
+  :where(:hover, :focus-visible) > & {
     &::before {
       opacity: 0.25;
     }
-  }
-
-  [data-speaker] & {
-    --_cc-body--border-width: 1px;
-    transition: box-shadow linear 100ms;
-  }
-
-  :is([data-current]) & {
-    --_cc-body--border-width: 3px;
-  }
-
-  :where([data-complete]) & {
-    transition: box-shadow linear 100ms 200ms;
   }
 
   @media (pointer: fine) {
