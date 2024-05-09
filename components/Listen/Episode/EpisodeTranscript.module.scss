@@ -151,7 +151,7 @@
     }
   }
 
-  &:where(button) {
+  &:where([role='button']) {
     cursor: pointer;
   }
 

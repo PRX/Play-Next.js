@@ -4,13 +4,14 @@
  */
 
 import type React from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, KeyboardEventHandler } from 'react';
 import type { IAudioData } from '@interfaces/data';
 import type {
   IRssPodcastTranscriptJson,
   IRssPodcastTranscriptJsonSegment
 } from '@interfaces/data/IRssPodcast';
 import {
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -22,9 +23,10 @@ import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import IconButton from '@components/IconButton';
 import ThemeVars from '@components/ThemeVars';
+import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import generateSpeakerColor from '@lib/generate/string/generateSpeakerColor';
-import getScrollParent from '@lib/parse/dom/getScrollParent';
 import getVttCueSpeaker from '@lib/parse/dom/getVttCueSpeaker';
+import PlayCircleIcon from '@svg/icons/PlayCircle.svg';
 import VerticalAlignCenterIcon from '@svg/icons/VerticalAlignCenter.svg';
 import styles from './ClosedCaptionsFeed.module.scss';
 
@@ -34,13 +36,21 @@ export interface IClosedCaptionsProps {
 
 type CuePosition = 'left' | 'right';
 
-type CaptionProps = {
+type CaptionCueProps = {
   cue: VTTCue;
   segments?: IRssPodcastTranscriptJsonSegment[];
-  showSpeaker?: boolean;
-  colors?: Map<string, string>;
+  inCurrentCaption?: boolean;
+  isComplete?: boolean;
+};
+
+type CaptionProps = {
+  cues: VTTCue[];
+  segments?: IRssPodcastTranscriptJsonSegment[];
+  speaker?: string;
+  color?: string;
   position?: 'left' | 'right';
   isCurrent?: boolean;
+  isComplete?: boolean;
 };
 
 type SegmentProps = {
@@ -48,59 +58,125 @@ type SegmentProps = {
   inCurrentCue: boolean;
 };
 
+type ClosedCaptionsContextProps = {
+  // eslint-disable-next-line no-unused-vars
+  setScrollTarget?(element: HTMLElement, cue: VTTCue): void;
+};
+
+type PlayBlockBtnProps = {
+  startTime: number;
+};
+
+const PlayBlockBtn = ({ startTime }: PlayBlockBtnProps) => {
+  const { seekTo, play, state } = useContext(PlayerContext);
+
+  const handleClick = () => {
+    seekTo(startTime);
+
+    if (!state.playing) {
+      play();
+    }
+  };
+
+  return (
+    <IconButton onClick={handleClick}>
+      <PlayCircleIcon />
+    </IconButton>
+  );
+};
+
+const ClosedCaptionsContext = createContext<ClosedCaptionsContextProps>({
+  setScrollTarget: () => {}
+});
+
 const getCurrentCue = (textTrack: TextTrack) =>
   [...(textTrack?.activeCues || [])].at(0) as VTTCue;
+
+const getNextCue = (textTrack: TextTrack) => {
+  const currentCue = getCurrentCue(textTrack);
+  const cues = [...textTrack.cues] as VTTCue[];
+  const currentCueIndex = cues.findIndex(
+    (cue) => currentCue && cue.id === currentCue.id
+  );
+
+  return currentCueIndex > -1 ? cues.at(currentCueIndex + 1) : null;
+};
+
+const binaryFindCaption = (captions: CaptionProps[], cue: VTTCue) => {
+  if (!captions?.length || !cue) return null;
+
+  let low = 0;
+  let high = captions.length - 1;
+  let mid: number;
+
+  while (high >= low) {
+    mid = low + Math.floor((high - low) / 2);
+    const caption = captions.at(mid);
+
+    // If the cue is in the current caption, we are done.
+    if (caption.cues.includes(cue)) {
+      return caption;
+    }
+
+    // If cue start time is before the caption's first cue start time,
+    // caption can only be in the left subarray.
+    if (cue.startTime < caption.cues.at(0).startTime) {
+      high = mid - 1;
+    } else {
+      // Other wise the caption will be 1n the right subarray.
+      low = mid + 1;
+    }
+  }
+
+  // Cue not found in any captions.
+  return null;
+};
 
 const Segment = ({ data, inCurrentCue }: SegmentProps) => {
   const { audioElm } = useContext(PlayerContext);
   const { body } = data;
-  const [spoken, setSpoken] = useState(!inCurrentCue);
+  const [spoken, setSpoken] = useState(false);
 
   /**
    * Setup audio element event handlers.
    */
   useEffect(() => {
     const handleUpdate = () => {
-      setSpoken(() => data.startTime <= audioElm?.currentTime);
+      setSpoken(() => data.startTime <= audioElm.currentTime);
     };
 
     if (inCurrentCue) {
-      audioElm?.addEventListener('timeupdate', handleUpdate);
+      audioElm.addEventListener('timeupdate', handleUpdate);
+    } else {
+      audioElm.removeEventListener('timeupdate', handleUpdate);
     }
 
+    handleUpdate();
+
     return () => {
-      audioElm?.removeEventListener('timeupdate', handleUpdate);
+      audioElm.removeEventListener('timeupdate', handleUpdate);
     };
-  }, [audioElm, data.startTime, inCurrentCue]);
+  }, [audioElm, audioElm.currentTime, data.startTime, inCurrentCue]);
 
   return (
-    <span className={styles.segment} data-spoken={spoken}>
+    <span className={styles.segment} {...(spoken && { 'data-spoken': '' })}>
       {body}
     </span>
   );
 };
 
-const Caption = ({
-  cue,
-  segments,
-  showSpeaker,
-  colors,
-  position,
-  isCurrent
-}: CaptionProps) => {
-  const currentCaptionRef = useRef<HTMLDivElement>();
-  const scrollElementRef = useRef<Element>();
-  const { seekTo } = useContext(PlayerContext);
-  const [showJumpButton, setShowJumpButton] = useState(false);
-  const [, speaker, caption] =
-    cue.text.replace('\n', ' ').match(/^(?:<v\s+([^>]+)>)?(.+)/) || [];
+const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
+  const { seekTo, play, state, audioElm } = useContext(PlayerContext);
+  const { setScrollTarget } = useContext(ClosedCaptionsContext);
+  const { id, text, startTime, endTime, track } = cue;
+  const currentCue = getCurrentCue(track);
+  const [isCurrent, setIsCurrent] = useState(id === currentCue?.id);
+  const [isComplete, setIsComplete] = useState(audioElm.currentTime > endTime);
   const cueSegments = useMemo(
     () =>
-      isCurrent &&
       segments
         ?.filter(
-          ({ startTime, endTime }) =>
-            startTime >= cue.startTime && endTime <= cue.endTime
+          ({ startTime: st, endTime: et }) => st >= startTime && et <= endTime
         )
         .reduce((a, currentSegment) => {
           const aClone = [...a];
@@ -117,124 +193,165 @@ const Caption = ({
 
           return [...aClone, updatedSegment];
         }, [] as IRssPodcastTranscriptJsonSegment[]),
-    [segments, cue, isCurrent]
+    [segments, startTime, endTime]
   );
   const hasSegments = !!cueSegments?.length;
-  const hasText = hasSegments || !!caption.trim().length;
-  const color = colors?.get(speaker);
+  const hasText = hasSegments || !!text.trim().length;
   const rootProps = {
-    className: clsx(styles.caption),
-    'data-position': position || 'left',
+    className: clsx(styles.captionCue),
     ...(isCurrent && {
       'data-current': ''
     }),
-    ...(color && {
-      style: { '--cc-speaker--color': color } as CSSProperties
+    ...(isComplete && {
+      'data-complete': ''
     }),
-    ...(isCurrent && { ref: currentCaptionRef })
-  };
-
-  const scrollToCurrentBlock = (smooth?: boolean) => {
-    currentCaptionRef.current?.scrollIntoView({
-      block: 'center',
-      behavior: smooth ? 'smooth' : 'auto'
-    });
-  };
-
-  const checkCurrentCaptionOffScreen = () => {
-    const currentBlockRect = currentCaptionRef.current?.getBoundingClientRect();
-    const scrollingElement = scrollElementRef.current;
-    const scrollAreaRect = scrollingElement.getBoundingClientRect();
-    const offScreen =
-      (!!currentBlockRect && currentBlockRect?.top > scrollAreaRect.bottom) ||
-      currentBlockRect?.bottom < scrollAreaRect.top;
-
-    return offScreen;
-  };
-
-  const handleJumpBtnClick = () => {
-    setShowJumpButton(false);
-    scrollToCurrentBlock();
+    ...(isCurrent && { ref: (elm: HTMLElement) => setScrollTarget(elm, cue) })
   };
 
   function handleClick() {
     seekTo(cue.startTime);
+
+    if (!state.playing) {
+      play();
+    }
   }
 
+  const handleKeyDown: KeyboardEventHandler<HTMLSpanElement> = (e) => {
+    if (['ENTER', ' '].includes(e.key.toUpperCase())) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      seekTo(startTime);
+
+      if (!state.playing) {
+        play();
+      }
+    }
+  };
+
   useEffect(() => {
-    scrollElementRef.current =
-      scrollElementRef.current ||
-      (currentCaptionRef.current && getScrollParent(currentCaptionRef.current));
+    setIsComplete(audioElm.currentTime > endTime);
+  }, [audioElm.currentTime, endTime]);
 
-    const handleScroll = () => {
-      if (checkCurrentCaptionOffScreen()) {
-        setShowJumpButton(true);
-      } else {
-        setShowJumpButton(false);
-      }
-    };
-
-    if (isCurrent && currentCaptionRef.current) {
-      if (!checkCurrentCaptionOffScreen()) {
-        scrollToCurrentBlock(true);
-      } else {
-        setShowJumpButton(true);
-      }
-
-      scrollElementRef.current?.addEventListener('scroll', handleScroll);
+  useEffect(() => {
+    function handleCueEnter() {
+      setIsCurrent(true);
     }
 
-    return () => {
-      scrollElementRef.current?.removeEventListener('scroll', handleScroll);
-    };
-  }, [isCurrent]);
+    function handleCueExit() {
+      setIsCurrent(false);
+    }
 
-  useEffect(() => {
-    scrollToCurrentBlock();
-  }, []);
+    if (inCurrentCaption) {
+      cue.addEventListener('enter', handleCueEnter);
+      cue.addEventListener('exit', handleCueExit);
+    } else {
+      cue.removeEventListener('enter', handleCueEnter);
+      cue.removeEventListener('exit', handleCueExit);
+    }
+
+    setIsComplete(audioElm.currentTime > endTime);
+    setIsCurrent(cue.id === currentCue?.id);
+
+    return () => {
+      cue.removeEventListener('enter', handleCueEnter);
+      cue.removeEventListener('exit', handleCueExit);
+    };
+  }, [
+    audioElm.currentTime,
+    cue,
+    currentCue?.id,
+    endTime,
+    inCurrentCaption,
+    isCurrent
+  ]);
 
   if (!hasText) return null;
 
+  if (!hasSegments) {
+    const sanitizedText = text.replace(/^<[^>]+>/i, '').trimStart();
+    const outputText = `${
+      /^[.,?!]/i.test(sanitizedText) ? '' : ' '
+    }${sanitizedText}`;
+    return (
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        {...rootProps}
+      >
+        {outputText}
+      </span>
+    );
+  }
+
   return (
-    <>
-      {showJumpButton && isCurrent && (
-        <IconButton
-          type="button"
-          className={styles.jumpButton}
-          style={
-            {
-              ...(color && {
-                '--jump-button--color': color,
-                '--iconButton-color': color
-              })
-            } as CSSProperties
-          }
-          onClick={handleJumpBtnClick}
-        >
-          <VerticalAlignCenterIcon />
-        </IconButton>
-      )}
-      <div {...rootProps}>
-        {showSpeaker && speaker && (
-          <cite className={styles.speaker}>{speaker}</cite>
+    <span
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      {...rootProps}
+    >
+      {cueSegments.map((s) => (
+        <Segment
+          data={s}
+          inCurrentCue={isCurrent}
+          key={`segment:${s.startTime}`}
+        />
+      ))}
+    </span>
+  );
+};
+
+const Caption = ({
+  cues,
+  speaker,
+  color,
+  position,
+  segments,
+  isCurrent,
+  isComplete
+}: CaptionProps) => {
+  const { audioElm } = useContext(PlayerContext);
+  const { startTime } = cues.at(0);
+  const rootProps = {
+    className: clsx(styles.caption),
+    'data-position': position || 'left',
+    ...(speaker && { 'data-speaker': speaker }),
+    ...(isCurrent && { 'data-current': '' }),
+    ...(isComplete && { 'data-complete': '' }),
+    ...(color && {
+      style: { '--cc-speaker--color': color } as CSSProperties
+    })
+  };
+
+  return (
+    <div {...rootProps}>
+      <h3 className={styles.speakerHeading}>
+        {speaker ? (
+          <span className={styles.speakerHeadingSpeaker}>{speaker}</span>
+        ) : (
+          <span />
         )}
-        <button
-          type="button"
-          className={styles.captionBody}
-          onClick={handleClick}
-        >
-          {hasSegments
-            ? cueSegments.map((s) => (
-                <Segment
-                  data={s}
-                  inCurrentCue={isCurrent}
-                  key={`${s.body}:${s.startTime}`}
-                />
-              ))
-            : caption}
-        </button>
+        <span className={styles.speakerHeadingTime}>
+          {convertSecondsToDuration(startTime)}
+          <PlayBlockBtn startTime={startTime} />
+        </span>
+      </h3>
+      <div className={styles.captionBody}>
+        {cues.map((cue) => (
+          <CaptionCue
+            cue={cue}
+            segments={segments}
+            inCurrentCaption={isCurrent}
+            isComplete={audioElm.currentTime > cue.endTime}
+            key={`caption_cue:${cue.id}`}
+          />
+        ))}
       </div>
-    </>
+    </div>
   );
 };
 
@@ -245,27 +362,34 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const { tracks, currentTrackIndex } = state;
   const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
 
-  const scrollAreaRef = useRef<HTMLDivElement>();
+  const [currentTextTrack, setCurrentTextTrack] = useState(
+    audioElm?.textTracks?.[0]
+  );
+  const [currentCue, setCurrentCue] = useState(getCurrentCue(currentTextTrack));
+  const currentVttCues = useMemo(
+    () => [...(currentTextTrack?.cues || [])] as VTTCue[],
+    [currentTextTrack?.cues]
+  );
 
-  const [currentCue, setCurrentCue] = useState<VTTCue>();
+  const scrollAreaRef = useRef<HTMLDivElement>();
+  const currentCaptionRef = useRef<HTMLElement>();
+
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
-
-  const recentCues = [...(currentCue?.track?.cues || [])].slice(
-    0 // Math.max(cueIndex - 20, 0),
-    // cueIndex + 3
-  ) as VTTCue[];
+  const { segments } = transcriptData || {};
+  const [showJumpButton, setShowJumpButton] = useState(false);
+  // const cueIndex = currentVttCues?.findIndex(({ id }) => id === currentCue?.id);
+  const nextExpectedCue = useRef<VTTCue>();
   const speakersColorMap = useRef(new Map<string, string>());
 
   const cuePositions = useMemo(() => {
     const positionsMap = new Map<string, CuePosition>();
-    const cues = [...(currentCue?.track?.cues || [])] as VTTCue[];
 
-    if (cues.length) {
-      let previousSpeaker = getVttCueSpeaker(cues[0]);
+    if (currentVttCues?.length) {
+      let previousSpeaker = getVttCueSpeaker(currentVttCues[0]);
       let currentPosition: CuePosition = 'left';
 
-      cues.forEach((cue) => {
+      currentVttCues.forEach((cue) => {
         const cueSpeaker = getVttCueSpeaker(cue);
 
         if (cueSpeaker !== previousSpeaker) {
@@ -289,47 +413,157 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     }
 
     return positionsMap;
-  }, [currentCue, speakerColors]);
+  }, [currentVttCues, speakerColors]);
+
+  const captions = useMemo(
+    () =>
+      currentVttCues?.reduce<CaptionProps[]>((a, cue) => {
+        const aClone = [...a];
+        const previousCaption = aClone.pop();
+        const previousCaptionLastCue = previousCaption?.cues.at(-1);
+        const speaker = getVttCueSpeaker(cue);
+        const speakerChanged = !!(
+          previousCaption && speaker !== previousCaption.speaker
+        );
+        const tooManyCues = previousCaption?.cues.length > 3;
+        const sentenceEnded = /[.?!]$/.test(
+          previousCaptionLastCue?.text.trimEnd() || ''
+        );
+        const hasLongPause = !!(
+          previousCaptionLastCue &&
+          cue.startTime - previousCaptionLastCue.endTime > 1
+        );
+
+        // Start new caption when...
+        if (
+          !previousCaption ||
+          speakerChanged ||
+          (sentenceEnded && (tooManyCues || hasLongPause))
+        ) {
+          return [
+            ...a,
+            {
+              cues: [cue],
+              segments,
+              speaker,
+              color: speakersColorMap.current.get(speaker),
+              position: cuePositions.get(cue.id) || 'left'
+            }
+          ];
+        }
+
+        // Continue adding cues to caption...
+        return [
+          ...aClone,
+          {
+            ...previousCaption,
+            cues: [...(previousCaption?.cues || []), cue]
+          }
+        ];
+      }, []),
+    [cuePositions, currentVttCues, segments]
+  );
+  const currentCaption = binaryFindCaption(captions, currentCue);
 
   const { transcripts } = currentTrack;
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
+
+  const jumpButtonColor = speakersColorMap.current?.get(
+    getVttCueSpeaker(currentCue)
+  );
 
   const captionsClassNames = clsx(styles.captions, {
     [styles.noSpeakers]: speakersColorMap.current.size <= 1
   });
 
-  const updateCurrentCue = useCallback((textTrack: TextTrack) => {
-    const cue = getCurrentCue(textTrack);
+  const scrollToCurrentBlock = useCallback(
+    (smooth?: boolean) => {
+      if (showJumpButton) return;
 
-    // Fallback to previous cue to prevent captions not being rendered during
-    // pauses in dialog (no active cues.)
-    setCurrentCue((previousCue) => cue || previousCue);
+      currentCaptionRef.current?.scrollIntoView({
+        block: 'center',
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    },
+    [showJumpButton]
+  );
+
+  const setScrollTarget = useCallback(
+    (element: HTMLElement, cue: VTTCue) => {
+      const isNextExpectedCue = !!(
+        nextExpectedCue && cue.id === nextExpectedCue.current?.id
+      );
+
+      currentCaptionRef.current = element || currentCaptionRef.current;
+
+      scrollToCurrentBlock(isNextExpectedCue);
+
+      nextExpectedCue.current =
+        getNextCue(cue.track) || nextExpectedCue.current;
+    },
+    [scrollToCurrentBlock]
+  );
+
+  const checkCurrentCaptionOffScreen = () => {
+    if (!scrollAreaRef.current) return false;
+
+    const currentBlockRect = currentCaptionRef.current?.getBoundingClientRect();
+    const scrollingElement = scrollAreaRef.current;
+    const scrollAreaRect = scrollingElement.getBoundingClientRect();
+    const offScreen =
+      (!!currentBlockRect && currentBlockRect?.top > scrollAreaRect.bottom) ||
+      currentBlockRect?.bottom < scrollAreaRect.top;
+
+    return offScreen;
+  };
+
+  const contextValues: ClosedCaptionsContextProps = useMemo(
+    () => ({
+      setScrollTarget
+    }),
+    [setScrollTarget]
+  );
+
+  const handleJumpBtnClick = () => {
+    setShowJumpButton(false);
+    scrollToCurrentBlock();
+  };
+
+  const handleCueChange = useCallback((e: Event) => {
+    const newCue = getCurrentCue(e.target as TextTrack);
+    setCurrentCue((previousCue) => newCue || previousCue);
   }, []);
 
-  const handleCueChange = useMemo(
-    () => (e: Event) => {
-      updateCurrentCue(e.target as TextTrack);
-    },
-    [updateCurrentCue]
-  );
+  const handleAddTrack = useCallback((e: TrackEvent) => {
+    // eslint-disable-next-line no-param-reassign
+    e.track.mode = 'showing';
 
-  const handleAddTrack = useMemo(
-    () => (e: TrackEvent) => {
-      updateCurrentCue(e.track);
-      // eslint-disable-next-line no-param-reassign
-      e.track.mode = 'showing';
-      e.track.addEventListener('cuechange', handleCueChange);
-    },
-    [handleCueChange, updateCurrentCue]
-  );
+    // Watch track till it has cues loaded.
+    const textTrackHasCuesCheckInterval = setInterval(() => {
+      if (e.track.cues?.length) {
+        // Stop watching for cues.
+        clearInterval(textTrackHasCuesCheckInterval);
+        // Update state now that we have cues to render.
+        setCurrentTextTrack(e.track);
+      }
+    }, 100);
+  }, []);
 
-  const handleRemoveTrack = useMemo(
-    () => () => {
-      // Clear current cue when tracks are about to change.
-      setCurrentCue(null);
-    },
-    []
-  );
+  const handleRemoveTrack = useCallback(() => {
+    setCurrentTextTrack(null);
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    const show = showJumpButton || checkCurrentCaptionOffScreen();
+
+    setShowJumpButton(show);
+  }, [showJumpButton]);
+
+  function setScrollAreaRef(element: HTMLDivElement) {
+    element?.addEventListener('scroll', handleScroll);
+
+    scrollAreaRef.current = element;
+  }
 
   /**
    * Setup audio element event handlers.
@@ -340,30 +574,19 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     textTracks.addEventListener('addtrack', handleAddTrack);
     textTracks.addEventListener('removetrack', handleRemoveTrack);
 
-    [...(textTracks || [])].forEach((track) => {
-      if (track.kind === 'captions') {
-        track.addEventListener('cuechange', handleCueChange);
-
-        updateCurrentCue(track);
-      }
-    });
+    currentTextTrack?.addEventListener('cuechange', handleCueChange);
 
     return () => {
       textTracks.removeEventListener('addtrack', handleAddTrack);
       textTracks.removeEventListener('removetrack', handleRemoveTrack);
-
-      [...(textTracks || [])].forEach((track) => {
-        if (track.kind === 'captions') {
-          track.removeEventListener('cuechange', handleCueChange);
-        }
-      });
+      currentTextTrack?.removeEventListener('cuechange', handleCueChange);
     };
   }, [
-    audioElm,
+    audioElm?.textTracks,
+    currentTextTrack,
     handleAddTrack,
     handleCueChange,
-    handleRemoveTrack,
-    updateCurrentCue
+    handleRemoveTrack
   ]);
 
   useEffect(() => {
@@ -378,47 +601,62 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     })();
   }, [transcriptJson?.url]);
 
-  const previousSpeaker = useRef(getVttCueSpeaker(currentCue));
+  useEffect(() => {
+    const scrollAreaElement = scrollAreaRef.current;
 
-  const renderedCaptions = useMemo(() => {
-    let lastSpeakerChangeIndex = 0;
-    return recentCues?.map((cue, index) => {
-      const cueSpeaker = getVttCueSpeaker(cue);
-      const speakerChanged = cueSpeaker !== previousSpeaker.current;
-      // Show speaker when speaker changes or every 5 cues od the same speaker.
-      const showSpeaker =
-        speakerChanged || !((index - lastSpeakerChangeIndex) % 5);
-      const isCurrent = cue.id === currentCue.id;
-
-      if (speakerChanged) {
-        lastSpeakerChangeIndex = index;
-        previousSpeaker.current = cueSpeaker;
-      }
-
-      return (
-        <Caption
-          cue={cue}
-          segments={transcriptData?.segments}
-          colors={speakersColorMap.current}
-          showSpeaker={showSpeaker}
-          position={cuePositions.get(cue.id) || 'left'}
-          isCurrent={isCurrent}
-          key={cue.id}
-        />
-      );
-    });
-  }, [cuePositions, currentCue?.id, recentCues, transcriptData?.segments]);
+    return () => {
+      scrollAreaElement?.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll, showJumpButton]);
 
   if (!transcripts) return null;
 
+  if (transcriptJson?.url && !transcriptData) return null;
+
   return (
-    <div ref={scrollAreaRef} className={styles.root}>
-      <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
-      <div className={captionsClassNames} aria-hidden>
-        <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
-        {renderedCaptions}
+    <ClosedCaptionsContext.Provider value={contextValues}>
+      <div ref={setScrollAreaRef} className={styles.root}>
+        <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
+        <div className={captionsClassNames} aria-hidden>
+          <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
+          {captions?.map((props) => (
+            <Caption
+              {...props}
+              isCurrent={currentCaption?.cues.at(0).id === props.cues.at(0).id}
+              isComplete={
+                currentCaption?.cues.at(0).startTime > props.cues.at(-1).endTime
+              }
+              key={`caption:${props.cues.at(0).id}:${props.cues.at(-1).id}`}
+            />
+          ))}
+          <div className={styles.loader}>
+            <div className={styles.loaderText}>Loading captions...</div>
+            <div className={styles.loaderRings}>
+              {[...new Array(5).fill(0).keys()].map((k) => (
+                <span className={styles.loaderRing} key={k} />
+              ))}
+            </div>
+          </div>
+        </div>
+        {showJumpButton && (
+          <IconButton
+            type="button"
+            className={styles.jumpButton}
+            style={
+              {
+                ...(jumpButtonColor && {
+                  '--jump-button--color': jumpButtonColor,
+                  '--iconButton-color': jumpButtonColor
+                })
+              } as CSSProperties
+            }
+            onClick={handleJumpBtnClick}
+          >
+            <VerticalAlignCenterIcon />
+          </IconButton>
+        )}
       </div>
-    </div>
+    </ClosedCaptionsContext.Provider>
   );
 };
 

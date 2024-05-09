@@ -11,7 +11,10 @@ import type {
   SpeakerSegmentsBlock
 } from '@interfaces/data';
 import {
+  createContext,
+  forwardRef,
   KeyboardEventHandler,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -44,6 +47,13 @@ type SegmentProps = {
   inCurrentBlock: boolean;
 };
 
+type TranscriptContextProps = {
+  // eslint-disable-next-line no-unused-vars
+  setScrollTarget?(elm: HTMLElement): void;
+  // eslint-disable-next-line no-unused-vars
+  scrollToCurrentBlock?(smooth?: boolean): void;
+};
+
 type PlayBlockBtnProps = {
   startTime: number;
 };
@@ -65,58 +75,62 @@ const PlayBlockBtn = ({ startTime }: PlayBlockBtnProps) => {
     </IconButton>
   );
 };
+const TranscriptContext = createContext<TranscriptContextProps>({});
 
-const Segment = ({ data, isSpoken, inCurrentBlock }: SegmentProps) => {
-  const { seekTo } = useContext(PlayerContext);
-  const { body, startTime } = data;
-  // const [isSpoken, setIsSpoken] = useState(startTime <= audioElm?.currentTime);
-  const hasWords = /\b\w+\b/.test(body);
-  const isSpace = body.trim().length === 0;
-  const isPunctuation = /^[.,?;:]$/.test(body.trim());
+const Segment = forwardRef<HTMLSpanElement, SegmentProps>(
+  ({ data, isSpoken, inCurrentBlock }, ref) => {
+    const { seekTo } = useContext(PlayerContext);
+    const { body, startTime } = data;
+    // const [isSpoken, setIsSpoken] = useState(startTime <= audioElm?.currentTime);
+    const hasWords = /\b\w+\b/.test(body);
+    const isSpace = body.trim().length === 0;
+    const isPunctuation = /^[.,?;:]$/.test(body.trim());
 
-  function handleClick() {
-    seekTo(startTime);
-  }
-
-  const handleKeyDown: KeyboardEventHandler<HTMLSpanElement> = (e) => {
-    if (['ENTER', ' '].includes(e.key.toUpperCase())) {
-      e.stopPropagation();
-      e.preventDefault();
-
+    function handleClick() {
       seekTo(startTime);
     }
-  };
 
-  const rootProps = {
-    className: clsx(styles.segment, {
-      [styles.punctuation]: isPunctuation,
-      [styles.space]: isSpace
-    }),
-    'data-start': startTime,
-    ...(inCurrentBlock && isSpoken && !isSpace && { 'data-spoken': true }),
-    ...(hasWords && { onClick: handleClick })
-  };
+    const handleKeyDown: KeyboardEventHandler<HTMLSpanElement> = (e) => {
+      if (['ENTER', ' '].includes(e.key.toUpperCase())) {
+        e.stopPropagation();
+        e.preventDefault();
 
-  if (!hasWords) {
-    return <span {...rootProps}>{body}</span>;
+        seekTo(startTime);
+      }
+    };
+
+    const rootProps = {
+      className: clsx(styles.segment, {
+        [styles.punctuation]: isPunctuation,
+        [styles.space]: isSpace
+      }),
+      'data-start': startTime,
+      ...(inCurrentBlock && isSpoken && !isSpace && { 'data-spoken': true }),
+      ...(hasWords && { onClick: handleClick }),
+      ref
+    };
+
+    if (!hasWords) {
+      return <span {...rootProps}>{body}</span>;
+    }
+
+    return (
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        {...rootProps}
+      >
+        {body}
+      </span>
+    );
   }
-
-  return (
-    <span
-      role="button"
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      {...rootProps}
-    >
-      {body}
-    </span>
-  );
-};
+);
 
 const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
-  const currentBlockRef = useRef<HTMLDivElement>();
-  const scrollElementRef = useRef<Element>();
+  const { setScrollTarget, scrollToCurrentBlock } =
+    useContext(TranscriptContext);
   const firstSegment = segments.at(0);
   const lastSegment = segments.at(segments.length - 1);
   const { startTime } = firstSegment;
@@ -125,11 +139,9 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
   const [isCurrentBlock, setIsCurrentBlock] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>();
-  const [showJumpButton, setShowJumpButton] = useState(false);
   const rootProps = {
     className: clsx(styles.speakerBlock),
     ...(isCurrentBlock && {
-      ref: currentBlockRef,
       'data-current': ''
     }),
     ...(hasEnded && {
@@ -142,41 +154,7 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
     >
   >;
 
-  const checkCurrentBlockOffScreen = () => {
-    const currentBlockRect = currentBlockRef.current?.getBoundingClientRect();
-    const scrollingElement = scrollElementRef.current;
-    const scrollAreaRect = scrollingElement.getBoundingClientRect();
-    const offScreen =
-      (!!currentBlockRect && currentBlockRect?.top > scrollAreaRect.bottom) ||
-      currentBlockRect?.bottom < scrollAreaRect.top;
-
-    return offScreen;
-  };
-
-  const scrollToCurrentBlock = (smooth?: boolean) => {
-    const lastSpokenElm = [
-      ...(currentBlockRef.current?.querySelectorAll('[data-spoken]') || [])
-    ].pop();
-
-    lastSpokenElm?.scrollIntoView({
-      block: 'center',
-      behavior: smooth ? 'smooth' : 'auto'
-    });
-  };
-
-  const handleJumpBtnClick = () => {
-    scrollToCurrentBlock();
-  };
-
   useEffect(() => {
-    const handleScroll = () => {
-      if (checkCurrentBlockOffScreen()) {
-        setShowJumpButton(true);
-      } else {
-        setShowJumpButton(false);
-      }
-    };
-
     const handleTimeUpdate = (e: Event) => {
       const ae = e.target as HTMLAudioElement;
       const newIsCurrentBlock =
@@ -190,70 +168,59 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
       setIsCurrentBlock(newIsCurrentBlock);
       setHasEnded(newHasEnded);
 
-      if (isCurrentBlock && currentBlockRef.current) {
-        if (
-          !checkCurrentBlockOffScreen() &&
-          scrollElementRef.current?.scrollTop
-        ) {
-          scrollToCurrentBlock(true);
-        } else {
-          setShowJumpButton(true);
-        }
+      if (isCurrentBlock && scrollToCurrentBlock) {
+        scrollToCurrentBlock();
       }
     };
 
-    scrollElementRef.current =
-      scrollElementRef.current ||
-      (currentBlockRef.current && getScrollParent(currentBlockRef.current));
-
     audioElm?.addEventListener('timeupdate', handleTimeUpdate);
-    scrollElementRef.current?.addEventListener('scroll', handleScroll);
 
     return () => {
       audioElm?.removeEventListener('timeupdate', handleTimeUpdate);
-      scrollElementRef.current?.removeEventListener('scroll', handleScroll);
     };
-  }, [audioElm, endTime, isCurrentBlock, segments, startTime]);
+  }, [
+    audioElm,
+    endTime,
+    isCurrentBlock,
+    scrollToCurrentBlock,
+    segments,
+    startTime
+  ]);
 
   return (
-    <>
-      {showJumpButton && isCurrentBlock && (
-        <button
-          type="button"
-          className={styles.jumpButton}
-          onClick={handleJumpBtnClick}
-        >
-          <VerticalAlignCenterIcon />
-          Scroll to current caption
-        </button>
-      )}
-      <div {...rootProps}>
-        <h3 className={styles.speakerHeading}>
-          {speaker && (
-            <span className={styles.speakerHeadingSpeaker}>{speaker}</span>
-          )}
-          <span className={styles.speakerHeadingTime}>
-            {convertSecondsToDuration(startTime)}
-            <PlayBlockBtn startTime={startTime} />
-          </span>
-        </h3>
-        {useMemo(
-          () =>
-            segments.map((segment, index) => {
-              const key = `${segment.body}:${segment.startTime}:${index}`;
-              return (
-                <Segment
-                  data={segment}
-                  key={key}
-                  isSpoken={hasEnded || index <= currentSegmentIndex}
-                  inCurrentBlock={isCurrentBlock}
-                />
-              );
-            }),
-          [currentSegmentIndex, hasEnded, isCurrentBlock, segments]
+    <div {...rootProps}>
+      <h3 className={styles.speakerHeading}>
+        {speaker && (
+          <span className={styles.speakerHeadingSpeaker}>{speaker}</span>
         )}
-      </div>
-    </>
+        <span className={styles.speakerHeadingTime}>
+          {convertSecondsToDuration(startTime)}
+          <PlayBlockBtn startTime={startTime} />
+        </span>
+      </h3>
+      {useMemo(
+        () =>
+          segments.map((segment, index) => {
+            const key = `${segment.body}:${segment.startTime}:${index}`;
+            return (
+              <Segment
+                data={segment}
+                key={key}
+                isSpoken={hasEnded || index <= currentSegmentIndex}
+                inCurrentBlock={isCurrentBlock}
+                {...(currentSegmentIndex === index && { ref: setScrollTarget })}
+              />
+            );
+          }),
+        [
+          currentSegmentIndex,
+          hasEnded,
+          isCurrentBlock,
+          segments,
+          setScrollTarget
+        ]
+      )}
+    </div>
   );
 };
 
@@ -270,11 +237,78 @@ const EpisodeTranscript = ({
     [currentTrackIndex, tracks]
   );
   const [isCurrentTrack, setIsCurrentTrack] = useState(false);
+  const [showJumpButton, setShowJumpButton] = useState(false);
+  const scrollAreaRef = useRef<Element>();
+  const currentSegmentRef = useRef<HTMLElement>();
+
+  const checkCurrentCaptionOffScreen = () => {
+    if (!scrollAreaRef.current) return false;
+
+    const currentBlockRect = currentSegmentRef.current?.getBoundingClientRect();
+    const scrollingElement = scrollAreaRef.current;
+    const scrollAreaRect = scrollingElement.getBoundingClientRect();
+    const offScreen =
+      (!!currentBlockRect && currentBlockRect?.top > scrollAreaRect.bottom) ||
+      currentBlockRect?.bottom < scrollAreaRect.top;
+
+    return offScreen;
+  };
+
+  const scrollToCurrentBlock = useCallback(
+    (smooth?: boolean) => {
+      if (showJumpButton || !scrollAreaRef.current?.scrollTop) return;
+
+      currentSegmentRef.current?.scrollIntoView({
+        block: 'center',
+        behavior: smooth || !checkCurrentCaptionOffScreen() ? 'smooth' : 'auto'
+      });
+    },
+    [showJumpButton]
+  );
+
+  const handleScroll = useCallback(() => {
+    const show = showJumpButton || checkCurrentCaptionOffScreen();
+
+    setShowJumpButton(show);
+  }, [showJumpButton]);
+
+  const setScrollTarget = useCallback(
+    (elm: HTMLElement) => {
+      currentSegmentRef.current = elm || currentSegmentRef.current;
+
+      scrollAreaRef.current?.removeEventListener('scroll', handleScroll);
+
+      scrollAreaRef.current = getScrollParent(currentSegmentRef.current);
+
+      scrollAreaRef.current?.addEventListener('scroll', handleScroll);
+    },
+    [handleScroll]
+  );
+
+  const contextValues: TranscriptContextProps = useMemo(
+    () => ({
+      setScrollTarget,
+      scrollToCurrentBlock
+    }),
+    [scrollToCurrentBlock, setScrollTarget]
+  );
+
+  const handleJumpBtnClick = () => {
+    setShowJumpButton(false);
+    scrollToCurrentBlock();
+  };
 
   useEffect(() => {
     const newIsCurrentTrack = episode.guid === currentTrack.guid;
     setIsCurrentTrack(newIsCurrentTrack);
   }, [currentTrack, episode.guid]);
+
+  useEffect(
+    () => () => {
+      scrollAreaRef.current?.removeEventListener('scroll', handleScroll);
+    },
+    [handleScroll]
+  );
 
   if (!data?.length && !loading) return null;
 
@@ -299,39 +333,53 @@ const EpisodeTranscript = ({
   }
 
   return (
-    <div className={clsx(className, styles.root)}>
-      <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
-      {data.map((speakerBlockProps, index) => {
-        const { speaker, segments: blockSegments } = speakerBlockProps;
-        const firstSegment = blockSegments.at(0);
-        const { startTime } = firstSegment;
-        const key = `${speaker}:${startTime}:${index}`;
+    <TranscriptContext.Provider value={contextValues}>
+      <div className={clsx(className, styles.root)}>
+        <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
+        {data.map((speakerBlockProps, index) => {
+          const { speaker, segments: blockSegments } = speakerBlockProps;
+          const firstSegment = blockSegments.at(0);
+          const { startTime } = firstSegment;
+          const key = `${speaker}:${startTime}:${index}`;
 
-        if (!isCurrentTrack) {
-          const bodyCompiled = blockSegments.reduce(
-            (a, { body }) => a + body,
-            ''
-          );
-          return (
-            <div className={styles.speakerBlock} key={key}>
-              <h3 className={styles.speakerHeading}>
-                <span className={styles.speakerHeadingSpeaker}>{speaker}</span>
-                <span className={styles.speakerHeadingTime}>
-                  {convertSecondsToDuration(startTime)}
-                </span>
-              </h3>
-              <span className={styles.body}>{bodyCompiled}</span>
-            </div>
-          );
-        }
+          if (!isCurrentTrack) {
+            const bodyCompiled = blockSegments.reduce(
+              (a, { body }) => a + body,
+              ''
+            );
+            return (
+              <div className={styles.speakerBlock} key={key}>
+                <h3 className={styles.speakerHeading}>
+                  <span className={styles.speakerHeadingSpeaker}>
+                    {speaker}
+                  </span>
+                  <span className={styles.speakerHeadingTime}>
+                    {convertSecondsToDuration(startTime)}
+                  </span>
+                </h3>
+                <span className={styles.body}>{bodyCompiled}</span>
+              </div>
+            );
+          }
 
-        if (isCurrentTrack) {
-          return <SpeakerBlock {...speakerBlockProps} key={key} />;
-        }
+          if (isCurrentTrack) {
+            return <SpeakerBlock {...speakerBlockProps} key={key} />;
+          }
 
-        return null;
-      })}
-    </div>
+          return null;
+        })}
+        {showJumpButton && (
+          <button
+            type="button"
+            className={styles.jumpButton}
+            onClick={handleJumpBtnClick}
+          >
+            <VerticalAlignCenterIcon />
+            Scroll to current caption
+          </button>
+        )}
+      </div>
+    </TranscriptContext.Provider>
   );
 };
 

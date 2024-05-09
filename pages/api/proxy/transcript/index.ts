@@ -91,7 +91,7 @@ export default async function handler(
           previousBlock.segments.length - 1
         );
         const speakerChanged = previousBlock?.speaker !== segment.speaker;
-        const sentenceEnded = /[.?]$/.test(lastSegment?.body || '');
+        const sentenceEnded = /[.?!]$/.test(lastSegment?.body || '');
         const breakSegment =
           (hasMultipleSpeakers && speakerChanged) ||
           (!hasMultipleSpeakers && sentenceEnded);
