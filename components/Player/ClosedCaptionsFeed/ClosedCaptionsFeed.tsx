@@ -316,16 +316,41 @@ const Caption = ({
 }: CaptionProps) => {
   const { audioElm } = useContext(PlayerContext);
   const { startTime } = cues.at(0);
+  const [mousePosition, setMousePosition] = useState<{
+    x: number;
+    y: number;
+  }>();
   const rootProps = {
     className: clsx(styles.caption),
     'data-position': position || 'left',
     ...(speaker && { 'data-speaker': speaker }),
     ...(isCurrent && { 'data-current': '' }),
     ...(isComplete && { 'data-complete': '' }),
-    ...(color && {
-      style: { '--cc-speaker--color': color } as CSSProperties
+    ...((color || mousePosition) && {
+      style: {
+        ...(color && { '--cc-speaker--color': color }),
+        ...(mousePosition && {
+          '--mouse-x': `${mousePosition.x}px`,
+          '--mouse-y': `${mousePosition.y}px`
+        })
+      } as CSSProperties
     })
   };
+  const bodyRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    const bodyElm = bodyRef.current;
+
+    function handleMouseMove(e: MouseEvent) {
+      setMousePosition({ x: e.offsetX, y: e.offsetY });
+    }
+
+    bodyElm?.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      bodyElm?.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   return (
     <div {...rootProps}>
@@ -340,7 +365,7 @@ const Caption = ({
           <PlayBlockBtn startTime={startTime} />
         </span>
       </h3>
-      <div className={styles.captionBody}>
+      <div className={styles.captionBody} ref={bodyRef}>
         {cues.map((cue) => (
           <CaptionCue
             cue={cue}

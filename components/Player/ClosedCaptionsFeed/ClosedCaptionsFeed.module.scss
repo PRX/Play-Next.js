@@ -215,7 +215,7 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   &:where(:hover, :focus-visible) {
     &::before {
-      opacity: 0.3;
+      opacity: 0.25;
     }
   }
 
@@ -230,6 +230,25 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 
   :where([data-complete]) & {
     transition: box-shadow linear 100ms 200ms;
+  }
+
+  @media (pointer: fine) {
+    &::before {
+      content: '';
+      position: absolute;
+      width: 150vh;
+      aspect-ratio: 1;
+      transform: translate(
+        calc(-50% + var(--mouse-x, 0)),
+        calc(-50% + var(--mouse-y, 0))
+      );
+      transform-origin: center;
+      transition: opacity linear 200ms;
+      background-image: radial-gradient(
+        transparent 10%,
+        var(--_cc-speaker--color)
+      );
+    }
   }
 }
 
