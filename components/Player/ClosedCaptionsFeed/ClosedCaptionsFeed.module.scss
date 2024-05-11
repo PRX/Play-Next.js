@@ -203,7 +203,7 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
     transition: box-shadow linear 100ms;
   }
 
-  :is([data-current]) & {
+  :is([data-current]:not([data-complete])) & {
     --_cc-body--border-width: 3px;
   }
 
@@ -244,7 +244,7 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
     &::before {
       content: '';
       position: absolute;
-      width: 150vh;
+      width: 200vh;
       aspect-ratio: 1;
       transform: translate(
         calc(-50% + var(--mouse-x, 0)),
@@ -253,8 +253,8 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
       transform-origin: center;
       transition: opacity linear 200ms;
       background-image: radial-gradient(
-        transparent 10%,
-        var(--_cc-speaker--color)
+        transparent,
+        var(--_cc-speaker--color) 40%
       );
     }
   }

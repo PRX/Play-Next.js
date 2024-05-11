@@ -61,6 +61,7 @@ type SegmentProps = {
 type ClosedCaptionsContextProps = {
   // eslint-disable-next-line no-unused-vars
   setScrollTarget?(element: HTMLElement, cue: VTTCue): void;
+  currentCue?: VTTCue;
 };
 
 type PlayBlockBtnProps = {
@@ -89,17 +90,73 @@ const ClosedCaptionsContext = createContext<ClosedCaptionsContextProps>({
   setScrollTarget: () => {}
 });
 
-const getCurrentCue = (textTrack: TextTrack) =>
-  [...(textTrack?.activeCues || [])].at(0) as VTTCue;
+const binaryFindCueIndex = (cueList: TextTrackCueList, cue: VTTCue) => {
+  if (!cueList?.length || !cue) return null;
 
-const getNextCue = (textTrack: TextTrack) => {
-  const currentCue = getCurrentCue(textTrack);
-  const cues = [...textTrack.cues] as VTTCue[];
-  const currentCueIndex = cues.findIndex(
-    (cue) => currentCue && cue.id === currentCue.id
-  );
+  const cues = [...cueList] as VTTCue[];
 
-  return currentCueIndex > -1 ? cues.at(currentCueIndex + 1) : null;
+  let low = 0;
+  let high = cueList.length - 1;
+  let mid: number;
+
+  while (high >= low) {
+    mid = low + Math.floor((high - low) / 2);
+    const current = cues.at(mid);
+    const { id, startTime } = current;
+
+    // If the cue is in the current caption, we are done.
+    if (cue.id === id) {
+      return mid;
+    }
+
+    // If cue start time is before the caption's first cue start time,
+    // caption can only be in the left subarray.
+    if (cue.startTime < startTime) {
+      high = mid - 1;
+    } else {
+      // Other wise the caption will be 1n the right subarray.
+      low = mid + 1;
+    }
+  }
+
+  // Cue not found in any captions.
+  return null;
+};
+
+const binaryFindCueByTime = (
+  cueList: TextTrackCueList,
+  currentTime: number
+) => {
+  if (!cueList?.length || (!currentTime && currentTime !== 0)) return null;
+
+  const cues = [...cueList] as VTTCue[];
+
+  let low = 0;
+  let high = cueList.length - 1;
+  let mid: number;
+
+  while (high >= low) {
+    mid = low + Math.floor((high - low) / 2);
+    const current = cues.at(mid);
+    const { startTime, endTime } = current;
+
+    // If the cue is in the current caption, we are done.
+    if (currentTime >= startTime && currentTime <= endTime) {
+      return current;
+    }
+
+    // If cue start time is before the caption's first cue start time,
+    // caption can only be in the left subarray.
+    if (currentTime < startTime) {
+      high = mid - 1;
+    } else {
+      // Other wise the caption will be 1n the right subarray.
+      low = mid + 1;
+    }
+  }
+
+  // Cue not found in any captions.
+  return null;
 };
 
 const binaryFindCaption = (captions: CaptionProps[], cue: VTTCue) => {
@@ -130,6 +187,31 @@ const binaryFindCaption = (captions: CaptionProps[], cue: VTTCue) => {
 
   // Cue not found in any captions.
   return null;
+};
+
+const getLastPastCue = (textTrack: TextTrack, currentTime: number) => {
+  const cues = [...(textTrack?.cues || [])] as VTTCue[];
+  const lastPastCue = cues.findLast((cue) => currentTime > cue.endTime);
+
+  return lastPastCue || null;
+};
+
+const getCurrentCue = (textTrack: TextTrack, currentTime: number) => {
+  const currentCue = binaryFindCueByTime(textTrack?.cues, currentTime);
+
+  if (currentCue) return currentCue;
+
+  return getLastPastCue(textTrack, currentTime);
+};
+
+const getNextCue = (cue: VTTCue) => {
+  if (!cue) return null;
+
+  const { track } = cue;
+  const cues = [...track.cues] as VTTCue[];
+  const cueIndex = binaryFindCueIndex(track.cues, cue);
+
+  return cueIndex > -1 ? cues.at(cueIndex + 1) : null;
 };
 
 const Segment = ({ data, inCurrentCue }: SegmentProps) => {
@@ -167,9 +249,8 @@ const Segment = ({ data, inCurrentCue }: SegmentProps) => {
 
 const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
   const { seekTo, play, state, audioElm } = useContext(PlayerContext);
-  const { setScrollTarget } = useContext(ClosedCaptionsContext);
-  const { id, text, startTime, endTime, track } = cue;
-  const currentCue = getCurrentCue(track);
+  const { setScrollTarget, currentCue } = useContext(ClosedCaptionsContext);
+  const { id, text, startTime, endTime } = cue;
   const [isCurrent, setIsCurrent] = useState(id === currentCue?.id);
   const [isComplete, setIsComplete] = useState(audioElm.currentTime > endTime);
   const cueSegments = useMemo(
@@ -199,13 +280,16 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
   const hasText = hasSegments || !!text.trim().length;
   const rootProps = {
     className: clsx(styles.captionCue),
+    'data-cue-id': id,
     ...(isCurrent && {
       'data-current': ''
     }),
     ...(isComplete && {
       'data-complete': ''
     }),
-    ...(isCurrent && { ref: (elm: HTMLElement) => setScrollTarget(elm, cue) })
+    ...(isCurrent && {
+      ref: (elm: HTMLElement) => setScrollTarget(elm, cue)
+    })
   };
 
   function handleClick() {
@@ -230,41 +314,35 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
   };
 
   useEffect(() => {
-    setIsComplete(audioElm.currentTime > endTime);
-  }, [audioElm.currentTime, endTime]);
+    setIsComplete(currentCue?.startTime > endTime);
+  }, [currentCue?.startTime, endTime]);
 
   useEffect(() => {
-    function handleCueEnter() {
-      setIsCurrent(true);
-    }
+    setIsCurrent(currentCue?.id === id);
+    setIsComplete(audioElm.currentTime > endTime);
+  }, [audioElm.currentTime, currentCue?.id, endTime, id]);
 
+  useEffect(() => {
     function handleCueExit() {
       setIsCurrent(false);
+      setIsComplete(audioElm.currentTime > endTime);
     }
 
     if (inCurrentCaption) {
-      cue.addEventListener('enter', handleCueEnter);
       cue.addEventListener('exit', handleCueExit);
     } else {
-      cue.removeEventListener('enter', handleCueEnter);
       cue.removeEventListener('exit', handleCueExit);
     }
 
-    setIsComplete(audioElm.currentTime > endTime);
-    setIsCurrent(cue.id === currentCue?.id);
-
     return () => {
-      cue.removeEventListener('enter', handleCueEnter);
       cue.removeEventListener('exit', handleCueExit);
     };
-  }, [
-    audioElm.currentTime,
-    cue,
-    currentCue?.id,
-    endTime,
-    inCurrentCaption,
-    isCurrent
-  ]);
+  }, [audioElm.currentTime, cue, endTime, inCurrentCaption]);
+
+  const segmentsText = useMemo(
+    () => cueSegments?.reduce((a, { body }) => a + body, ''),
+    [cueSegments]
+  );
 
   if (!hasText) return null;
 
@@ -282,6 +360,20 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
         {...rootProps}
       >
         {outputText}
+      </span>
+    );
+  }
+
+  if (!inCurrentCaption) {
+    return (
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        {...rootProps}
+      >
+        {segmentsText}
       </span>
     );
   }
@@ -311,11 +403,12 @@ const Caption = ({
   color,
   position,
   segments,
-  isCurrent,
-  isComplete
+  isCurrent
 }: CaptionProps) => {
   const { audioElm } = useContext(PlayerContext);
   const { startTime } = cues.at(0);
+  const { endTime } = cues.at(-1);
+  const [isComplete, setIsComplete] = useState(audioElm.currentTime > endTime);
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
@@ -326,9 +419,15 @@ const Caption = ({
     ...(speaker && { 'data-speaker': speaker }),
     ...(isCurrent && { 'data-current': '' }),
     ...(isComplete && { 'data-complete': '' }),
-    ...((color || mousePosition) && {
+    ...(color && {
       style: {
-        ...(color && { '--cc-speaker--color': color }),
+        ...(color && { '--cc-speaker--color': color })
+      } as CSSProperties
+    })
+  };
+  const bodyProps = {
+    ...(mousePosition && {
+      style: {
         ...(mousePosition && {
           '--mouse-x': `${mousePosition.x}px`,
           '--mouse-y': `${mousePosition.y}px`
@@ -345,12 +444,23 @@ const Caption = ({
       setMousePosition({ x: e.offsetX, y: e.offsetY });
     }
 
+    function handleAudioTimeUpdate() {
+      setIsComplete(audioElm.currentTime > endTime);
+    }
+
     bodyElm?.addEventListener('mousemove', handleMouseMove);
+
+    if (isCurrent) {
+      audioElm.addEventListener('timeupdate', handleAudioTimeUpdate);
+    } else {
+      audioElm.removeEventListener('timeupdate', handleAudioTimeUpdate);
+    }
 
     return () => {
       bodyElm?.removeEventListener('mousemove', handleMouseMove);
+      audioElm.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
-  }, []);
+  }, [audioElm, endTime, isCurrent]);
 
   return (
     <div {...rootProps}>
@@ -365,7 +475,7 @@ const Caption = ({
           <PlayBlockBtn startTime={startTime} />
         </span>
       </h3>
-      <div className={styles.captionBody} ref={bodyRef}>
+      <div className={styles.captionBody} {...bodyProps} ref={bodyRef}>
         <div className={styles.bodyHighlight} />
         {cues.map((cue) => (
           <CaptionCue
@@ -391,7 +501,9 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const [currentTextTrack, setCurrentTextTrack] = useState(
     audioElm?.textTracks?.[0]
   );
-  const [currentCue, setCurrentCue] = useState(getCurrentCue(currentTextTrack));
+  const [currentCue, setCurrentCue] = useState(
+    getCurrentCue(currentTextTrack, audioElm.currentTime)
+  );
   const currentVttCues = useMemo(
     () => [...(currentTextTrack?.cues || [])] as VTTCue[],
     [currentTextTrack?.cues]
@@ -404,8 +516,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     useState<IRssPodcastTranscriptJson>();
   const { segments } = transcriptData || {};
   const [showJumpButton, setShowJumpButton] = useState(false);
-  // const cueIndex = currentVttCues?.findIndex(({ id }) => id === currentCue?.id);
-  const nextExpectedCue = useRef<VTTCue>();
   const speakersColorMap = useRef(new Map<string, string>());
 
   const cuePositions = useMemo(() => {
@@ -502,36 +612,8 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     [styles.noSpeakers]: speakersColorMap.current.size <= 1
   });
 
-  const scrollToCurrentBlock = useCallback(
-    (smooth?: boolean) => {
-      if (showJumpButton) return;
-
-      currentCaptionRef.current?.scrollIntoView({
-        block: 'center',
-        behavior: smooth ? 'smooth' : 'auto'
-      });
-    },
-    [showJumpButton]
-  );
-
-  const setScrollTarget = useCallback(
-    (element: HTMLElement, cue: VTTCue) => {
-      const isNextExpectedCue = !!(
-        nextExpectedCue && cue.id === nextExpectedCue.current?.id
-      );
-
-      currentCaptionRef.current = element || currentCaptionRef.current;
-
-      scrollToCurrentBlock(isNextExpectedCue);
-
-      nextExpectedCue.current =
-        getNextCue(cue.track) || nextExpectedCue.current;
-    },
-    [scrollToCurrentBlock]
-  );
-
   const checkCurrentCaptionOffScreen = () => {
-    if (!scrollAreaRef.current) return false;
+    if (!scrollAreaRef.current) return null;
 
     const currentBlockRect = currentCaptionRef.current?.getBoundingClientRect();
     const scrollingElement = scrollAreaRef.current;
@@ -543,22 +625,73 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     return offScreen;
   };
 
+  const scrollToCurrentBlock = useCallback(
+    (resetJumpButton?: boolean) => {
+      if (showJumpButton && !resetJumpButton) return;
+
+      const isCaptionOffScreen = checkCurrentCaptionOffScreen();
+      const doSmoothScroll = !isCaptionOffScreen && isCaptionOffScreen !== null;
+
+      currentCaptionRef.current?.scrollIntoView({
+        block: 'center',
+        behavior: doSmoothScroll ? 'smooth' : 'auto'
+      });
+
+      if (resetJumpButton) {
+        setShowJumpButton(false);
+      }
+    },
+    [showJumpButton]
+  );
+
+  const setScrollTarget = useCallback(
+    (element: HTMLElement) => {
+      const doScroll =
+        (!!element && element !== currentCaptionRef.current) ||
+        !!currentCaptionRef.current;
+
+      if (doScroll) {
+        currentCaptionRef.current = element || currentCaptionRef.current;
+        scrollToCurrentBlock();
+      }
+    },
+    [scrollToCurrentBlock]
+  );
+
   const contextValues: ClosedCaptionsContextProps = useMemo(
     () => ({
-      setScrollTarget
+      setScrollTarget,
+      currentCue
     }),
-    [setScrollTarget]
+    [currentCue, setScrollTarget]
   );
 
   const handleJumpBtnClick = () => {
-    setShowJumpButton(false);
-    scrollToCurrentBlock();
+    scrollToCurrentBlock(true);
   };
 
-  const handleCueChange = useCallback((e: Event) => {
-    const newCue = getCurrentCue(e.target as TextTrack);
-    setCurrentCue((previousCue) => newCue || previousCue);
-  }, []);
+  const handleAudioTimeUpdate = useCallback(() => {
+    const newCue = getCurrentCue(currentTextTrack, audioElm.currentTime);
+    let previousCue: VTTCue;
+
+    if (!newCue) return;
+
+    setCurrentCue((prev) => {
+      previousCue = prev;
+      return newCue || prev;
+    });
+
+    if (previousCue?.id === newCue.id) return;
+
+    const nextExpectedCue = getNextCue(previousCue);
+    const isNextExpectedCue = !!(
+      nextExpectedCue && newCue.id === nextExpectedCue?.id
+    );
+
+    if (!isNextExpectedCue && showJumpButton) {
+      setShowJumpButton(false);
+    }
+  }, [audioElm.currentTime, currentTextTrack, showJumpButton]);
 
   const handleAddTrack = useCallback((e: TrackEvent) => {
     // eslint-disable-next-line no-param-reassign
@@ -579,18 +712,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     setCurrentTextTrack(null);
   }, []);
 
-  const handleScroll = useCallback(() => {
-    const show = showJumpButton || checkCurrentCaptionOffScreen();
-
-    setShowJumpButton(show);
-  }, [showJumpButton]);
-
-  function setScrollAreaRef(element: HTMLDivElement) {
-    element?.addEventListener('scroll', handleScroll);
-
-    scrollAreaRef.current = element;
-  }
-
   /**
    * Setup audio element event handlers.
    */
@@ -600,18 +721,19 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     textTracks.addEventListener('addtrack', handleAddTrack);
     textTracks.addEventListener('removetrack', handleRemoveTrack);
 
-    currentTextTrack?.addEventListener('cuechange', handleCueChange);
+    audioElm.addEventListener('timeupdate', handleAudioTimeUpdate);
 
     return () => {
       textTracks.removeEventListener('addtrack', handleAddTrack);
       textTracks.removeEventListener('removetrack', handleRemoveTrack);
-      currentTextTrack?.removeEventListener('cuechange', handleCueChange);
+      audioElm.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
   }, [
+    audioElm,
     audioElm?.textTracks,
     currentTextTrack,
     handleAddTrack,
-    handleCueChange,
+    handleAudioTimeUpdate,
     handleRemoveTrack
   ]);
 
@@ -630,10 +752,30 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   useEffect(() => {
     const scrollAreaElement = scrollAreaRef.current;
 
+    function handleScroll() {
+      const show = showJumpButton || checkCurrentCaptionOffScreen();
+
+      if (show !== showJumpButton) {
+        setShowJumpButton(show);
+      }
+    }
+
+    scrollAreaElement?.addEventListener('scroll', handleScroll);
+
+    if (!audioElm.currentTime) {
+      scrollAreaRef.current?.scrollTo({ top: 0 });
+    }
+
     return () => {
       scrollAreaElement?.removeEventListener('scroll', handleScroll);
     };
-  }, [handleScroll, showJumpButton]);
+  }, [audioElm.currentTime, showJumpButton]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToCurrentBlock();
+    }, 0);
+  }, [audioElm.currentTime, scrollToCurrentBlock]);
 
   if (!transcripts) return null;
 
@@ -641,7 +783,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
   return (
     <ClosedCaptionsContext.Provider value={contextValues}>
-      <div ref={setScrollAreaRef} className={styles.root}>
+      <div ref={scrollAreaRef} className={styles.root}>
         <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
         <div className={captionsClassNames} aria-hidden>
           <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
@@ -649,9 +791,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
             <Caption
               {...props}
               isCurrent={currentCaption?.cues.at(0).id === props.cues.at(0).id}
-              isComplete={
-                currentCaption?.cues.at(0).startTime > props.cues.at(-1).endTime
-              }
               key={`caption:${props.cues.at(0).id}:${props.cues.at(-1).id}`}
             />
           ))}

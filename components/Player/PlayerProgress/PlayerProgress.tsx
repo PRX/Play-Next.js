@@ -54,12 +54,16 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   const { duration: trackDuration } =
     tracks[currentTrackIndex] || ({} as IAudioData);
   const [progressStyles, setProgressStyles] = useState({});
-  const currentDuration = convertSecondsToDuration(Math.round(playedSeconds));
   const totalDuration = duration
     ? convertSecondsToDuration(Math.round(duration))
     : convertSecondsToDuration(trackDuration);
   const totalDurationSeconds =
     duration || convertDurationToSeconds(trackDuration);
+  const currentDuration = convertSecondsToDuration(
+    Math.round(
+      scrubPosition ? scrubPosition * totalDurationSeconds : playedSeconds
+    )
+  );
   const progress =
     scrubPosition || played || playedSeconds / totalDurationSeconds || 0;
 
