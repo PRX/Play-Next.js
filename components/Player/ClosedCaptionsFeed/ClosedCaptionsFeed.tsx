@@ -406,6 +406,7 @@ const Caption = ({
   isCurrent
 }: CaptionProps) => {
   const { audioElm } = useContext(PlayerContext);
+  const { currentCue } = useContext(ClosedCaptionsContext);
   const { startTime } = cues.at(0);
   const { endTime } = cues.at(-1);
   const [isComplete, setIsComplete] = useState(audioElm.currentTime > endTime);
@@ -436,6 +437,10 @@ const Caption = ({
     })
   };
   const bodyRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    setIsComplete(currentCue?.startTime > endTime);
+  }, [currentCue?.startTime, endTime]);
 
   useEffect(() => {
     const bodyElm = bodyRef.current;
