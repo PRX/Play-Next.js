@@ -646,12 +646,10 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
   const setScrollTarget = useCallback(
     (element: HTMLElement) => {
-      const doScroll =
-        (!!element && element !== currentCaptionRef.current) ||
-        !!currentCaptionRef.current;
+      const doScroll = !!element && element !== currentCaptionRef.current;
 
       if (doScroll) {
-        currentCaptionRef.current = element || currentCaptionRef.current;
+        currentCaptionRef.current = element;
         scrollToCurrentBlock();
       }
     },
@@ -775,7 +773,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     setTimeout(() => {
       scrollToCurrentBlock();
     }, 0);
-  }, [audioElm.currentTime, scrollToCurrentBlock]);
+  }, [scrollToCurrentBlock]);
 
   if (!transcripts) return null;
 
