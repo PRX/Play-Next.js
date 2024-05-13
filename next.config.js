@@ -18,12 +18,6 @@ const nextConfig = {
     locales: ['en'],
     defaultLocale: 'en'
   },
-  experimental: {
-    outputStandalone: true,
-    images: {
-      layoutRaw: true
-    }
-  },
   async headers() {
     return [
       {

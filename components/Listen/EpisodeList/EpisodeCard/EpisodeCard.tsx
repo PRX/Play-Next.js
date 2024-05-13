@@ -87,7 +87,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
               title={`Thumbnail for "${title}".`}
               src={thumbSrc}
               alt={`Thumbnail for "${title}".`}
-              layout="fill"
+              fill
               sizes={thumbSizes}
             />
             <span className={styles.buttons}>

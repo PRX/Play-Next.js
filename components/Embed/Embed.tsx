@@ -283,9 +283,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
               {canShowCoverArt && (
                 <div
                   className={styles.coverArt}
-                  {...(modalShown && {
-                    inert: 'inert'
-                  })}
+                  {...(modalShown && { inert: '' })}
                 >
                   <CoverArt />
 
@@ -293,9 +291,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                     <div
                       className={clsx(styles.modals, styles.closedCaptionsFeed)}
                       id="embed-closed-caption-modal"
-                      {...(!closedCaptionsShown && {
-                        inert: 'inert'
-                      })}
+                      {...(!closedCaptionsShown && { inert: '' })}
                     />
                   )}
                 </div>
@@ -303,9 +299,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
 
               <div
                 className={styles.playerContainer}
-                {...(modalShown && {
-                  inert: 'inert'
-                })}
+                {...(modalShown && { inert: '' })}
               >
                 <BackgroundImage
                   imageUrl={bgImageUrl}
@@ -320,7 +314,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   {!canShowCoverArt && playerLayout && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
-                        layout="raw"
                         width={playerLayout?.thumbnailSize}
                         height={playerLayout?.thumbnailSize}
                       />
@@ -351,9 +344,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       ref={playerControlsRef}
                       className={clsx(styles.controls, menuShownClass)}
                       {...(showMenu &&
-                        playerLayout?.name === 'compact' && {
-                          inert: 'inert'
-                        })}
+                        playerLayout?.name === 'compact' && { inert: '' })}
                     >
                       {canShowPlaylist && (
                         <PreviousButton
@@ -386,9 +377,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       ref={playerMenuRef}
                       className={clsx(styles.menu, menuShownClass)}
                       {...(!showMenu &&
-                        playerLayout?.name === 'compact' && {
-                          inert: 'inert'
-                        })}
+                        playerLayout?.name === 'compact' && { inert: '' })}
                       style={{
                         // Initialize hidden in compact layout to prevent content flash.
                         ...(playerLayout?.name === 'compact' && {
@@ -477,9 +466,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   <div
                     className={styles.modals}
                     id="embed-closed-caption-modal"
-                    {...(!closedCaptionsShown && {
-                      inert: 'inert'
-                    })}
+                    {...(!closedCaptionsShown && { inert: '' })}
                   />
                 )}
               </div>
@@ -487,9 +474,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
               {canShowPlaylist && (
                 <div
                   className={styles.playlist}
-                  {...(modalShown && {
-                    inert: 'inert'
-                  })}
+                  {...(modalShown && { inert: '' })}
                 >
                   <Playlist style={{ height: '100%' }} />
                 </div>
@@ -499,9 +484,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                 <div
                   className={styles.modals}
                   id="embed-modals"
-                  {...(!modalShown && {
-                    inert: 'inert'
-                  })}
+                  {...(!modalShown && { inert: '' })}
                 />
               )}
             </Player>

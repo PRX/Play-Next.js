@@ -250,7 +250,7 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
                 <PrxImage
                   src={imageUrl}
                   className={styles.thumbnailImage}
-                  layout="fill"
+                  alt="Podcast thumbnail"
                 />
               </div>
             </div>

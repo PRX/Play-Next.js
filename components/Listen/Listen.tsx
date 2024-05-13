@@ -318,7 +318,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
             <PrxImage
               src={bgImageUrl}
               alt={`Logo for ${title}`}
-              layout="fill"
+              fill
               sizes={logoSizes}
             />
           </div>
@@ -342,7 +342,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
         <div className={styles.main}>
           <div
             className={clsx(styles.viewContainer, styles.podcastView)}
-            {...(view.indexOf('podcast') === -1 && { inert: 'inert' })}
+            {...(view.indexOf('podcast') === -1 && { inert: '' })}
           >
             <div className={styles.podcastInfo}>
               <div className={styles.podcastContent}>
@@ -361,7 +361,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
           <div
             className={clsx(styles.viewContainer, styles.episodeView)}
-            {...(view.indexOf('episode') === -1 && { inert: 'inert' })}
+            {...(view.indexOf('episode') === -1 && { inert: '' })}
           >
             <Episode
               key={episode?.guid}

@@ -42,7 +42,8 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   const playlistDurationString = formatDurationParts(playlistDurationSums);
 
   const updatePlaylistStyles = useCallback(() => {
-    const rect = rootRef.current.getBoundingClientRect();
+    const rect = rootRef.current?.getBoundingClientRect();
+
     setPlaylistStyles({
       '--playlist-top': `${rect.top}px`,
       '--playlist-height': `${rect.height}px`
@@ -125,10 +126,14 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                       <PrxImage
                         src={thumbSrc}
                         alt={`Thumbnail for "${title}".`}
-                        layout="raw"
-                        width={styles['--playlist-thumbnail-size']}
-                        height={styles['--playlist-thumbnail-size']}
-                        lazyRoot={rootRef}
+                        width={parseInt(
+                          styles['--playlist-thumbnail-size'],
+                          10
+                        )}
+                        height={parseInt(
+                          styles['--playlist-thumbnail-size'],
+                          10
+                        )}
                       />
                     </div>
                   ) : (

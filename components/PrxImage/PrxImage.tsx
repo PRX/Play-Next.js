@@ -14,33 +14,16 @@ import styles from './PrxImage.module.scss';
 export interface IPrxImageProps extends ImageProps {}
 
 const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
-  (
-    {
-      className,
-      src,
-      alt,
-      priority,
-      layout,
-      lazyRoot,
-      objectFit,
-      onLoadingComplete,
-      onLoad,
-      ...other
-    },
-    ref
-  ) => {
+  ({ className, src, alt, fill, priority, onLoad, ...other }, ref) => {
     const imageRef = useRef<HTMLImageElement>();
     const isUrlString = typeof src === 'string';
     const isTrusted = isUrlString && isTrustedImageDomain(src as string);
     const imageClassNames = clsx(className, styles.image);
     const nextImageProps = {
-      className,
+      className: imageClassNames,
+      fill,
       priority,
-      layout,
-      lazyRoot,
-      objectFit,
-      onLoad,
-      onLoadingComplete
+      onLoad
     };
 
     useImperativeHandle(ref, () => ({
@@ -52,16 +35,16 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
     return isTrusted || !isUrlString ? (
       <Image src={src} alt={alt} {...nextImageProps} {...other} />
     ) : (
-      (layout !== 'raw' && (
+      (fill && (
         <div className={styles.wrapper}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={imageRef}
             src={src as string}
             alt={alt}
-            style={{ objectFit }}
             {...other}
             className={imageClassNames}
+            onLoad={onLoad}
           />
         </div>
       )) || (

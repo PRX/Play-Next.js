@@ -35,7 +35,7 @@ const Portal = ({
   const [wrapperElement, setWrapperElement] = useState(null);
 
   useEffect(() => {
-    let element = document.getElementById(wrapperId);
+    let element = document.getElementById(wrapperId) as HTMLDivElement;
     let wrapperWasGenerated = false;
 
     // Create missing wrapper element. Flag that it was created by this hook.

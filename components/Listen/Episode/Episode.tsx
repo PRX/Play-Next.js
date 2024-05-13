@@ -142,7 +142,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
             <PrxImage
               src={thumbSrc}
               alt={`Thumbnail for "${title}".`}
-              layout="fill"
+              fill
               sizes={thumbSizes}
             />
           </div>
@@ -191,17 +191,15 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
             {showViewNav && (
               <nav className={styles.viewNav}>
                 {episodeViews.map((viewName) => (
-                  <Link passHref href={`#${viewName}`} key={viewName}>
-                    <a
-                      href={`#${viewName}`}
-                      className={styles.viewNavButton}
-                      onClick={() => {
-                        setView(viewName);
-                      }}
-                      data-current={view === viewName}
-                    >
-                      {viewName}
-                    </a>
+                  <Link
+                    href={`#${viewName}`}
+                    onClick={() => {
+                      setView(viewName);
+                    }}
+                    data-current={view === viewName}
+                    key={viewName}
+                  >
+                    {viewName}
                   </Link>
                 ))}
               </nav>

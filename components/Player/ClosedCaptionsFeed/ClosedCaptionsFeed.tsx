@@ -12,6 +12,7 @@ import type {
 } from '@interfaces/data/IRssPodcast';
 import {
   createContext,
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -38,6 +39,7 @@ type CuePosition = 'left' | 'right';
 
 type CaptionCueProps = {
   cue: VTTCue;
+  index: number;
   segments?: IRssPodcastTranscriptJsonSegment[];
   inCurrentCaption?: boolean;
   isComplete?: boolean;
@@ -247,7 +249,12 @@ const Segment = ({ data, inCurrentCue }: SegmentProps) => {
   );
 };
 
-const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
+const CaptionCue = ({
+  cue,
+  segments,
+  inCurrentCaption,
+  index
+}: CaptionCueProps) => {
   const { seekTo, play, state, audioElm } = useContext(PlayerContext);
   const { setScrollTarget, currentCue } = useContext(ClosedCaptionsContext);
   const { id, text, startTime, endTime } = cue;
@@ -259,22 +266,36 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
         ?.filter(
           ({ startTime: st, endTime: et }) => st >= startTime && et <= endTime
         )
-        .reduce((a, currentSegment) => {
+        .reduce((a, currentSegment, i) => {
           const aClone = [...a];
-          const segment = aClone.pop();
+          const previousSegment = aClone.pop();
 
-          if (!segment || currentSegment.startTime > segment.endTime) {
+          if (
+            !previousSegment ||
+            currentSegment.startTime > previousSegment.endTime
+          ) {
             return [...a, currentSegment];
           }
 
           const updatedSegment = {
-            ...segment,
-            body: segment.body + currentSegment.body
+            ...previousSegment,
+            body: `${previousSegment.body}${
+              /^[.,?!]/i.test(currentSegment.body) && i !== 0 ? '' : ' '
+            }${currentSegment.body}`
           };
 
           return [...aClone, updatedSegment];
         }, [] as IRssPodcastTranscriptJsonSegment[]),
     [segments, startTime, endTime]
+  );
+  const segmentsText = useMemo(
+    () =>
+      cueSegments?.reduce(
+        (a, { body }, i) =>
+          `${a}${!body.startsWith(' ') && i > 0 ? ` ${body}` : body}`,
+        ''
+      ),
+    [cueSegments]
   );
   const hasSegments = !!cueSegments?.length;
   const hasText = hasSegments || !!text.trim().length;
@@ -291,6 +312,9 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
       ref: (elm: HTMLElement) => setScrollTarget(elm, cue)
     })
   };
+
+  const insertSpace = (t: string) =>
+    index > 0 && !/^[.?! ]/.test(t) ? ' ' : null;
 
   function handleClick() {
     seekTo(cue.startTime);
@@ -339,11 +363,6 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
     };
   }, [audioElm.currentTime, cue, endTime, inCurrentCaption]);
 
-  const segmentsText = useMemo(
-    () => cueSegments?.reduce((a, { body }) => a + body, ''),
-    [cueSegments]
-  );
-
   if (!hasText) return null;
 
   if (!hasSegments) {
@@ -352,20 +371,41 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
       /^[.,?!]/i.test(sanitizedText) ? '' : ' '
     }${sanitizedText}`;
     return (
-      <span
-        role="button"
-        tabIndex={0}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        {...rootProps}
-      >
-        {outputText}
-      </span>
+      <>
+        {insertSpace(outputText)}
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          {...rootProps}
+        >
+          {outputText}
+        </span>
+      </>
     );
   }
 
   if (!inCurrentCaption) {
     return (
+      <>
+        {insertSpace(segmentsText)}
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          {...rootProps}
+        >
+          {segmentsText}
+        </span>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {insertSpace(cueSegments.at(0).body)}
       <span
         role="button"
         tabIndex={0}
@@ -373,27 +413,14 @@ const CaptionCue = ({ cue, segments, inCurrentCaption }: CaptionCueProps) => {
         onKeyDown={handleKeyDown}
         {...rootProps}
       >
-        {segmentsText}
+        {cueSegments.map((s) => (
+          <Fragment key={`segment:${s.startTime}`}>
+            {insertSpace(s.body)}
+            <Segment data={s} inCurrentCue={isCurrent} />
+          </Fragment>
+        ))}
       </span>
-    );
-  }
-
-  return (
-    <span
-      role="button"
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      {...rootProps}
-    >
-      {cueSegments.map((s) => (
-        <Segment
-          data={s}
-          inCurrentCue={isCurrent}
-          key={`segment:${s.startTime}`}
-        />
-      ))}
-    </span>
+    </>
   );
 };
 
@@ -482,13 +509,14 @@ const Caption = ({
       </h3>
       <div className={styles.captionBody} {...bodyProps} ref={bodyRef}>
         <div className={styles.bodyHighlight} />
-        {cues.map((cue) => (
+        {cues.map((cue, index) => (
           <CaptionCue
             cue={cue}
             segments={segments}
             inCurrentCaption={isCurrent}
             isComplete={audioElm.currentTime > cue.endTime}
             key={`caption_cue:${cue.id}`}
+            index={index}
           />
         ))}
       </div>

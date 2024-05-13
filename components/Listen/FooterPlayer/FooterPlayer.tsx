@@ -72,7 +72,7 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
             <PrxImage
               src={thumbSrc}
               alt={`Thumbnail for "${title}".`}
-              layout="fill"
+              fill
               sizes={thumbSizes}
             />
           </div>
