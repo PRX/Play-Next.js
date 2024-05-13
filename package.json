@@ -39,8 +39,7 @@
     "react-html-parser": "^2.0.2",
     "react-is": "^18.1.0",
     "rss-parser": "^3.13.0",
-    "sharp": "^0.31.2",
-    "styled-components": "^5.3.5"
+    "sharp": "^0.33.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
