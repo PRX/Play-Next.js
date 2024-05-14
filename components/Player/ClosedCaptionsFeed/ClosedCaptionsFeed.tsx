@@ -550,7 +550,8 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     // FIX: Firefox remembers scroll position of overflow elements.
     // SEE: https://bugzilla.mozilla.org/show_bug.cgi?id=706792
     // When first setting the scroll area, reset scrollTop of element.
-    if (!scrollAreaRef.current) {
+    // Only apply fix if the player hasn't changed the currentTime from default (null or 0).
+    if (!scrollAreaRef.current && !currentTime) {
       // eslint-disable-next-line no-param-reassign
       elm.scrollTop = 0;
     }
