@@ -528,7 +528,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   speakerColors
 }) => {
   const { audioElm, state } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex } = state;
+  const { tracks, currentTrackIndex, currentTime } = state;
   const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
 
   const [currentTextTrack, setCurrentTextTrack] = useState(
@@ -544,6 +544,19 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
   const scrollAreaRef = useRef<HTMLDivElement>();
   const currentCaptionRef = useRef<HTMLElement>();
+  const setScrollAreaRef = (elm: HTMLDivElement) => {
+    if (!elm) return;
+
+    // FIX: Firefox remembers scroll position of overflow elements.
+    // SEE: https://bugzilla.mozilla.org/show_bug.cgi?id=706792
+    // When first setting the scroll area, reset scrollTop of element.
+    if (!scrollAreaRef.current) {
+      // eslint-disable-next-line no-param-reassign
+      elm.scrollTop = 0;
+    }
+
+    scrollAreaRef.current = elm;
+  };
 
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
@@ -701,28 +714,37 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     scrollToCurrentBlock(true);
   };
 
+  const updateCurrentCue = useCallback(
+    (playheadTime?: number) => {
+      if (!playheadTime && playheadTime !== 0) return;
+
+      const newCue = getCurrentCue(currentTextTrack, playheadTime);
+      let previousCue: VTTCue;
+
+      if (!newCue) return;
+
+      setCurrentCue((prev) => {
+        previousCue = prev;
+        return newCue || prev;
+      });
+
+      if (previousCue?.id === newCue.id) return;
+
+      const nextExpectedCue = getNextCue(previousCue);
+      const isNextExpectedCue = !!(
+        nextExpectedCue && newCue.id === nextExpectedCue?.id
+      );
+
+      if (!isNextExpectedCue && showJumpButton) {
+        setShowJumpButton(false);
+      }
+    },
+    [currentTextTrack, showJumpButton]
+  );
+
   const handleAudioTimeUpdate = useCallback(() => {
-    const newCue = getCurrentCue(currentTextTrack, audioElm.currentTime);
-    let previousCue: VTTCue;
-
-    if (!newCue) return;
-
-    setCurrentCue((prev) => {
-      previousCue = prev;
-      return newCue || prev;
-    });
-
-    if (previousCue?.id === newCue.id) return;
-
-    const nextExpectedCue = getNextCue(previousCue);
-    const isNextExpectedCue = !!(
-      nextExpectedCue && newCue.id === nextExpectedCue?.id
-    );
-
-    if (!isNextExpectedCue && showJumpButton) {
-      setShowJumpButton(false);
-    }
-  }, [audioElm.currentTime, currentTextTrack, showJumpButton]);
+    updateCurrentCue(audioElm.currentTime);
+  }, [audioElm.currentTime, updateCurrentCue]);
 
   const handleAddTrack = useCallback((e: TrackEvent) => {
     // eslint-disable-next-line no-param-reassign
@@ -743,6 +765,10 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     setCurrentTextTrack(null);
   }, []);
 
+  useEffect(() => {
+    updateCurrentCue(currentTime);
+  }, [currentTime, updateCurrentCue]);
+
   /**
    * Setup audio element event handlers.
    */
@@ -761,7 +787,6 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     };
   }, [
     audioElm,
-    audioElm?.textTracks,
     currentTextTrack,
     handleAddTrack,
     handleAudioTimeUpdate,
@@ -802,19 +827,13 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     };
   }, [audioElm.currentTime, showJumpButton]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      scrollToCurrentBlock();
-    }, 0);
-  }, [scrollToCurrentBlock]);
-
   if (!transcripts) return null;
 
   if (transcriptJson?.url && !transcriptData) return null;
 
   return (
     <ClosedCaptionsContext.Provider value={contextValues}>
-      <div ref={scrollAreaRef} className={styles.root}>
+      <div ref={setScrollAreaRef} className={styles.root}>
         <ThemeVars theme="ClosedCaptionsFeed" cssProps={styles} />
         <div className={captionsClassNames} aria-hidden>
           <div style={{ gridColumn: '1 / -1' }}>&nbsp;</div>
