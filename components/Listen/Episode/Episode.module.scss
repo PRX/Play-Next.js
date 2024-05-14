@@ -186,8 +186,7 @@ $episode-breakpoint--full: 120ch;
     grid-row: 1;
     grid-column: 1;
     transform: translateZ(0);
-    position: sticky;
-    top: var(--gap);
+    position: relative;
     // right: calc(100% + var(--gap));
     width: var(--episode-thumbnail-size);
 
