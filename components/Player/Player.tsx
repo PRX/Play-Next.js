@@ -48,7 +48,7 @@ const Player: React.FC<IPlayerProps> = ({
     [currentTrack.duration]
   );
   const isLastTrack = currentTrackIndex === tracks.length - 1;
-  const { url, previewUrl, transcripts } = currentTrack;
+  const { url, previewUrl, transcripts, duration } = currentTrack;
   const currentTrackUrl = previewUrl || url;
   const transcript = transcripts?.find(
     (t) => !!['vtt', 'srt', 'json'].find((n) => t.type.includes(n))
@@ -470,7 +470,7 @@ const Player: React.FC<IPlayerProps> = ({
           {transcript && (
             <track
               kind="captions"
-              src={`/api/proxy/transcript/vtt?u=${transcript.url}`}
+              src={`/api/proxy/transcript/vtt?u=${transcript.url}&cb=${duration}`}
               default
               key={transcript.url}
             />

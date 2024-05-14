@@ -3,12 +3,12 @@ import { IAudioData, SpeakerSegmentsBlock } from '@interfaces/data';
 const fetchAudioTranscriptData = async (episode: IAudioData) => {
   if (!episode?.transcripts) return null;
 
-  const { transcripts } = episode;
+  const { transcripts, duration } = episode;
   const transcript = transcripts?.find(
     (t) => !!['json', 'vtt', 'srt'].find((n) => t.type.includes(n))
   );
   const { url } = transcript || {};
-  const fetchUrl = `/api/proxy/transcript?u=${url}`;
+  const fetchUrl = `/api/proxy/transcript?u=${url}&cb=${duration}`;
 
   const transcriptResponse =
     fetchUrl &&

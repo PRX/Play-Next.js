@@ -12,20 +12,31 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { TranscriptTypeConversion } from '@interfaces/data';
+import type {
+  IRssPodcastTranscriptJson,
+  TranscriptTypeConversion
+} from '@interfaces/data';
 import type { IRssProxyError } from '@interfaces/error';
 import convertSrtToVtt from '@lib/convert/string/convertSrtToVtt';
 import convertVttToJson from '@lib/convert/string/convertVttToJson';
+import roundToN from '@lib/math/number/roundToN';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | { error: IRssProxyError }>
 ) {
-  const { u } = req.query;
+  const { u, cb } = req.query;
   const transcriptUrl = Array.isArray(u) ? u[0] : u;
+  const cacheBuster = Array.isArray(cb) ? cb[0] : cb;
 
   try {
-    const transcriptResponse = await fetch(transcriptUrl);
+    const fetchUrl = new URL(transcriptUrl);
+
+    if (cacheBuster) {
+      fetchUrl.searchParams.set('cb', cacheBuster);
+    }
+
+    const transcriptResponse = await fetch(fetchUrl.toString());
 
     if (!transcriptResponse?.ok) {
       throw new Error(
@@ -36,32 +47,43 @@ export default async function handler(
     const transcriptAsText = await transcriptResponse.text();
     const contentType =
       transcriptResponse.headers.get('Content-Type') || 'text/plain';
-    const conversions: TranscriptTypeConversion[] = [
+    const conversions: TranscriptTypeConversion<IRssPodcastTranscriptJson>[] = [
       {
         check: (ct: string, t: string) =>
           /(?:application|text)\/json/i.test(ct) || t.startsWith('{'),
-        convert: (t: string) => t
+        convert: (t: string) => JSON.parse(t)
       },
       {
         check: (ct: string, t: string) =>
           /(?:application|text)\/vtt/i.test(ct) || t.startsWith('WEBVTT'),
-        convert: (t: string) => JSON.stringify(convertVttToJson(t))
+        convert: (t: string) => convertVttToJson(t)
       },
       {
         check: (ct: string, t: string) =>
           /(?:application|text)\/srt/i.test(ct) || t.includes('-->'),
-        convert: (t: string) =>
-          JSON.stringify(convertVttToJson(convertSrtToVtt(t)))
+        convert: (t: string) => convertVttToJson(convertSrtToVtt(t))
       }
     ];
-    const jsonResponseBody = conversions
+    const data = conversions
       .find(({ check }) => check(contentType, transcriptAsText))
       ?.convert(transcriptAsText);
+    const processed = data?.segments && {
+      ...data,
+      segments: data.segments.map(({ startTime, endTime, ...rest }) => ({
+        ...rest,
+        // Times need to be rounded to match VTT standard to ensure they can be
+        // correctly compared when rendering segments grouped by VTT cue range.
+        startTime: roundToN(startTime, 3),
+        endTime: roundToN(endTime, 3)
+      }))
+    };
+
+    const jsonResponseBody = JSON.stringify(processed || null);
 
     res
       .status(200)
       .setHeader('Content-Type', 'text/json')
-      .send(jsonResponseBody || 'null');
+      .send(jsonResponseBody);
   } catch (error) {
     res.status(400).json({
       error: {

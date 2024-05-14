@@ -26,11 +26,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | { error: IRssProxyError }>
 ) {
-  const { u } = req.query;
+  const { u, cb } = req.query;
   const transcriptUrl = Array.isArray(u) ? u[0] : u;
+  const cacheBuster = Array.isArray(cb) ? cb[0] : cb;
 
   try {
-    const transcriptResponse = await fetch(transcriptUrl);
+    const fetchUrl = new URL(transcriptUrl);
+
+    if (cacheBuster) {
+      fetchUrl.searchParams.set('cb', cacheBuster);
+    }
+
+    const transcriptResponse = await fetch(fetchUrl.toString());
 
     if (!transcriptResponse?.ok) {
       throw new Error(

@@ -648,7 +648,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   );
   const currentCaption = binaryFindCaption(captions, currentCue);
 
-  const { transcripts } = currentTrack;
+  const { transcripts, duration } = currentTrack;
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 
   const jumpButtonColor = speakersColorMap.current?.get(
@@ -799,12 +799,12 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
     (async () => {
       const jsonData = await fetch(
-        transcriptJson.url
+        `/api/proxy/transcript/json?u=${transcriptJson.url}&cb=${duration}`
       ).then<IRssPodcastTranscriptJson>((resp) => resp.ok && resp.json());
 
       setTranscriptData(jsonData);
     })();
-  }, [transcriptJson?.url]);
+  }, [duration, transcriptJson.url]);
 
   useEffect(() => {
     const scrollAreaElement = scrollAreaRef.current;
