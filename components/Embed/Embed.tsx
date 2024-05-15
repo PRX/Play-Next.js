@@ -234,8 +234,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
   };
 
   const handleResize = useCallback(() => {
+    initLayoutBreakpoints();
     updatePlayerLayout();
-  }, [updatePlayerLayout]);
+  }, [initLayoutBreakpoints, updatePlayerLayout]);
 
   /**
    * Initialize layout breakpoints.
