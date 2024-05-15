@@ -340,6 +340,7 @@ $episodeCard-corner-radius: 5px;
     5vw,
     var(--_episodeCard-subtitle-text-size--max)
   );
+  text-wrap: balance;
 }
 
 .footer {

@@ -328,11 +328,11 @@ const Listen = ({ config, data }: IListenPageProps) => {
             </h1>
             <span className={styles.podcastAuthor}>{author}</span>
           </div>
+          <nav className={styles.podcastMenu}>{renderMenu}</nav>
           <div className={styles.podcastInfo}>
             <div className={styles.podcastContent}>
               <HtmlContent html={content} />
             </div>
-            <nav className={styles.podcastMenu}>{renderMenu}</nav>
             {copyright && (
               <div className={styles.podcastCopyright}>{copyright}</div>
             )}
@@ -348,7 +348,6 @@ const Listen = ({ config, data }: IListenPageProps) => {
               <div className={styles.podcastContent}>
                 <HtmlContent html={content} />
               </div>
-              <div className={styles.podcastMenu}>{renderMenu}</div>
               {copyright && (
                 <div className={styles.podcastCopyright}>{copyright}</div>
               )}
