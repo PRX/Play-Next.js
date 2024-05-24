@@ -331,9 +331,14 @@ const Embed = ({ config, data }: IEmbedProps) => {
                     <PlayerText />
                   </div>
 
-                  <div className={styles.logo}>
+                  <a
+                    href="https://prx.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.logo}
+                  >
                     {theme === 'light' ? <PrxLogoColor /> : <PrxLogo />}
-                  </div>
+                  </a>
 
                   <div className={styles.menuToggle}>
                     <IconButton
