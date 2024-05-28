@@ -260,9 +260,10 @@ $player-thumbnail-size: 135px;
 .logo {
   grid-area: LOGO;
   align-self: start;
-
+}
+.logoLink {
   & > svg {
-    width: 80px;
+    width: 50px;
     display: inline-block;
     vertical-align: -webkit-baseline-middle;
     fill: var(--logo-color, currentColor);

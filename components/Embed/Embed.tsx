@@ -300,7 +300,14 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   </div>
 
                   <div className={styles.logo}>
-                    {theme === 'light' ? <PrxLogoColor /> : <PrxLogo />}
+                    <a
+                      href="https://prx.org"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.logoLink}
+                    >
+                      {theme === 'light' ? <PrxLogoColor /> : <PrxLogo />}
+                    </a>
                   </div>
 
                   <div className={styles.menuToggle}>
