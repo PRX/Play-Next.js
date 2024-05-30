@@ -389,11 +389,6 @@ const Player: React.FC<IPlayerProps> = ({
   useEffect(() => {
     const audioElmTemp = audioElm;
 
-    // Initialize audio element.
-    if (!audioElm.current) {
-      // audioElm.current = new Audio();
-    }
-
     // Setup event handlers on audio element.
     audioElmTemp.current.addEventListener('play', handlePlay);
     audioElmTemp.current.addEventListener('pause', handlePause);
