@@ -804,7 +804,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
       setTranscriptData(jsonData);
     })();
-  }, [duration, transcriptJson.url]);
+  }, [duration, transcriptJson?.url]);
 
   useEffect(() => {
     const scrollAreaElement = scrollAreaRef.current;

@@ -155,7 +155,7 @@ $viewTransitionDuration: 300ms;
     justify-items: stretch;
     align-content: start;
     row-gap: 0.75rem;
-    height: 100vh;
+    overflow: hidden;
 
     padding-block-start: var(--gutter-size-block);
     padding-block-end: 0;
