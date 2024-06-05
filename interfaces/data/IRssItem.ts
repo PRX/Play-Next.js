@@ -3,15 +3,12 @@
  */
 
 import type Parser from 'rss-parser';
-import { IRssPodcastValue } from './IRssPodcast';
+import { IRssPodcast } from './IRssPodcast';
 
 export interface IRssItem extends Parser.Item {
   [key: string]: any;
   itunes?: {
     [key: string]: any;
   };
-  podcast?: {
-    [key: string]: any;
-    value?: IRssPodcastValue;
-  };
+  podcast?: IRssPodcast;
 }

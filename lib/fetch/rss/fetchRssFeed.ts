@@ -6,6 +6,7 @@ import RssProxyError from './RssProxyError';
 type CustomFeed = { 'podcast:value': any; 'itunes:type': string };
 type CustomItem = {
   'podcast:value': any;
+  'podcast:transcript': any;
   itunes: any;
   'itunes:episodeType': string;
 };
@@ -17,7 +18,12 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
       ['podcast:value', 'podcast:value', { keepArray: true }],
       'itunes:type'
     ],
-    item: ['podcast:value', 'itunes:episodeType']
+    // @ts-ignore
+    item: [
+      'podcast:value',
+      'itunes:episodeType',
+      ['podcast:transcript', 'podcast:transcript', { keepArray: true }]
+    ]
   }
 });
 
@@ -30,14 +36,15 @@ const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
   try {
     const feed = await parser.parseURL(feedUrl);
 
+    const decoratedFeed = decoratePodcast(feed);
     const result = {
-      ...decoratePodcast(feed),
-      ...(feed['itunes:type'] && {
+      ...decoratedFeed,
+      ...(decoratedFeed['itunes:type'] && {
         itunes: {
-          ...feed.itunes,
-          type: feed['itunes:type']
+          ...decoratedFeed.itunes,
+          type: decoratedFeed['itunes:type']
         },
-        items: feed.items.map((item) => ({
+        items: decoratedFeed.items.map((item) => ({
           ...item,
           itunes: {
             ...item.itunes,

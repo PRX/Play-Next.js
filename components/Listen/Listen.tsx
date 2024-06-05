@@ -4,6 +4,8 @@
  */
 
 import type React from 'react';
+import type { CSSProperties } from 'react';
+import type { IListenPageProps } from '@interfaces/page';
 import {
   useCallback,
   useContext,
@@ -14,7 +16,9 @@ import {
   useState
 } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import clsx from 'clsx';
+import ListenContext from '@contexts/ListenContext';
 import PlayerContext from '@contexts/PlayerContext';
 import BackgroundImage from '@components/BackgroundImage';
 import HtmlContent from '@components/HtmlContent';
@@ -24,7 +28,6 @@ import ShareMenu from '@components/ShareMenu';
 import SupportMenu from '@components/Player/SupportMenu';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
-import { IListenPageProps } from '@interfaces/page';
 import {
   listenInitialState,
   listenStateReducer
@@ -32,9 +35,10 @@ import {
 import { ListenActionTypes } from '@states/listen/Listen.actions';
 import PrxDtLogo from '@svg/PRX-DT-Logo.svg';
 import EpisodeList from './EpisodeList';
-import styles from './Listen.module.scss';
 import Episode from './Episode';
 import FooterPlayer from './FooterPlayer';
+import styles from './Listen.module.scss';
+import episodeCardStyles from './EpisodeList/EpisodeCard/EpisodeCard.module.scss';
 
 const Listen = ({ config, data }: IListenPageProps) => {
   const router = useRouter();
@@ -47,6 +51,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const {
     view,
     episodeGuid,
+    closedCaptionsShown,
     podcastFollowShown,
     podcastShareShown,
     podcastSupportShown
@@ -69,23 +74,45 @@ const Listen = ({ config, data }: IListenPageProps) => {
     () => episodes && episodes.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]
   );
+  const {
+    title: episodeTitle,
+    imageUrl: episodeImage,
+    content: episodeContent
+  } = episode || {};
+  const pageTitle = [title, episodeTitle].filter((v) => !!v).join(' | ');
+  const imageUrl = !episode ? bgImageUrl : episodeImage;
+  const description = (!episode ? content : episodeContent)?.replace(
+    /<[^>]+>/g,
+    ''
+  );
   const footerPlayerRef = useRef<HTMLDivElement>();
   const [gutterBlockEnd, setGutterBlockEnd] = useState(0);
   const logoSizes = [
     `(min-width: ${styles.breakpointFull}) ${styles.logoSize}`,
     `${styles.logoSizeMobile}`
   ].join(',');
-  const rootStyles = [
-    `--gutter-size-block-end: ${playerShown ? gutterBlockEnd : 0}px;`,
-    ...(accentColor
-      ? [
-          `--accent-color:${accentColor[0].split(' ')[0]};`,
-          ...(accentColor.length > 1
-            ? [`--accent-gradient: ${accentColor.join(',')};`]
-            : [])
-        ]
-      : [])
-  ].join('');
+  const rootStyles = {
+    '--gutter-size-block-end': `${playerShown ? gutterBlockEnd : 0}px`,
+    ...(accentColor && {
+      '--accent-color': `${accentColor[0].split(' ')[0]}`,
+      ...(accentColor.length > 1 && {
+        ...accentColor.slice(1).reduce(
+          (a, c, i) => ({
+            ...a,
+            [`--accent-color-${i + 2}`]: `${c.split(' ')[0]}`
+          }),
+          {}
+        ),
+        '--accent-gradient': `${accentColor.join(',')}`
+      })
+    })
+  } as CSSProperties;
+  const accentColorKeyframes = [...(accentColor || [])]
+    .reverse()
+    .map((color, index, all) => {
+      const percent = (index / (all.length - 1)) * 100;
+      return [percent, color];
+    });
 
   const updateUrl = (guid?: string) => {
     const { protocol, host } = window.location;
@@ -108,7 +135,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const handleUrlChange = useCallback((event: PopStateEvent) => {
     const { protocol, host } = window.location;
     const baseUrl = `${protocol}//${host}/`;
-    const url = new URL(event.state.as, baseUrl);
+    const url = new URL(event.state?.as, baseUrl);
     const guid = url.searchParams.get('ge');
 
     if (guid) {
@@ -166,6 +193,15 @@ const Listen = ({ config, data }: IListenPageProps) => {
     setGutterBlockEnd(footerPlayerRef.current.getBoundingClientRect().height);
   }, []);
 
+  const listenContextProps = useMemo(
+    () => ({
+      state,
+      dispatch,
+      config
+    }),
+    [config, state]
+  );
+
   /**
    * Setup/clean up window events.
    */
@@ -173,7 +209,9 @@ const Listen = ({ config, data }: IListenPageProps) => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('popstate', handleUrlChange);
 
-    handleResize(); // Trigger resize handler to initialize gutter end value.
+    window.setTimeout(() => {
+      handleResize(); // Trigger resize handler to initialize gutter end value.
+    }, 200);
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -189,7 +227,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onOpen={handleFollowButtonClick}
           onClose={handleFollowCloseClick}
           isOpen={podcastFollowShown}
-          portalId="embed-modals"
+          portalId="listen-modals"
           followUrls={followUrls}
         />
 
@@ -198,7 +236,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onOpen={handleShareButtonClick}
           onClose={handleShareCloseClick}
           isOpen={podcastShareShown}
-          portalId="embed-modals"
+          portalId="listen-modals"
           url={link}
           twitterTitle={title}
           emailSubject={title}
@@ -210,7 +248,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onOpen={handleSupportButtonClick}
           onClose={handleSupportCloseClick}
           isOpen={podcastSupportShown}
-          portalId="embed-modals"
+          portalId="listen-modals"
           supportUrls={supportUrls}
         />
       </>
@@ -235,10 +273,42 @@ const Listen = ({ config, data }: IListenPageProps) => {
   }, [view, episode]);
 
   return (
-    <>
-      <style>{`:root {${rootStyles}} body { overflow: hidden; }`}</style>
+    <ListenContext.Provider value={listenContextProps}>
+      <Head>
+        <title>{pageTitle}</title>
+        <link rel="canonical" href={link} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:url" content={link} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:url" content={link} />
+        {description && (
+          <>
+            <meta name="description" content={description} />
+            <meta property="og:description" content={description} />
+            <meta name="twitter:description" content={description} />
+          </>
+        )}
+        {imageUrl && (
+          <>
+            <meta property="og:image" content={imageUrl} />
+            <meta name="twitter:image" content={imageUrl} />
+          </>
+        )}
+      </Head>
       <ThemeVars theme="Listen" cssProps={styles} />
-      <div className={styles.root} data-view={view} data-theme={theme}>
+      <style>{`:root {  } body { overflow: hidden; } @keyframes ${
+        episodeCardStyles['episode-card-highlight']
+      } { ${accentColorKeyframes
+        .map(([p, c]) => `${p}% { background-color: ${c}; }`)
+        .join(' ')} }`}</style>
+      <div
+        className={styles.root}
+        data-view={view}
+        data-theme={theme}
+        style={rootStyles}
+      >
         <div className={styles.background}>
           <BackgroundImage imageUrl={bgImageUrl} />
         </div>
@@ -248,7 +318,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
             <PrxImage
               src={bgImageUrl}
               alt={`Logo for ${title}`}
-              layout="fill"
+              fill
               sizes={logoSizes}
             />
           </div>
@@ -258,11 +328,11 @@ const Listen = ({ config, data }: IListenPageProps) => {
             </h1>
             <span className={styles.podcastAuthor}>{author}</span>
           </div>
+          <nav className={styles.podcastMenu}>{renderMenu}</nav>
           <div className={styles.podcastInfo}>
             <div className={styles.podcastContent}>
               <HtmlContent html={content} />
             </div>
-            <div className={styles.podcastMenu}>{renderMenu}</div>
             {copyright && (
               <div className={styles.podcastCopyright}>{copyright}</div>
             )}
@@ -272,31 +342,40 @@ const Listen = ({ config, data }: IListenPageProps) => {
         <div className={styles.main}>
           <div
             className={clsx(styles.viewContainer, styles.podcastView)}
-            {...(view.indexOf('podcast') === -1 && { inert: 'inert' })}
+            {...(view.indexOf('podcast') === -1 && { inert: '' })}
           >
             <div className={styles.podcastInfo}>
               <div className={styles.podcastContent}>
                 <HtmlContent html={content} />
               </div>
-              <div className={styles.podcastMenu}>{renderMenu}</div>
               {copyright && (
                 <div className={styles.podcastCopyright}>{copyright}</div>
               )}
             </div>
             <div className={styles.podcastEpisodes}>
-              {view.indexOf('podcast') !== -1 && (
-                <EpisodeList onEpisodeClick={handleEpisodeClick} />
-              )}
+              <EpisodeList onEpisodeClick={handleEpisodeClick} />
+              {/* {view.indexOf('podcast') !== -1 && (
+              )} */}
             </div>
           </div>
-
           <div
             className={clsx(styles.viewContainer, styles.episodeView)}
-            {...(view.indexOf('episode') === -1 && { inert: 'inert' })}
+            {...(view.indexOf('episode') === -1 && { inert: '' })}
           >
-            <Episode data={episode} onClose={handleEpisodeBackClick} />
+            <Episode
+              key={episode?.guid}
+              data={episode}
+              onClose={handleEpisodeBackClick}
+            />
           </div>
         </div>
+
+        {closedCaptionsShown && (
+          <div
+            className={clsx(styles.closedCaptionsFeed)}
+            id="listen-closed-caption-modal"
+          />
+        )}
 
         <footer className={styles.footer}>
           <FooterPlayer ref={footerPlayerRef} />
@@ -310,7 +389,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
         </footer>
       </div>
-    </>
+    </ListenContext.Provider>
   );
 };
 

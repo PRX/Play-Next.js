@@ -11,7 +11,6 @@ import convertDurationStringToIntegerArray from '@lib/convert/string/convertDura
 import formatDurationParts from '@lib/format/time/formatDurationParts';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
 import PlayerContext from '@contexts/PlayerContext';
-import ThemeVars from '@components/ThemeVars';
 import SwapVertIcon from '@svg/icons/SwapVert.svg';
 import styles from './EpisodeList.module.scss';
 import EpisodeCard from './EpisodeCard';
@@ -64,7 +63,6 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
   return (
     tracks && (
       <div {...props} className={clsx(styles.root, className)}>
-        <ThemeVars theme="EpisodeList" cssProps={styles} />
         <header className={styles.header}>
           <button
             type="button"

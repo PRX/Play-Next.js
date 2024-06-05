@@ -1,0 +1,78 @@
+@use '@styles/colors';
+@use '@styles/theme';
+
+.root {
+  --_cc-speaker--color: var(
+    --cc-speaker--color,
+    var(--accent-color, #{colors.$secondary-500})
+  );
+
+  position: absolute;
+  inset: 1rem 1.5rem;
+  display: grid;
+  grid-template-rows: 1fr min-content;
+  gap: 5px;
+  z-index: 0;
+}
+
+.captions {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.75rem;
+
+  &.ended {
+    animation: fade-out 500ms linear forwards;
+    animation-delay: 1s;
+  }
+}
+
+.caption {
+  margin: 0;
+
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.speaker {
+  color: var(--_cc-speaker--color);
+  font-weight: bold;
+
+  @include theme.light-child {
+    color: color-mix(in lab, var(--_cc-speaker--color), black 20%);
+  }
+}
+
+.segment {
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0.5;
+
+    @include theme.light-child {
+      opacity: 0.3;
+    }
+
+    &.spoken {
+      opacity: 1;
+    }
+  }
+}
+
+.footer,
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 480px) {
+  .controls {
+    display: none;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}

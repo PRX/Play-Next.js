@@ -23,10 +23,10 @@ const BackgroundImage: React.FC<IBackgroundImageProps> = ({
     <PrxImage
       className={styles.image}
       src={imageUrl}
-      layout="fill"
-      objectFit="cover"
-      aria-hidden
+      alt=""
+      fill
       priority
+      aria-hidden
     />
   </div>
 );

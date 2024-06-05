@@ -25,7 +25,7 @@ $episodeCard-footer-text-size--min: 0.75rem;
 $episodeCard-background-color: transparent;
 $episodeCard-background-color--active: colors.$primary-500;
 $episodeCard-background-color--focus: colors.$black-a-50;
-$episodeCard-background-color--hover: colors.$black-a-50;
+$episodeCard-background-color--hover: transparent;
 
 $episodeCard-thumbnail-border-color: colors.$white-a-50;
 $episodeCard-thumbnail-border-size: 2px;
@@ -38,57 +38,149 @@ $episodeCard-thumbnail-tint-color--hover: colors.$black-a-70;
 $episodeCard-divider-color: var(--listen-divider-color);
 $episodeCard-divider-size: 1px;
 
-:export {
-  --episodeCard-text-color: #{$episodeCard-text-color};
-
-  --episodeCard-title-text-color: #{$episodeCard-title-text-color};
-  --episodeCard-title-text-color--active: #{$episodeCard-title-text-color--active};
-  --episodeCard-title-text-color--focus: #{$episodeCard-title-text-color--focus};
-  --episodeCard-title-text-color--hover: #{$episodeCard-title-text-color--hover};
-  --episodeCard-title-text-size--max: #{$episodeCard-title-text-size--max};
-  --episodeCard-title-text-size--min: #{$episodeCard-title-text-size--min};
-
-  --episodeCard-subtitle-text-color: #{$episodeCard-subtitle-text-color};
-  --episodeCard-subtitle-text-size--max: #{$episodeCard-subtitle-text-size--max};
-  --episodeCard-subtitle-text-size--min: #{$episodeCard-subtitle-text-size--min};
-
-  --episodeCard-footer-text-color: #{$episodeCard-footer-text-color};
-  --episodeCard-footer-text-size--max: #{$episodeCard-footer-text-size--max};
-  --episodeCard-footer-text-size--min: #{$episodeCard-footer-text-size--min};
-
-  --episodeCard-background-color: #{$episodeCard-background-color};
-  --episodeCard-background-color--active: #{$episodeCard-background-color--active};
-  --episodeCard-background-image-position--active: top;
-  --episodeCard-background-image-size--active: 100vh;
-
-  --episodeCard-thumbnail-border-color: #{$episodeCard-thumbnail-border-color};
-  --episodeCard-thumbnail-border-size: #{$episodeCard-thumbnail-border-size};
-  --episodeCard-thumbnail-size: #{$episodeCard-thumbnail-size};
-  --episodeCard-thumbnail-size--mobile: #{$episodeCard-thumbnail-size--mobile};
-  --episodeCard-thumbnail-icon-color: #{$episodeCard-thumbnail-icon-color};
-  --episodeCard-thumbnail-tint-color: #{$episodeCard-thumbnail-tint-color};
-  --episodeCard-thumbnail-tint-color--hover: #{$episodeCard-thumbnail-tint-color--hover};
-
-  --episodeCard-divider-color: #{$episodeCard-divider-color};
-  --episodeCard-divider-size: #{$episodeCard-divider-size};
-}
+$episodeCard-corner-radius: 5px;
 
 .root {
+  --_episodeCard-text-color: var(
+    --episodeCard-text-color,
+    #{$episodeCard-text-color}
+  );
+
+  --_episodeCard-title-text-color: var(
+    --episodeCard-title-text-color,
+    #{$episodeCard-title-text-color}
+  );
+  --_episodeCard-title-text-color--active: var(
+    --episodeCard-title-text-color--active,
+    #{$episodeCard-title-text-color--active}
+  );
+  --_episodeCard-title-text-color--focus: var(
+    --episodeCard-title-text-color--focus,
+    #{$episodeCard-title-text-color--focus}
+  );
+  --_episodeCard-title-text-color--hover: var(
+    --episodeCard-title-text-color--hover,
+    #{$episodeCard-title-text-color--hover}
+  );
+  --_episodeCard-title-text-size--max: var(
+    --episodeCard-title-text-size--max,
+    #{$episodeCard-title-text-size--max}
+  );
+  --_episodeCard-title-text-size--min: var(
+    --episodeCard-title-text-size--min,
+    #{$episodeCard-title-text-size--min}
+  );
+
+  --_episodeCard-subtitle-text-color: var(
+    --episodeCard-subtitle-text-color,
+    #{$episodeCard-subtitle-text-color}
+  );
+  --_episodeCard-subtitle-text-size--max: var(
+    --episodeCard-subtitle-text-size--max,
+    #{$episodeCard-subtitle-text-size--max}
+  );
+  --_episodeCard-subtitle-text-size--min: var(
+    --episodeCard-subtitle-text-size--min,
+    #{$episodeCard-subtitle-text-size--min}
+  );
+
+  --_episodeCard-footer-text-color: var(
+    --episodeCard-footer-text-color,
+    #{$episodeCard-footer-text-color}
+  );
+  --_episodeCard-footer-text-size--max: var(
+    --episodeCard-footer-text-size--max,
+    #{$episodeCard-footer-text-size--max}
+  );
+  --_episodeCard-footer-text-size--min: var(
+    --episodeCard-footer-text-size--min,
+    #{$episodeCard-footer-text-size--min}
+  );
+
+  --_episodeCard-background-color: var(
+    --episodeCard-background-color,
+    #{$episodeCard-background-color}
+  );
+  --_episodeCard-background-color--active: var(
+    --episodeCard-background-color--active,
+    #{$episodeCard-background-color--active}
+  );
+  --_episodeCard-background-color--focus: var(
+    --episodeCard-background-color--focus,
+    #{$episodeCard-background-color--focus}
+  );
+  --_episodeCard-background-color--hover: var(
+    --episodeCard-background-color--hover,
+    #{$episodeCard-background-color--hover}
+  );
+  --_episodeCard-background-image-position--active: var(
+    --episodeCard-background-image-position--active,
+    top
+  );
+  --_episodeCard-background-image-size--active: var(
+    --episodeCard-background-image-size--active,
+    100vh
+  );
+
+  --_episodeCard-thumbnail-border-color: var(
+    --episodeCard-thumbnail-border-color,
+    #{$episodeCard-thumbnail-border-color}
+  );
+  --_episodeCard-thumbnail-border-size: var(
+    --episodeCard-thumbnail-border-size,
+    #{$episodeCard-thumbnail-border-size}
+  );
+  --_episodeCard-thumbnail-size: var(
+    --episodeCard-thumbnail-size,
+    #{$episodeCard-thumbnail-size}
+  );
+  --_episodeCard-thumbnail-size--mobile: var(
+    --episodeCard-thumbnail-size--mobile,
+    #{$episodeCard-thumbnail-size--mobile}
+  );
+  --_episodeCard-thumbnail-icon-color: var(
+    --episodeCard-thumbnail-icon-color,
+    #{$episodeCard-thumbnail-icon-color}
+  );
+  --_episodeCard-thumbnail-tint-color: var(
+    --episodeCard-thumbnail-tint-color,
+    #{$episodeCard-thumbnail-tint-color}
+  );
+  --_episodeCard-thumbnail-tint-color--hover: var(
+    --episodeCard-thumbnail-tint-color--hover,
+    #{$episodeCard-thumbnail-tint-color--hover}
+  );
+
+  --_episodeCard-divider-color: var(
+    --episodeCard-divider-color,
+    #{$episodeCard-divider-color}
+  );
+  --_episodeCard-divider-size: var(
+    --episodeCard-divider-size,
+    #{$episodeCard-divider-size}
+  );
+
+  --_episodeCard-corner-radius: var(
+    --episodeCard-corner-radius,
+    #{$episodeCard-corner-radius}
+  );
+
   position: relative;
   display: grid;
   grid-template-columns: min-content 1fr;
   grid-gap: $padding-h;
   align-items: start;
-  overflow: hidden;
+  // overflow: hidden;
 
-  margin: 0;
+  margin-inline: $padding-h;
+  margin-block: 0;
   padding: $padding-v $padding-h;
 
-  border-bottom-style: solid;
-  border-bottom-width: var(--episodeCard-divider-size);
-  border-bottom-color: var(--episodeCard-divider-color);
+  border-top-style: solid;
+  border-top-width: var(--_episodeCard-divider-size);
+  border-top-color: var(--_episodeCard-divider-color);
 
-  color: var(--episodeCard-text-color);
+  color: var(--_episodeCard-text-color);
   font-size: clamp(0.8rem, 4.5vw, 1rem);
 
   &::before {
@@ -104,17 +196,13 @@ $episodeCard-divider-size: 1px;
     position: relative;
   }
 
-  &:last-of-type {
-    border-bottom: none;
+  &:first-of-type {
+    margin-block-start: $padding-v;
+    border-top: none;
   }
 
-  &::before {
-    content: '';
-    position: absolute;
-    display: block;
-    inset: ($padding-v * -1) ($padding-h * -1);
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
+  &:last-of-type {
+    margin-block-end: $padding-v;
   }
 
   &:focus {
@@ -123,22 +211,27 @@ $episodeCard-divider-size: 1px;
 
   &:focus-within {
     &::before {
-      opacity: 0.15;
       background-color: var(
         --accent-color,
-        var(--episodeCard-background-color--focus)
+        var(--_episodeCard-background-color--focus)
       );
     }
   }
 
   &.isCurrentTrack {
-    color: var(--episodeCard-text-color--active);
+    color: var(--_episodeCard-text-color--active);
+
+    border-top-color: transparent;
+
+    & + * {
+      border-top-color: transparent;
+    }
 
     &::before {
       opacity: 0.35;
       background-color: var(
         --accent-color,
-        var(--episodeCard-background-color--active)
+        var(--_episodeCard-background-color--active)
       );
       background-image: linear-gradient(
         to bottom right,
@@ -147,15 +240,25 @@ $episodeCard-divider-size: 1px;
       background-attachment: fixed;
       background-position: 0 0;
       background-size: 100% 100vh;
+
+      border-radius: var(--_episodeCard-corner-radius);
+
+      @supports (animation-timeline: view()) {
+        background-image: unset;
+        animation: episode-card-highlight linear both;
+        animation-timeline: view();
+        animation-range-start: contain var(--gutter-size-block-end);
+        animation-range-end: exit 1px;
+      }
     }
   }
 
   @media (pointer: fine) {
     &:hover {
-      color: var(--episodeCard-text-color--hover);
+      color: var(--_episodeCard-text-color--hover);
 
       &:not(.isCurrentTrack)::before {
-        background-color: var(--episodeCard-background-color--hover);
+        background-color: var(--_episodeCard-background-color--hover);
       }
     }
   }
@@ -163,27 +266,28 @@ $episodeCard-divider-size: 1px;
 
 .thumbnail {
   @include grid.stacked;
-  width: var(--episodeCard-thumbnail-size--mobile);
+  width: var(--_episodeCard-thumbnail-size--mobile);
   aspect-ratio: 1;
   overflow: hidden;
+  transform: translateZ(0);
 
-  box-shadow: 0 0 0 var(--episodeCard-thumbnail-border-size)
-    var(--episodeCard-thumbnail-border-color);
+  box-shadow: 0 0 0 var(--_episodeCard-thumbnail-border-size)
+    var(--_episodeCard-thumbnail-border-color);
   border-radius: 50%;
 
   @media (min-width: Listen.$breakpoint-full) {
-    width: var(--episodeCard-thumbnail-size);
+    width: var(--_episodeCard-thumbnail-size);
 
     border-radius: 0;
   }
 }
 
 .buttons {
-  --iconButton-size: var(--episodeCard-thumbnail-size--mobile);
+  --iconButton-size: var(--_episodeCard-thumbnail-size--mobile);
   --iconButton-padding: 0;
-  --iconButton-color: var(--episodeCard-thumbnail-icon-color);
-  --iconButton-color--hover: var(--episodeCard-thumbnail-icon-color);
-  --iconButton-background-color: var(--episodeCard-thumbnail-tint-color);
+  --iconButton-color: var(--_episodeCard-thumbnail-icon-color);
+  --iconButton-color--hover: var(--_episodeCard-thumbnail-icon-color);
+  --iconButton-background-color: var(--_episodeCard-thumbnail-tint-color);
   --iconButton-background-color--hover: var(
     --episodeCard-thumbnail-tint-color--hover
   );
@@ -203,11 +307,11 @@ $episodeCard-divider-size: 1px;
 }
 
 .title {
-  color: var(--episodeCard-title-text-color);
+  color: var(--_episodeCard-title-text-color);
   font-size: clamp(
-    var(--episodeCard-title-text-size--min),
+    var(--_episodeCard-title-text-size--min),
     5vw,
-    var(--episodeCard-title-text-size--max)
+    var(--_episodeCard-title-text-size--max)
   );
   font-weight: 700;
   text-align: left;
@@ -215,27 +319,28 @@ $episodeCard-divider-size: 1px;
   padding: 0;
 
   :where(.isCurrentTrack) & {
-    color: var(--episodeCard-title-text-color--active);
+    color: var(--_episodeCard-title-text-color--active);
   }
 
   &:focus-visible {
-    color: var(--episodeCard-title-text-color--focus);
+    color: var(--_episodeCard-title-text-color--focus);
   }
 
   @media (pointer: fine) {
     &:hover {
-      color: var(--episodeCard-title-text-color--hover);
+      color: var(--_episodeCard-title-text-color--hover);
     }
   }
 }
 
 .subtitle {
-  color: var(--episodeCard-subtitle-text-color);
+  color: var(--_episodeCard-subtitle-text-color);
   font-size: clamp(
-    var(--episodeCard-subtitle-text-size--min),
+    var(--_episodeCard-subtitle-text-size--min),
     5vw,
-    var(--episodeCard-subtitle-text-size--max)
+    var(--_episodeCard-subtitle-text-size--max)
   );
+  text-wrap: balance;
 }
 
 .footer {
@@ -245,11 +350,11 @@ $episodeCard-divider-size: 1px;
   align-items: flex-start;
   gap: calc(var(--spacing) / 1.5);
 
-  color: var(--episodeCard-footer-text-color);
+  color: var(--_episodeCard-footer-text-color);
   font-size: clamp(
-    var(--episodeCard-footer-text-size--min),
+    var(--_episodeCard-footer-text-size--min),
     5vw,
-    var(--episodeCard-footer-text-size--max)
+    var(--_episodeCard-footer-text-size--max)
   );
   font-weight: 300;
 

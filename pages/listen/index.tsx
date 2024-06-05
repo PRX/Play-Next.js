@@ -4,12 +4,11 @@
  */
 
 import type { GetServerSideProps } from 'next';
-import type { IListenEpisodeData, IRss } from '@interfaces/data';
+import type { IRss } from '@interfaces/data';
 import type { IListenPageProps, IPageProps } from '@interfaces/page';
-import Head from 'next/head';
 import Error from 'next/error';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
-import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
+import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
 import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
 import Player from '@components/Player';
@@ -17,66 +16,18 @@ import { IPageError } from '@interfaces/error';
 
 const ListenPage = ({ data, config, error }: IListenPageProps) => {
   const { episodeGuid } = config;
-  const {
-    title: rssTitle,
-    link: rssLink,
-    content: rssContent,
-    bgImageUrl: rssImage,
-    episodes
-  } = data;
-  const episode =
-    episodeGuid && episodes?.find(({ guid }) => guid === episodeGuid);
-  const {
-    title: episodeTitle,
-    link: episodeLink,
-    contentSnippet: episodeContent,
-    imageUrl: episodeImage
-  } = episode || ({} as IListenEpisodeData);
-  const title = !episode ? rssTitle : `${rssTitle} | ${episodeTitle}`;
-  const link = !episode ? rssLink : episodeLink;
-  const description = (!episode ? rssContent : episodeContent)?.replace(
-    /<[^>]+>/g,
-    ''
-  );
-  const imageUrl = !episode ? rssImage : episodeImage;
+  const { episodes } = data;
+  const episodeIndex =
+    episodeGuid && episodes?.findIndex(({ guid }) => guid === episodeGuid);
 
   if (error) {
     return <Error statusCode={error.statusCode} title={error.message} />;
   }
 
   return (
-    <>
-      <Head>
-        <title>
-          {title}
-          {episode && ` - ${episode.title}`}
-        </title>
-        <link rel="canonical" href={link} />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={title} />
-        <meta property="og:url" content={link} />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:url" content={link} />
-        {description && (
-          <>
-            <meta name="description" content={description} />
-            <meta property="og:description" content={description} />
-            <meta name="twitter:description" content={description} />
-          </>
-        )}
-        {imageUrl && (
-          <>
-            <meta property="og:image" content={imageUrl} />
-            <meta name="twitter:image" content={imageUrl} />
-          </>
-        )}
-      </Head>
-
-      <Player audio={episodes}>
-        <Listen data={data} config={config} />
-      </Player>
-    </>
+    <Player audio={episodes} startIndex={episodeIndex}>
+      <Listen data={data} config={config} />
+    </Player>
   );
 };
 
@@ -92,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   let error: IPageError;
   try {
     // ...try to fetch the feed...
-    rssData = config.feedUrl && (await fetchRssFeed(config.feedUrl));
+    rssData = config.feedUrl && (await fetchRssProxy(config.feedUrl));
   } catch (e) {
     switch (e.name) {
       case 'RssProxyError':

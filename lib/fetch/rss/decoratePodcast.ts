@@ -25,20 +25,35 @@ export const extractPodcastValue = (data): IRssPodcastValue => {
   return podcastValue;
 };
 
+export const extractPodcastTranscript = (data) => {
+  const podcastTranscript = data['podcast:transcript']?.map(({ $ }) => ({
+    ...$
+  }));
+  return podcastTranscript;
+};
+
 export const decoratePodcast = (feed): IRss => {
   const feedItems: IRssItem[] = feed.items.map((item) => {
     const itemVal = extractPodcastValue(item);
+    const itemTranscript = extractPodcastTranscript(item);
+    const hasPodcastProps = !!itemVal || !!itemTranscript?.length;
+
     return {
       ...item,
-      ...(itemVal && { podcast: { value: itemVal } })
+      ...(hasPodcastProps && {
+        podcast: {
+          ...(itemVal && { value: itemVal }),
+          ...(!!itemTranscript?.length && { transcript: itemTranscript })
+        }
+      })
     } as IRssItem;
   });
 
   const feedVal = extractPodcastValue(feed);
   const rssData: IRss = {
     ...feed,
-    ...{ items: feedItems },
-    ...(feedVal && { podcast: { value: feedVal } })
+    ...(feedVal && { podcast: { value: feedVal } }),
+    items: feedItems
   };
 
   delete rssData['podcast:value'];

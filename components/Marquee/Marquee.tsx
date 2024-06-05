@@ -6,7 +6,6 @@
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import clsx from 'clsx';
 import styles from './Marquee.module.scss';
 
 export interface IMarqueeProps extends React.PropsWithChildren<{}> {}
@@ -14,8 +13,8 @@ export interface IMarqueeProps extends React.PropsWithChildren<{}> {}
 const Marquee: React.FC<IMarqueeProps> = ({ children }) => {
   const [marqueeOffset, setMarqueeOffset] = useState(0);
   const [marqueeSpeed, setMarqueeSpeed] = useState(0);
-  const contentRef = useRef(null);
-  const rootRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>();
+  const rootRef = useRef<HTMLDivElement>();
   const timeoutRef = useRef(null);
 
   const updateMarqueeOffset = useCallback(() => {
@@ -49,24 +48,22 @@ const Marquee: React.FC<IMarqueeProps> = ({ children }) => {
 
   return (
     <div className={styles.root} ref={rootRef}>
-      <motion.div
-        ref={contentRef}
-        className={clsx(styles.content, {
-          [styles.marqueeOn]: marqueeOffset < 0
-        })}
-        animate={{ x: [0, marqueeOffset] }}
-        initial={{ x: 0 }}
-        transition={{
-          repeat: Infinity,
-          repeatType: 'reverse',
-          repeatDelay: 0.5,
-          delay: 1,
-          duration: marqueeSpeed
-          // ease: 'linear'
-        }}
-      >
-        {children}
-      </motion.div>
+      <div className={styles.content} ref={contentRef}>
+        <motion.div
+          animate={{ x: [0, marqueeOffset] }}
+          initial={{ x: 0 }}
+          transition={{
+            repeat: Infinity,
+            repeatType: 'reverse',
+            repeatDelay: 0.5,
+            delay: 1,
+            duration: marqueeSpeed
+            // ease: 'linear'
+          }}
+        >
+          {children}
+        </motion.div>
+      </div>
     </div>
   );
 };

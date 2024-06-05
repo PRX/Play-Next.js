@@ -9,9 +9,12 @@ $modal-text-color: colors.$white;
   --modal-background-color: #{$modal-background-color};
   --modal-background-blur: #{$modal-background-blur};
   --modal-text-color: #{$modal-text-color};
+  --modal-content-padding: 2rem;
 }
 
 .root {
+  --_modal-button--visibility: var(--modal-button--visibility, initial);
+
   @include grid.stacked;
   position: absolute;
   inset: 0;
@@ -25,10 +28,12 @@ $modal-text-color: colors.$white;
 }
 
 .closeButton {
+  visibility: var(--_modal-button--visibility);
   align-self: start;
   position: sticky;
   top: 0.5rem;
   right: 0.5rem;
+  z-index: 999;
 
   margin-inline-start: auto;
 }
@@ -36,5 +41,20 @@ $modal-text-color: colors.$white;
 .content {
   display: grid;
   place-content: center;
-  padding: 2rem;
+  padding-inline-start: var(
+    --modal-content-padding-inline-start,
+    var(--modal-content-padding-inline, var(--modal-content-padding))
+  );
+  padding-inline-end: var(
+    --modal-content-padding-inline-end,
+    var(--modal-content-padding-inline, var(--modal-content-padding))
+  );
+  padding-block-start: var(
+    --modal-content-padding-block-start,
+    var(--modal-content-padding-block, var(--modal-content-padding))
+  );
+  padding-block-end: var(
+    --modal-content-padding-block-end,
+    var(--modal-content-padding-block, var(--modal-content-padding))
+  );
 }

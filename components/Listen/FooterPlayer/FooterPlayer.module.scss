@@ -38,6 +38,7 @@ $footerPlayer-thumbnail-size--mobile: 24px;
     'THUMB TITLE'
     'CTRLS CTRLS'
     'PROG PROG';
+  align-items: center;
   column-gap: 0.5rem;
   row-gap: 0.25rem;
 
@@ -75,9 +76,16 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   border: 1px solid var(--footerPlayer-divider-color);
 }
 
-.title {
+.info {
   grid-area: TITLE;
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
 
+.title {
   overflow: hidden;
 
   font-size: clamp(
@@ -91,6 +99,30 @@ $footerPlayer-thumbnail-size--mobile: 24px;
     & {
       font-size: var(--footerPlayer-text-size--max);
     }
+  }
+}
+
+.closedCaptionsButton {
+  --iconButton-size: 24px;
+}
+
+.closedCaptionsEnabled {
+  color: var(--accent-color, #{colors.$secondary-500});
+}
+
+.closedCaptionModal {
+  @media (min-width: Listen.$breakpoint-full) {
+    --modal-background-blur: 16px;
+    --cc-feed--gutter: 5rem;
+    --cc-feed--justify-content: end;
+    container-type: inline-size;
+
+    background-color: transparent;
+    background-image: linear-gradient(
+      to left,
+      var(--modal-background-color) var(--cc-feed--max-width),
+      transparent
+    );
   }
 }
 

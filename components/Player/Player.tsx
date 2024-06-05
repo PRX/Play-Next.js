@@ -48,8 +48,11 @@ const Player: React.FC<IPlayerProps> = ({
     [currentTrack.duration]
   );
   const isLastTrack = currentTrackIndex === tracks.length - 1;
-  const { url, previewUrl } = currentTrack;
+  const { url, previewUrl, transcripts, duration } = currentTrack;
   const currentTrackUrl = previewUrl || url;
+  const transcript = transcripts?.find(
+    (t) => !!['vtt', 'srt', 'json'].find((n) => t.type.includes(n))
+  );
 
   const boundedTime = useCallback(
     (time: number) =>
@@ -299,7 +302,7 @@ const Player: React.FC<IPlayerProps> = ({
           toggleMute();
           break;
         case 'Space':
-          if (event.target.nodeName !== 'BUTTON') {
+          if (!['A', 'BUTTON'].includes(event.target.nodeName)) {
             togglePlayPause();
           }
           break;
@@ -384,28 +387,28 @@ const Player: React.FC<IPlayerProps> = ({
   );
 
   useEffect(() => {
-    // Initialize audio element.
-    if (!audioElm.current) {
-      audioElm.current = new Audio();
-    }
+    const audioElmTemp = audioElm;
 
     // Setup event handlers on audio element.
-    audioElm.current.addEventListener('play', handlePlay);
-    audioElm.current.addEventListener('pause', handlePause);
-    audioElm.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audioElm.current.addEventListener('ended', handleEnded);
+    audioElmTemp.current.addEventListener('play', handlePlay);
+    audioElmTemp.current.addEventListener('pause', handlePause);
+    audioElmTemp.current.addEventListener(
+      'loadedmetadata',
+      handleLoadedMetadata
+    );
+    audioElmTemp.current.addEventListener('ended', handleEnded);
 
     window.addEventListener('keydown', handleHotkey);
 
     return () => {
       // Cleanup event handlers between dependency changes.
-      audioElm.current.removeEventListener('play', handlePlay);
-      audioElm.current.removeEventListener('pause', handlePause);
-      audioElm.current.removeEventListener(
+      audioElmTemp.current.removeEventListener('play', handlePlay);
+      audioElmTemp.current.removeEventListener('pause', handlePause);
+      audioElmTemp.current.removeEventListener(
         'loadedmetadata',
         handleLoadedMetadata
       );
-      audioElm.current.removeEventListener('ended', handleEnded);
+      audioElmTemp.current.removeEventListener('ended', handleEnded);
 
       window.removeEventListener('keydown', handleHotkey);
     };
@@ -457,6 +460,17 @@ const Player: React.FC<IPlayerProps> = ({
   return (
     audioElm && (
       <PlayerContext.Provider value={playerContextValue}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <audio ref={audioElm}>
+          {transcript && (
+            <track
+              kind="captions"
+              src={`/api/proxy/transcript/vtt?u=${transcript.url}&cb=${duration}`}
+              default
+              key={transcript.url}
+            />
+          )}
+        </audio>
         {children}
       </PlayerContext.Provider>
     )

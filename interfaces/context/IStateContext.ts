@@ -4,10 +4,8 @@
  */
 
 import type React from 'react';
-import type { IPlayerAction } from '@states/player/Player.actions';
-import type { IPlayerState } from '../states/player';
 
-export interface IStateContext {
-  state: IPlayerState;
-  dispatch: React.Dispatch<IPlayerAction>;
+export interface IStateContext<StateType, ActionType> {
+  state: StateType;
+  dispatch: React.Dispatch<ActionType>;
 }

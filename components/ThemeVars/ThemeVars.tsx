@@ -20,12 +20,11 @@ const ThemeVars: React.FC<IThemeVarsProps> = ({
     // Convert key/value pairs to css property strings.
     .map(([cp, value]) => `${cp}: ${value};`);
   const hasCssVars = cssVars.length || null;
+  const wrapperId = `ThemeVars:${key}`;
 
   return (
     hasCssVars && (
-      <style key={`ThemeVars:${key}`}>{`:root {\n  ${cssVars.join(
-        '\n  '
-      )}\n}`}</style>
+      <style id={wrapperId}>{`:root {\n  ${cssVars.join('\n  ')}\n}`}</style>
     )
   );
 };

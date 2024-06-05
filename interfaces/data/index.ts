@@ -4,4 +4,6 @@ export * from './IListenData';
 export * from './IListenEpisodeData';
 export * from './IRss';
 export * from './IRssItem';
+export * from './IRssPodcast';
 export * from './ISeriesData';
+export * from './Transcript';

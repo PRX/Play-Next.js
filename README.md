@@ -40,6 +40,12 @@ git clone git@github.com:PRX/Play-Next.js.git
 cd Play-Next.js
 ```
 
+Create a `.env` file on the project root, and add the following:
+
+```
+API_BASE_URL="http://localhost:4300/api"
+```
+
 Now we need to make sure we are using the the version of _node_ need for the app:
 
 ```bash
@@ -61,7 +67,7 @@ yarn
 Finally, lets spin up the development server:
 
 ```bash
-yarn dev
+yarn dev:start
 ```
 
 View the app at [localhost:4300](https://localhost:4300). This development version of the app will update automatically as you make changes.

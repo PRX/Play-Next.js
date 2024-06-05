@@ -51,9 +51,8 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
           ref={imageRef}
           src={srcUrl}
           alt={`Cover art for "${title}".`}
-          layout="fill"
+          fill
           priority
-          onLoadingComplete={handleLoad}
           onLoad={handleLoad}
         />
       </button>

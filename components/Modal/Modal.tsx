@@ -4,16 +4,19 @@
  *
  */
 
-import React, { useEffect, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
+import clsx from 'clsx';
 import ThemeVars from '@components/ThemeVars';
 import IconButton from '@components/IconButton';
 import Portal from '@components/Portal';
 import CloseIcon from '@svg/icons/Close.svg';
 import styles from './Modal.module.scss';
 
-export interface IModalProps extends React.PropsWithChildren<{}> {
+export interface IModalProps
+  extends React.PropsWithChildren<{ className?: string }> {
   isOpen: boolean;
-  onClose: Function;
+  onClose?(): void;
   portalId?: string;
 }
 
@@ -21,17 +24,20 @@ const Modal: React.FC<IModalProps> = ({
   children,
   isOpen,
   onClose,
-  portalId = 'modal-portal-wrapper'
+  portalId = 'modal-portal-wrapper',
+  className
 }) => {
   const closeButtonRef = useRef<HTMLButtonElement>();
 
   const handleClick = () => {
-    onClose();
+    if (onClose) {
+      onClose();
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.code || event.key;
-    if (key === 'Escape') {
+    if (key === 'Escape' && onClose) {
       onClose();
     }
   };
@@ -50,7 +56,7 @@ const Modal: React.FC<IModalProps> = ({
   return !isOpen ? null : (
     <Portal wrapperId={portalId}>
       <ThemeVars theme="Modal" cssProps={styles} />
-      <div className={styles.root}>
+      <div className={clsx(styles.root, className)}>
         <IconButton
           title="Close"
           ref={closeButtonRef}

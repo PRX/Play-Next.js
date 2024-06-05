@@ -4,11 +4,10 @@
  */
 
 import type { IListenEpisodeData } from '@interfaces/data';
-import { useCallback, useContext, useMemo } from 'react';
+import { CSSProperties, useCallback, useContext, useMemo } from 'react';
 import clsx from 'clsx';
 import IconButton from '@components/IconButton';
 import PrxImage from '@components/PrxImage';
-import ThemeVars from '@components/ThemeVars';
 import PlayerContext from '@contexts/PlayerContext';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
@@ -39,9 +38,11 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
   const { guid, title, subtitle, imageUrl, duration, explicit, pubDate } =
     episode;
   const thumbSrc = imageUrl || defaultThumbUrl;
+  const thumbnailSize = 100;
+  const thumbnailSizeMobile = 40;
   const thumbSizes = [
-    `(min-width: ${listenStyles.breakpointFull}) ${styles['--episodeCard-thumbnail-size']}`,
-    `${styles['--episodeCard-thumbnail-size--mobile']}`
+    `(min-width: ${listenStyles.breakpointFull}) ${thumbnailSize}px`,
+    `${thumbnailSizeMobile}px`
   ].join(',');
   const pubDateFormatted = useMemo(
     () =>
@@ -68,11 +69,17 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
 
   return (
     <>
-      <ThemeVars theme="EpisodeCard" cssProps={styles} />
+      {/* <ThemeVars theme="EpisodeCard" cssProps={styles} /> */}
       <div
         className={clsx(styles.root, {
           [styles.isCurrentTrack]: isCurrentTrack
         })}
+        style={
+          {
+            '--episodeCard-thumbnail-size': `${thumbnailSize}px`,
+            '--episodeCard-thumbnail-size--mobile': `${thumbnailSizeMobile}px`
+          } as CSSProperties
+        }
       >
         {thumbSrc ? (
           <div className={styles.thumbnail}>
@@ -80,7 +87,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
               title={`Thumbnail for "${title}".`}
               src={thumbSrc}
               alt={`Thumbnail for "${title}".`}
-              layout="fill"
+              fill
               sizes={thumbSizes}
             />
             <span className={styles.buttons}>

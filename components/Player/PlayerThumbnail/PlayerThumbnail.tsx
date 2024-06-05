@@ -18,7 +18,7 @@ export interface IPlayerThumbnailProps extends Partial<IPrxImageProps> {
 const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   className,
   imageClassName,
-  layout = 'fill',
+  fill,
   width,
   height,
   ...props
@@ -50,7 +50,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
       <div
         className={rootClassNames}
         style={{
-          ...(layout !== 'fill' && {
+          ...(!fill && {
             width,
             height
           })
@@ -61,15 +61,14 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
           ref={imageRef}
           src={srcUrl}
           alt={`Thumbnail for "${title}".`}
-          layout={layout}
-          {...(layout !== 'fill' && {
+          fill={fill}
+          {...(!fill && {
             width,
             height
           })}
           priority
           {...props}
           className={clsx(styles.image, imageClassName)}
-          onLoadingComplete={handleLoad}
           onLoad={handleLoad}
         />
       </div>

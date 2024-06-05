@@ -11,18 +11,17 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     minimumCacheTTL: 31536000,
-    domains: ['f.prxu.org', 'f-staging.prxu.org'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.prxu.org'
+      }
+    ],
     imageSizes: [16, 32, 40, 48, 65, 96, 128, 135, 256, 384]
   },
   i18n: {
     locales: ['en'],
     defaultLocale: 'en'
-  },
-  experimental: {
-    outputStandalone: true,
-    images: {
-      layoutRaw: true
-    }
   },
   async headers() {
     return [

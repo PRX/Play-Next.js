@@ -12,6 +12,7 @@ import {
 export const listenInitialState: IListenState = {
   view: null,
   episodeGuid: null,
+  closedCaptionsShown: false,
   podcastShareShown: false,
   podcastFollowShown: false,
   podcastSupportShown: false,
@@ -23,6 +24,7 @@ export const listenStateReducer = (
   action: ListenAction
 ): IListenState => {
   const {
+    closedCaptionsShown,
     podcastShareShown,
     podcastFollowShown,
     podcastSupportShown,
@@ -35,6 +37,15 @@ export const listenStateReducer = (
 
     case ActionTypes.LISTEN_VIEW_PODCAST:
       return { ...state, view: 'podcast', episodeGuid: null };
+
+    case ActionTypes.LISTEN_PLAYER_SHOW_CLOSED_CAPTIONS_DIALOG:
+      return { ...state, closedCaptionsShown: true };
+
+    case ActionTypes.LISTEN_PLAYER_HIDE_CLOSED_CAPTIONS_DIALOG:
+      return { ...state, closedCaptionsShown: false };
+
+    case ActionTypes.LISTEN_PLAYER_TOGGLE_CLOSED_CAPTIONS_DIALOG_SHOWN:
+      return { ...state, closedCaptionsShown: !closedCaptionsShown };
 
     case ActionTypes.LISTEN_PODCAST_SHOW_SHARE_DIALOG:
       return { ...state, podcastShareShown: true };

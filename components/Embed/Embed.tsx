@@ -28,6 +28,7 @@ import IconButton from '@components/IconButton';
 import ForwardButton from '@components/Player/ForwardButton';
 import NextButton from '@components/Player/NextButton';
 import Player from '@components/Player';
+import ClosedCaptionsDialog from '@components/Player/ClosedCaptionsDialog';
 import PlayerText from '@components/Player/PlayerText';
 import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PreviousButton from '@components/Player/PreviousButton';
@@ -39,6 +40,8 @@ import WebMonetized from '@components/Player/WebMonetized';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import styles from '@styles/Embed.module.scss';
+import ClosedCaptions from '@components/Player/ClosedCaptions';
+import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
@@ -69,7 +72,13 @@ const Embed = ({ config, data }: IEmbedProps) => {
   const isPreview = mode === 'preview';
   const { imageUrl } = audio || {};
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
-  const { shareShown, followShown, supportShown, webMonetizationShown } = state;
+  const {
+    closedCaptionsShown,
+    shareShown,
+    followShown,
+    supportShown,
+    webMonetizationShown
+  } = state;
   const modalShown =
     shareShown || followShown || supportShown || webMonetizationShown;
   const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
@@ -98,6 +107,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
       );
   const currentTrack = playlist?.[currentTrackIndex] || audio;
   const showShareMenu = !!currentTrack?.link || !isPreview;
+  const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
+  const showClosedCaptionFeed = closedCaptionsShown && canShowCoverArt;
+  const showClosedCaptionDialog = !showClosedCaptionFeed && closedCaptionsShown;
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
@@ -179,6 +191,16 @@ const Embed = ({ config, data }: IEmbedProps) => {
     setShowMenu(!showMenu);
   };
 
+  const handleClosedCaptionButtonClick = () => {
+    dispatch({
+      type: EmbedActionTypes.EMBED_TOGGLE_CLOSED_CAPTIONS_DIALOG_SHOWN
+    });
+  };
+
+  const handleClosedCaptionCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_CLOSED_CAPTIONS_DIALOG });
+  };
+
   const handleFollowButtonClick = () => {
     dispatch({ type: EmbedActionTypes.EMBED_SHOW_FOLLOW_DIALOG });
   };
@@ -212,8 +234,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
   };
 
   const handleResize = useCallback(() => {
+    initLayoutBreakpoints();
     updatePlayerLayout();
-  }, [updatePlayerLayout]);
+  }, [initLayoutBreakpoints, updatePlayerLayout]);
 
   /**
    * Initialize layout breakpoints.
@@ -261,19 +284,23 @@ const Embed = ({ config, data }: IEmbedProps) => {
               {canShowCoverArt && (
                 <div
                   className={styles.coverArt}
-                  {...(modalShown && {
-                    inert: 'inert'
-                  })}
+                  {...(modalShown && { inert: '' })}
                 >
                   <CoverArt />
+
+                  {showClosedCaptionFeed && (
+                    <div
+                      className={clsx(styles.modals, styles.closedCaptionsFeed)}
+                      id="embed-closed-caption-modal"
+                      {...(!closedCaptionsShown && { inert: '' })}
+                    />
+                  )}
                 </div>
               )}
 
               <div
                 className={styles.playerContainer}
-                {...(modalShown && {
-                  inert: 'inert'
-                })}
+                {...(modalShown && { inert: '' })}
               >
                 <BackgroundImage
                   imageUrl={bgImageUrl}
@@ -288,7 +315,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   {!canShowCoverArt && playerLayout && (
                     <div className={styles.thumbnail}>
                       <PlayerThumbnail
-                        layout="raw"
                         width={playerLayout?.thumbnailSize}
                         height={playerLayout?.thumbnailSize}
                       />
@@ -326,9 +352,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       ref={playerControlsRef}
                       className={clsx(styles.controls, menuShownClass)}
                       {...(showMenu &&
-                        playerLayout?.name === 'compact' && {
-                          inert: 'inert'
-                        })}
+                        playerLayout?.name === 'compact' && { inert: '' })}
                     >
                       {canShowPlaylist && (
                         <PreviousButton
@@ -361,9 +385,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       ref={playerMenuRef}
                       className={clsx(styles.menu, menuShownClass)}
                       {...(!showMenu &&
-                        playerLayout?.name === 'compact' && {
-                          inert: 'inert'
-                        })}
+                        playerLayout?.name === 'compact' && { inert: '' })}
                       style={{
                         // Initialize hidden in compact layout to prevent content flash.
                         ...(playerLayout?.name === 'compact' && {
@@ -371,6 +393,29 @@ const Embed = ({ config, data }: IEmbedProps) => {
                         })
                       }}
                     >
+                      {showClosedCaptionsButton && (
+                        <ClosedCaptionsDialog
+                          className={clsx(
+                            styles.menuButton,
+                            styles.closedCaptionsButton,
+                            {
+                              [styles.closedCaptionsEnabled]:
+                                closedCaptionsShown
+                            }
+                          )}
+                          onOpen={handleClosedCaptionButtonClick}
+                          onClose={handleClosedCaptionCloseClick}
+                          isOpen={closedCaptionsShown}
+                          portalId="embed-closed-caption-modal"
+                        >
+                          {showClosedCaptionFeed ? (
+                            <ClosedCaptionsFeed speakerColors={accentColor} />
+                          ) : (
+                            <ClosedCaptions speakerColors={accentColor} />
+                          )}
+                        </ClosedCaptionsDialog>
+                      )}
+
                       <FollowMenu
                         className={clsx(
                           styles.menuButton,
@@ -424,14 +469,20 @@ const Embed = ({ config, data }: IEmbedProps) => {
                     />
                   </div>
                 </div>
+
+                {showClosedCaptionDialog && (
+                  <div
+                    className={styles.modals}
+                    id="embed-closed-caption-modal"
+                    {...(!closedCaptionsShown && { inert: '' })}
+                  />
+                )}
               </div>
 
               {canShowPlaylist && (
                 <div
                   className={styles.playlist}
-                  {...(modalShown && {
-                    inert: 'inert'
-                  })}
+                  {...(modalShown && { inert: '' })}
                 >
                   <Playlist style={{ height: '100%' }} />
                 </div>
@@ -441,9 +492,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                 <div
                   className={styles.modals}
                   id="embed-modals"
-                  {...(!modalShown && {
-                    inert: 'inert'
-                  })}
+                  {...(!modalShown && { inert: '' })}
                 />
               )}
             </Player>

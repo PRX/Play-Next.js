@@ -21,6 +21,11 @@ export interface IListenState {
   episodeGuid: string;
 
   /**
+   * Flag to show closed captions dialog.
+   */
+  closedCaptionsShown: boolean;
+
+  /**
    * Flag to show podcast share menu dialog.
    */
   podcastShareShown: boolean;

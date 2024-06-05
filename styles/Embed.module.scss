@@ -122,7 +122,9 @@ $player-thumbnail-size: 135px;
 }
 
 .coverArt {
+  container-type: inline-size;
   display: grid;
+  position: relative;
 }
 
 .playerContainer {
@@ -315,6 +317,10 @@ $player-thumbnail-size: 135px;
 
 .menuToggle {
   grid-area: LOGO;
+}
+
+.closedCaptionsEnabled {
+  color: var(--accent-color, #{colors.$secondary-500});
 }
 
 .progress {
