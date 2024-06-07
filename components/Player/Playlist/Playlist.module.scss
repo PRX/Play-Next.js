@@ -168,7 +168,9 @@ $playlist-header-icon-color--active: colors.$white;
 
 .trackThumbnail {
   @include grid.stacked(after);
+  position: relative;
   overflow: hidden;
+  aspect-ratio: 1;
   border-radius: var(--playlist-thumbnail-corner-radius);
   &::after {
     content: '';
