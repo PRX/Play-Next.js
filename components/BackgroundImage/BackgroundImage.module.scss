@@ -33,6 +33,10 @@ $backgroundImage-blur: 30px;
   }
 }
 
+.image {
+  object-fit: cover;
+}
+
 @supports not (backdrop-filter: blur(1px)) {
   .image {
     transform: scale(1.5);
