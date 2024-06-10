@@ -4,12 +4,15 @@
   inset: 0;
   box-sizing: border-box;
   overflow: hidden;
+
+  & > .image {
+    position: absolute;
+    inset: 0;
+  }
 }
 
 .image {
   display: block;
-  position: absolute;
-  inset: 0;
   box-sizing: border-box;
   width: 0;
   height: 0;

@@ -19,14 +19,14 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
     togglePlayPause,
     imageUrl: defaultImageUrl
   } = useContext(PlayerContext);
-  const imageRef = useRef({ complete: false });
+  const imageRef = useRef<HTMLImageElement>(null);
   const isInitialLoad = useRef(true);
   const [isLoading, setIsLoading] = useState(false);
   const { tracks, currentTrackIndex } = state;
   const { imageUrl, title } = tracks[currentTrackIndex] || ({} as IAudioData);
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, {
-    [styles.loaded]: !isLoading || imageRef.current.complete
+    [styles.loaded]: !isLoading || imageRef.current?.complete
   });
 
   const handleClick = () => {

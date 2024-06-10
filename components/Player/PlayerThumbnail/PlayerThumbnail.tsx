@@ -23,7 +23,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   height,
   ...props
 }) => {
-  const imageRef = useRef({ complete: false });
+  const imageRef = useRef<HTMLImageElement>(null);
   const isInitialLoad = useRef(true);
   const { state, imageUrl: defaultImageUrl } = useContext(PlayerContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   const { imageUrl, title } = tracks[currentTrackIndex] || {};
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, className, {
-    [styles.loaded]: !isLoading || imageRef.current.complete
+    [styles.loaded]: !isLoading || imageRef.current?.complete
   });
 
   const handleLoad = useCallback(() => {
