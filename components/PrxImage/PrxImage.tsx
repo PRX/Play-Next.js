@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import type { ImageProps } from 'next/image';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef } from 'react';
 import Image from 'next/image';
 import clsx from 'clsx';
 import isTrustedImageDomain from '@lib/validate/isTrustedImageDomain';
@@ -13,22 +13,18 @@ import styles from './PrxImage.module.scss';
 
 export interface IPrxImageProps extends ImageProps {}
 
-const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
+const PrxImage = forwardRef<HTMLImageElement, IPrxImageProps>(
   ({ className, src, alt, fill, priority, onLoad, ...other }, ref) => {
-    const imageRef = useRef<HTMLImageElement>();
     const isUrlString = typeof src === 'string';
     const isTrusted = isUrlString && isTrustedImageDomain(src as string);
     const imageClassNames = clsx(className, styles.image);
     const nextImageProps = {
-      className: imageClassNames,
+      ref,
+      className,
       fill,
       priority,
       onLoad
     };
-
-    useImperativeHandle(ref, () => ({
-      complete: imageRef.current?.complete
-    }));
 
     if (!src) return null;
 
@@ -39,7 +35,7 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
         <div className={styles.wrapper}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            ref={imageRef}
+            ref={ref}
             src={src as string}
             alt={alt}
             {...other}
@@ -50,7 +46,7 @@ const PrxImage = forwardRef<{ complete: boolean }, IPrxImageProps>(
       )) || (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          ref={imageRef}
+          ref={ref}
           src={src as string}
           alt={alt}
           className={className}
