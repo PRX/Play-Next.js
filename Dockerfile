@@ -21,6 +21,10 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Set path to Sharp library since we are running Next in standalone.
+# https://nextjs.org/docs/messages/sharp-missing-in-production
+ENV NEXT_SHARP_PATH ./node_modules/sharp
+
 RUN yarn test
 
 RUN yarn build
