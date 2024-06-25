@@ -1,0 +1,46 @@
+@use '@styles/colors';
+
+.root {
+  --_button--color: var(--button--color, #{colors.$primary-500});
+  --_button--color--hover: var(--button--color, #{colors.$primary-700});
+  --_button--text-color: var(--button--color, #{colors.$white});
+
+  transition: 200ms linear;
+
+  padding: 0.5rem 1rem;
+
+  border-radius: 0.25rem;
+
+  color: var(--_button--text-color);
+  font-weight: 700;
+  text-transform: capitalize;
+
+  &[data-variation='default'] {
+    background-color: var(--_button--color);
+
+    &:where(:hover, :focus-visible) {
+      background-color: var(--_button--color--hover);
+    }
+  }
+
+  &[data-variation='outline'] {
+    border-width: 3px;
+    border-style: solid;
+    border-color: var(--_button--color);
+
+    &:where(:hover, :focus-visible) {
+      border-color: var(--_button--color--hover);
+      background-color: var(--_button--color--hover);
+    }
+  }
+
+  &[data-variation='ghost'] {
+    &:where(:hover, :focus-visible) {
+      background-color: color-mix(
+        in lch,
+        var(--_button--color) 30%,
+        transparent
+      );
+    }
+  }
+}
