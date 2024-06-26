@@ -252,6 +252,7 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
                   src={imageUrl}
                   className={styles.thumbnailImage}
                   alt="Podcast thumbnail"
+                  fill
                 />
               </div>
             </div>
