@@ -19,11 +19,11 @@ import {
 } from 'react';
 import Head from 'next/head';
 import clsx from 'clsx';
+import Button from '@components/Button';
 import IconButton from '@components/IconButton';
 import Modal, { IModalProps } from '@components/Modal/Modal';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';
-import CoilLogo from '@svg/logos/brands/Coil.svg';
 import MonetizationIcon from '@svg/icons/MonetizationOn.svg';
 import styles from './WebMonetized.module.scss';
 
@@ -218,16 +218,17 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
               <p>
                 Web Monetization is a proposed open web standard that allows
                 browsers to pay websites. Support this podcast in real time as
-                you listen. Visit a web monetization provider to learn more and
-                set up your account.
+                you listen.
               </p>
             </div>
             <div className={styles.divider} />
             <div className={styles.providers}>
-              <h4>Web Monetization Providers</h4>
-              <a href="https://coil.com" target="_blank" rel="noreferrer">
-                <CoilLogo className={styles.provider} aria-label="Coil" />
-              </a>
+              <Button
+                href="https://help.prx.org/hc/en-us/articles/9901810244251-How-can-I-set-up-micropayments-for-my-podcast"
+                target="_blank"
+              >
+                Learn more
+              </Button>
             </div>
           </div>
         ) : (
@@ -251,6 +252,7 @@ const MebMonetized: React.FC<IMebMonetizedProps> = ({
                   src={imageUrl}
                   className={styles.thumbnailImage}
                   alt="Podcast thumbnail"
+                  fill
                 />
               </div>
             </div>
