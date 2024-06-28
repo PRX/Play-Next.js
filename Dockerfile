@@ -39,10 +39,6 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Set path to Sharp library since we are running Next in standalone.
-# https://nextjs.org/docs/messages/sharp-missing-in-production
-ENV NEXT_SHARP_PATH ./node_modules/sharp
-
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
