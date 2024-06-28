@@ -16,8 +16,8 @@
     "dev:caniuse:update-db": "npx browserslist@latest --update-db",
     "dev:start": "yarn dev:caniuse:update-db ; yarn dev",
     "build": "next build",
-    "start": "NEXT_SHARP_PATH=node_modules/sharp next start --port=4300",
-    "start:standalone": "NEXT_SHARP_PATH=node_modules/sharp PORT=4300 node .next/standalone/server.js",
+    "start": "next start --port=4300",
+    "start:standalone": "PORT=4300 node .next/standalone/server.js",
     "lint": "next lint",
     "test": "jest"
   },
@@ -40,7 +40,7 @@
     "react-html-parser": "^2.0.2",
     "react-is": "^18.1.0",
     "rss-parser": "^3.13.0",
-    "sharp": "^0.33.3",
+    "sharp": "0.32.6",
     "styled-components": "^6.1.11"
   },
   "devDependencies": {
