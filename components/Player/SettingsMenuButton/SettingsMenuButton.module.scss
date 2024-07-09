@@ -39,6 +39,10 @@
 
   &:hover {
     color: var(--_settingsMenuButton--color--hover);
+
+    .icon {
+      background-color: var(--_settingsMenuButton--background-color--hover);
+    }
   }
 
   &:focus-visible {
