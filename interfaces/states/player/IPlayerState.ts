@@ -12,6 +12,11 @@ export interface IPlayerState {
   playing: boolean;
 
   /**
+   * How fast audio is played as a ratio, 1 being normal speed.
+   */
+  playbackRate: number;
+
+  /**
    * Current time played.
    */
   currentTime: number;

@@ -42,6 +42,7 @@ import CloseIcon from '@svg/icons/Close.svg';
 import styles from '@styles/Embed.module.scss';
 import ClosedCaptions from '@components/Player/ClosedCaptions';
 import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
+import SettingsMenuButton from '@components/Player/SettingsMenuButton';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
@@ -467,6 +468,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       portalId="embed-modals"
                       paymentPointer={paymentPointer}
                     />
+                    <SettingsMenuButton />
                   </div>
                 </div>
 

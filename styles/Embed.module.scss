@@ -14,7 +14,7 @@ $player-padding: 20px;
 $player-text-color: colors.$white;
 
 $player-thumbnail-size--mobile: 65px;
-$player-thumbnail-size: 135px;
+$player-thumbnail-size: 120px;
 
 :export {
   playerGap: #{$player-gap};
@@ -172,8 +172,8 @@ $player-thumbnail-size: 135px;
     'THUMB TEXT  LOGO'
     'PANEL PANEL PANEL'
     'PROG  PROG  PROG';
-  align-content: stretch;
-  gap: $player-gap;
+  align-content: space-between;
+  column-gap: $player-gap;
 
   visibility: hidden;
 
@@ -329,7 +329,6 @@ $player-thumbnail-size: 135px;
   display: flex;
   align-items: center;
   gap: $player-gap;
-  height: var(--playerProgress-size);
 
   & > :first-child {
     flex-grow: 1;

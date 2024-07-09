@@ -40,8 +40,15 @@ const Player: React.FC<IPlayerProps> = ({
     tracks: initialTracks,
     ...(startIndex >= 0 && { currentTrackIndex: startIndex })
   });
-  const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
-    state;
+  const {
+    tracks,
+    playing,
+    currentTrackIndex,
+    currentTime,
+    muted,
+    volume,
+    playbackRate
+  } = state;
   const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
   const currentTrackDurationSeconds = useMemo(
     () => convertDurationToSeconds(currentTrack.duration),
@@ -164,6 +171,13 @@ const Player: React.FC<IPlayerProps> = ({
     });
   };
 
+  const setPlaybackRate = (rate: number) => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_PLAYBACK_RATE,
+      payload: rate
+    });
+  };
+
   const updateMediaSession = useCallback(() => {
     const artworkSrc = currentTrack.imageUrl || imageUrl;
     if ('mediaSession' in navigator) {
@@ -228,7 +242,8 @@ const Player: React.FC<IPlayerProps> = ({
       setTrack,
       setTracks,
       previousTrack,
-      nextTrack
+      nextTrack,
+      setPlaybackRate
     }),
     [audioElm, forward, imageUrl, replay, seekBy, seekTo, seekToRelative, state]
   );
@@ -296,7 +311,7 @@ const Player: React.FC<IPlayerProps> = ({
 
       switch (key) {
         case 'KeyS':
-          audioElm.current.playbackRate = 3 - audioElm.current.playbackRate;
+          setPlaybackRate(3 - playbackRate); // Toggle rate between 1 or 2.
           break;
         case 'KeyM':
           toggleMute();
@@ -383,7 +398,15 @@ const Player: React.FC<IPlayerProps> = ({
           break;
       }
     },
-    [audioElm, playing, seekBy, seekTo, seekToRelative, volumeDown, volumeUp]
+    [
+      playbackRate,
+      playing,
+      seekBy,
+      seekTo,
+      seekToRelative,
+      volumeDown,
+      volumeUp
+    ]
   );
 
   useEffect(() => {
@@ -439,6 +462,10 @@ const Player: React.FC<IPlayerProps> = ({
   useEffect(() => {
     audioElm.current.currentTime = currentTime;
   }, [currentTime]);
+
+  useEffect(() => {
+    audioElm.current.playbackRate = playbackRate;
+  }, [playbackRate]);
 
   useEffect(() => {
     loadAudio(currentTrackUrl);
