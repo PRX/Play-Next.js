@@ -1,0 +1,11 @@
+@use '@styles/colors';
+
+.root {
+  --iconButton--size: 30px;
+  --iconButton--color: #{colors.$white-a-80};
+
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  align-items: center;
+  column-gap: 8px;
+}

@@ -11,7 +11,8 @@ export const embedInitialState: IEmbedState = {
   shareShown: false,
   followShown: false,
   supportShown: false,
-  webMonetizationShown: false
+  webMonetizationShown: false,
+  settingsShown: false
 };
 
 export const embedStateReducer = (
@@ -23,7 +24,8 @@ export const embedStateReducer = (
     shareShown,
     followShown,
     supportShown,
-    webMonetizationShown
+    webMonetizationShown,
+    settingsShown
   } = state;
 
   switch (action.type) {
@@ -71,6 +73,15 @@ export const embedStateReducer = (
 
     case ActionTypes.EMBED_TOGGLE_WEB_MONETIZATION_DIALOG_SHOWN:
       return { ...state, webMonetizationShown: !webMonetizationShown };
+
+    case ActionTypes.EMBED_SHOW_SETTINGS_DIALOG:
+      return { ...state, settingsShown: true };
+
+    case ActionTypes.EMBED_HIDE_SETTINGS_DIALOG:
+      return { ...state, settingsShown: false };
+
+    case ActionTypes.EMBED_TOGGLE_SETTINGS_DIALOG_SHOWN:
+      return { ...state, settingsShown: !settingsShown };
 
     default:
       return state;

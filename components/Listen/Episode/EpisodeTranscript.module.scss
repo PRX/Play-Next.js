@@ -120,12 +120,13 @@
 }
 
 .speakerHeadingTime {
-  --iconButton-size: 1.5em;
+  --iconButton--size: 1.5em;
+
   display: flex;
   align-items: center;
   gap: 0.5ch;
 
-  min-height: calc(var(--iconButton-size) + var(--iconButton-padding) * 2);
+  min-height: calc(var(--iconButton--size) + var(--iconButton--padding) * 2);
 
   font-size: 1rem;
   font-weight: 100;

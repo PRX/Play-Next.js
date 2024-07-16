@@ -1,17 +1,17 @@
 @use '@styles/grid';
 
-$playlist-thumbnail-corner-radius: 10px;
-
-:export {
-  --playlist-thumbnail-corner-radius: #{$playlist-thumbnail-corner-radius};
-}
-
 .root {
+  --_player-thumbnail--border-radius: var(
+    --player-thumbnail--border-radius,
+    10px
+  );
+
   @include grid.stacked(after);
+
   position: relative;
   overflow: hidden;
 
-  border-radius: var(--playlist-thumbnail-corner-radius);
+  border-radius: var(--_player-thumbnail--border-radius);
 
   &::after {
     transition: backdrop-filter 200ms ease-in-out;

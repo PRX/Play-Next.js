@@ -283,15 +283,15 @@ $episodeCard-corner-radius: 5px;
 }
 
 .buttons {
-  --iconButton-size: var(--_episodeCard-thumbnail-size--mobile);
-  --iconButton-padding: 0;
-  --iconButton-color: var(--_episodeCard-thumbnail-icon-color);
-  --iconButton-color--hover: var(--_episodeCard-thumbnail-icon-color);
-  --iconButton-background-color: var(--_episodeCard-thumbnail-tint-color);
-  --iconButton-background-color--hover: var(
+  --iconButton--size: var(--_episodeCard-thumbnail-size--mobile);
+  --iconButton--padding: 0;
+  --iconButton--color: var(--_episodeCard-thumbnail-icon-color);
+  --iconButton--color--hover: var(--_episodeCard-thumbnail-icon-color);
+  --iconButton--background-color: var(--_episodeCard-thumbnail-tint-color);
+  --iconButton--background-color--hover: var(
     --episodeCard-thumbnail-tint-color--hover
   );
-  --iconButton-border-radius: 0;
+  --iconButton--border-radius: 0;
 
   z-index: 2;
 
@@ -365,7 +365,7 @@ $episodeCard-corner-radius: 5px;
 
 .controls {
   display: none;
-  margin-inline-start: calc(var(--iconButton-padding) * -1);
+  margin-inline-start: calc(var(--iconButton--padding) * -1);
 
   @media (min-width: Listen.$breakpoint-full) {
     display: block;

@@ -198,8 +198,8 @@ $player-thumbnail-size: 120px;
       animation: dim 200ms ease-out forwards;
     }
     .panel {
-      --iconButton-size: clamp(20px, 12vw, 40px);
-      --playButton-size: clamp(40px, 20vw, 60px);
+      --iconButton--size: clamp(20px, 12vw, 40px);
+      --playButton--size: clamp(40px, 20vw, 60px);
 
       @include grid.stacked;
       justify-items: center;
@@ -336,7 +336,7 @@ $player-thumbnail-size: 120px;
 }
 
 .monetized {
-  --iconButton-size: 24px;
+  --iconButton--size: 24px;
 }
 
 .playlist {

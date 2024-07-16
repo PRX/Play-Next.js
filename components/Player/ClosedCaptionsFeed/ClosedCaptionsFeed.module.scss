@@ -59,8 +59,8 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
     --jump-button--color,
     var(--accent-color, #{colors.$secondary-500})
   );
-  --iconButton-color--hover: var(--_jump-button--color);
-  --iconButton-size: 1.75rem;
+  --iconButton--color--hover: var(--_jump-button--color);
+  --iconButton--size: 1.75rem;
 
   position: fixed;
   right: 1rem;
@@ -163,12 +163,12 @@ $feed-max-width: calc(65ch + #{$caption-body-padding} * 2);
 }
 
 .speakerHeadingTime {
-  --iconButton-size: 1.5em;
+  --iconButton--size: 1.5em;
   display: flex;
   align-items: center;
   gap: 0.5ch;
 
-  min-height: calc(var(--iconButton-size) + var(--iconButton-padding) * 2);
+  min-height: calc(var(--iconButton--size) + var(--iconButton--padding) * 2);
 
   font-size: 1rem;
   font-weight: 100;

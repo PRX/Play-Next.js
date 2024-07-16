@@ -42,7 +42,7 @@ import CloseIcon from '@svg/icons/Close.svg';
 import styles from '@styles/Embed.module.scss';
 import ClosedCaptions from '@components/Player/ClosedCaptions';
 import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
-import SettingsMenuButton from '@components/Player/SettingsMenuButton';
+import EmbedSettingsMenu from './EmbedSettingsMenu';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
@@ -78,7 +78,8 @@ const Embed = ({ config, data }: IEmbedProps) => {
     shareShown,
     followShown,
     supportShown,
-    webMonetizationShown
+    webMonetizationShown,
+    settingsShown
   } = state;
   const modalShown =
     shareShown || followShown || supportShown || webMonetizationShown;
@@ -232,6 +233,14 @@ const Embed = ({ config, data }: IEmbedProps) => {
 
   const handleWebMonetizationCloseClick = () => {
     dispatch({ type: EmbedActionTypes.EMBED_HIDE_WEB_MONETIZATION_DIALOG });
+  };
+
+  const handleSettingsButtonClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_SHOW_SETTINGS_DIALOG });
+  };
+
+  const handleSettingsCloseClick = () => {
+    dispatch({ type: EmbedActionTypes.EMBED_HIDE_SETTINGS_DIALOG });
   };
 
   const handleResize = useCallback(() => {
@@ -468,7 +477,12 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       portalId="embed-modals"
                       paymentPointer={paymentPointer}
                     />
-                    <SettingsMenuButton />
+                    <EmbedSettingsMenu
+                      portalId="embed-modals"
+                      isOpen={settingsShown}
+                      onOpen={handleSettingsButtonClick}
+                      onClose={handleSettingsCloseClick}
+                    />
                   </div>
                 </div>
 

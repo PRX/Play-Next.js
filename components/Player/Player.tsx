@@ -165,6 +165,28 @@ const Player: React.FC<IPlayerProps> = ({
     });
   }, [boundedVolume]);
 
+  const setVolume = useCallback(
+    (newVolume: number) => {
+      dispatch({
+        type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
+        payload: boundedVolume(newVolume)
+      });
+    },
+    [boundedVolume]
+  );
+
+  const mute = () => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_MUTE
+    });
+  };
+
+  const unmute = () => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UNMUTE
+    });
+  };
+
   const toggleMute = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
@@ -233,6 +255,8 @@ const Player: React.FC<IPlayerProps> = ({
       playTrack,
       pause,
       togglePlayPause,
+      mute,
+      unmute,
       toggleMute,
       seekTo,
       seekBy,
@@ -243,9 +267,19 @@ const Player: React.FC<IPlayerProps> = ({
       setTracks,
       previousTrack,
       nextTrack,
-      setPlaybackRate
+      setPlaybackRate,
+      setVolume
     }),
-    [audioElm, forward, imageUrl, replay, seekBy, seekTo, seekToRelative, state]
+    [
+      forward,
+      imageUrl,
+      replay,
+      seekBy,
+      seekTo,
+      seekToRelative,
+      setVolume,
+      state
+    ]
   );
 
   const startPlaying = useCallback(() => {
@@ -325,16 +359,20 @@ const Player: React.FC<IPlayerProps> = ({
           togglePlayPause();
           break;
         case 'KeyJ':
-          seekBy(-10);
-          break;
-        case 'KeyL':
-          seekBy(10);
-          break;
-        case 'ArrowLeft':
           seekBy(-5);
           break;
+        case 'KeyL':
+          seekBy(30);
+          break;
+        case 'ArrowLeft':
+          if (!['INPUT'].includes(event.target.nodeName)) {
+            seekBy(-5);
+          }
+          break;
         case 'ArrowRight':
-          seekBy(5);
+          if (!['INPUT'].includes(event.target.nodeName)) {
+            seekBy(5);
+          }
           break;
         case 'Comma':
           if (!playing) {

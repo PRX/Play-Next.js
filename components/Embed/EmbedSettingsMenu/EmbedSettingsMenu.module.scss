@@ -1,0 +1,29 @@
+.root {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  justify-content: space-between;
+  align-items: center;
+  row-gap: 8px;
+  column-gap: clamp(12px, 5vw, 200px);
+  width: 100vw;
+  min-width: fit-content;
+  max-width: 500px;
+}
+
+.setting {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.settingLabel {
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+  white-space: nowrap;
+
+  svg {
+    width: 30px;
+  }
+}

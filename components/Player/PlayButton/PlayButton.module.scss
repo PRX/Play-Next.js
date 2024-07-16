@@ -1,10 +1,15 @@
-:export {
-  --playButton-size: 60px;
-  --playButton-padding: 0.0001px; // Need a really small non-zero value.
-}
+@use '@styles/colors';
 
 .root {
-  --iconButton-size: var(--playButton-size);
-  --iconButton-padding: var(--playButton-padding);
-  color: var(--playButton-color, var(--iconButton-color--promote));
+  --_playButton--color: var(--playButton--color, #{colors.$white-a-80});
+  --_playButton--size: var(--playButton-size, 60px);
+  --_playButton--padding: var(
+    --playButton--padding,
+    0.0001px
+  ); // Need a really small non-zero value.
+
+  --iconButton--size: var(--_playButton--size);
+  --iconButton--padding: var(--_playButton--padding);
+
+  color: var(--_playButton--color);
 }

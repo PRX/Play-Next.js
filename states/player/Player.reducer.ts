@@ -92,7 +92,11 @@ export const playerStateReducer = (
       return { ...state, muted: !muted };
 
     case ActionTypes.PLAYER_UPDATE_VOLUME:
-      return { ...state, volume: action.payload };
+      return {
+        ...state,
+        volume: action.payload,
+        muted: action.payload === 0
+      };
 
     case ActionTypes.PLAYER_UPDATE_PLAYBACK_RATE:
       return { ...state, playbackRate: action.payload };

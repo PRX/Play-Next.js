@@ -103,7 +103,7 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 }
 
 .closedCaptionsButton {
-  --iconButton-size: 24px;
+  --iconButton--size: 24px;
 }
 
 .closedCaptionsEnabled {
@@ -127,7 +127,8 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 }
 
 .controls {
-  --iconButton-size: clamp(36px, 10vw, 40px);
+  --iconButton--size: clamp(36px, 10vw, 40px);
+
   grid-area: CTRLS;
 
   display: grid;

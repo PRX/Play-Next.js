@@ -1,7 +1,9 @@
+@use '@styles/colors';
+
 .root {
   --_settingsMenuButton--color: var(
     --settingsMenuButton--color,
-    var(--iconButton-color)
+    #{colors.$white-a-50}
   );
   --_settingsMenuButton--border-color: var(
     --settingsMenuButton--color,
@@ -9,15 +11,15 @@
   );
   --_settingsMenuButton--color--hover: var(
     --settingsMenuButton--color--hover,
-    var(--iconButton-color--hover)
+    #{colors.$white}
   );
   --_settingsMenuButton--color--focus: var(
     --settingsMenuButton--color--focus,
-    var(--iconButton-color--focus)
+    #{colors.$white}
   );
   --_settingsMenuButton--background-color--hover: var(
     --settingsMenuButton--background-color--hover,
-    var(--iconButton-background-color--hover)
+    #{colors.$white-a-10}
   );
   --_settingsMenuButton--size: var(--settingsMenuButton--size, 24px);
 
@@ -33,11 +35,9 @@
 
   svg {
     width: var(--_settingsMenuButton--size);
-    aspect-ratio: 1;
-    fill: currentColor;
   }
 
-  &:hover {
+  &:active {
     color: var(--_settingsMenuButton--color--hover);
 
     .icon {
@@ -50,6 +50,16 @@
     outline-color: var(--_settingsMenuButton--background-color--hover);
     outline-style: solid;
     color: var(--_settingsMenuButton--color--focus);
+  }
+
+  @media (pointer: fine) {
+    &:hover {
+      color: var(--_settingsMenuButton--color--hover);
+
+      .icon {
+        background-color: var(--_settingsMenuButton--background-color--hover);
+      }
+    }
   }
 }
 

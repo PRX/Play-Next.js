@@ -28,4 +28,9 @@ export interface IEmbedState {
    * Flag to show web monetization dialog.
    */
   webMonetizationShown: boolean;
+
+  /**
+   * Flag to show settings dialog.
+   */
+  settingsShown: boolean;
 }
