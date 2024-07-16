@@ -1,6 +1,6 @@
 /**
  * @file Slider.tsx
- * Basic text slider component.
+ * Basic slider component.
  */
 
 import type React from 'react';

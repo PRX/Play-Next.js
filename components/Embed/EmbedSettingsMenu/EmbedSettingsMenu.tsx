@@ -6,6 +6,7 @@
 import type React from 'react';
 import clsx from 'clsx';
 import Modal, { IModalProps } from '@components/Modal/Modal';
+import RadioGroup from '@components/RadioGroup';
 import VolumeControls from '@components/Player/VolumeControls';
 import SettingsMenuButton from '@components/Player/SettingsMenuButton';
 import VolumeUpIcon from '@svg/icons/VolumeUp.svg';
@@ -36,7 +37,7 @@ const EmbedSettingsMenu: React.FC<IEmbedSettingsMenuProps> = ({
           <div className={styles.setting}>
             <span className={styles.settingLabel}>
               <VolumeUpIcon />
-              Volume
+              <span>Volume</span>
             </span>
             <span className={styles.settingControl}>
               <VolumeControls />
@@ -45,9 +46,16 @@ const EmbedSettingsMenu: React.FC<IEmbedSettingsMenuProps> = ({
           <div className={styles.setting}>
             <span className={styles.settingLabel}>
               <PlaybackSpeedIcon />
-              Playback Speed
+              <span>Playback Speed</span>
             </span>
-            <span className={styles.settingControl}>CONTROL HERE</span>
+            <span className={styles.settingControl}>
+              <RadioGroup
+                name="PlaybackSpeed"
+                options={['0.5', { value: '1', label: 'Normal' }, '1.5', '2']}
+                value="1"
+                onChange={(e) => console.log(e.target.checked, e.target.value)}
+              />
+            </span>
           </div>
         </div>
       </Modal>
