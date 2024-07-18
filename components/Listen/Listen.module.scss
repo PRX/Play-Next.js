@@ -58,12 +58,15 @@ $viewTransitionDuration: 300ms;
     --backgroundImage-tint-opacity: 0.9;
 
     // IconButton
-    --iconButton-background-color--hover: #{colors.$black-a-10};
-    --iconButton-outline-color--focus: #{colors.$black-a-10};
-    --iconButton-color: #{colors.$black-a-60};
-    --iconButton-color--promote: #{colors.$black-a-80};
-    --iconButton-color--hover: #{colors.$black};
-    --iconButton-color--focus: #{colors.$black};
+    --iconButton--background-color--hover: #{colors.$black-a-10};
+    --iconButton--outline-color--focus: #{colors.$black-a-10};
+    --iconButton--color: #{colors.$black-a-60};
+    --iconButton--color--promote: #{colors.$black-a-80};
+    --iconButton--color--hover: #{colors.$black};
+    --iconButton--color--focus: #{colors.$black};
+
+    // PlayButton
+    --playButton--color: #{colors.$black-a-80};
 
     // EpisodeList
     --episodeList-text-color: #{colors.$grey-600};
@@ -91,6 +94,23 @@ $viewTransitionDuration: 300ms;
     // Modal
     --modal-background-color: #{colors.$white-a-90};
     --modal-text-color: #{colors.$black};
+
+    // SettingsMenuButton
+    --settingsMenuButton--color: #{colors.$black-a-60};
+    --settingsMenuButton--color--hover: #{colors.$black};
+    --settingsMenuButton--color--focus: #{colors.$black};
+    --settingsMenuButton--border-color: #{colors.$black-a-10};
+    --settingsMenuButton--background-color--hover: #{colors.$black-a-10};
+
+    // Slider
+    --slider--color: #{colors.$black-a-80};
+    --slider--track--color: #{colors.$black-a-30};
+
+    // RadioGroup
+    --radio-group--color: #{colors.$black-a-80};
+    --radio-group--color--hover: #{colors.$black};
+    --radio-group--background-color--hover: #{colors.$black-a-10};
+    --radio-group--background-color--checked: #{colors.$black-a-30};
 
     color-scheme: light;
   }
@@ -398,6 +418,17 @@ $viewTransitionDuration: 300ms;
 
     grid-column: SIDEBAR-start / MAIN-end;
     grid-row: 1;
+  }
+}
+
+.modals {
+  display: none;
+
+  &:not(:empty) {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
   }
 }
 

@@ -82,7 +82,11 @@ const Embed = ({ config, data }: IEmbedProps) => {
     settingsShown
   } = state;
   const modalShown =
-    shareShown || followShown || supportShown || webMonetizationShown;
+    shareShown ||
+    followShown ||
+    supportShown ||
+    webMonetizationShown ||
+    settingsShown;
   const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
   const thumbnailSizeMobile = parseInt(
     styles['--player-thumbnail-size--mobile'],
