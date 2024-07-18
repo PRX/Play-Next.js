@@ -6,9 +6,9 @@
 import type React from 'react';
 import clsx from 'clsx';
 import Modal, { IModalProps } from '@components/Modal/Modal';
-import RadioGroup from '@components/RadioGroup';
-import VolumeControls from '@components/Player/VolumeControls';
+import PlaybackRateControls from '@components/Player/PlaybackSpeedControls';
 import SettingsMenuButton from '@components/Player/SettingsMenuButton';
+import VolumeControls from '@components/Player/VolumeControls';
 import VolumeUpIcon from '@svg/icons/VolumeUp.svg';
 import PlaybackSpeedIcon from '@svg/icons/PlaybackSpeed.svg';
 import styles from './EmbedSettingsMenu.module.scss';
@@ -49,12 +49,7 @@ const EmbedSettingsMenu: React.FC<IEmbedSettingsMenuProps> = ({
               <span>Playback Speed</span>
             </span>
             <span className={styles.settingControl}>
-              <RadioGroup
-                name="PlaybackSpeed"
-                options={['0.5', { value: '1', label: 'Normal' }, '1.5', '2']}
-                value="1"
-                onChange={(e) => console.log(e.target.checked, e.target.value)}
-              />
+              <PlaybackRateControls />
             </span>
           </div>
         </div>

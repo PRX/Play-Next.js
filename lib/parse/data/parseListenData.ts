@@ -40,7 +40,7 @@ const parseListenData = (
     parseListenEpisodeData
   ) as IListenEpisodeData[];
   const hasRssData = !!(feedUrl && rssData);
-  const bgImageUrl = rssImageUrl || rssItunesImage;
+  const bgImageUrl = rssItunesImage || rssImageUrl;
   const content = generateHtmlString(rssItunesSummary || description);
   const followUrls = {
     ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })

@@ -1,6 +1,6 @@
 /**
  * @file VolumeControls.tsx
- * Play button component to toggle playing state of player.
+ * Component to provide controls to mute and change volume.
  */
 
 import type React from 'react';

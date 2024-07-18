@@ -11,14 +11,13 @@ import SettingsIcon from '@svg/icons/Settings.svg';
 import VolumeOffIcon from '@svg/icons/VolumeOff.svg';
 import styles from './SettingsMenuButton.module.scss';
 
-export interface ISettingsMenuButtonProps {
+export type SettingsMenuButtonProps = React.JSX.IntrinsicElements['button'] & {
   className?: string;
-  onClick?(): void;
-}
+};
 
-const SettingsMenuButton: React.FC<ISettingsMenuButtonProps> = ({
+const SettingsMenuButton: React.FC<SettingsMenuButtonProps> = ({
   className,
-  onClick
+  ...rest
 }) => {
   const { state } = useContext(PlayerContext);
   const { muted, playbackRate } = state;
@@ -28,17 +27,8 @@ const SettingsMenuButton: React.FC<ISettingsMenuButtonProps> = ({
     [styles.hasFeedback]: hasFeedback
   });
 
-  const handleClick = () => {
-    if (onClick) onClick();
-  };
-
   return (
-    <button
-      title="Settings"
-      type="button"
-      className={rootClassNames}
-      onClick={handleClick}
-    >
+    <button title="Settings" {...rest} type="button" className={rootClassNames}>
       {hasFeedback && (
         <div className={styles.feedback}>
           {showPlaybackRate && (

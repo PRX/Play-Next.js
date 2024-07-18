@@ -31,4 +31,5 @@ export interface IPlayerContext
   setTrack(index: number): void;
   setTracks(tracks: IAudioData[]): void;
   setVolume(newVolume: number): void;
+  setPlaybackRate(newPlaybackRate: number): void;
 }

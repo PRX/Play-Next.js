@@ -11,9 +11,16 @@ export type RadioGroupProps = React.JSX.IntrinsicElements['input'] & {
   options: (string | { value: string; label: string })[];
 };
 
-function RadioGroup({ className, options, value, ...rest }: RadioGroupProps) {
+function RadioGroup({
+  className,
+  options,
+  defaultValue,
+  value,
+  ...rest
+}: RadioGroupProps) {
   const { name } = rest;
-  const currentValue = Array.isArray(value) ? value[0] : value;
+  const inputValue = value || defaultValue;
+  const cleanValue = Array.isArray(inputValue) ? inputValue[0] : inputValue;
 
   return (
     <div className={clsx(styles.root, className)}>
@@ -25,16 +32,16 @@ function RadioGroup({ className, options, value, ...rest }: RadioGroupProps) {
                 label: v
               }
             : v;
-        const domId = `${name}--${val}`;
+        const domId = `${name}--${label}--${val}`;
 
         return (
-          <label className={styles.label} htmlFor={domId}>
+          <label className={styles.label} htmlFor={domId} key={domId}>
             <input
               type="radio"
               className={styles.input}
               value={val}
               id={domId}
-              defaultChecked={val === currentValue}
+              checked={val === cleanValue}
               {...rest}
             />
             <span>{label}</span>

@@ -345,7 +345,7 @@ const Player: React.FC<IPlayerProps> = ({
 
       switch (key) {
         case 'KeyS':
-          setPlaybackRate(3 - playbackRate); // Toggle rate between 1 or 2.
+          setPlaybackRate(playbackRate === 1 ? 2 : 1); // Toggle rate between 1 or 2.
           break;
         case 'KeyM':
           toggleMute();

@@ -55,6 +55,9 @@
   > svg {
     width: auto;
     height: auto;
+    aspect-ratio: 1;
+
+    fill: currentColor;
 
     &[class*='fa-'] {
       padding: var(--_iconButton--padding);
