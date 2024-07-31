@@ -110,7 +110,6 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
             <Popover.Trigger asChild>
               <SettingsMenuButton />
             </Popover.Trigger>
-            {/* <Popover.Portal> */}
             <Popover.Content
               side="top"
               sideOffset={8}
@@ -138,7 +137,6 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
                 </div>
               </div>
             </Popover.Content>
-            {/* </Popover.Portal> */}
           </div>
 
           <div className={styles.controls}>
