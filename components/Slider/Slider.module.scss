@@ -2,6 +2,7 @@
 
 .root {
   --_slider--color: var(--slider--color, #{colors.$white-a-80});
+  --_slider--color--hover: var(--slider--color--hover, #{colors.$white});
   --_slider--track--color: var(--slider--track--color, #{colors.$white-a-30});
   --_slider--height: var(--slider--height, 10px);
   --_slider--handle--width: var(
@@ -33,7 +34,7 @@
   }
 
   &:where(:hover, :focus-within) {
-    --slider--color: #{colors.$white};
+    --slider--color: var(--_slider--color--hover);
   }
 }
 
