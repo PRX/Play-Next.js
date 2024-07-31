@@ -61,7 +61,7 @@ describe('lib/parse/data', () => {
         }
       );
 
-      expect(result.bgImageUrl).toBe('http://test.com/foo.png');
+      expect(result.bgImageUrl).toBe('http://test.com/foo-3000.png');
       expect(result.title).toBe('Foo');
       expect(result.author).toBe('John Doe');
       expect(result.owner).toStrictEqual({
