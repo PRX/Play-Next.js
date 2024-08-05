@@ -4,6 +4,11 @@
   --_slider--color: var(--slider--color, #{colors.$white-a-80});
   --_slider--color--hover: var(--slider--color--hover, #{colors.$white});
   --_slider--track--color: var(--slider--track--color, #{colors.$white-a-30});
+  --_slider--handle--color: var(--slider--handle--color, var(--_slider--color));
+  --_slider--handle--color--hover: var(
+    --slider--handle--color--hover,
+    var(--_slider--color--hover)
+  );
   --_slider--height: var(--slider--height, 10px);
   --_slider--handle--width: var(
     --slider--handle--width,
@@ -28,9 +33,13 @@
     top: 0;
     width: var(--_slider--handle--width);
     height: var(--_slider--height);
-    background-color: var(--_slider--color);
+    background-color: var(--_slider--handle--color);
     box-shadow: -100vw 0 0 100vw var(--_slider--color),
       100vw 0 0 100vw var(--_slider--track--color);
+  }
+
+  &[data-progress='0'] {
+    --slider--handle--color: var(--_slider--track--color);
   }
 
   &:where(:hover, :focus-within) {

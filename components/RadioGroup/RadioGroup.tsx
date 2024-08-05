@@ -7,8 +7,16 @@ import type React from 'react';
 import clsx from 'clsx';
 import styles from './RadioGroup.module.scss';
 
+export type RadioGroupOption =
+  | string
+  | {
+      value: string;
+      label?: string;
+      labelProps?: React.JSX.IntrinsicElements['label'];
+    };
+
 export type RadioGroupProps = React.JSX.IntrinsicElements['input'] & {
-  options: (string | { value: string; label: string })[];
+  options: RadioGroupOption[];
 };
 
 function RadioGroup({
@@ -25,17 +33,27 @@ function RadioGroup({
   return (
     <div className={clsx(styles.root, className)}>
       {options.map((v) => {
-        const { value: val, label } =
-          typeof v === 'string'
-            ? {
-                value: v,
-                label: v
-              }
-            : v;
-        const domId = `${name}--${label}--${val}`;
+        const {
+          value: val,
+          label,
+          labelProps = {}
+        } = typeof v === 'string'
+          ? {
+              value: v,
+              label: v
+            }
+          : v;
+        const { className: labelClassName, ...labelPropsRest } = labelProps;
+        const labelText = label || val;
+        const domId = `${name}--${labelText}--${val}`;
 
         return (
-          <label className={styles.label} htmlFor={domId} key={domId}>
+          <label
+            {...labelPropsRest}
+            className={clsx(styles.label, labelClassName)}
+            htmlFor={domId}
+            key={domId}
+          >
             <input
               type="radio"
               className={styles.input}
@@ -44,7 +62,7 @@ function RadioGroup({
               checked={val === cleanValue}
               {...rest}
             />
-            <span>{label}</span>
+            <span>{labelText}</span>
           </label>
         );
       })}

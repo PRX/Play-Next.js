@@ -16,9 +16,10 @@ import styles from './VolumeControls.module.scss';
 
 export type VolumeControlsProps = {
   className?: string;
+  id?: string;
 };
 
-const VolumeControls: React.FC<VolumeControlsProps> = ({ className }) => {
+const VolumeControls: React.FC<VolumeControlsProps> = ({ className, id }) => {
   const { state, toggleMute, setVolume } = useContext(PlayerContext);
   const { muted, volume } = state;
   const VolumeIcon =
@@ -46,6 +47,7 @@ const VolumeControls: React.FC<VolumeControlsProps> = ({ className }) => {
       <IconButton
         className={styles.muteButton}
         title={`${!muted ? 'Mute' : 'Unmute'} (m)`}
+        aria-keyshortcuts="m"
         type="button"
         onClick={handleClick}
       >
@@ -56,7 +58,10 @@ const VolumeControls: React.FC<VolumeControlsProps> = ({ className }) => {
         defaultValue={volume}
         min={0}
         max={1}
-        step={0.05}
+        step={0.01}
+        title="Volume (-, =)"
+        aria-keyshortcuts="Minus, Equal"
+        id={id || 'volume'}
       />
       <span className={styles.volume}>{`${(volume * 100).toFixed(0)}%`}</span>
     </div>

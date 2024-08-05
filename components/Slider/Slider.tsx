@@ -37,11 +37,14 @@ function Slider({ className, defaultValue, ...rest }: SliderProps) {
 
     function handleChange(e: Event) {
       const target = e.target as HTMLInputElement;
-
-      rootRef.current?.style.setProperty(
-        '--progress',
-        `${calculateProgress(target.value, target.min, target.max)}`
+      const newProgress = calculateProgress(
+        target.value,
+        target.min,
+        target.max
       );
+
+      rootRef.current?.style.setProperty('--progress', `${newProgress}`);
+      rootRef.current?.setAttribute('data-progress', `${newProgress}`);
     }
 
     inputElm?.addEventListener('input', handleChange);
@@ -54,6 +57,7 @@ function Slider({ className, defaultValue, ...rest }: SliderProps) {
   return (
     <div
       className={clsx(styles.root, className)}
+      data-progress={progress}
       style={{ '--progress': progress } as CSSProperties}
       ref={rootRef}
     >

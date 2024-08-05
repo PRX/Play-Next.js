@@ -149,6 +149,9 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 
 .progress {
   grid-area: PROG;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
 }
 
 .settingsMenu {
@@ -180,6 +183,7 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   align-items: center;
   column-gap: 4px;
   white-space: nowrap;
+  user-select: none;
 
   svg {
     width: 30px;
@@ -190,4 +194,8 @@ $footerPlayer-thumbnail-size--mobile: 24px;
       display: none;
     }
   }
+}
+
+.volume {
+  grid-column: 1 / -1;
 }

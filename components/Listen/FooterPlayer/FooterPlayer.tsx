@@ -24,7 +24,6 @@ import SettingsMenuButton from '@components/Player/SettingsMenuButton';
 import VolumeControls from '@components/Player/VolumeControls';
 import listenStyles from '@components/Listen/Listen.module.scss';
 import { ListenActionTypes } from '@states/listen/Listen.actions';
-import VolumeUpIcon from '@svg/icons/VolumeUp.svg';
 import PlaybackSpeedIcon from '@svg/icons/PlaybackSpeed.svg';
 import styles from './FooterPlayer.module.scss';
 
@@ -106,7 +105,18 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
                 <ClosedCaptionsFeed speakerColors={accentColor} />
               </ClosedCaptionsDialog>
             )}
+          </div>
 
+          <div className={styles.controls}>
+            {tracks.length > 1 && <PreviousButton />}
+            <ReplayButton />
+            <PlayButton />
+            <ForwardButton />
+            {tracks.length > 1 && <NextButton />}
+          </div>
+
+          <div className={styles.progress}>
+            <PlayerProgress />
             <Popover.Trigger asChild>
               <SettingsMenuButton />
             </Popover.Trigger>
@@ -118,11 +128,7 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
             >
               <div className={styles.settingsMenu}>
                 <div className={styles.setting}>
-                  <span className={styles.settingLabel}>
-                    <VolumeUpIcon />
-                    <span>Volume</span>
-                  </span>
-                  <span className={styles.settingControl}>
+                  <span className={clsx(styles.settingControl, styles.volume)}>
                     <VolumeControls />
                   </span>
                 </div>
@@ -137,18 +143,6 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
                 </div>
               </div>
             </Popover.Content>
-          </div>
-
-          <div className={styles.controls}>
-            {tracks.length > 1 && <PreviousButton />}
-            <ReplayButton />
-            <PlayButton />
-            <ForwardButton />
-            {tracks.length > 1 && <NextButton />}
-          </div>
-
-          <div className={styles.progress}>
-            <PlayerProgress />
           </div>
         </Popover.Anchor>
       </Popover.Root>

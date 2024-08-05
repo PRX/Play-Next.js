@@ -7,7 +7,7 @@ import type React from 'react';
 import { ChangeEvent, useContext } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
-import RadioGroup from '@components/RadioGroup';
+import RadioGroup, { RadioGroupOption } from '@components/RadioGroup';
 import styles from './PlaybackRateControls.module.scss';
 
 export type PlaybackRateControlsProps = {
@@ -19,11 +19,18 @@ const PlaybackRateControls: React.FC<PlaybackRateControlsProps> = ({
 }) => {
   const { state, setPlaybackRate } = useContext(PlayerContext);
   const { playbackRate } = state;
-  const playbackSpeedOption = [
-    '0.5',
-    { value: '1', label: 'Normal' },
-    '1.5',
-    '2'
+  const playbackSpeedOption: RadioGroupOption[] = [
+    { value: '0.5', labelProps: { 'aria-label': 'Half speed' } },
+    {
+      value: '1',
+      label: 'Normal',
+      labelProps: { 'aria-label': 'Normal speed' }
+    },
+    {
+      value: '1.5',
+      labelProps: { 'aria-label': 'One and a half times speed' }
+    },
+    { value: '2', labelProps: { 'aria-label': 'Two times speed' } }
   ];
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
