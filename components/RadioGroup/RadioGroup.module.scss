@@ -1,0 +1,69 @@
+@use '@styles/colors';
+
+.root {
+  --_radio-group--color: var(--radio-group--color, #{colors.$white-a-80});
+  --_radio-group--color--hover: var(
+    --radio-group--color--hover,
+    #{colors.$white}
+  );
+  --_radio-group--background-color: var(
+    --radio-group--background-color,
+    transparent
+  );
+  --_radio-group--background-color--hover: var(
+    --radio-group--background-color--hover,
+    #{colors.$white-a-10}
+  );
+  --_radio-group--background-color--checked: var(
+    --radio-group--background-color--checked,
+    #{colors.$white-a-30}
+  );
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 8px;
+  row-gap: 8px;
+
+  color: var(--_radio-group--color);
+}
+
+.input {
+  // visibility: hidden;
+  appearance: none;
+  z-index: 1;
+
+  cursor: pointer;
+
+  margin: 0;
+  padding: 0;
+  outline: none;
+
+  &:where(:hover, :focus-visible) {
+    background-color: var(--_radio-group--background-color--hover);
+  }
+
+  &:where(:checked) {
+    background-color: var(--_radio-group--background-color--checked);
+  }
+}
+
+.label {
+  display: grid;
+  overflow: hidden;
+
+  border-radius: 4px;
+
+  & > * {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+
+  & > :not(input) {
+    padding: 0.25em 0.5em;
+  }
+
+  &:where(:focus-within) {
+    background-color: var(--_radio-group--background-color--hover);
+  }
+}

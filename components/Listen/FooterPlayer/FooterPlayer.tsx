@@ -4,6 +4,7 @@
  */
 
 import { forwardRef, useContext } from 'react';
+import * as Popover from '@radix-ui/react-popover';
 import clsx from 'clsx';
 import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
@@ -17,9 +18,13 @@ import NextButton from '@components/Player/NextButton';
 import ReplayButton from '@components/Player/ReplayButton';
 import PlayButton from '@components/Player/PlayButton';
 import ForwardButton from '@components/Player/ForwardButton';
+import PlaybackRateControls from '@components/Player/PlaybackSpeedControls';
 import PlayerProgress from '@components/Player/PlayerProgress';
+import SettingsMenuButton from '@components/Player/SettingsMenuButton';
+import VolumeControls from '@components/Player/VolumeControls';
 import listenStyles from '@components/Listen/Listen.module.scss';
 import { ListenActionTypes } from '@states/listen/Listen.actions';
+import PlaybackSpeedIcon from '@svg/icons/PlaybackSpeed.svg';
 import styles from './FooterPlayer.module.scss';
 
 export interface IFooterPlayerProps {}
@@ -59,9 +64,9 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
     };
 
     return (
-      <>
+      <Popover.Root modal>
         <ThemeVars theme="Listen FooterPlayer" cssProps={styles} />
-        <div
+        <Popover.Anchor
           ref={ref}
           className={clsx(styles.root, {
             [styles.isShown]: isShown
@@ -112,9 +117,35 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
 
           <div className={styles.progress}>
             <PlayerProgress />
+            <Popover.Trigger asChild>
+              <SettingsMenuButton />
+            </Popover.Trigger>
+            <Popover.Content
+              side="top"
+              sideOffset={8}
+              align="end"
+              alignOffset={8}
+            >
+              <div className={styles.settingsMenu}>
+                <div className={styles.setting}>
+                  <span className={clsx(styles.settingControl, styles.volume)}>
+                    <VolumeControls />
+                  </span>
+                </div>
+                <div className={styles.setting}>
+                  <span className={styles.settingLabel}>
+                    <PlaybackSpeedIcon />
+                    <span>Playback Speed</span>
+                  </span>
+                  <span className={styles.settingControl}>
+                    <PlaybackRateControls />
+                  </span>
+                </div>
+              </div>
+            </Popover.Content>
           </div>
-        </div>
-      </>
+        </Popover.Anchor>
+      </Popover.Root>
     );
   }
 );

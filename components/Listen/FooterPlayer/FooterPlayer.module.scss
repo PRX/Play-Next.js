@@ -27,6 +27,7 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   transition: transform 300ms ease-in-out;
   transform: translateY(100%);
   position: absolute;
+  isolation: isolate;
   left: 0;
   bottom: 100%;
   width: 100%;
@@ -44,9 +45,16 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 
   padding: 0.5rem;
 
-  background-color: var(--footerPlayer-background-color, colors.$black);
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
 
-  backdrop-filter: blur(30px);
+    background-color: var(--footerPlayer-background-color, colors.$black);
+
+    backdrop-filter: blur(30px);
+  }
 
   &.isShown {
     transform: translateY(0);
@@ -103,7 +111,7 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 }
 
 .closedCaptionsButton {
-  --iconButton-size: 24px;
+  --iconButton--size: 24px;
 }
 
 .closedCaptionsEnabled {
@@ -127,7 +135,8 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 }
 
 .controls {
-  --iconButton-size: clamp(36px, 10vw, 40px);
+  --iconButton--size: clamp(36px, 10vw, 40px);
+
   grid-area: CTRLS;
 
   display: grid;
@@ -140,4 +149,53 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 
 .progress {
   grid-area: PROG;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.settingsMenu {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  justify-content: space-between;
+  align-items: center;
+  row-gap: 16px;
+  column-gap: clamp(12px, 4vw, 48px);
+
+  padding: 1em;
+
+  background-color: var(--footerPlayer-background-color);
+
+  backdrop-filter: blur(30px);
+
+  color: var(--listen-text-color);
+}
+
+.setting {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.settingLabel {
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+  white-space: nowrap;
+  user-select: none;
+
+  svg {
+    width: 30px;
+  }
+
+  @media (max-width: 440px) {
+    & > :not(svg) {
+      display: none;
+    }
+  }
+}
+
+.volume {
+  grid-column: 1 / -1;
 }

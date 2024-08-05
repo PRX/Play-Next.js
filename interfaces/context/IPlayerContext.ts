@@ -18,6 +18,8 @@ export interface IPlayerContext
   playTrack(index: number): void;
   pause(): void;
   togglePlayPause(): void;
+  mute(): void;
+  unmute(): void;
   toggleMute(): void;
   seekTo(time: number): void;
   seekBy(time: number): void;
@@ -28,4 +30,6 @@ export interface IPlayerContext
   previousTrack(): void;
   setTrack(index: number): void;
   setTracks(tracks: IAudioData[]): void;
+  setVolume(newVolume: number): void;
+  setPlaybackRate(newPlaybackRate: number): void;
 }

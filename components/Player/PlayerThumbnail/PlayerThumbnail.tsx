@@ -8,7 +8,6 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import PrxImage, { IPrxImageProps } from '@components/PrxImage';
-import ThemeVars from '@components/ThemeVars';
 import styles from './PlayerThumbnail.module.scss';
 
 export interface IPlayerThumbnailProps extends Partial<IPrxImageProps> {
@@ -56,7 +55,6 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
           })
         }}
       >
-        <ThemeVars theme="PlayerThumbnail" cssProps={styles} />
         <PrxImage
           ref={imageRef}
           src={srcUrl}

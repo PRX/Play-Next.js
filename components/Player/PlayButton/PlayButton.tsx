@@ -6,7 +6,6 @@
 import type React from 'react';
 import { useContext } from 'react';
 import PlayerContext from '@contexts/PlayerContext';
-import ThemeVars from '@components/ThemeVars';
 import IconButton from '@components/IconButton';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
 import PauseIcon from '@svg/icons/Pause.svg';
@@ -24,18 +23,15 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
   };
 
   return (
-    <>
-      <ThemeVars theme="PlayButton" cssProps={styles} />
-      <IconButton
-        className={styles.root}
-        title={!playing ? 'Play' : 'Pause'}
-        {...props}
-        type="button"
-        onClick={handleClick}
-      >
-        {!playing ? <PlayArrowIcon /> : <PauseIcon />}
-      </IconButton>
-    </>
+    <IconButton
+      className={styles.root}
+      title={`${!playing ? 'Play' : 'Pause'} (k / space)`}
+      {...props}
+      type="button"
+      onClick={handleClick}
+    >
+      {!playing ? <PlayArrowIcon /> : <PauseIcon />}
+    </IconButton>
   );
 };
 

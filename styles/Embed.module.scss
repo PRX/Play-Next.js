@@ -14,7 +14,7 @@ $player-padding: 20px;
 $player-text-color: colors.$white;
 
 $player-thumbnail-size--mobile: 65px;
-$player-thumbnail-size: 135px;
+$player-thumbnail-size: 120px;
 
 :export {
   playerGap: #{$player-gap};
@@ -37,12 +37,15 @@ $player-thumbnail-size: 135px;
     --backgroundImage-tint-opacity: 0.9;
 
     // IconButton
-    --iconButton-background-color--hover: #{colors.$black-a-10};
-    --iconButton-outline-color--focus: #{colors.$black-a-10};
-    --iconButton-color: #{colors.$black-a-60};
-    --iconButton-color--promote: #{colors.$black-a-80};
-    --iconButton-color--hover: #{colors.$black};
-    --iconButton-color--focus: #{colors.$black};
+    --iconButton--background-color--hover: #{colors.$black-a-10};
+    --iconButton--outline-color--focus: #{colors.$black-a-10};
+    --iconButton--color: #{colors.$black-a-60};
+    --iconButton--color--promote: #{colors.$black-a-80};
+    --iconButton--color--hover: #{colors.$black};
+    --iconButton--color--focus: #{colors.$black};
+
+    // PlayButton
+    --playButton--color: #{colors.$black-a-80};
 
     // Playlist
     --playlist-text-color: #{colors.$grey-600};
@@ -61,6 +64,24 @@ $player-thumbnail-size: 135px;
     // Modal
     --modal-background-color: #{colors.$white-a-90};
     --modal-text-color: #{colors.$black};
+
+    // SettingsMenuButton
+    --settingsMenuButton--color: #{colors.$black-a-60};
+    --settingsMenuButton--color--hover: #{colors.$black};
+    --settingsMenuButton--color--focus: #{colors.$black};
+    --settingsMenuButton--border-color: #{colors.$black-a-10};
+    --settingsMenuButton--background-color--hover: #{colors.$black-a-10};
+
+    // Slider
+    --slider--color: #{colors.$black-a-80};
+    --slider--color--hover: #{colors.$black};
+    --slider--track--color: #{colors.$black-a-30};
+
+    // RadioGroup
+    --radio-group--color: #{colors.$black-a-80};
+    --radio-group--color--hover: #{colors.$black};
+    --radio-group--background-color--hover: #{colors.$black-a-10};
+    --radio-group--background-color--checked: #{colors.$black-a-30};
   }
 
   display: grid;
@@ -172,8 +193,8 @@ $player-thumbnail-size: 135px;
     'THUMB TEXT  LOGO'
     'PANEL PANEL PANEL'
     'PROG  PROG  PROG';
-  align-content: stretch;
-  gap: $player-gap;
+  align-content: space-between;
+  column-gap: $player-gap;
 
   visibility: hidden;
 
@@ -198,8 +219,8 @@ $player-thumbnail-size: 135px;
       animation: dim 200ms ease-out forwards;
     }
     .panel {
-      --iconButton-size: clamp(20px, 12vw, 40px);
-      --playButton-size: clamp(40px, 20vw, 60px);
+      --iconButton--size: clamp(20px, 12vw, 40px);
+      --playButton--size: clamp(40px, 20vw, 60px);
 
       @include grid.stacked;
       justify-items: center;
@@ -329,7 +350,6 @@ $player-thumbnail-size: 135px;
   display: flex;
   align-items: center;
   gap: $player-gap;
-  height: var(--playerProgress-size);
 
   & > :first-child {
     flex-grow: 1;
@@ -337,7 +357,7 @@ $player-thumbnail-size: 135px;
 }
 
 .monetized {
-  --iconButton-size: 24px;
+  --iconButton--size: 24px;
 }
 
 .playlist {

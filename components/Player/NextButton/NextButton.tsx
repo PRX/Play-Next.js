@@ -21,7 +21,7 @@ const NextButton: React.FC<INextButtonProps> = (props) => {
 
   return (
     <IconButton
-      title="Next Episode"
+      title="Next Episode (])"
       {...props}
       type="button"
       onClick={handleClick}

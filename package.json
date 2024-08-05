@@ -25,6 +25,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
+    "@radix-ui/react-popover": "^1.1.1",
     "@styled-icons/fa-brands": "^10.38.0",
     "@svgr/webpack": "^6.2.1",
     "clsx": "^1.1.1",

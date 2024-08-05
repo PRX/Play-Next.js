@@ -21,7 +21,7 @@ const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
 
   return (
     <IconButton
-      title="Play Previous Track"
+      title="Play Previous Track ([)"
       {...props}
       type="button"
       onClick={handleClick}

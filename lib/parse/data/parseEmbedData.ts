@@ -58,7 +58,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const audio: IAudioData = {
     // Establish defaults from feed props.
     ...((rssImageUrl || rssItunesImage) && {
-      imageUrl: rssImageUrl || rssItunesImage
+      imageUrl: rssItunesImage || rssImageUrl
     }),
 
     // Override with feed items props.
@@ -78,7 +78,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const audioHasProps = Object.keys(audio).length > 0 && !!audio.url;
   const playlist = !!showPlaylist && audioItems;
   const bgImageUrl =
-    configBgImageUrl || rssImageUrl || rssItunesImage || audio.imageUrl;
+    configBgImageUrl || rssItunesImage || rssImageUrl || audio.imageUrl;
   const followUrls = {
     ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
   };

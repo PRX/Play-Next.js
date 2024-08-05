@@ -11,6 +11,7 @@ import {
 
 export const playerInitialState: IPlayerState = {
   playing: false,
+  playbackRate: 1,
   currentTrackIndex: null,
   tracks: null,
   currentTime: null,
@@ -91,7 +92,14 @@ export const playerStateReducer = (
       return { ...state, muted: !muted };
 
     case ActionTypes.PLAYER_UPDATE_VOLUME:
-      return { ...state, volume: action.payload };
+      return {
+        ...state,
+        volume: action.payload,
+        muted: action.payload === 0
+      };
+
+    case ActionTypes.PLAYER_UPDATE_PLAYBACK_RATE:
+      return { ...state, playbackRate: action.payload };
 
     default:
       return state;

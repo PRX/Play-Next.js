@@ -40,8 +40,15 @@ const Player: React.FC<IPlayerProps> = ({
     tracks: initialTracks,
     ...(startIndex >= 0 && { currentTrackIndex: startIndex })
   });
-  const { tracks, playing, currentTrackIndex, currentTime, muted, volume } =
-    state;
+  const {
+    tracks,
+    playing,
+    currentTrackIndex,
+    currentTime,
+    muted,
+    volume,
+    playbackRate
+  } = state;
   const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
   const currentTrackDurationSeconds = useMemo(
     () => convertDurationToSeconds(currentTrack.duration),
@@ -158,9 +165,38 @@ const Player: React.FC<IPlayerProps> = ({
     });
   }, [boundedVolume]);
 
+  const setVolume = useCallback(
+    (newVolume: number) => {
+      dispatch({
+        type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
+        payload: boundedVolume(newVolume)
+      });
+    },
+    [boundedVolume]
+  );
+
+  const mute = () => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_MUTE
+    });
+  };
+
+  const unmute = () => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UNMUTE
+    });
+  };
+
   const toggleMute = () => {
     dispatch({
       type: PlayerActionTypes.PLAYER_TOGGLE_MUTED
+    });
+  };
+
+  const setPlaybackRate = (rate: number) => {
+    dispatch({
+      type: PlayerActionTypes.PLAYER_UPDATE_PLAYBACK_RATE,
+      payload: rate
     });
   };
 
@@ -219,6 +255,8 @@ const Player: React.FC<IPlayerProps> = ({
       playTrack,
       pause,
       togglePlayPause,
+      mute,
+      unmute,
       toggleMute,
       seekTo,
       seekBy,
@@ -228,9 +266,20 @@ const Player: React.FC<IPlayerProps> = ({
       setTrack,
       setTracks,
       previousTrack,
-      nextTrack
+      nextTrack,
+      setPlaybackRate,
+      setVolume
     }),
-    [audioElm, forward, imageUrl, replay, seekBy, seekTo, seekToRelative, state]
+    [
+      forward,
+      imageUrl,
+      replay,
+      seekBy,
+      seekTo,
+      seekToRelative,
+      setVolume,
+      state
+    ]
   );
 
   const startPlaying = useCallback(() => {
@@ -296,7 +345,7 @@ const Player: React.FC<IPlayerProps> = ({
 
       switch (key) {
         case 'KeyS':
-          audioElm.current.playbackRate = 3 - audioElm.current.playbackRate;
+          setPlaybackRate(playbackRate === 1 ? 2 : 1); // Toggle rate between 1 or 2.
           break;
         case 'KeyM':
           toggleMute();
@@ -310,16 +359,20 @@ const Player: React.FC<IPlayerProps> = ({
           togglePlayPause();
           break;
         case 'KeyJ':
-          seekBy(-10);
-          break;
-        case 'KeyL':
-          seekBy(10);
-          break;
-        case 'ArrowLeft':
           seekBy(-5);
           break;
+        case 'KeyL':
+          seekBy(30);
+          break;
+        case 'ArrowLeft':
+          if (!['INPUT'].includes(event.target.nodeName)) {
+            seekBy(-5);
+          }
+          break;
         case 'ArrowRight':
-          seekBy(5);
+          if (!['INPUT'].includes(event.target.nodeName)) {
+            seekBy(5);
+          }
           break;
         case 'Comma':
           if (!playing) {
@@ -383,7 +436,15 @@ const Player: React.FC<IPlayerProps> = ({
           break;
       }
     },
-    [audioElm, playing, seekBy, seekTo, seekToRelative, volumeDown, volumeUp]
+    [
+      playbackRate,
+      playing,
+      seekBy,
+      seekTo,
+      seekToRelative,
+      volumeDown,
+      volumeUp
+    ]
   );
 
   useEffect(() => {
@@ -439,6 +500,10 @@ const Player: React.FC<IPlayerProps> = ({
   useEffect(() => {
     audioElm.current.currentTime = currentTime;
   }, [currentTime]);
+
+  useEffect(() => {
+    audioElm.current.playbackRate = playbackRate;
+  }, [playbackRate]);
 
   useEffect(() => {
     loadAudio(currentTrackUrl);

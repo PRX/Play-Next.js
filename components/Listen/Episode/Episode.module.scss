@@ -43,7 +43,7 @@ $episode-breakpoint--full: 120ch;
 }
 
 .nav {
-  --iconButton-size: 100%;
+  --iconButton--size: 100%;
 
   display: grid;
   grid-template-columns: 2em 1fr;
@@ -201,8 +201,8 @@ $episode-breakpoint--full: 120ch;
 }
 
 .controls {
-  --iconButton-size: 60px;
-  --iconButton-padding: 0;
+  --iconButton--size: 60px;
+  --iconButton--padding: 0;
 }
 
 .info {

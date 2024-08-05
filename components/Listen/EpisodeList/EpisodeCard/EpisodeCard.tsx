@@ -95,6 +95,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
+                  title="Pause This Episode"
                 >
                   <PauseIcon />
                 </IconButton>
@@ -102,6 +103,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
+                  title="Play This Episode"
                 >
                   <PlayIcon />
                 </IconButton>

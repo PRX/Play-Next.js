@@ -1,0 +1,97 @@
+@use '@styles/colors';
+
+.root {
+  --_settingsMenuButton--color: var(
+    --settingsMenuButton--color,
+    #{colors.$white-a-50}
+  );
+  --_settingsMenuButton--border-color: var(
+    --settingsMenuButton--border--color,
+    transparent
+  );
+  --_settingsMenuButton--color--hover: var(
+    --settingsMenuButton--color--hover,
+    #{colors.$white}
+  );
+  --_settingsMenuButton--color--focus: var(
+    --settingsMenuButton--color--focus,
+    #{colors.$white}
+  );
+  --_settingsMenuButton--background-color--hover: var(
+    --settingsMenuButton--background-color--hover,
+    #{colors.$white-a-10}
+  );
+  --_settingsMenuButton--size: var(--settingsMenuButton--size, 24px);
+
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+
+  border: 1px solid var(--_settingsMenuButton--border-color);
+  border-radius: 100vw;
+
+  color: var(--_settingsMenuButton--color);
+
+  svg {
+    width: var(--_settingsMenuButton--size);
+  }
+
+  &:active {
+    color: var(--_settingsMenuButton--color--hover);
+
+    .icon {
+      background-color: var(--_settingsMenuButton--background-color--hover);
+    }
+  }
+
+  &:focus-visible {
+    outline-width: 1px;
+    outline-color: var(--_settingsMenuButton--background-color--hover);
+    outline-style: solid;
+    color: var(--_settingsMenuButton--color--focus);
+  }
+
+  @media (pointer: fine) {
+    &:hover {
+      color: var(--_settingsMenuButton--color--hover);
+
+      .icon {
+        background-color: var(--_settingsMenuButton--background-color--hover);
+      }
+    }
+  }
+}
+
+.icon {
+  display: grid;
+  padding: 4px;
+  border-radius: inherit;
+}
+
+.hasFeedback {
+  --_settingsMenuButton--border-color: var(
+    --_settingsMenuButton--background-color--hover
+  );
+
+  .icon {
+    background-color: var(--_settingsMenuButton--border-color);
+  }
+}
+
+.feedback {
+  display: flex;
+  column-gap: 4px;
+  padding-inline: 4px;
+}
+
+.feedbackItem {
+  display: grid;
+  place-items: center;
+  height: var(--_settingsMenuButton--size);
+  min-width: var(--_settingsMenuButton--size);
+
+  &:first-of-type {
+    margin-inline-start: 4px;
+  }
+}

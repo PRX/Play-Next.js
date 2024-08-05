@@ -1,0 +1,15 @@
+@use '@styles/colors';
+
+.root {
+  --iconButton--size: 30px;
+
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.volume {
+  min-width: 4.45ch;
+  text-align: end;
+}

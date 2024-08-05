@@ -29,3 +29,7 @@ button {
 [inert] {
   pointer-events: none;
 }
+
+svg {
+  fill: currentColor;
+}

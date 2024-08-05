@@ -17,7 +17,7 @@ const nextConfig = {
         hostname: '*.prxu.org'
       }
     ],
-    imageSizes: [16, 32, 40, 48, 65, 96, 128, 135, 256, 384]
+    imageSizes: [16, 32, 40, 48, 65, 96, 120, 128, 135, 256, 384]
   },
   i18n: {
     locales: ['en'],
