@@ -28,9 +28,9 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   transform: translateY(100%);
   position: absolute;
   isolation: isolate;
-  left: 0;
-  bottom: 100%;
-  width: 100%;
+  left: 8px;
+  right: 8px;
+  bottom: calc(100% + 8px);
 
   display: grid;
   grid-template-columns: var(--footerPlayer-thumbnail-size--mobile) 1fr;
@@ -51,9 +51,11 @@ $footerPlayer-thumbnail-size--mobile: 24px;
     inset: 0;
     z-index: -1;
 
-    background-color: var(--footerPlayer-background-color, colors.$black);
+    background-color: var(--footerPlayer-background-color);
 
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(15px);
+
+    border-radius: 5px;
   }
 
   &.isShown {
@@ -166,7 +168,9 @@ $footerPlayer-thumbnail-size--mobile: 24px;
 
   background-color: var(--footerPlayer-background-color);
 
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(15px);
+
+  border-radius: 5px;
 
   color: var(--listen-text-color);
 }

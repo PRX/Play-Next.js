@@ -390,11 +390,34 @@ $episodeCard-corner-radius: 5px;
   column-gap: var(--spacing);
 
   & > * {
+    display: flex;
+    align-items: center;
     white-space: nowrap;
 
     &::before {
       content: '\2022';
       margin-inline-end: var(--spacing);
     }
+  }
+}
+
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 2px;
+
+  padding-inline-end: 3px;
+
+  border-radius: 3px;
+
+  svg {
+    width: 1.25em;
+    aspect-ratio: 1;
+    fill: currentColor;
+  }
+
+  &:where(:hover, :focus-visible) {
+    outline: none;
+    background-color: color-mix(in oklab, currentColor 20%, transparent);
   }
 }
