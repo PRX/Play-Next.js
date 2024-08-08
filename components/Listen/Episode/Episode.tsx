@@ -10,6 +10,7 @@ import type {
 } from '@interfaces/data';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
+import { filesize } from 'filesize';
 import Link from 'next/link';
 import HtmlContent from '@components/HtmlContent';
 import IconButton from '@components/IconButton';
@@ -24,6 +25,7 @@ import fetchAudioTranscriptData from '@lib/fetch/transcript/fetchAudioTranscript
 import formatDurationParts from '@lib/format/time/formatDurationParts';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
 import ArrowLeftIcon from '@svg/icons/ArrowLeft.svg';
+import DownloadIcon from '@svg/icons/FileDownload.svg';
 import ExplicitIcon from '@svg/icons/Explicit.svg';
 import PlayCircleIcon from '@svg/icons/PlayCircle.svg';
 import PauseCircleIcon from '@svg/icons/PauseCircle.svg';
@@ -36,7 +38,7 @@ export interface IEpisodeProps {
 }
 
 const episodeViews = ['description', 'transcript'] as const;
-export type EpisodeView = typeof episodeViews[number];
+export type EpisodeView = (typeof episodeViews)[number];
 
 const Episode = ({ data, onClose }: IEpisodeProps) => {
   const [view, setView] = useState<EpisodeView>('description');
@@ -50,6 +52,8 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   const {
     guid,
     title,
+    url,
+    fileSize,
     imageUrl,
     duration,
     explicit,
@@ -87,6 +91,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   const episodesDurationSums = sumDurationParts([episodesDurationsInt]);
   const episodesDurationString = formatDurationParts(episodesDurationSums);
   const [shareShown, setShareShown] = useState(false);
+  const downloadTitle = `Download Episode (${filesize(fileSize || 0)})`;
 
   const handlePlayButtonClick = useCallback(() => {
     playTrack(index);
@@ -125,7 +130,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
       <ThemeVars theme="Episode" cssProps={styles} />
       <div className={styles.root} data-episode-view={view}>
         <div className={clsx(styles.nav, { [styles.isExplicit]: explicit })}>
-          <IconButton onClick={handleEpisodeBackClick}>
+          <IconButton onClick={handleEpisodeBackClick} title="Back To Playlist">
             <ArrowLeftIcon />
           </IconButton>
           {explicit && (
@@ -153,6 +158,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
                   <IconButton
                     className={styles.pause}
                     onClick={handlePauseButtonClick}
+                    title="Pause Episode"
                   >
                     <PauseCircleIcon />
                   </IconButton>
@@ -160,6 +166,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
                   <IconButton
                     className={styles.play}
                     onClick={handlePlayButtonClick}
+                    title="Play Episode"
                   >
                     <PlayCircleIcon />
                   </IconButton>
@@ -176,6 +183,10 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
               </span>
             </div>
             <div className={styles.menu}>
+              <IconButton href={url} title={downloadTitle} download>
+                <DownloadIcon aria-hidden />
+              </IconButton>
+
               <ShareMenu
                 className={clsx(styles.menuButton, styles.shareButton)}
                 onOpen={handleShareButtonClick}
@@ -192,6 +203,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
               <nav className={styles.viewNav}>
                 {episodeViews.map((viewName) => (
                   <Link
+                    className={styles.viewNavButton}
                     href={`#${viewName}`}
                     onClick={() => {
                       setView(viewName);

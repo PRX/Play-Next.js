@@ -33,6 +33,11 @@ $episode-breakpoint--full: 120ch;
 }
 
 .root {
+  --_episode-header-background-color: var(
+    --episode-header-background-color,
+    #{colors.$black-a-60}
+  );
+
   container-type: inline-size;
   container-name: episode-root;
   display: grid;
@@ -67,8 +72,6 @@ $episode-breakpoint--full: 120ch;
     var(--episode-header-text-size--max)
   );
 
-  line-height: 1;
-
   &.isExplicit {
     grid-template-columns: 2em min-content 1fr;
   }
@@ -101,8 +104,6 @@ $episode-breakpoint--full: 120ch;
   overflow: hidden;
   overflow-y: auto;
 
-  outline: solid 1px white;
-
   padding-inline: 0;
 
   & > * {
@@ -122,21 +123,21 @@ $episode-breakpoint--full: 120ch;
 
 .header {
   --spacing: 0.25rem;
+  --iconButton--size: clamp(24px, 5vw, 40px);
 
   position: sticky;
-  top: 0;
-  display: grid;
+  top: 8px;
+  display: flex;
+  flex-wrap: wrap;
   z-index: 9;
   isolation: isolate;
-  grid-template-columns: auto min-content;
-  grid-auto-rows: min-content;
   justify-content: space-between;
   align-items: center;
-  gap: var(--gap);
-
-  border-bottom: var(--episode-divider-size) solid var(--episode-divider-color);
+  column-gap: var(--gap);
+  row-gap: calc(var(--gap) / 2);
 
   padding: var(--gap);
+  margin-inline: 8px;
 
   color: var(--episodeCard-footer-text-color);
   font-size: clamp(
@@ -152,18 +153,16 @@ $episode-breakpoint--full: 120ch;
     inset: 0;
     z-index: -1;
 
-    background-color: colors.$black-a-70;
-    backdrop-filter: blur(30px);
+    background-color: var(--_episode-header-background-color);
+    backdrop-filter: blur(15px);
+    border-radius: 5px;
   }
 
   @media (min-width: Listen.$breakpoint-full) {
     grid-row: 1;
     grid-column: 2;
-    grid-template-rows: none;
-    justify-content: space-between;
     align-self: center;
-
-    border-bottom: none;
+    top: 0;
 
     &::before {
       content: none;
@@ -201,7 +200,7 @@ $episode-breakpoint--full: 120ch;
 }
 
 .controls {
-  --iconButton--size: 60px;
+  --iconButton--size: clamp(40px, 5vw, 60px);
   --iconButton--padding: 0;
 }
 
@@ -228,11 +227,20 @@ $episode-breakpoint--full: 120ch;
 
 .menu {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
 }
 
 .viewNav {
   display: flex;
   gap: 1rem;
+  width: 100%;
+
+  padding-top: calc(var(--gap) / 2);
+  margin-top: calc(var(--gap) / 2);
+
+  border-top: 1px solid var(--episode-divider-color);
 }
 
 .viewNavButton {
@@ -290,6 +298,7 @@ $episode-breakpoint--full: 120ch;
 
 .description {
   padding: var(--gap);
+  margin-inline: var(--gap);
 
   font-size: clamp(
     var(--episode-text-size--min),

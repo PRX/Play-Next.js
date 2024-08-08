@@ -27,6 +27,11 @@ export interface IAudioData {
   url: string;
 
   /**
+   * File size audio file in bytes.
+   */
+  fileSize: number;
+
+  /**
    * Source URL for the preview audio file.
    * Should be used for playback when provided.
    * Do NOT include this in shared URL's or HTML markup.

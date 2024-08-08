@@ -19,7 +19,10 @@ const parseAudioData = ({
 }: IRssItem): IAudioData => ({
   guid,
   ...(link && { link }),
-  ...(enclosure && { url: generateAudioUrl(enclosure.url) }),
+  ...(enclosure && {
+    url: generateAudioUrl(enclosure.url),
+    fileSize: enclosure.length
+  }),
   ...(categories && {
     categories: categories.map((v) => v.replace(/^\s+|\s+$/g, ''))
   }),

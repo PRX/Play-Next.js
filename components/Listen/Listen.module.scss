@@ -76,12 +76,14 @@ $viewTransitionDuration: 300ms;
     --episodeList-header-text-color: #{colors.$black};
     --episodeList-header-icon-color: #{colors.$black-a-30};
     --episodeList-header-icon-color--active: #{colors.$black};
+    --episodeList-header-background-color: #{colors.$white-a-60};
 
     // EpisodeCard
     --episodeCard-divider-color: #{colors.$black-a-20};
 
     // Episode
     --episode-divider-color: #{colors.$black-a-20};
+    --episode-header-background-color: #{colors.$white-a-60};
 
     // FooterPlayer
     --footerPlayer-background-color: #{colors.$white-a-60};
@@ -192,7 +194,7 @@ $viewTransitionDuration: 300ms;
       align-content: start;
       padding-block-start: 0.75rem;
       padding-block-end: calc(
-        var(--gutter-size-block-end, var(--gutter-size-block)) + 0.75rem
+        var(--gutter-size-block-end, var(--gutter-size-block)) + 1rem
       );
       padding-inline: 0;
       border-top: 1px solid $listen-divider-color;

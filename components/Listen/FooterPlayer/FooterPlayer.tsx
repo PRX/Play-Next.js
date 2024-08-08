@@ -86,6 +86,18 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
             <div className={styles.title}>
               <Marquee>{title}</Marquee>
             </div>
+          </div>
+
+          <div className={styles.controls}>
+            {tracks.length > 1 && <PreviousButton />}
+            <ReplayButton />
+            <PlayButton />
+            <ForwardButton />
+            {tracks.length > 1 && <NextButton />}
+          </div>
+
+          <div className={styles.progress}>
+            <PlayerProgress />
 
             {showClosedCaptionsButton && (
               <ClosedCaptionsDialog
@@ -105,18 +117,7 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
                 <ClosedCaptionsFeed speakerColors={accentColor} />
               </ClosedCaptionsDialog>
             )}
-          </div>
 
-          <div className={styles.controls}>
-            {tracks.length > 1 && <PreviousButton />}
-            <ReplayButton />
-            <PlayButton />
-            <ForwardButton />
-            {tracks.length > 1 && <NextButton />}
-          </div>
-
-          <div className={styles.progress}>
-            <PlayerProgress />
             <Popover.Trigger asChild>
               <SettingsMenuButton />
             </Popover.Trigger>
@@ -124,7 +125,8 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
               side="top"
               sideOffset={8}
               align="end"
-              alignOffset={8}
+              alignOffset={0}
+              title="Settings"
             >
               <div className={styles.settingsMenu}>
                 <div className={styles.setting}>

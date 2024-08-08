@@ -11,18 +11,19 @@ import styles from './IconButton.module.scss';
 export interface IIconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
+  download?: boolean | string;
 }
 
 const IconButton = forwardRef<any, IIconButtonProps>(
-  ({ children, className = null, href = null, ...props }, ref) =>
+  ({ children, className = null, href = null, download, ...props }, ref) =>
     href ? (
       <a
         className={clsx(styles.iconButton, className)}
         href={href}
         rel="noreferrer"
-        target="_blank"
         ref={ref}
         title={props.title}
+        {...((download && { download }) || { target: '_blank' })}
       >
         {children}
       </a>

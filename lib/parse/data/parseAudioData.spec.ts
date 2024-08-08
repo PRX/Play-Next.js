@@ -8,7 +8,8 @@ describe('lib/parse/data', () => {
       link: 'http://foo.com/foo-bar',
       title: 'foo',
       enclosure: {
-        url: 'http://foo.com/audio.mp3'
+        url: 'http://foo.com/audio.mp3',
+        length: 12345
       },
       categories: ['cat1', '  cat2', 'cat3   '],
       itunes: {
@@ -28,6 +29,7 @@ describe('lib/parse/data', () => {
         link: 'http://foo.com/foo-bar',
         title: 'foo',
         url: 'http://foo.com/audio.mp3?_from=play.prx.org',
+        fileSize: 12345,
         categories: ['cat1', 'cat2', 'cat3'],
         subtitle: 'bar',
         imageUrl: 'http://foo.com/image.png',
@@ -47,6 +49,7 @@ describe('lib/parse/data', () => {
         link: 'http://foo.com/foo-bar',
         title: 'foo',
         url: 'http://foo.com/audio.mp3?_from=play.prx.org',
+        fileSize: 12345,
         subtitle: 'bar',
         imageUrl: 'http://foo.com/image.png',
         season: 42,
@@ -65,6 +68,7 @@ describe('lib/parse/data', () => {
         link: 'http://foo.com/foo-bar',
         title: 'foo',
         url: 'http://foo.com/audio.mp3?_from=play.prx.org',
+        fileSize: 12345,
         categories: ['cat1', 'cat2', 'cat3']
       });
     });
