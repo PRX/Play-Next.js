@@ -72,8 +72,6 @@ $episode-breakpoint--full: 120ch;
     var(--episode-header-text-size--max)
   );
 
-  line-height: 1;
-
   &.isExplicit {
     grid-template-columns: 2em min-content 1fr;
   }
