@@ -190,7 +190,10 @@ const Listen = ({ config, data }: IListenPageProps) => {
   };
 
   const handleResize = useCallback(() => {
-    setGutterBlockEnd(footerPlayerRef.current.getBoundingClientRect().height);
+    setGutterBlockEnd(
+      footerPlayerRef.current.parentElement.getBoundingClientRect().top -
+        footerPlayerRef.current.getBoundingClientRect().top
+    );
   }, []);
 
   const listenContextProps = useMemo(

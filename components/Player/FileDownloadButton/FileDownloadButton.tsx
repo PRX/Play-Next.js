@@ -1,6 +1,6 @@
 /**
  * @file FileDownloadButton.tsx
- * Downlown MP3 Button for embed player and browser pages
+ * Download MP3 Button for embed player and browser pages
  */
 
 import type React from 'react';

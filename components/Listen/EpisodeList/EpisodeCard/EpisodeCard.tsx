@@ -6,12 +6,15 @@
 import type { IListenEpisodeData } from '@interfaces/data';
 import { CSSProperties, useCallback, useContext, useMemo } from 'react';
 import clsx from 'clsx';
+import { filesize } from 'filesize';
+import Link from 'next/link';
 import IconButton from '@components/IconButton';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
 import sumDurationParts from '@lib/math/time/sumDurationParts';
 import formatDurationParts from '@lib/format/time/formatDurationParts';
+import DownloadIcon from '@svg/icons/FileDownload.svg';
 import ExplicitIcon from '@svg/icons/Explicit.svg';
 import PlayIcon from '@svg/icons/PlayArrow.svg';
 import PauseIcon from '@svg/icons/Pause.svg';
@@ -35,8 +38,17 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
   } = useContext(PlayerContext);
   const { currentTrackIndex, playing } = state;
   const isCurrentTrack = index === currentTrackIndex;
-  const { guid, title, subtitle, imageUrl, duration, explicit, pubDate } =
-    episode;
+  const {
+    guid,
+    title,
+    subtitle,
+    imageUrl,
+    duration,
+    explicit,
+    pubDate,
+    url,
+    fileSize
+  } = episode;
   const thumbSrc = imageUrl || defaultThumbUrl;
   const thumbnailSize = 100;
   const thumbnailSizeMobile = 40;
@@ -54,6 +66,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
   const episodesDurationsInt = convertDurationStringToIntegerArray(duration);
   const episodesDurationSums = sumDurationParts([episodesDurationsInt]);
   const episodesDurationString = formatDurationParts(episodesDurationSums);
+  const downloadLabel = filesize(fileSize);
 
   const handlePlayButtonClick = useCallback(() => {
     playTrack(index);
@@ -95,7 +108,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
-                  title="Pause This Episode"
+                  title="Pause Episode"
                 >
                   <PauseIcon />
                 </IconButton>
@@ -103,7 +116,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
-                  title="Play This Episode"
+                  title="Play Episode"
                 >
                   <PlayIcon />
                 </IconButton>
@@ -130,7 +143,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.pause}
                   onClick={handlePauseButtonClick}
-                  title="Pause This Episode"
+                  title="Pause Episode"
                 >
                   <PauseCircleIcon />
                 </IconButton>
@@ -138,7 +151,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <IconButton
                   className={styles.play}
                   onClick={handlePlayButtonClick}
-                  title="Play This Episode"
+                  title="Play Episode"
                 >
                   <PlayCircleIcon />
                 </IconButton>
@@ -159,6 +172,17 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                 <span className={styles.pubDate}>{pubDateFormatted}</span>
                 <span className={styles.duration}>
                   {episodesDurationString}
+                </span>
+                <span className={styles.download}>
+                  <Link
+                    className={styles.downloadLink}
+                    href={url}
+                    download
+                    title="Download Episode"
+                  >
+                    <DownloadIcon aria-hidden="true" />
+                    {downloadLabel}
+                  </Link>
                 </span>
               </div>
             </span>
