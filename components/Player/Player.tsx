@@ -58,7 +58,7 @@ const Player: React.FC<IPlayerProps> = ({
   const { url, previewUrl, transcripts, duration } = currentTrack;
   const currentTrackUrl = previewUrl || url;
   const transcript = transcripts?.find(
-    (t) => !!['vtt', 'srt', 'json'].find((n) => t.type.includes(n))
+    (t) => !!['vtt', 'srt', 'x-subrip', 'json'].find((n) => t.type.includes(n))
   );
 
   const boundedTime = useCallback(
