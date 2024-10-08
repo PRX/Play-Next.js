@@ -61,7 +61,8 @@ export default async function handler(
       },
       {
         check: (ct: string, t: string) =>
-          /(?:application|text)\/srt/i.test(ct) || t.includes('-->'),
+          /(?:application|text)\/(?:srt|x-subrip)/i.test(ct) ||
+          t.includes('-->'),
         convert: (t: string) => convertVttToJson(convertSrtToVtt(t))
       }
     ];
