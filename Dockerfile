@@ -57,5 +57,6 @@ USER nextjs
 EXPOSE 4300
 
 ENV PORT 4300
+ENV KEEP_ALIVE_TIMEOUT 10000
 
 CMD ["node", "server.js"]
