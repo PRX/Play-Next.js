@@ -7,7 +7,6 @@ import type { IListenEpisodeData } from '@interfaces/data';
 import { CSSProperties, useCallback, useContext, useMemo } from 'react';
 import clsx from 'clsx';
 import { filesize } from 'filesize';
-import Link from 'next/link';
 import IconButton from '@components/IconButton';
 import PrxImage from '@components/PrxImage';
 import PlayerContext from '@contexts/PlayerContext';
@@ -174,7 +173,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                   {episodesDurationString}
                 </span>
                 <span className={styles.download}>
-                  <Link
+                  <a
                     className={styles.downloadLink}
                     href={url}
                     download
@@ -182,7 +181,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
                   >
                     <DownloadIcon aria-hidden="true" />
                     {downloadLabel}
-                  </Link>
+                  </a>
                 </span>
               </div>
             </span>
