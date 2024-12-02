@@ -6,6 +6,7 @@
 import type { GetServerSideProps } from 'next';
 import type { IRss } from '@interfaces/data';
 import type { IListenPageProps, IPageProps } from '@interfaces/page';
+import pino from 'pino';
 import Error from 'next/error';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
 import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
@@ -13,6 +14,11 @@ import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
 import Player from '@components/Player';
 import { IPageError } from '@interfaces/error';
+
+const log = pino({
+  name: 'pages/listen/index.tsx',
+  serializers: pino.stdSerializers
+});
 
 const ListenPage = ({ data, config, error }: IListenPageProps) => {
   const { episodeGuid } = config;
@@ -33,8 +39,11 @@ const ListenPage = ({ data, config, error }: IListenPageProps) => {
 
 export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   query,
+  req,
   res
 }) => {
+  log.info({ req }, 'Listen Request');
+
   // 1. Convert query params into embed config.
   const config = parseListenParamsToConfig(query);
 
@@ -62,6 +71,8 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
 
   // 3. Parse config and RSS data into embed
   const data = parseListenData(config, rssData);
+
+  log.info({ res }, 'Listen Response');
 
   return {
     props: { config, data, ...(error && { error }) }

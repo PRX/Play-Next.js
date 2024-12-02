@@ -7,16 +7,22 @@ import type { GetServerSideProps } from 'next';
 import type { IRss } from '@interfaces/data';
 import type { IPageError } from '@interfaces/error';
 import type { IEmbedPageProps, IPageProps } from '@interfaces/page';
+import pino from 'pino';
 import Head from 'next/head';
-import Error from 'next/error';
+import NextError from 'next/error';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import Embed from '@components/Embed/Embed';
 
+const log = pino({
+  name: 'pages/embed.tsx',
+  serializers: pino.stdSerializers
+});
+
 const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   if (error) {
-    return <Error statusCode={error.statusCode} title={error.message} />;
+    return <NextError statusCode={error.statusCode} title={error.message} />;
   }
 
   return (
@@ -31,8 +37,11 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
 
 export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   query,
+  req,
   res
 }) => {
+  log.info({ req }, 'Embed Request');
+
   // 1. Convert query params into embed config.
   const config = parseEmbedParamsToConfig(query);
 
@@ -64,6 +73,8 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
 
   // 3. Parse config and RSS data into embed data.
   const data = parseEmbedData(config, rssData);
+
+  log.info({ res }, 'Embed Response');
 
   return {
     props: { config, data, ...(error && { error }) }
