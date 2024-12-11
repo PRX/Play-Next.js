@@ -2,7 +2,7 @@
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    await require('pino');
+    await import('pino');
     await require('next-logger');
   }
 }

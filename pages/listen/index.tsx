@@ -6,7 +6,6 @@
 import type { GetServerSideProps } from 'next';
 import type { IRss } from '@interfaces/data';
 import type { IListenPageProps, IPageProps } from '@interfaces/page';
-import pino from 'pino';
 import Error from 'next/error';
 import parseListenParamsToConfig from '@lib/parse/config/parseListenParamsToConfig';
 import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
@@ -14,11 +13,7 @@ import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
 import Player from '@components/Player';
 import { IPageError } from '@interfaces/error';
-
-const log = pino({
-  name: 'pages/listen/index.tsx',
-  serializers: pino.stdSerializers
-});
+import ReqError from '@lib/error/ReqError';
 
 const ListenPage = ({ data, config, error }: IListenPageProps) => {
   const { episodeGuid } = config;
@@ -42,8 +37,6 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   req,
   res
 }) => {
-  log.info({ req }, 'Listen Request');
-
   // 1. Convert query params into embed config.
   const config = parseListenParamsToConfig(query);
 
@@ -65,14 +58,15 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
         break;
       default:
         // ...otherwise throw the caught error so we can get 5XX alarms for anything else.
-        throw e;
+        throw new ReqError(e, req);
     }
   }
 
   // 3. Parse config and RSS data into embed
   const data = parseListenData(config, rssData);
 
-  log.info({ res }, 'Listen Response');
+  // eslint-disable-next-line no-console
+  console.info({ req, res }, 'Listen');
 
   return {
     props: { config, data, ...(error && { error }) }
