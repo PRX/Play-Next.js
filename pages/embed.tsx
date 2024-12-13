@@ -8,15 +8,16 @@ import type { IRss } from '@interfaces/data';
 import type { IPageError } from '@interfaces/error';
 import type { IEmbedPageProps, IPageProps } from '@interfaces/page';
 import Head from 'next/head';
-import Error from 'next/error';
+import NextError from 'next/error';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
 import Embed from '@components/Embed/Embed';
+import ReqError from '@lib/error/ReqError';
 
 const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   if (error) {
-    return <Error statusCode={error.statusCode} title={error.message} />;
+    return <NextError statusCode={error.statusCode} title={error.message} />;
   }
 
   return (
@@ -31,8 +32,11 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
 
 export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   query,
+  req,
   res
 }) => {
+  // console.info({ req }, 'Embed Request');
+
   // 1. Convert query params into embed config.
   const config = parseEmbedParamsToConfig(query);
 
@@ -58,12 +62,17 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
         break;
       default:
         // ...otherwise throw the caught error so we can get 5XX alarms for anything else.
-        throw e;
+        throw new ReqError(e, req);
     }
   }
 
   // 3. Parse config and RSS data into embed data.
   const data = parseEmbedData(config, rssData);
+
+  // 4. Set successful response code, and log request and response.
+  res.statusCode = 200;
+  // eslint-disable-next-line no-console
+  console.info({ req, res }, 'Embed');
 
   return {
     props: { config, data, ...(error && { error }) }

@@ -9,6 +9,9 @@ const path = require('path');
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  experimental: {
+    instrumentationHook: true
+  },
   images: {
     minimumCacheTTL: 31536000,
     remotePatterns: [

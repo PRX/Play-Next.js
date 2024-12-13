@@ -13,6 +13,7 @@ import parseListenData from '@lib/parse/data/parseListenData';
 import Listen from '@components/Listen';
 import Player from '@components/Player';
 import { IPageError } from '@interfaces/error';
+import ReqError from '@lib/error/ReqError';
 
 const ListenPage = ({ data, config, error }: IListenPageProps) => {
   const { episodeGuid } = config;
@@ -33,6 +34,7 @@ const ListenPage = ({ data, config, error }: IListenPageProps) => {
 
 export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   query,
+  req,
   res
 }) => {
   // 1. Convert query params into embed config.
@@ -56,12 +58,15 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
         break;
       default:
         // ...otherwise throw the caught error so we can get 5XX alarms for anything else.
-        throw e;
+        throw new ReqError(e, req);
     }
   }
 
   // 3. Parse config and RSS data into embed
   const data = parseListenData(config, rssData);
+
+  // eslint-disable-next-line no-console
+  console.info({ req, res }, 'Listen');
 
   return {
     props: { config, data, ...(error && { error }) }
