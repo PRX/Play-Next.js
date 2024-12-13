@@ -54,6 +54,10 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Current node_modules contain files for the standalone server, not our packages.
+# Add dynamically required packages, eg. those loaded by instrumentation hook.
+RUN yarn add pino next-logger
+
 USER nextjs
 
 EXPOSE 4300
