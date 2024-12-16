@@ -69,8 +69,6 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   // 3. Parse config and RSS data into embed data.
   const data = parseEmbedData(config, rssData);
 
-  // 4. Set successful response code, and log request and response.
-  res.statusCode = 200;
   // eslint-disable-next-line no-console
   console.info({ req, res }, 'Embed');
 
