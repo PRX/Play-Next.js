@@ -29,7 +29,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/e',
+        source: '/:path(e|embed|listen)',
         headers: [
           {
             key: 'Cache-Control',
