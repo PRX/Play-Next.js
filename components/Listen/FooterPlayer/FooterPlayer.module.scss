@@ -173,6 +173,10 @@ $footerPlayer-thumbnail-size--mobile: 24px;
   border-radius: 5px;
 
   color: var(--listen-text-color);
+
+  svg {
+    fill: currentColor;
+  }
 }
 
 .setting {

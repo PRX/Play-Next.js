@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import { useContext } from 'react';
+import { forwardRef, useContext } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import SettingsIcon from '@svg/icons/Settings.svg';
@@ -15,10 +15,10 @@ export type SettingsMenuButtonProps = React.JSX.IntrinsicElements['button'] & {
   className?: string;
 };
 
-const SettingsMenuButton: React.FC<SettingsMenuButtonProps> = ({
-  className,
-  ...rest
-}) => {
+const SettingsMenuButton: React.FC<SettingsMenuButtonProps> = forwardRef<
+  HTMLButtonElement,
+  SettingsMenuButtonProps
+>(({ className, ...rest }, ref) => {
   const { state } = useContext(PlayerContext);
   const { muted, playbackRate } = state;
   const showPlaybackRate = playbackRate !== 1;
@@ -28,7 +28,13 @@ const SettingsMenuButton: React.FC<SettingsMenuButtonProps> = ({
   });
 
   return (
-    <button title="Settings" {...rest} type="button" className={rootClassNames}>
+    <button
+      title="Settings"
+      {...rest}
+      ref={ref}
+      type="button"
+      className={rootClassNames}
+    >
       {hasFeedback && (
         <div className={styles.feedback}>
           {showPlaybackRate && (
@@ -46,6 +52,6 @@ const SettingsMenuButton: React.FC<SettingsMenuButtonProps> = ({
       </span>
     </button>
   );
-};
+});
 
 export default SettingsMenuButton;

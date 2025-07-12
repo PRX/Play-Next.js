@@ -14,13 +14,20 @@
   justify-self: center;
   position: absolute;
   display: block;
-  top: calc(100% + 5px);
+  top: calc(100% + 0.125em);
   height: auto;
   z-index: 9;
   white-space: nowrap;
   display: none;
 
-  color: var(--iconButton-color--hover);
+  padding: 0.125em 0.5em;
+
+  border-radius: 0.25em;
+
+  background-color: light-dark(colors.$white-a-10, colors.$black-a-10);
+  backdrop-filter: blur(10px);
+
+  color: light-dark(colors.$black, colors.$white);
 
   &.hoverRight {
     display: block;

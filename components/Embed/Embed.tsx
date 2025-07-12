@@ -66,7 +66,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
     audio,
     playlist,
     bgImageUrl,
-    followUrls,
+    followLinks,
     supportUrls,
     paymentPointer
   } = data;
@@ -439,7 +439,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                         onClose={handleFollowCloseClick}
                         isOpen={followShown}
                         portalId="embed-modals"
-                        followUrls={followUrls}
+                        followLinks={followLinks}
                       />
 
                       {showShareMenu && (

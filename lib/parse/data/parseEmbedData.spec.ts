@@ -17,6 +17,22 @@ describe('lib/parse/data', () => {
         }
       },
       podcast: {
+        follow: {
+          url: 'http://foo.com/subscribeLinks.json',
+          data: {
+            version: '1.0.0',
+            links: [
+              {
+                href: 'https://podcasts.apple.com/podcast/id1766018642',
+                text: 'Apple Podcasts'
+              },
+              {
+                href: 'https://unknown.service.com/show/id1766018642',
+                text: 'Unknown Service'
+              }
+            ]
+          }
+        },
         value: {
           type: 'webmonetization',
           method: 'ILP',
@@ -94,7 +110,7 @@ describe('lib/parse/data', () => {
         previewUrl: 'http://preview.foo.com/foo.mp3?_from=play.prx.org',
         imageUrl: 'http://foo.com/foo.png'
       });
-      expect(result.followUrls.rss).toBe('http://foo.com/feed.rss');
+      expect(result.followLinks[0].href).toBe('http://foo.com/feed.rss');
       expect(result.playlist).toBeUndefined();
       expect(result.shareUrl).toBeUndefined();
     });
@@ -115,6 +131,33 @@ describe('lib/parse/data', () => {
       );
 
       expect(result.audio).toBeUndefined();
+    });
+
+    test('should get prepend follow data links to followLinks', () => {
+      const result = parseEmbedData(
+        { feedUrl: 'http://foo.com/feed.rss' },
+        mockRssData
+      );
+
+      expect(result.followLinks.length).toBe(3);
+      expect(result.followLinks[0].href).toBe(
+        mockRssData.podcast.follow.data.links[0].href
+      );
+      expect(result.followLinks[1].href).toBe(
+        mockRssData.podcast.follow.data.links[1].href
+      );
+      expect(result.followLinks[2].href).toBe('http://foo.com/feed.rss');
+    });
+
+    test('should get set service prop on followLink items', () => {
+      const result = parseEmbedData(
+        { feedUrl: 'http://foo.com/feed.rss' },
+        mockRssData
+      );
+
+      expect(result.followLinks[0].service).toBe('apple-podcasts');
+      expect(result.followLinks[1].service).toBeNull();
+      expect(result.followLinks[2].service).toBe('rss');
     });
 
     test('should get payment pointer from value recipient', () => {

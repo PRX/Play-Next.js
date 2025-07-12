@@ -192,7 +192,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
                 onOpen={handleShareButtonClick}
                 onClose={handleShareCloseClick}
                 isOpen={shareShown}
-                portalId="episode-modals"
+                portalId="listen-modals"
                 url={link}
                 twitterTitle={title}
                 emailSubject={title}

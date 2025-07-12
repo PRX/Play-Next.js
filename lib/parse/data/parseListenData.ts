@@ -1,6 +1,7 @@
 import type { IListenData, IListenEpisodeData, IRss } from '@interfaces/data';
 import type { IListenConfig } from '@interfaces/config';
 import generateHtmlString from '@lib/generate/html/generateHtmlString';
+import getServiceFromUrl from '@lib/parse/string/getServiceFromUrl';
 import parseListenEpisodeData from './parseListenEpisodeData';
 import parseRssItems from './parseRssItems';
 
@@ -21,8 +22,11 @@ const parseListenData = (
     image: rssImage,
     itunes,
     copyright,
-    description
+    description,
+    podcast
   } = rssData || {};
+  const { follow: podcastFollow } = podcast || {};
+  const { data: podcastFollowData } = podcastFollow || {};
   const { url: rssImageUrl } = rssImage || {};
   const {
     author: rssItunesAuthor,
@@ -42,9 +46,17 @@ const parseListenData = (
   const hasRssData = !!(feedUrl && rssData);
   const bgImageUrl = rssItunesImage || rssImageUrl;
   const content = generateHtmlString(rssItunesSummary || description);
-  const followUrls = {
-    ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
-  };
+  const followLinks = [
+    ...(podcastFollowData?.links
+      ? podcastFollowData.links.map((l) => ({
+          ...l,
+          service: getServiceFromUrl(l.href) || null
+        }))
+      : []),
+    ...(subscribeUrl || feedUrl
+      ? [{ href: subscribeUrl || feedUrl, text: 'RSS Feed', service: 'rss' }]
+      : [])
+  ];
 
   const data: IListenData = {
     ...(bgImageUrl && { bgImageUrl }),
@@ -57,7 +69,7 @@ const parseListenData = (
       ...(rssItunesOwner && { owner: rssItunesOwner }),
       ...(episodes && episodes.length && { episodes })
     }),
-    followUrls
+    followLinks
   };
 
   return data;

@@ -1,0 +1,34 @@
+@use '@components/Listen/Listen.use.scss' as Listen;
+
+.root {
+  --_gutter: var(--followLinks--gutter, 1rem);
+  --_gutter-start: var(--followLinks--gutter-start, var(--_gutter));
+  --_gutter-end: var(--followLinks--gutter-end, var(--_gutter));
+
+  max-width: 100%;
+  overflow-x: auto;
+
+  line-height: 0;
+
+  // Hide scrollbar on...
+  // Webkit
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  // Firefox
+  scrollbar-width: none;
+  // IE and Edge (Older Versions)
+  -ms-overflow-style: none;
+}
+
+.inner {
+  display: inline-flex;
+  gap: 0.5rem;
+  padding-inline: var(--_gutter-start) var(--_gutter-end);
+}
+
+.iconLink {
+  svg {
+    width: 40px;
+  }
+}

@@ -15,6 +15,8 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
   customFields: {
     feed: [
       // @ts-ignore
+      'podcast:follow',
+      // @ts-ignore
       ['podcast:value', 'podcast:value', { keepArray: true }],
       'itunes:type'
     ],
@@ -53,6 +55,24 @@ const fetchRssFeed = async (feedUrl: string): Promise<IRss> => {
         }))
       })
     };
+
+    if (result.podcast?.follow?.url) {
+      try {
+        const response = await fetch(result.podcast.follow.url);
+
+        if (!response.ok) {
+          throw new Error(`Error fetching follow URL: ${response.status}`);
+        }
+
+        const followData = await response.json();
+
+        result.podcast.follow.data = followData;
+      } catch (error) {
+        // There was a problem fetching follow data. This should not block page rendering. Log as a warning.
+        // eslint-disable-next-line no-console
+        console.warn(error, 'podcast:follow');
+      }
+    }
 
     return result;
   } catch (err) {

@@ -20,6 +20,24 @@ describe('lib/parse/data', () => {
           email: 'email@address.com'
         }
       },
+      podcast: {
+        follow: {
+          url: 'http://foo.com/subscribeLinks.json',
+          data: {
+            version: '1.0.0',
+            links: [
+              {
+                href: 'https://podcasts.apple.com/podcast/id1766018642',
+                text: 'Apple Podcasts'
+              },
+              {
+                href: 'https://unknown.service.com/show/id1766018642',
+                text: 'Unknown Service'
+              }
+            ]
+          }
+        }
+      },
       items: [
         {
           guid: 'GUID:1',
@@ -71,14 +89,41 @@ describe('lib/parse/data', () => {
       expect(result.copyright).toBe('COPYRIGHT');
       expect(result.content).toBe('<p>ITUNES:SUMMARY</p>');
       expect(result.link).toBe('http://test.com');
-      expect(result.followUrls.rss).toBe('http://test.com/feed.rss');
+      expect(result.followLinks[2].href).toBe('http://test.com/feed.rss');
       expect(result.episodes.length).toBe(2);
     });
 
     test('should handle no rss data', () => {
       const result = parseListenData({});
 
-      expect(result).toStrictEqual({ followUrls: {} });
+      expect(result).toStrictEqual({ followLinks: [] });
+    });
+
+    test('should get prepend follow data links to followLinks', () => {
+      const result = parseListenData(
+        { feedUrl: 'http://foo.com/feed.rss' },
+        mockRssData
+      );
+
+      expect(result.followLinks.length).toBe(3);
+      expect(result.followLinks[0].href).toBe(
+        mockRssData.podcast.follow.data.links[0].href
+      );
+      expect(result.followLinks[1].href).toBe(
+        mockRssData.podcast.follow.data.links[1].href
+      );
+      expect(result.followLinks[2].href).toBe('http://foo.com/feed.rss');
+    });
+
+    test('should get set service prop on followLink items', () => {
+      const result = parseListenData(
+        { feedUrl: 'http://foo.com/feed.rss' },
+        mockRssData
+      );
+
+      expect(result.followLinks[0].service).toBe('apple-podcasts');
+      expect(result.followLinks[1].service).toBeNull();
+      expect(result.followLinks[2].service).toBe('rss');
     });
   });
 });

@@ -4,10 +4,12 @@
  */
 
 import type React from 'react';
+import type { IRssPodcastFollowLink } from '@interfaces/data';
 import clsx from 'clsx';
 import Modal, { IModalProps } from '@components/Modal/Modal';
 import MenuButton from '@components/MenuButton';
 import IconButton from '@components/IconButton';
+import serviceAssetsMap from '@config/ServiceAssetsMap';
 import AddIcon from '@svg/icons/Add.svg';
 import RssFeedIcon from '@svg/icons/RssFeed.svg';
 import styles from './FollowMenu.module.scss';
@@ -15,38 +17,45 @@ import styles from './FollowMenu.module.scss';
 export interface IFollowMenuProps extends IModalProps {
   onOpen(): void;
   className?: string;
-  followUrls: { [key: string]: string };
+  followLinks: IRssPodcastFollowLink[];
 }
 
-const optionsMap: Map<string, any> = new Map();
-optionsMap.set('rss', { IconComponent: RssFeedIcon, label: 'RSS Feed' });
+serviceAssetsMap.set('rss', { IconComponent: RssFeedIcon, label: 'RSS Feed' });
+
+const getInitials = (name: string) => {
+  const initials = [...(name?.matchAll(/\b\w/g) || [])].join('').toUpperCase();
+
+  return initials;
+};
 
 const FollowMenu: React.FC<IFollowMenuProps> = ({
   onOpen,
   onClose,
   isOpen,
   portalId,
-  followUrls,
+  followLinks,
   className
 }) => {
-  const followUrlsEntries = Object.entries(followUrls || {});
-
   const handleClick = () => {
     onOpen();
   };
 
-  if (!followUrlsEntries.length) return null;
+  if (!followLinks?.length) return null;
 
-  if (followUrlsEntries.length === 1) {
-    const { IconComponent, label } = optionsMap.get(followUrlsEntries[0][0]);
+  if (followLinks.length === 1) {
+    const { href, text, service } = followLinks[0];
+    const { IconComponent, label } = serviceAssetsMap.get(service) || {
+      IconComponent: 'span'
+    };
+
     return (
       <IconButton
-        title={label}
+        title={text || label}
         type="button"
         className={clsx(className)}
-        href={followUrlsEntries[0][1]}
+        href={href}
       >
-        <IconComponent />
+        <IconComponent aria-hidden>{getInitials(text || label)}</IconComponent>
       </IconButton>
     );
   }
@@ -54,20 +63,30 @@ const FollowMenu: React.FC<IFollowMenuProps> = ({
   return (
     <>
       <IconButton
-        title="Follow Menu"
+        title="Follow Podcast..."
         type="button"
         className={clsx(className)}
         onClick={handleClick}
       >
-        <AddIcon />
+        <AddIcon aria-hidden />
       </IconButton>
       <Modal onClose={onClose} isOpen={isOpen} portalId={portalId}>
+        <h2 className={styles.heading}>Follow This Podcast</h2>
         <nav className={styles.nav}>
-          {followUrlsEntries.map(([key, url]) => {
-            const { IconComponent, label } = optionsMap.get(key);
+          {followLinks.map(({ href, text, service }) => {
+            const { IconComponent, label } = serviceAssetsMap.get(service) || {
+              IconComponent: 'span'
+            };
             return (
-              <MenuButton action="link" label={label} linkHref={url} key={key}>
-                <IconComponent aria-hidden />
+              <MenuButton
+                action="link"
+                label={text || label}
+                linkHref={href}
+                key={`${service}:${href}`}
+              >
+                <IconComponent aria-hidden>
+                  {getInitials(text || label)}
+                </IconComponent>
               </MenuButton>
             );
           })}

@@ -111,6 +111,8 @@ $episode-breakpoint--full: 120ch;
   }
 
   @media (min-width: Listen.$breakpoint-full) {
+    --episode-thumbnail-size: clamp(4rem, 10vh, #{$episode-thumbnail-size});
+
     grid-template-columns: var(--episode-thumbnail-size) 1fr;
     grid-template-rows: min-content 1fr;
     row-gap: 0;
@@ -128,7 +130,6 @@ $episode-breakpoint--full: 120ch;
   position: sticky;
   top: 8px;
   display: flex;
-  flex-wrap: wrap;
   z-index: 9;
   isolation: isolate;
   justify-content: space-between;
@@ -210,7 +211,7 @@ $episode-breakpoint--full: 120ch;
 
 .infoWrapper {
   position: relative;
-  inset-inline-start: calc(var(--spacing) * -1);
+  inset-inline-start: calc((var(--spacing) + 1px) * -1);
   display: flex;
   flex-wrap: wrap;
   column-gap: var(--spacing);
@@ -276,9 +277,7 @@ $episode-breakpoint--full: 120ch;
     overflow: hidden;
     overflow-y: auto;
 
-    padding-block-end: calc(
-      var(--gutter-size-block-end, var(--gutter-size-block)) + var(--gap) * 2
-    );
+    padding-block-end: var(--gutter-size-block-end, var(--gutter-size-block));
 
     border-top: var(--episode-divider-size) solid var(--episode-divider-color);
 
@@ -297,7 +296,7 @@ $episode-breakpoint--full: 120ch;
 }
 
 .description {
-  padding: var(--gap);
+  padding: calc(var(--gap) * 2) var(--gap);
   margin-inline: var(--gap);
 
   font-size: clamp(
@@ -336,9 +335,23 @@ $episode-breakpoint--full: 120ch;
       text-underline-offset: 0.2em;
     }
   }
+
+  img {
+    display: block;
+    max-width: 100%;
+    margin: calc(var(--gap) * 2) auto;
+  }
+
+  & > img:first-child {
+    margin-block-start: 0;
+  }
 }
 
 @container episode-root (width > #{Listen.$breakpoint-full}) {
+  .main {
+    --episode-thumbnail-size: #{$episode-thumbnail-size};
+  }
+
   .thumbnail {
     grid-row: 1 / -1;
   }
