@@ -6,7 +6,8 @@
   position: relative;
   display: inline-block;
   white-space: nowrap;
-  padding-right: 0.25em;
+  padding-inline-start: var(--marquee--padding-inline);
+  padding-inline-end: var(--marquee--padding-inline, 0.25em);
 }
 
 @keyframes marquee {

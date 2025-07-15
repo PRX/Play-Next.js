@@ -206,7 +206,6 @@ $logo-size--mobile: 3rem;
     justify-items: stretch;
     align-content: start;
     row-gap: 0.75rem;
-    overflow: hidden;
 
     padding-block-start: var(--gutter-size-block);
     padding-block-end: 0;
@@ -352,11 +351,25 @@ $logo-size--mobile: 3rem;
 }
 
 .podcastTitle {
-  overflow: hidden;
+  --marquee--padding-inline: var(--column-gap);
+
+  display: grid;
+
+  margin-inline: calc(var(--marquee--padding-inline) * -1);
 
   font-size: 1.25rem;
 
+  mask-image: linear-gradient(
+    to right,
+    hsl(0 0% 0% / 0),
+    hsl(0 0% 0% / 1) var(--marquee--padding-inline),
+    hsl(0 0% 0% / 1) calc(100% - var(--marquee--padding-inline)),
+    hsl(0 0% 0% / 0)
+  );
+
   @media (min-width: $breakpoint-full) {
+    --marquee--padding-inline: 1rem;
+
     font-size: 1.5rem;
   }
 }
