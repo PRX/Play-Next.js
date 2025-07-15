@@ -26,27 +26,14 @@ const FollowLinks: React.FC<IFollowLinksProps> = ({
   if (!links || links?.length <= 1) return null;
 
   const followLinks = [...links.slice(0, -1)];
+  // TODO: If having all badges is not desired, add logic to adjust number of
+  // badges shown. Maybe n badges when total badges greater than is n+3, else
+  // all badges.
   const badgeLinks = followLinks.splice(0);
-  // const {
-  //   service: badgeService,
-  //   href: badgeHref,
-  //   text: badgeText
-  // } = followLinks.shift() || {};
-  // const { BadgeComponent, label: badgeLabel } =
-  //   serviceAssetsMap.get(badgeService);
 
   return (
     <div className={clsx(styles.root, className)} {...props}>
       <div className={styles.inner}>
-        {/* <a
-        className={styles.badgeLink}
-        href={badgeHref}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <BadgeComponent aria-label={`Listen on ${badgeText || badgeLabel}`} />
-      </a> */}
-
         {badgeLinks.map(({ service, href, text }) => {
           const { BadgeComponent, label } = serviceAssetsMap.get(service);
           return (
