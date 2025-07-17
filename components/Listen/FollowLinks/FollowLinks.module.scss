@@ -8,6 +8,7 @@
   max-width: 100%;
   overflow-x: auto;
   overscroll-behavior: none;
+  scroll-behavior: smooth;
 
   line-height: 0;
 
@@ -20,6 +21,17 @@
   scrollbar-width: none;
   // IE and Edge (Older Versions)
   -ms-overflow-style: none;
+
+  a:focus-visible {
+    border: none;
+    outline: none;
+  }
+
+  @media (pointer: fine) {
+    &:where(:hover, :focus-within) a:not(:hover, :focus-visible) {
+      opacity: 0.5;
+    }
+  }
 }
 
 .inner {
