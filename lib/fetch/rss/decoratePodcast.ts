@@ -1,8 +1,12 @@
 import {
+  IRssPodcastFollow,
   IRssPodcastValue,
   IRssPodcastValueRecipient
 } from '@interfaces/data/IRssPodcast';
 import type { IRss, IRssItem } from '@interfaces/data';
+
+export const extractPodcastFollow = (data): IRssPodcastFollow =>
+  data['podcast:follow']?.$;
 
 export const extractPodcastValue = (data): IRssPodcastValue => {
   const podcastValueWmIlp = (data['podcast:value'] as any[])?.find(
@@ -50,9 +54,16 @@ export const decoratePodcast = (feed): IRss => {
   });
 
   const feedVal = extractPodcastValue(feed);
+  const feedPodcastFollow = extractPodcastFollow(feed);
+  const hasPodcastProps = !!feedVal || !!feedPodcastFollow;
   const rssData: IRss = {
     ...feed,
-    ...(feedVal && { podcast: { value: feedVal } }),
+    ...(hasPodcastProps && {
+      podcast: {
+        ...(feedPodcastFollow && { follow: feedPodcastFollow }),
+        ...(feedVal && { value: feedVal })
+      }
+    }),
     items: feedItems
   };
 

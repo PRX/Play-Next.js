@@ -52,6 +52,14 @@
   color: var(--_iconButton--color);
   line-height: 0;
 
+  > span {
+    display: grid;
+    place-items: center;
+    font-size: 1.25em;
+    font-weight: 700;
+    letter-spacing: -0.1ch;
+  }
+
   > svg {
     width: auto;
     height: auto;

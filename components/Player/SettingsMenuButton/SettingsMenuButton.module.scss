@@ -35,6 +35,7 @@
 
   svg {
     width: var(--_settingsMenuButton--size);
+    fill: currentColor;
   }
 
   &:active {

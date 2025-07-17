@@ -36,12 +36,24 @@
 }
 
 .title {
+  --marquee--padding-inline: var(--column-gap);
+
   grid-area: TT;
 
   display: grid;
 
+  margin-block: 0;
+  margin-inline: calc(var(--marquee--padding-inline) * -1);
+
   font-size: var(--playerText-title-size);
-  margin: 0;
+
+  mask-image: linear-gradient(
+    to right,
+    hsl(0 0% 0% / 0) calc(var(--marquee--padding-inline) / 4),
+    hsl(0 0% 0% / 1) var(--marquee--padding-inline),
+    hsl(0 0% 0% / 1) calc(100% - var(--marquee--padding-inline)),
+    hsl(0 0% 0% / 0) calc(100% - (var(--marquee--padding-inline) / 4))
+  );
 }
 
 .subtitle {

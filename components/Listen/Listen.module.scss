@@ -3,12 +3,12 @@
 @use '@styles/theme';
 @use './Listen.use.scss' as *;
 
-$logo-size: 12.5rem;
-$logo-size--mobile: 2.5rem;
-
 $sidebar-width: 40ch;
 
 $viewTransitionDuration: 300ms;
+
+$logo-size: $sidebar-width;
+$logo-size--mobile: 3rem;
 
 :export {
   --listen-sidebar-width: #{$sidebar-width};
@@ -119,9 +119,13 @@ $viewTransitionDuration: 300ms;
   }
 
   display: grid;
-  grid-template-rows: min-content [main-start] 1fr [main-end] min-content;
-  height: 100vh;
-  // overflow-y: auto;
+  grid-template-rows: min-content 1fr min-content;
+  grid-template-areas:
+    'HEADER'
+    'MAIN'
+    'FOOTER';
+  width: 100dvw;
+  height: 100dvh;
 
   background-color: var(--listen-background-color);
 
@@ -133,15 +137,14 @@ $viewTransitionDuration: 300ms;
 
   & > * {
     position: relative;
-    grid-column: 1;
     z-index: 1;
   }
 
   @media (min-width: $breakpoint-full) {
     grid-template-columns: var(--listen-sidebar-width, #{$sidebar-width}) 1fr;
-    grid-template-rows: 1fr min-content;
     grid-template-areas:
-      'SIDEBAR MAIN'
+      'HEADER FOLLOW'
+      'HEADER MAIN'
       'FOOTER FOOTER';
     column-gap: var(--listen-column-gap);
   }
@@ -154,31 +157,55 @@ $viewTransitionDuration: 300ms;
 }
 
 .header {
-  grid-row: 1;
+  --gutter: 1rem;
+  --column-gap: 0.5rem;
+  --followLinks--gutter: calc(var(--gutter) + var(--column-gap));
 
-  display: flex;
-  grid-template-columns: $logo-size--mobile 1fr;
-  column-gap: 1rem;
+  container-name: podcast-header;
+  container-type: inline-size;
+  grid-area: HEADER;
+
+  display: grid;
+  grid-template-columns:
+    [full-start] var(--gutter)
+    [content-start] $logo-size--mobile 1fr min-content [content-end] var(
+      --gutter
+    )
+    [full-end];
+  grid-template-rows: $logo-size--mobile [follow-start] auto [follow-end];
+
+  column-gap: var(--column-gap);
+  row-gap: 0.5rem;
   z-index: 9;
 
-  padding: 0.75rem;
+  padding-block: 0.75rem;
 
   border-block-end: 2px solid var(--listen-divider-color);
+
+  & > * {
+    max-width: 100cqw;
+  }
+
+  .podcastLogo {
+    grid-column: 2;
+  }
+
+  .podcastFollow {
+    grid-column: full;
+    grid-row: follow;
+  }
 
   & .podcastInfo {
     display: none;
   }
 
   @media (min-width: $breakpoint-full) {
-    grid-area: SIDEBAR;
-
     display: grid;
     grid-template-columns: none;
     grid-template-rows: min-content min-content min-content 1fr;
     justify-items: stretch;
     align-content: start;
     row-gap: 0.75rem;
-    overflow: hidden;
 
     padding-block-start: var(--gutter-size-block);
     padding-block-end: 0;
@@ -188,6 +215,14 @@ $viewTransitionDuration: 300ms;
     margin-inline-end: 0;
 
     border-block-end: none;
+
+    .podcastLogo {
+      grid-column: unset;
+    }
+
+    .podcastFollow {
+      display: none;
+    }
 
     & .podcastInfo {
       display: grid;
@@ -203,20 +238,53 @@ $viewTransitionDuration: 300ms;
         margin-inline-end: -2rem;
         padding-inline-end: 2.75rem;
       }
+
+      @include scrollbar;
     }
+  }
+
+  @media (max-height: 800px) {
+    .podcastFollow {
+      display: none;
+    }
+  }
+}
+
+.follow {
+  display: none;
+
+  @media (min-width: $breakpoint-full) {
+    --followLinks--gutter-start: var(--listen-column-gap);
+    --followLinks--gutter-end: var(--gutter-size-inline, 2rem);
+
+    display: grid;
+    grid-area: FOLLOW;
+
+    padding-block-start: var(--gutter-size-block);
+    padding-block-end: 1rem;
+
+    margin-inline-start: calc(var(--followLinks--gutter-start) * -1);
+
+    mask-image: linear-gradient(
+      to right,
+      hsl(0 0% 0% / 0) calc(var(--followLinks--gutter-start) / 5),
+      hsl(0 0% 0% / 1) var(--followLinks--gutter-start),
+      hsl(0 0% 0% / 1) calc(100% - var(--followLinks--gutter-end, 2rem)),
+      hsl(0 0% 0% / 0) calc(100% - (var(--followLinks--gutter-end, 2rem) / 5))
+    );
   }
 }
 
 .main {
   @include grid.stacked;
-  grid-row: main;
+  grid-area: MAIN;
   grid-template-rows: 1fr min-content;
   transform-origin: center center;
   overflow: hidden;
 
   @media (min-width: $breakpoint-full) {
-    & {
-      grid-area: MAIN;
+    :not(:has(> .follow)) > & {
+      padding-block-start: var(--gutter-size-block);
     }
   }
 }
@@ -224,12 +292,7 @@ $viewTransitionDuration: 300ms;
 .footer {
   z-index: 9;
   isolation: isolate;
-
-  @media (min-width: $breakpoint-full) {
-    & {
-      grid-area: FOOTER;
-    }
-  }
+  grid-area: FOOTER;
 }
 
 .footerMain {
@@ -288,11 +351,25 @@ $viewTransitionDuration: 300ms;
 }
 
 .podcastTitle {
-  overflow: hidden;
+  --marquee--padding-inline: var(--column-gap);
+
+  display: grid;
+
+  margin-inline: calc(var(--marquee--padding-inline) * -1);
 
   font-size: 1.25rem;
 
+  mask-image: linear-gradient(
+    to right,
+    hsl(0 0% 0% / 0),
+    hsl(0 0% 0% / 1) var(--marquee--padding-inline),
+    hsl(0 0% 0% / 1) calc(100% - var(--marquee--padding-inline)),
+    hsl(0 0% 0% / 0)
+  );
+
   @media (min-width: $breakpoint-full) {
+    --marquee--padding-inline: 1rem;
+
     font-size: 1.5rem;
   }
 }
@@ -312,13 +389,24 @@ $viewTransitionDuration: 300ms;
 .podcastMenu {
   display: flex;
   align-items: center;
+
+  & > button svg {
+    width: 40px;
+    aspect-ratio: 1;
+  }
 }
 
 .podcastView {
+  container-name: podcast-view;
+  container-type: inline-size;
   display: grid;
   grid-template-rows: min-content auto;
   overflow: hidden;
   overflow-y: auto;
+
+  & > * {
+    max-width: 100cqw;
+  }
 
   :where([data-view]:not([data-view*='-init'])) & {
     animation: dim $viewTransitionDuration ease-out forwards;
@@ -347,8 +435,6 @@ $viewTransitionDuration: 300ms;
   @media (min-width: $breakpoint-full) {
     display: none;
   }
-
-  @include scrollbar;
 }
 
 .podcastContent {
@@ -371,7 +457,9 @@ $viewTransitionDuration: 300ms;
       display: grid;
       overflow: hidden;
 
-      padding-block-start: var(--gutter-size-block);
+      .podcastFollow ~ & {
+        padding-block-start: 0;
+      }
     }
   }
 }
@@ -392,12 +480,6 @@ $viewTransitionDuration: 300ms;
 
   :where([data-view='episode']) & {
     animation: sharpen $viewTransitionDuration ease-out;
-  }
-
-  @media (min-width: $breakpoint-full) {
-    & {
-      padding-block-start: var(--gutter-size-block);
-    }
   }
 }
 

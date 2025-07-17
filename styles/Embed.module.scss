@@ -185,6 +185,7 @@ $player-thumbnail-size: 120px;
 
 .playerMain {
   --player-thumbnail-size: #{$player-thumbnail-size--mobile};
+  --column-gap: #{$player-gap};
 
   display: grid;
   grid-template-columns: var(--player-thumbnail-size) 1fr max-content;
@@ -194,7 +195,7 @@ $player-thumbnail-size: 120px;
     'PANEL PANEL PANEL'
     'PROG  PROG  PROG';
   align-content: space-between;
-  column-gap: $player-gap;
+  column-gap: var(--column-gap);
 
   visibility: hidden;
 

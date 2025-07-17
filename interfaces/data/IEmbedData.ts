@@ -3,6 +3,7 @@
  */
 
 import type { IAudioData } from './IAudioData';
+import { IRssPodcastFollowLink } from './IRssPodcast';
 
 /**
  * Embed data interface.
@@ -49,9 +50,7 @@ export interface IEmbedData {
   /**
    * URL's for social platforms to follow the creator on.
    */
-  followUrls?: {
-    [key: string]: string;
-  };
+  followLinks?: IRssPodcastFollowLink[];
 
   /**
    * URL's for supporting the podcast.

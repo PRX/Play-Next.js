@@ -43,6 +43,7 @@
     "react-dom": "18.2.0",
     "react-html-parser": "^2.0.2",
     "react-is": "^18.1.0",
+    "react-shadow": "^20.6.0",
     "rss-parser": "^3.13.0",
     "serialize-error": "^11.0.3",
     "sharp": "0.32.6",

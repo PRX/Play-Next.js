@@ -1,6 +1,7 @@
 import type { IAudioData, IEmbedData, IRss } from '@interfaces/data';
 import type { IEmbedConfig } from '@interfaces/config';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
+import getServiceFromUrl from '@lib/parse/string/getServiceFromUrl';
 import parseRssItems from './parseRssItems';
 
 /**
@@ -31,7 +32,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   } = rssData || {};
   const { url: rssImageUrl } = rssImage || {};
   const { image: rssItunesImage, owner: rssItunesOwner } = itunes || {};
-  const { value: podcastValue } = podcast || {};
+  const { value: podcastValue, follow: podcastFollow } = podcast || {};
+  const { data: podcastFollowData } = podcastFollow || {};
   const podcastValueRecipient =
     podcastValue &&
     podcastValue.type === 'webmonetization' &&
@@ -79,9 +81,17 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const playlist = !!showPlaylist && audioItems;
   const bgImageUrl =
     configBgImageUrl || rssItunesImage || rssImageUrl || audio.imageUrl;
-  const followUrls = {
-    ...((subscribeUrl || feedUrl) && { rss: subscribeUrl || feedUrl })
-  };
+  const followLinks = [
+    ...(podcastFollowData?.links
+      ? podcastFollowData.links.map((l) => ({
+          ...l,
+          service: getServiceFromUrl(l.href) || null
+        }))
+      : []),
+    ...(subscribeUrl || feedUrl
+      ? [{ href: subscribeUrl || feedUrl, text: 'RSS Feed', service: 'rss' }]
+      : [])
+  ];
   const shareUrl = showPlaylist ? rssShareUrl : audio.link || rssShareUrl;
 
   const data: IEmbedData = {
@@ -91,7 +101,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
     ...(rssTitle && { rssTitle }),
     ...(shareUrl && { shareUrl }),
     ...(rssItunesOwner && { owner: rssItunesOwner }),
-    followUrls,
+    followLinks,
     ...(paymentPointer && { paymentPointer })
   };
 

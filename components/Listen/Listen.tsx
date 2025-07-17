@@ -39,6 +39,9 @@ import Episode from './Episode';
 import FooterPlayer from './FooterPlayer';
 import styles from './Listen.module.scss';
 import episodeCardStyles from './EpisodeList/EpisodeCard/EpisodeCard.module.scss';
+import FollowLinks from './FollowLinks';
+
+// const FollowLinks = dynamic(() => import('./FollowLinks'));
 
 const Listen = ({ config, data }: IListenPageProps) => {
   const router = useRouter();
@@ -64,7 +67,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
     episodes,
     bgImageUrl,
     link,
-    followUrls,
+    followLinks,
     supportUrls
   } = data;
   const { state: playerState } = useContext(PlayerContext);
@@ -85,6 +88,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
     /<[^>]+>/g,
     ''
   );
+  const hasFollowLinks = followLinks?.length > 1;
   const footerPlayerRef = useRef<HTMLDivElement>();
   const [gutterBlockEnd, setGutterBlockEnd] = useState(0);
   const logoSizes = [
@@ -212,15 +216,17 @@ const Listen = ({ config, data }: IListenPageProps) => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('popstate', handleUrlChange);
 
+    // Trigger resize handler to initialize gutter end value.
+    // Delay by footer player's translate transition duration.
     window.setTimeout(() => {
-      handleResize(); // Trigger resize handler to initialize gutter end value.
-    }, 200);
+      handleResize();
+    }, 300);
 
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('popstate', handleUrlChange);
     };
-  }, [handleResize, handleUrlChange]);
+  }, [handleResize, handleUrlChange, playerShown]);
 
   const renderMenu = useMemo(
     () => (
@@ -231,7 +237,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           onClose={handleFollowCloseClick}
           isOpen={podcastFollowShown}
           portalId="listen-modals"
-          followUrls={followUrls}
+          followLinks={followLinks}
         />
 
         <ShareMenu
@@ -257,7 +263,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
       </>
     ),
     [
-      followUrls,
+      followLinks,
       link,
       podcastFollowShown,
       podcastShareShown,
@@ -331,6 +337,11 @@ const Listen = ({ config, data }: IListenPageProps) => {
             </h1>
             <span className={styles.podcastAuthor}>{author}</span>
           </div>
+          {hasFollowLinks && (
+            <nav className={styles.podcastFollow}>
+              <FollowLinks links={followLinks} />
+            </nav>
+          )}
           <nav className={styles.podcastMenu}>{renderMenu}</nav>
           <div className={styles.podcastInfo}>
             <div className={styles.podcastContent}>
@@ -341,6 +352,12 @@ const Listen = ({ config, data }: IListenPageProps) => {
             )}
           </div>
         </header>
+
+        {hasFollowLinks && (
+          <div className={styles.follow}>
+            <FollowLinks links={followLinks} />
+          </div>
+        )}
 
         <div className={styles.main}>
           <div

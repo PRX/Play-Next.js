@@ -6,7 +6,7 @@
 import type React from 'react';
 import MenuButton from '@components/MenuButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 
 export interface IShareTwitterButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -35,7 +35,7 @@ const ShareTwitterButton: React.FC<IShareTwitterButtonProps> = ({
       type="button"
       linkHref={shareUrl}
     >
-      <FontAwesomeIcon icon={faTwitter} />
+      <FontAwesomeIcon icon={faXTwitter} />
     </MenuButton>
   );
 };

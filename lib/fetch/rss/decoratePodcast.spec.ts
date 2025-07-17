@@ -1,7 +1,8 @@
 import {
   decoratePodcast,
   extractPodcastTranscript,
-  extractPodcastValue
+  extractPodcastValue,
+  extractPodcastFollow
 } from '@lib/fetch/rss/decoratePodcast';
 
 describe('lib/fetch/rss', () => {
@@ -54,6 +55,11 @@ describe('lib/fetch/rss', () => {
         }
       }
     ];
+    const mockPodcastFollow = {
+      $: {
+        url: 'http://foo.com/subscribelinks.json'
+      }
+    };
 
     const mockItem = {
       guid: 'foo-bar',
@@ -68,9 +74,14 @@ describe('lib/fetch/rss', () => {
     };
 
     const mockRss = {
+      'podcast:follow': mockPodcastFollow,
       'podcast:value': mockPodcastValue,
       items: [mockItem]
     };
+
+    test('should extract podcast:follow', () => {
+      expect(extractPodcastFollow(mockRss)).toEqual(mockPodcastFollow.$);
+    });
 
     test('should extract podcast:value usable for webmonetization', () => {
       expect(extractPodcastValue(mockItem)).toBeUndefined();
@@ -141,6 +152,7 @@ describe('lib/fetch/rss', () => {
       });
 
       expect(feed.podcast).toStrictEqual({
+        follow: { url: 'http://foo.com/subscribelinks.json' },
         value: {
           type: 'webmonetization',
           method: 'ILP',

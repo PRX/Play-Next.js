@@ -23,6 +23,7 @@ const IconButton = forwardRef<any, IIconButtonProps>(
         rel="noreferrer"
         ref={ref}
         title={props.title}
+        aria-label={props['aria-label']}
         {...((download && { download }) || { target: '_blank' })}
       >
         {children}

@@ -3,6 +3,7 @@
  */
 
 import { IListenEpisodeData } from './IListenEpisodeData';
+import { IRssPodcastFollowLink } from './IRssPodcast';
 
 export interface IListenData {
   /**
@@ -46,9 +47,7 @@ export interface IListenData {
   /**
    * URL's for social platforms to follow the creator on.
    */
-  followUrls?: {
-    [key: string]: string;
-  };
+  followLinks?: IRssPodcastFollowLink[];
 
   /**
    * URL's for supporting the podcast.

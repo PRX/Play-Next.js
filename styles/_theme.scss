@@ -1,10 +1,14 @@
 @mixin light() {
+  color-scheme: dark;
+
   &[data-theme='light'] {
+    color-scheme: light;
     @content;
   }
 
   @media (prefers-color-scheme: light) {
     &[data-theme='auto'] {
+      color-scheme: light;
       @content;
     }
   }
@@ -12,11 +16,13 @@
 
 @mixin light-child() {
   [data-theme='light'] & {
+    color-scheme: light;
     @content;
   }
 
   @media (prefers-color-scheme: light) {
     [data-theme='auto'] & {
+      color-scheme: light;
       @content;
     }
   }
