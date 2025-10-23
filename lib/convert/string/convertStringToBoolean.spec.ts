@@ -8,6 +8,12 @@ describe('lib/convert/string', () => {
       expect(result).toBe(false);
     });
 
+    test("should convert 'no' to false.", () => {
+      const result = convertStringToBoolean('no');
+
+      expect(result).toBe(false);
+    });
+
     test("should convert '0' to false.", () => {
       const result = convertStringToBoolean('0');
 
