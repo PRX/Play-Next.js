@@ -36,6 +36,7 @@ module.exports = {
       'error',
       'never',
       { ignorePackage: true, svg: 'always' }
-    ]
+    ],
+    'jsx-a11y/no-noninteractive-tabindex': 0
   }
 };

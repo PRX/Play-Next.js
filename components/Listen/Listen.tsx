@@ -74,7 +74,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const { currentTrackIndex } = playerState;
   const playerShown = currentTrackIndex !== null && currentTrackIndex >= 0;
   const episode = useMemo(
-    () => episodes && episodes.find(({ guid }) => guid === episodeGuid),
+    () => episodes?.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]
   );
   const {
@@ -169,30 +169,6 @@ const Listen = ({ config, data }: IListenPageProps) => {
     });
   };
 
-  const handleFollowButtonClick = () => {
-    dispatch({ type: ListenActionTypes.LISTEN_PODCAST_SHOW_FOLLOW_DIALOG });
-  };
-
-  const handleFollowCloseClick = () => {
-    dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_FOLLOW_DIALOG });
-  };
-
-  const handleShareButtonClick = () => {
-    dispatch({ type: ListenActionTypes.LISTEN_PODCAST_SHOW_SHARE_DIALOG });
-  };
-
-  const handleShareCloseClick = () => {
-    dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_SHARE_DIALOG });
-  };
-
-  const handleSupportButtonClick = () => {
-    dispatch({ type: ListenActionTypes.LISTEN_PODCAST_SHOW_SUPPORT_DIALOG });
-  };
-
-  const handleSupportCloseClick = () => {
-    dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_SUPPORT_DIALOG });
-  };
-
   const handleResize = useCallback(() => {
     setGutterBlockEnd(
       footerPlayerRef.current.parentElement.getBoundingClientRect().top -
@@ -226,10 +202,34 @@ const Listen = ({ config, data }: IListenPageProps) => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('popstate', handleUrlChange);
     };
-  }, [handleResize, handleUrlChange, playerShown]);
+  }, [handleResize, handleUrlChange]);
 
-  const renderMenu = useMemo(
-    () => (
+  const renderMenu = useMemo(() => {
+    const handleFollowButtonClick = () => {
+      dispatch({ type: ListenActionTypes.LISTEN_PODCAST_SHOW_FOLLOW_DIALOG });
+    };
+
+    const handleFollowCloseClick = () => {
+      dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_FOLLOW_DIALOG });
+    };
+
+    const handleShareButtonClick = () => {
+      dispatch({ type: ListenActionTypes.LISTEN_PODCAST_SHOW_SHARE_DIALOG });
+    };
+
+    const handleShareCloseClick = () => {
+      dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_SHARE_DIALOG });
+    };
+
+    const handleSupportButtonClick = () => {
+      dispatch({ type: ListenActionTypes.LISTEN_PODCAST_SHOW_SUPPORT_DIALOG });
+    };
+
+    const handleSupportCloseClick = () => {
+      dispatch({ type: ListenActionTypes.LISTEN_PODCAST_HIDE_SUPPORT_DIALOG });
+    };
+
+    return (
       <>
         <FollowMenu
           className={clsx(styles.menuButton, styles.followRssButton)}
@@ -261,17 +261,16 @@ const Listen = ({ config, data }: IListenPageProps) => {
           supportUrls={supportUrls}
         />
       </>
-    ),
-    [
-      followLinks,
-      link,
-      podcastFollowShown,
-      podcastShareShown,
-      podcastSupportShown,
-      supportUrls,
-      title
-    ]
-  );
+    );
+  }, [
+    followLinks,
+    link,
+    podcastFollowShown,
+    podcastShareShown,
+    podcastSupportShown,
+    supportUrls,
+    title
+  ]);
 
   useEffect(() => {
     if (view === 'episode' && !episode) {
@@ -343,14 +342,18 @@ const Listen = ({ config, data }: IListenPageProps) => {
             </nav>
           )}
           <nav className={styles.podcastMenu}>{renderMenu}</nav>
-          <div className={styles.podcastInfo}>
+          <section
+            className={styles.podcastInfo}
+            tabIndex={0}
+            aria-label={`About ${title}`}
+          >
             <div className={styles.podcastContent}>
               <HtmlContent html={content} />
             </div>
             {copyright && (
               <div className={styles.podcastCopyright}>{copyright}</div>
             )}
-          </div>
+          </section>
         </header>
 
         {hasFollowLinks && (
@@ -391,6 +394,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
         </div>
 
         {closedCaptionsShown && (
+          // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
           <div
             className={clsx(styles.closedCaptionsFeed)}
             id="listen-closed-caption-modal"
@@ -409,6 +413,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
         </footer>
 
+        {/** biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components. */}
         <div className={styles.modals} id="listen-modals" />
       </div>
     </ListenContext.Provider>
