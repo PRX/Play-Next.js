@@ -217,7 +217,11 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
               </nav>
             )}
           </div>
-          <div className={styles.content}>
+          <section
+            className={styles.content}
+            tabIndex={0}
+            aria-label={`About Episode "${title}"`}
+          >
             <div id="description" className={styles.description}>
               <HtmlContent html={content} />
             </div>
@@ -232,7 +236,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
                 />
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
     </>

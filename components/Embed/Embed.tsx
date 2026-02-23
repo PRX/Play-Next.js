@@ -4,13 +4,7 @@
  */
 
 import type { IEmbedProps } from '@interfaces/embed';
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import clsx from 'clsx';
@@ -258,7 +252,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
   useEffect(() => {
     initLayoutBreakpoints();
     updatePlayerLayout();
-  }, [initLayoutBreakpoints, canShowCoverArt, updatePlayerLayout]);
+  }, [initLayoutBreakpoints, updatePlayerLayout]);
 
   /**
    * Setup/clean up window events.
@@ -303,6 +297,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   <CoverArt />
 
                   {showClosedCaptionFeed && (
+                    // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                     <div
                       className={clsx(styles.modals, styles.closedCaptionsFeed)}
                       id="embed-closed-caption-modal"
@@ -346,7 +341,11 @@ const Embed = ({ config, data }: IEmbedProps) => {
                       rel="noopener noreferrer"
                       className={styles.logoLink}
                     >
-                      {theme === 'light' ? <PrxLogoColor /> : <PrxLogo />}
+                      {theme === 'light' ? (
+                        <PrxLogoColor aria-label="PRX" />
+                      ) : (
+                        <PrxLogo aria-label="PRX" />
+                      )}
                     </a>
                   </div>
 
@@ -491,6 +490,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
                 </div>
 
                 {showClosedCaptionDialog && (
+                  // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                   <div
                     className={styles.modals}
                     id="embed-closed-caption-modal"
@@ -509,6 +509,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
               )}
 
               {modalShown && (
+                // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                 <div
                   className={styles.modals}
                   id="embed-modals"
