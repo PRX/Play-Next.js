@@ -134,7 +134,7 @@ const parseRssItems = (
     (item) =>
       ({
         // Provide some default props inherited from feed.
-        link,
+        link: link || null,
         ...(imageUrl && { imageUrl }),
         // Parse item into audio data, using passed parser if provided.
         ...(itemParser || parseAudioData)(item)

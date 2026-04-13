@@ -61,7 +61,7 @@ const parseListenData = (
   const data: IListenData = {
     ...(bgImageUrl && { bgImageUrl }),
     ...(hasRssData && {
-      link,
+      link: link || null,
       title,
       content,
       ...(copyright && { copyright }),
