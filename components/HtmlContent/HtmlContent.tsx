@@ -4,16 +4,17 @@
  */
 
 import type { ReactElement } from 'react';
-import type { DomElement } from 'htmlparser2/index';
-import type { Transform } from 'react-html-parser';
-import ReactHtmlParser from 'react-html-parser';
+import parse, {
+  type HTMLReactParserOptions,
+  type DOMNode
+} from 'html-react-parser';
 import scriptRemove from './transforms/scriptRemove';
 
 export interface IHtmlContentProps {
   html: string;
   transforms?: ((
-    N: DomElement, // eslint-disable-line no-unused-vars
-    F: Transform, // eslint-disable-line no-unused-vars
+    N: DOMNode, // eslint-disable-line no-unused-vars
+    F: HTMLReactParserOptions['replace'], // eslint-disable-line no-unused-vars
     I: number // eslint-disable-line no-unused-vars
   ) => ReactElement | void | null)[];
 }
@@ -24,17 +25,17 @@ const HtmlContent = ({ html, transforms = [] }: IHtmlContentProps) => {
       (acc, func) => func(acc),
       dirtyHtml
     );
-  const transform = (node: DomElement, index: number) =>
+  const replace = (node: DOMNode, index: number) =>
     [scriptRemove, ...transforms].reduce(
-      (acc, func) => (acc || acc === null ? acc : func(node, transform, index)),
+      (acc, func) => (acc || acc === null ? acc : func(node, replace, index)),
       undefined
     );
 
   return (
     !!html && (
       <>
-        {ReactHtmlParser(cleanHtml(html), {
-          transform: transform as Transform
+        {parse(cleanHtml(html), {
+          replace
         })}
       </>
     )
