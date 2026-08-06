@@ -53,11 +53,31 @@ export interface IRssPodcastTranscript {
   url: string;
 }
 
+export interface IRssPodcastSource {
+  uri: string;
+  contentType?: string;
+}
+
+export interface IRssPodcastAlternateEnclosure {
+  type: string;
+  length?: number;
+  bitrate?: number;
+  height?: number;
+  width?: number;
+  lang?: string;
+  title?: string;
+  rel?: string;
+  codecs?: string;
+  default?: boolean;
+  sources: IRssPodcastSource[];
+}
+
 export interface IRssPodcast {
   [key: string]: any;
   follow?: IRssPodcastFollow;
   value?: IRssPodcastValue;
   transcript?: IRssPodcastTranscript[];
+  alternateEnclosure?: IRssPodcastAlternateEnclosure[];
 }
 
 export interface IRssPodcastTranscriptJsonSegment {

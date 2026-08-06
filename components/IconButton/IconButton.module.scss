@@ -72,7 +72,12 @@
     }
   }
 
-  &:active {
+  &:disabled {
+    opacity: 0.5;
+    cursor: unset;
+  }
+
+  &:not(:disabled):active {
     background-color: var(--_iconButton--background-color--hover);
     color: var(--_iconButton--color--hover);
   }
@@ -85,7 +90,7 @@
   }
 
   @media (pointer: fine) {
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--_iconButton--background-color--hover);
       color: var(--_iconButton--color--hover);
     }

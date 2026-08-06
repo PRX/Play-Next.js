@@ -8,6 +8,7 @@ describe('lib/parse/data', () => {
       link: 'http://foo.com/foo-bar',
       title: 'foo',
       enclosure: {
+        type: 'audio/mpeg',
         url: 'http://foo.com/audio.mp3',
         length: 12345
       },
@@ -28,6 +29,7 @@ describe('lib/parse/data', () => {
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
+        type: 'audio/mpeg',
         url: 'http://foo.com/audio.mp3?_from=play.prx.org',
         fileSize: 12345,
         categories: ['cat1', 'cat2', 'cat3'],
@@ -48,6 +50,7 @@ describe('lib/parse/data', () => {
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
+        type: 'audio/mpeg',
         url: 'http://foo.com/audio.mp3?_from=play.prx.org',
         fileSize: 12345,
         subtitle: 'bar',
@@ -67,6 +70,7 @@ describe('lib/parse/data', () => {
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
+        type: 'audio/mpeg',
         url: 'http://foo.com/audio.mp3?_from=play.prx.org',
         fileSize: 12345,
         categories: ['cat1', 'cat2', 'cat3']

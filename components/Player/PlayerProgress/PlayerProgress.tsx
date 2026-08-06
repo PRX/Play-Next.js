@@ -25,30 +25,24 @@ import convertDurationToSeconds from '@lib/convert/string/convertDurationToSecon
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import styles from './PlayerProgress.module.scss';
 
-export interface IPlayerProgressProps {
-  updateFrequency?: number;
-}
+export interface IPlayerProgressProps {}
 
 export interface IPlayerProgressCssProps extends React.CSSProperties {
   '--progress': number;
   '--track-width'?: string;
 }
 
-const PlayerProgress: React.FC<IPlayerProgressProps> = ({
-  updateFrequency = 500
-}) => {
-  const updateInterval = useRef(null);
+const PlayerProgress: React.FC<IPlayerProgressProps> = () => {
   const trackRef = useRef<HTMLDivElement>();
   const [state, dispatch] = useReducer(
     playerProgressStateReducer,
     playerProgressInitialState
   );
   const { scrubPosition, played, playedSeconds, duration } = state;
-  const { audioElm, state: playerState, seekTo } = useContext(PlayerContext);
+  const { el, state: playerState, seekTo } = useContext(PlayerContext);
   const {
     currentTrackIndex,
     tracks,
-    playing,
     currentTime: playerCurrentTime
   } = playerState;
   const { duration: trackDuration } =
@@ -97,7 +91,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    */
   const updateProgress = useCallback(
     (seconds?: number) => {
-      const { currentTime: ct, duration: d } = audioElm;
+      const { currentTime: ct = 0, duration: d = 0 } = el.current || {};
       const updatedPlayed = seconds || seconds === 0 ? seconds : ct;
 
       updateProgressStyles();
@@ -111,7 +105,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
         }
       });
     },
-    [audioElm, totalDurationSeconds, updateProgressStyles]
+    [el, totalDurationSeconds, updateProgressStyles]
   );
 
   /**
@@ -184,38 +178,28 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   }, [playerCurrentTime, updateProgress]);
 
   /**
-   * Setup update interval.
-   */
-  useEffect(() => {
-    clearInterval(updateInterval.current);
-
-    if (playing) {
-      updateInterval.current = setInterval(handleUpdate, updateFrequency);
-    }
-
-    return () => {
-      clearInterval(updateInterval.current);
-    };
-  }, [playing, updateFrequency, handleUpdate]);
-
-  /**
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    audioElm?.addEventListener('loadedmetadata', handleLoadedMetadata);
+    const elCurrent = el.current;
+
+    elCurrent?.addEventListener('loadedmetadata', handleLoadedMetadata);
+    elCurrent?.addEventListener('timeupdate', handleUpdate);
 
     return () => {
-      audioElm?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      elCurrent?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      elCurrent?.removeEventListener('timeupdate', handleUpdate);
     };
-  }, [audioElm, handleLoadedMetadata]);
+  }, [handleLoadedMetadata]);
 
   /**
    * Setup progress track event handlers.
    */
   useEffect(() => {
     const refElm = trackRef.current;
-    trackRef.current.addEventListener('pointerdown', handlePointerDown);
-    trackRef.current.addEventListener('pointerup', handlePointerUp);
+
+    refElm.addEventListener('pointerdown', handlePointerDown);
+    refElm.addEventListener('pointerup', handlePointerUp);
 
     window.addEventListener('resize', handleResize);
 

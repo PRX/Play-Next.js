@@ -30,8 +30,7 @@ const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
       newConfig.showPlaylist > 1 &&
       data.playlist && {
         playlist: data.playlist.slice(0, newConfig.showPlaylist)
-      }),
-    mode: 'preview'
+      })
   };
 
   function handlePostMessage(e: MessageEvent) {
@@ -71,7 +70,7 @@ const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
       <Head>
         <title>PRX Play - Embeddable Player</title>
       </Head>
-      <Embed config={newConfig} data={embedData} />
+      <Embed config={newConfig} data={embedData} mode="preview" />
     </>
   );
 };

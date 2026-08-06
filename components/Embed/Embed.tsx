@@ -53,10 +53,9 @@ export interface IEmbedLayoutBreakPoint {
   thumbnailSize: number;
 }
 
-const Embed = ({ config, data }: IEmbedProps) => {
+const Embed = ({ config, data, mode }: IEmbedProps) => {
   const { showCoverArt, showPlaylist, accentColor, theme } = config;
   const {
-    mode,
     audio,
     playlist,
     bgImageUrl,
@@ -297,7 +296,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   <CoverArt />
 
                   {showClosedCaptionFeed && (
-                    // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                     <div
                       className={clsx(styles.modals, styles.closedCaptionsFeed)}
                       id="embed-closed-caption-modal"
@@ -490,7 +488,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                 </div>
 
                 {showClosedCaptionDialog && (
-                  // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                   <div
                     className={styles.modals}
                     id="embed-closed-caption-modal"
@@ -509,7 +506,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
               )}
 
               {modalShown && (
-                // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                 <div
                   className={styles.modals}
                   id="embed-modals"

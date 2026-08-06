@@ -16,17 +16,14 @@ import { IPageError } from '@interfaces/error';
 import ReqError from '@lib/error/ReqError';
 
 const ListenPage = ({ data, config, error }: IListenPageProps) => {
-  const { episodeGuid } = config;
   const { episodes } = data;
-  const episodeIndex =
-    episodeGuid && episodes?.findIndex(({ guid }) => guid === episodeGuid);
 
   if (error) {
     return <Error statusCode={error.statusCode} title={error.message} />;
   }
 
   return (
-    <Player audio={episodes} startIndex={episodeIndex}>
+    <Player audio={episodes}>
       <Listen data={data} config={config} />
     </Player>
   );

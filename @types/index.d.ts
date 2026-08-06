@@ -17,6 +17,8 @@ declare global {
 }
 
 declare module 'react' {
+  import React = require('react');
+
   export interface DOMAttributes {}
   export interface HTMLAttributes<T> extends DOMAttributes<T> {
     /**
@@ -25,6 +27,29 @@ declare module 'react' {
      * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert MDN Web Docs}
      */
     inert?: '';
+  }
+
+  export namespace JSX {
+    export interface IntrinsicElements {
+      'hls-video': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLMediaElement> & {
+          src: string;
+          width?: string;
+          height?: string;
+          controls?: boolean;
+        },
+        HTMLMediaElement
+      >;
+      'videojs-video': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLMediaElement> & {
+          src: string;
+          width?: string;
+          height?: string;
+          controls?: boolean;
+        },
+        HTMLMediaElement
+      >;
+    }
   }
 }
 

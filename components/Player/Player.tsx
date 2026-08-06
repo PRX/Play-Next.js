@@ -4,7 +4,11 @@
  */
 
 import type React from 'react';
-import type { IAudioData } from '@interfaces/data';
+import type {
+  IAudioData,
+  IListenMediaData,
+  IListenMediaSource
+} from '@interfaces/data';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import {
   playerInitialState,
@@ -15,7 +19,7 @@ import PlayerContext from '@contexts/PlayerContext';
 import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
-  audio: IAudioData | IAudioData[];
+  audio: IAudioData | IAudioData[] | IListenMediaData[];
   startIndex?: number;
   imageUrl?: string;
 }
@@ -34,11 +38,11 @@ const Player: React.FC<IPlayerProps> = ({
     () => (audio && (Array.isArray(audio) ? audio : [audio])) || [],
     [audio]
   );
-  const audioElm = useRef<HTMLAudioElement>();
+  const el = useRef<HTMLMediaElement | null>(null);
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
     tracks: initialTracks,
-    ...(startIndex >= 0 && { currentTrackIndex: startIndex })
+    ...(startIndex != null && { currentTrackIndex: startIndex })
   });
   const {
     tracks,
@@ -49,14 +53,20 @@ const Player: React.FC<IPlayerProps> = ({
     volume,
     playbackRate
   } = state;
-  const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
-  const currentTrackDurationSeconds = useMemo(
-    () => convertDurationToSeconds(currentTrack.duration),
-    [currentTrack.duration]
-  );
+  const currentTrack = tracks[currentTrackIndex];
   const isLastTrack = currentTrackIndex === tracks.length - 1;
-  const { url, previewUrl, transcripts, duration } = currentTrack;
-  const currentTrackUrl = previewUrl || url;
+  const { guid, url, type, previewUrl, transcripts, duration } =
+    (currentTrack || {}) as IAudioData;
+  const currentTrackDurationSeconds = useMemo(
+    () => convertDurationToSeconds(duration),
+    [duration]
+  );
+  const { sources, hasVideo } = (currentTrack || {}) as IListenMediaData;
+  const audioSources = currentTrack
+    ? sources || [{ url: previewUrl || url, type }]
+    : null;
+  const trackIsAudio = !!currentTrack && !hasVideo;
+  const useAudioElement = trackIsAudio;
   const transcript = transcripts?.find(
     (t) => !!['vtt', 'srt', 'x-subrip', 'json'].find((n) => t.type.includes(n))
   );
@@ -65,7 +75,7 @@ const Player: React.FC<IPlayerProps> = ({
     (time: number) =>
       Math.min(
         Math.max(0.00001, time),
-        audioElm.current.duration || currentTrackDurationSeconds
+        el.current?.duration || currentTrackDurationSeconds
       ),
     [currentTrackDurationSeconds]
   );
@@ -103,16 +113,14 @@ const Player: React.FC<IPlayerProps> = ({
 
   const seekBy = useCallback(
     (seconds: number) => {
-      seekTo(audioElm.current.currentTime + seconds);
+      seekTo((el.current?.currentTime || currentTime) + seconds);
     },
-    [seekTo]
+    [seekTo, currentTime]
   );
 
   const seekToRelative = useCallback(
     (ratio: number) => {
-      seekTo(
-        (audioElm.current.duration || currentTrackDurationSeconds) * ratio
-      );
+      seekTo((el.current.duration || currentTrackDurationSeconds) * ratio);
     },
     [currentTrackDurationSeconds, seekTo]
   );
@@ -154,14 +162,14 @@ const Player: React.FC<IPlayerProps> = ({
   const volumeUp = useCallback(() => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
-      payload: boundedVolume(audioElm.current.volume + 0.05)
+      payload: boundedVolume(el.current.volume + 0.05)
     });
   }, [boundedVolume]);
 
   const volumeDown = useCallback(() => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_VOLUME,
-      payload: boundedVolume(audioElm.current.volume - 0.05)
+      payload: boundedVolume(el.current.volume - 0.05)
     });
   }, [boundedVolume]);
 
@@ -235,9 +243,9 @@ const Player: React.FC<IPlayerProps> = ({
       }
     }
   }, [
-    currentTrack.imageUrl,
-    currentTrack.subtitle,
-    currentTrack.title,
+    currentTrack?.imageUrl,
+    currentTrack?.subtitle,
+    currentTrack?.title,
     forward,
     imageUrl,
     replay,
@@ -247,7 +255,7 @@ const Player: React.FC<IPlayerProps> = ({
 
   const playerContextValue = useMemo(
     () => ({
-      audioElm: audioElm.current,
+      el,
       imageUrl,
       state,
       dispatch,
@@ -283,25 +291,21 @@ const Player: React.FC<IPlayerProps> = ({
   );
 
   const startPlaying = useCallback(() => {
-    audioElm.current
-      .play()
+    el.current
+      ?.play()
       .then(() => {
         updateMediaSession();
       })
       .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
+        if (e.name !== 'AbortError') {
+          throw e; // Rethrow actual critical errors
+        }
       });
   }, [updateMediaSession]);
 
   const pauseAudio = useCallback(() => {
-    audioElm.current.pause();
+    el.current?.pause();
   }, []);
-
-  const loadAudio = (src: string) => {
-    audioElm.current.preload = playing ? 'auto' : 'none';
-    audioElm.current.src = src;
-  };
 
   const handlePlay = useCallback(() => {
     if (!playing) {
@@ -310,19 +314,12 @@ const Player: React.FC<IPlayerProps> = ({
   }, [playing]);
 
   const handlePause = useCallback(() => {
-    if (!audioElm.current.ended) {
+    if (!el.current.ended) {
       dispatch({ type: PlayerActionTypes.PLAYER_PAUSE });
     }
   }, []);
 
   const handleLoadedMetadata = useCallback(() => {
-    // When audio data loads, update duration and current time, then start
-    // playing if we were playing before.
-    dispatch({
-      type: PlayerActionTypes.PLAYER_UPDATE_DURATION,
-      payload: audioElm.current.duration
-    });
-
     if (playing) {
       startPlaying();
     }
@@ -448,28 +445,22 @@ const Player: React.FC<IPlayerProps> = ({
   );
 
   useEffect(() => {
-    const audioElmTemp = audioElm;
+    const audioElmTemp = el.current;
 
     // Setup event handlers on audio element.
-    audioElmTemp.current.addEventListener('play', handlePlay);
-    audioElmTemp.current.addEventListener('pause', handlePause);
-    audioElmTemp.current.addEventListener(
-      'loadedmetadata',
-      handleLoadedMetadata
-    );
-    audioElmTemp.current.addEventListener('ended', handleEnded);
+    audioElmTemp?.addEventListener('play', handlePlay);
+    audioElmTemp?.addEventListener('pause', handlePause);
+    audioElmTemp?.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audioElmTemp?.addEventListener('ended', handleEnded);
 
     window.addEventListener('keydown', handleHotkey);
 
     return () => {
       // Cleanup event handlers between dependency changes.
-      audioElmTemp.current.removeEventListener('play', handlePlay);
-      audioElmTemp.current.removeEventListener('pause', handlePause);
-      audioElmTemp.current.removeEventListener(
-        'loadedmetadata',
-        handleLoadedMetadata
-      );
-      audioElmTemp.current.removeEventListener('ended', handleEnded);
+      audioElmTemp?.removeEventListener('play', handlePlay);
+      audioElmTemp?.removeEventListener('pause', handlePause);
+      audioElmTemp?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audioElmTemp?.removeEventListener('ended', handleEnded);
 
       window.removeEventListener('keydown', handleHotkey);
     };
@@ -490,25 +481,24 @@ const Player: React.FC<IPlayerProps> = ({
   }, [pauseAudio, playing, startPlaying]);
 
   useEffect(() => {
-    audioElm.current.muted = muted;
+    if (!el.current) return;
+    el.current.muted = muted;
   }, [muted]);
 
   useEffect(() => {
-    audioElm.current.volume = volume;
+    if (!el.current) return;
+    el.current.volume = volume;
   }, [volume]);
 
   useEffect(() => {
-    audioElm.current.currentTime = currentTime;
+    if (!el.current) return;
+    el.current.currentTime = currentTime;
   }, [currentTime]);
 
   useEffect(() => {
-    audioElm.current.playbackRate = playbackRate;
+    if (!el.current) return;
+    el.current.playbackRate = playbackRate;
   }, [playbackRate]);
-
-  useEffect(() => {
-    loadAudio(currentTrackUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrackUrl]);
 
   useEffect(
     () => () => {
@@ -523,10 +513,13 @@ const Player: React.FC<IPlayerProps> = ({
   }, [initialTracks]);
 
   return (
-    audioElm && (
-      <PlayerContext.Provider value={playerContextValue}>
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <audio ref={audioElm}>
+    <PlayerContext.Provider value={playerContextValue}>
+      {useAudioElement && (
+        /* eslint-disable-next-line jsx-a11y/media-has-caption */
+        <audio preload={playing ? 'auto' : 'none'} ref={el} key={guid}>
+          {audioSources?.map((s: IListenMediaSource) => (
+            <source src={s.url} type={s.type} key={s.url} />
+          ))}
           {transcript && (
             <track
               kind="captions"
@@ -536,9 +529,9 @@ const Player: React.FC<IPlayerProps> = ({
             />
           )}
         </audio>
-        {children}
-      </PlayerContext.Provider>
-    )
+      )}
+      {children}
+    </PlayerContext.Provider>
   );
 };
 

@@ -22,6 +22,11 @@ export interface IAudioData {
   link: string;
 
   /**
+   * Mime type of the audio file.
+   */
+  type: string;
+
+  /**
    * Source URL for the audio file.
    */
   url: string;

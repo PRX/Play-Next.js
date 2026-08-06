@@ -19,13 +19,13 @@ export type RadioGroupProps = React.JSX.IntrinsicElements['input'] & {
   options: RadioGroupOption[];
 };
 
-function RadioGroup({
+const RadioGroup = ({
   className,
   options,
   defaultValue,
   value,
   ...rest
-}: RadioGroupProps) {
+}: RadioGroupProps) => {
   const { name } = rest;
   const inputValue = value || defaultValue;
   const cleanValue = Array.isArray(inputValue) ? inputValue[0] : inputValue;
@@ -68,6 +68,6 @@ function RadioGroup({
       })}
     </div>
   );
-}
+};
 
 export default RadioGroup;

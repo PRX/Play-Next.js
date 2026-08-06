@@ -25,6 +25,7 @@ import VolumeControls from '@components/Player/VolumeControls';
 import listenStyles from '@components/Listen/Listen.module.scss';
 import { ListenActionTypes } from '@states/listen/Listen.actions';
 import PlaybackSpeedIcon from '@svg/icons/PlaybackSpeed.svg';
+import { IAudioData, IListenMediaData } from '@interfaces/data';
 import styles from './FooterPlayer.module.scss';
 
 export interface IFooterPlayerProps {}
@@ -43,7 +44,8 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
     const { currentTrackIndex, tracks } = playerState;
     const isShown = currentTrackIndex !== null && currentTrackIndex >= 0;
     const currentTrack = tracks[currentTrackIndex];
-    const { imageUrl, title, transcripts } = currentTrack || {};
+    const { imageUrl, title, transcripts } = (currentTrack || {}) as IAudioData;
+    const { hasVideo } = (currentTrack || {}) as IListenMediaData;
     const showClosedCaptionsButton = !!transcripts?.length;
     const thumbSrc = imageUrl || defaultThumbUrl;
     const thumbSizes = [
@@ -111,10 +113,12 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
                 modalClassName={styles.closedCaptionModal}
                 onOpen={handleClosedCaptionButtonClick}
                 onClose={handleClosedCaptionCloseClick}
-                isOpen={closedCaptionsShown}
+                isOpen={closedCaptionsShown && !hasVideo}
                 portalId="listen-closed-caption-modal"
               >
-                <ClosedCaptionsFeed speakerColors={accentColor} />
+                {!hasVideo && (
+                  <ClosedCaptionsFeed speakerColors={accentColor} />
+                )}
               </ClosedCaptionsDialog>
             )}
 

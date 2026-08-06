@@ -20,6 +20,7 @@ const parseAudioData = ({
   guid,
   ...(link && { link }),
   ...(enclosure && {
+    type: enclosure.type,
     url: generateAudioUrl(enclosure.url),
     fileSize: enclosure.length
   }),

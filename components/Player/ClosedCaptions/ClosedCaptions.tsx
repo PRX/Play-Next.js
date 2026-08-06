@@ -36,9 +36,9 @@ const getCurrentCue = (textTrack: TextTrack) =>
   [...(textTrack?.activeCues || [])].at(0) as VTTCue;
 
 const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
-  const { audioElm, state } = useContext(PlayerContext);
+  const { el, state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
-  const [currentTime, setCurrentTime] = useState(audioElm?.currentTime || 0);
+  const [currentTime, setCurrentTime] = useState(el.current?.currentTime || 0);
   const [currentCue, setCurrentCue] = useState<VTTCue>();
   const [cueEnded, setCueEnded] = useState(false);
   const [transcriptData, setTranscriptData] =
@@ -146,15 +146,16 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   );
 
   const handleUpdate = useCallback(() => {
-    setCurrentTime(audioElm?.currentTime);
-    setCueEnded(currentCue?.endTime < audioElm?.currentTime);
-  }, [audioElm?.currentTime, currentCue?.endTime]);
+    setCurrentTime(el.current?.currentTime);
+    setCueEnded(currentCue?.endTime < el.current?.currentTime);
+  }, [currentCue?.endTime]);
 
   /**
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    const textTracks = audioElm?.textTracks;
+    const elCurrent = el.current;
+    const textTracks = elCurrent?.textTracks;
 
     textTracks.addEventListener('addtrack', handleAddTrack);
     textTracks.addEventListener('removetrack', handleRemoveTrack);
@@ -166,19 +167,18 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
       }
     });
 
-    audioElm?.addEventListener('timeupdate', handleUpdate);
+    elCurrent?.addEventListener('timeupdate', handleUpdate);
 
     return () => {
-      audioElm?.removeEventListener('timeupdate', handleUpdate);
+      elCurrent?.removeEventListener('timeupdate', handleUpdate);
 
-      [...(audioElm?.textTracks || [])].forEach((track) => {
+      [...(elCurrent?.textTracks || [])].forEach((track) => {
         if (track.kind === 'captions') {
           track.removeEventListener('cuechange', handleCueChange);
         }
       });
     };
   }, [
-    audioElm,
     handleAddTrack,
     handleCueChange,
     handleRemoveTrack,

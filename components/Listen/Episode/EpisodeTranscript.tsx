@@ -81,7 +81,7 @@ const Segment = forwardRef<HTMLSpanElement, SegmentProps>(
   ({ data, isSpoken, inCurrentBlock }, ref) => {
     const { seekTo } = useContext(PlayerContext);
     const { body, startTime } = data;
-    // const [isSpoken, setIsSpoken] = useState(startTime <= audioElm?.currentTime);
+    // const [isSpoken, setIsSpoken] = useState(startTime <= el.current?.currentTime);
     const hasWords = /\b\w+\b/.test(body);
     const isSpace = body.trim().length === 0;
     const isPunctuation = /^[.,?;:]$/.test(body.trim());
@@ -135,7 +135,7 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
   const lastSegment = segments.at(segments.length - 1);
   const { startTime } = firstSegment;
   const { endTime } = lastSegment;
-  const { audioElm } = useContext(PlayerContext);
+  const { el } = useContext(PlayerContext);
   const [isCurrentBlock, setIsCurrentBlock] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>();
@@ -155,6 +155,8 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
   >;
 
   useEffect(() => {
+    const elCurrent = el.current;
+
     const handleTimeUpdate = (e: Event) => {
       const ae = e.target as HTMLAudioElement;
       const newIsCurrentBlock =
@@ -173,19 +175,12 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
       }
     };
 
-    audioElm?.addEventListener('timeupdate', handleTimeUpdate);
+    elCurrent?.addEventListener('timeupdate', handleTimeUpdate);
 
     return () => {
-      audioElm?.removeEventListener('timeupdate', handleTimeUpdate);
+      elCurrent?.removeEventListener('timeupdate', handleTimeUpdate);
     };
-  }, [
-    audioElm,
-    endTime,
-    isCurrentBlock,
-    scrollToCurrentBlock,
-    segments,
-    startTime
-  ]);
+  }, [endTime, isCurrentBlock, scrollToCurrentBlock, segments, startTime]);
 
   return (
     <div {...rootProps}>

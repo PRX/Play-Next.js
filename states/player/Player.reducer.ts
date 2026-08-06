@@ -39,12 +39,15 @@ export const playerStateReducer = (
       return {
         ...state,
         tracks: action.payload,
-        currentTrackIndex: Math.max(
-          0,
-          action.payload.findIndex(
-            ({ guid }) => guid === (tracks || [])[currentTrackIndex]?.guid
-          )
-        )
+        currentTrackIndex:
+          currentTrackIndex == null
+            ? null
+            : Math.max(
+                0,
+                action.payload.findIndex(
+                  ({ guid }) => guid === (tracks || [])[currentTrackIndex]?.guid
+                )
+              )
       };
 
     case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX:
@@ -66,7 +69,12 @@ export const playerStateReducer = (
       };
 
     case ActionTypes.PLAYER_PLAY_TRACK:
-      return { ...state, currentTrackIndex: action.payload, playing: true };
+      return {
+        ...state,
+        currentTime: 0,
+        currentTrackIndex: action.payload,
+        playing: true
+      };
 
     case ActionTypes.PLAYER_NEXT_TRACK:
       return {
@@ -82,6 +90,7 @@ export const playerStateReducer = (
 
     case ActionTypes.PLAYER_UPDATE_CURRENT_TIME:
       return { ...state, currentTime: action.payload };
+
     case ActionTypes.PLAYER_MUTE:
       return { ...state, muted: true };
 

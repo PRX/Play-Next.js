@@ -11,6 +11,8 @@ import {
 
 export const listenInitialState: IListenState = {
   view: null,
+  videoView: 'default',
+  videoVisibility: 'visible',
   episodeGuid: null,
   closedCaptionsShown: false,
   podcastShareShown: false,
@@ -28,7 +30,8 @@ export const listenStateReducer = (
     podcastShareShown,
     podcastFollowShown,
     podcastSupportShown,
-    episodeShareShown
+    episodeShareShown,
+    videoVisibility
   } = state;
 
   switch (action.type) {
@@ -37,6 +40,24 @@ export const listenStateReducer = (
 
     case ActionTypes.LISTEN_VIEW_PODCAST:
       return { ...state, view: 'podcast', episodeGuid: null };
+
+    case ActionTypes.LISTEN_VIDEO_VIEW_DEFAULT:
+      return { ...state, videoView: 'default' };
+
+    case ActionTypes.LISTEN_VIDEO_VIEW_PIP:
+      return { ...state, videoView: 'pip' };
+
+    case ActionTypes.LISTEN_VIDEO_VISIBILITY_VISIBLE:
+      return { ...state, videoVisibility: 'visible' };
+
+    case ActionTypes.LISTEN_VIDEO_VISIBILITY_HIDDEN:
+      return { ...state, videoVisibility: 'hidden' };
+
+    case ActionTypes.LISTEN_VIDEO_VISIBILITY_TOGGLE:
+      return {
+        ...state,
+        videoVisibility: videoVisibility === 'visible' ? 'hidden' : 'visible'
+      };
 
     case ActionTypes.LISTEN_PLAYER_SHOW_CLOSED_CAPTIONS_DIALOG:
       return { ...state, closedCaptionsShown: true };

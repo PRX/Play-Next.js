@@ -36,18 +36,38 @@ export const extractPodcastTranscript = (data) => {
   return podcastTranscript;
 };
 
+export const extractPodcastAlternateEnclosure = (data) => {
+  const podcastAlternateEnclosure = data['podcast:alternateEnclosure']?.map(
+    (alternateEnclosure) => {
+      const { 'podcast:source': sources } = alternateEnclosure;
+
+      return {
+        ...alternateEnclosure.$,
+        sources: sources?.map(({ $: $s }) => ({ ...$s }))
+      };
+    }
+  );
+
+  return podcastAlternateEnclosure;
+};
+
 export const decoratePodcast = (feed): IRss => {
   const feedItems: IRssItem[] = feed.items.map((item) => {
     const itemVal = extractPodcastValue(item);
     const itemTranscript = extractPodcastTranscript(item);
-    const hasPodcastProps = !!itemVal || !!itemTranscript?.length;
+    const itemAlternateEnclosure = extractPodcastAlternateEnclosure(item);
+    const hasPodcastProps =
+      !!itemVal || !!itemTranscript?.length || !!itemAlternateEnclosure?.length;
 
     return {
       ...item,
       ...(hasPodcastProps && {
         podcast: {
           ...(itemVal && { value: itemVal }),
-          ...(!!itemTranscript?.length && { transcript: itemTranscript })
+          ...(!!itemTranscript?.length && { transcript: itemTranscript }),
+          ...(!!itemAlternateEnclosure?.length && {
+            alternateEnclosure: itemAlternateEnclosure
+          })
         }
       })
     } as IRssItem;

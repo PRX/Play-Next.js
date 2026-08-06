@@ -47,7 +47,8 @@
     "rss-parser": "^3.13.0",
     "serialize-error": "^11.0.3",
     "sharp": "0.32.6",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "videojs-video-element": "^1.4.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",

@@ -13,7 +13,8 @@ export interface IPreviousButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
-  const { previousTrack } = useContext(PlayerContext);
+  const { state, previousTrack } = useContext(PlayerContext);
+  const isFirstTrack = state.currentTrackIndex === 0;
 
   const handleClick = () => {
     previousTrack();
@@ -23,6 +24,7 @@ const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
     <IconButton
       title="Play Previous Track ([)"
       {...props}
+      disabled={isFirstTrack}
       type="button"
       onClick={handleClick}
     >

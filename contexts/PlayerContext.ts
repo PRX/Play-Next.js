@@ -9,7 +9,7 @@ import React from 'react';
 const PlayerContext = React.createContext({
   state: null,
   dispatch: null,
-  audioElm: null,
+  el: null,
   imageUrl: null
 } as IPlayerContext);
 

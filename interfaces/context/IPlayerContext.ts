@@ -5,6 +5,7 @@
  * player.
  */
 
+import { RefObject } from 'react';
 import { IAudioData } from '@interfaces/data';
 import type { IPlayerState } from '@interfaces/states';
 import type { IPlayerAction } from '@states/player/Player.actions';
@@ -12,7 +13,7 @@ import type { IStateContext } from './IStateContext';
 
 export interface IPlayerContext
   extends IStateContext<IPlayerState, IPlayerAction> {
-  audioElm: HTMLAudioElement;
+  el: RefObject<HTMLMediaElement | null>;
   imageUrl: string;
   play(): void;
   playTrack(index: number): void;

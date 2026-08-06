@@ -6,6 +6,8 @@
 import type React from 'react';
 import type { CSSProperties } from 'react';
 import type { IListenPageProps } from '@interfaces/page';
+import type { IListenMediaData } from '@interfaces/data';
+import 'videojs-video-element';
 import {
   useCallback,
   useContext,
@@ -40,6 +42,7 @@ import FooterPlayer from './FooterPlayer';
 import styles from './Listen.module.scss';
 import episodeCardStyles from './EpisodeList/EpisodeCard/EpisodeCard.module.scss';
 import FollowLinks from './FollowLinks';
+import VideoOverlay from './VideoOverlay';
 
 // const FollowLinks = dynamic(() => import('./FollowLinks'));
 
@@ -53,6 +56,8 @@ const Listen = ({ config, data }: IListenPageProps) => {
   });
   const {
     view,
+    videoView,
+    videoVisibility,
     episodeGuid,
     closedCaptionsShown,
     podcastFollowShown,
@@ -71,8 +76,10 @@ const Listen = ({ config, data }: IListenPageProps) => {
     supportUrls
   } = data;
   const { state: playerState } = useContext(PlayerContext);
-  const { currentTrackIndex } = playerState;
-  const playerShown = currentTrackIndex !== null && currentTrackIndex >= 0;
+  const { currentTrackIndex, tracks } = playerState;
+  const currentTrack = tracks[currentTrackIndex];
+  const playerShown = !!currentTrack;
+  const { hasVideo } = (currentTrack || {}) as IListenMediaData;
   const episode = useMemo(
     () => episodes?.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]
@@ -90,13 +97,20 @@ const Listen = ({ config, data }: IListenPageProps) => {
   );
   const hasFollowLinks = followLinks?.length > 1;
   const footerPlayerRef = useRef<HTMLDivElement>();
-  const [gutterBlockEnd, setGutterBlockEnd] = useState(0);
+  const videoOverlayRef = useRef<HTMLDivElement>();
+  const [playerHeight, setPlayerHeight] = useState(
+    footerPlayerRef.current?.getBoundingClientRect().height || 0
+  );
+  const [videoHeight, setVideoHeight] = useState(
+    videoOverlayRef.current?.getBoundingClientRect().top
+  );
   const logoSizes = [
     `(min-width: ${styles.breakpointFull}) ${styles.logoSize}`,
     `${styles.logoSizeMobile}`
   ].join(',');
   const rootStyles = {
-    '--gutter-size-block-end': `${playerShown ? gutterBlockEnd : 0}px`,
+    '--gutter-size-block-end': `${playerShown ? playerHeight : 0}px`,
+    '--listen-video-overlay--height': `${videoHeight}px`,
     ...(accentColor && {
       '--accent-color': `${accentColor[0].split(' ')[0]}`,
       ...(accentColor.length > 1 && {
@@ -170,10 +184,8 @@ const Listen = ({ config, data }: IListenPageProps) => {
   };
 
   const handleResize = useCallback(() => {
-    setGutterBlockEnd(
-      footerPlayerRef.current.parentElement.getBoundingClientRect().top -
-        footerPlayerRef.current.getBoundingClientRect().top
-    );
+    setPlayerHeight(footerPlayerRef.current.getBoundingClientRect().height);
+    setVideoHeight(videoOverlayRef.current.getBoundingClientRect().height);
   }, []);
 
   const listenContextProps = useMemo(
@@ -203,6 +215,10 @@ const Listen = ({ config, data }: IListenPageProps) => {
       window.removeEventListener('popstate', handleUrlChange);
     };
   }, [handleResize, handleUrlChange]);
+
+  useEffect(() => {
+    handleResize();
+  }, [videoView, videoVisibility]);
 
   const renderMenu = useMemo(() => {
     const handleFollowButtonClick = () => {
@@ -314,6 +330,10 @@ const Listen = ({ config, data }: IListenPageProps) => {
       <div
         className={styles.root}
         data-view={view}
+        {...(hasVideo && {
+          'data-video-view': videoView,
+          'data-video-visibility': videoVisibility
+        })}
         data-theme={theme}
         style={rootStyles}
       >
@@ -394,12 +414,13 @@ const Listen = ({ config, data }: IListenPageProps) => {
         </div>
 
         {closedCaptionsShown && (
-          // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
           <div
             className={clsx(styles.closedCaptionsFeed)}
             id="listen-closed-caption-modal"
           />
         )}
+
+        <VideoOverlay ref={videoOverlayRef} />
 
         <footer className={styles.footer}>
           <FooterPlayer ref={footerPlayerRef} />
@@ -413,7 +434,6 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
         </footer>
 
-        {/** biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components. */}
         <div className={styles.modals} id="listen-modals" />
       </div>
     </ListenContext.Provider>
