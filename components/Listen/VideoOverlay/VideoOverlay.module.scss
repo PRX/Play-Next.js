@@ -21,7 +21,7 @@ $videoOverlay-background-color: colors.$black-a-60;
       [data-video-view='pip'] & {
         pointer-events: none;
         background-color: transparent;
-        backdrop-filter: blur(0);
+        backdrop-filter: unset;
       }
     }
   }
