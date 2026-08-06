@@ -28,8 +28,6 @@ $videoOverlay-background-color: colors.$black-a-60;
 }
 
 .wrapper {
-  pointer-events: auto;
-
   transition: transform 300ms ease-in-out;
   transform: translateX(-100dvw);
 
@@ -67,6 +65,8 @@ $videoOverlay-background-color: colors.$black-a-60;
   }
 
   [data-shown='true'] & {
+    pointer-events: auto;
+
     transform: translateX(0);
 
     & > *:not(div) {
