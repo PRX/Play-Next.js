@@ -104,7 +104,7 @@ const Player: React.FC<IPlayerProps> = ({
   const seekTo = useCallback(
     (time: number) => {
       dispatch({
-        type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
+        type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
         payload: boundedTime(time)
       });
     },
@@ -511,6 +511,10 @@ const Player: React.FC<IPlayerProps> = ({
   useEffect(() => {
     setTracks(initialTracks);
   }, [initialTracks]);
+
+  useEffect(() => {
+    seekTo(0);
+  }, [guid]);
 
   return (
     <PlayerContext.Provider value={playerContextValue}>

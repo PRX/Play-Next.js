@@ -91,7 +91,8 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = () => {
    */
   const updateProgress = useCallback(
     (seconds?: number) => {
-      const { currentTime: ct = 0, duration: d = 0 } = el.current || {};
+      const { currentTime: ct = 0, duration: dur } = el.current || {};
+      const d = !isNaN(dur) ? dur : 0;
       const updatedPlayed = seconds || seconds === 0 ? seconds : ct;
 
       updateProgressStyles();
@@ -105,7 +106,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = () => {
         }
       });
     },
-    [el, totalDurationSeconds, updateProgressStyles]
+    [el.current, totalDurationSeconds, updateProgressStyles]
   );
 
   /**
@@ -190,7 +191,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = () => {
       elCurrent?.removeEventListener('loadedmetadata', handleLoadedMetadata);
       elCurrent?.removeEventListener('timeupdate', handleUpdate);
     };
-  }, [handleLoadedMetadata]);
+  }, [el.current, handleLoadedMetadata, handleUpdate]);
 
   /**
    * Setup progress track event handlers.
