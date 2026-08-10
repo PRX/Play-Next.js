@@ -148,7 +148,7 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   const handleUpdate = useCallback(() => {
     setCurrentTime(el.current?.currentTime);
     setCueEnded(currentCue?.endTime < el.current?.currentTime);
-  }, [currentCue?.endTime]);
+  }, [el, currentCue?.endTime]);
 
   /**
    * Setup audio element event handlers.

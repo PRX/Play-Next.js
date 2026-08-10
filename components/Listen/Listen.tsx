@@ -218,7 +218,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
 
   useEffect(() => {
     handleResize();
-  }, [videoView, videoVisibility]);
+  }, [videoView, videoVisibility, handleResize]);
 
   const renderMenu = useMemo(() => {
     const handleFollowButtonClick = () => {

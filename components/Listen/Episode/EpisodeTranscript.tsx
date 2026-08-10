@@ -180,7 +180,7 @@ const SpeakerBlock = ({ segments, speaker }: SpeakerBlockProps) => {
     return () => {
       elCurrent?.removeEventListener('timeupdate', handleTimeUpdate);
     };
-  }, [endTime, isCurrentBlock, scrollToCurrentBlock, segments, startTime]);
+  }, [el, endTime, isCurrentBlock, scrollToCurrentBlock, segments, startTime]);
 
   return (
     <div {...rootProps}>

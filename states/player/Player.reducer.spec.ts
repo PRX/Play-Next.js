@@ -1,3 +1,4 @@
+import { IAudioData } from '@interfaces/data';
 import { PlayerActionTypes } from './Player.actions';
 import { playerInitialState, playerStateReducer } from './Player.reducer';
 
@@ -102,7 +103,7 @@ describe('states/player', () => {
             link: '//foo.com/3',
             title: 'Title 3'
           }
-        ]
+        ] as IAudioData[]
       };
 
       test('should set `currentTrackIndex`', () => {
@@ -271,7 +272,7 @@ describe('states/player', () => {
             link: '//foo.com/2',
             title: 'Title 2'
           }
-        ];
+        ] as IAudioData[];
         const mockTrack = {
           guid: '3',
           url: '//foo.com/3.mp3',
@@ -317,7 +318,7 @@ describe('states/player', () => {
             link: '//foo.com/3',
             title: 'Title 3'
           }
-        ];
+        ] as IAudioData[];
         const result = playerStateReducer(
           {
             ...playerInitialState,

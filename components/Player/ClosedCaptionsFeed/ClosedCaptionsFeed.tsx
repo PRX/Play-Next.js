@@ -241,7 +241,7 @@ const Segment = ({ data, inCurrentCue }: SegmentProps) => {
     return () => {
       elCurrent?.removeEventListener('timeupdate', handleUpdate);
     };
-  }, [data.startTime, inCurrentCue]);
+  }, [el, data.startTime, inCurrentCue]);
 
   return (
     <span className={styles.segment} {...(spoken && { 'data-spoken': '' })}>
@@ -347,7 +347,7 @@ const CaptionCue = ({
   useEffect(() => {
     setIsCurrent(currentCue?.id === id);
     setIsComplete(el.current?.currentTime > endTime);
-  }, [currentCue?.id, endTime, id]);
+  }, [el, currentCue?.id, endTime, id]);
 
   useEffect(() => {
     function handleCueExit() {
@@ -364,7 +364,7 @@ const CaptionCue = ({
     return () => {
       cue.removeEventListener('exit', handleCueExit);
     };
-  }, [cue, endTime, inCurrentCaption]);
+  }, [el, cue, endTime, inCurrentCaption]);
 
   if (!hasText) return null;
 
@@ -498,7 +498,7 @@ const Caption = ({
       bodyElm?.removeEventListener('mousemove', handleMouseMove);
       elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
-  }, [endTime, isCurrent]);
+  }, [el, endTime, isCurrent]);
 
   return (
     <div {...rootProps}>
@@ -751,7 +751,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
   const handleAudioTimeUpdate = useCallback(() => {
     updateCurrentCue(el.current.currentTime);
-  }, [updateCurrentCue]);
+  }, [el, updateCurrentCue]);
 
   const handleAddTrack = useCallback((e: TrackEvent) => {
     // eslint-disable-next-line no-param-reassign
@@ -794,6 +794,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
       elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
   }, [
+    el,
     currentTextTrack,
     handleAddTrack,
     handleAudioTimeUpdate,
@@ -832,7 +833,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     return () => {
       scrollAreaElement?.removeEventListener('scroll', handleScroll);
     };
-  }, [showJumpButton]);
+  }, [el, showJumpButton]);
 
   if (!transcripts) return null;
 

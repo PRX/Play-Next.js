@@ -81,7 +81,7 @@ const VideoOverlay = forwardRef<HTMLDivElement, IVideoOverlayProps>(
       el.current.textTracks[0].mode = closedCaptionsShown
         ? 'showing'
         : 'disabled';
-    }, [closedCaptionsShown, useVideoElement]);
+    }, [el, closedCaptionsShown, useVideoElement]);
 
     return (
       <div

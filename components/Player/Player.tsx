@@ -514,7 +514,7 @@ const Player: React.FC<IPlayerProps> = ({
 
   useEffect(() => {
     seekTo(0);
-  }, [guid]);
+  }, [guid, seekTo]);
 
   return (
     <PlayerContext.Provider value={playerContextValue}>
