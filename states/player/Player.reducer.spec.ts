@@ -1,8 +1,5 @@
-import { expect, test } from '@jest/globals';
 import { PlayerActionTypes } from './Player.actions';
 import { playerInitialState, playerStateReducer } from './Player.reducer';
-import { IPlayerState } from '@interfaces/states';
-import { IAudioData } from '@interfaces/data';
 
 describe('states/player', () => {
   describe('playerStateReducer', () => {
@@ -67,7 +64,7 @@ describe('states/player', () => {
     });
 
     describe('`currentTime` actions', () => {
-      test('should set `currentTime`', () => {
+      test('should set `scrubPosition`', () => {
         const result = playerStateReducer(
           {
             ...playerInitialState
@@ -105,7 +102,7 @@ describe('states/player', () => {
             link: '//foo.com/3',
             title: 'Title 3'
           }
-        ] as IAudioData[]
+        ]
       };
 
       test('should set `currentTrackIndex`', () => {
@@ -274,7 +271,7 @@ describe('states/player', () => {
             link: '//foo.com/2',
             title: 'Title 2'
           }
-        ] as IAudioData[];
+        ];
         const mockTrack = {
           guid: '3',
           url: '//foo.com/3.mp3',
@@ -320,7 +317,7 @@ describe('states/player', () => {
             link: '//foo.com/3',
             title: 'Title 3'
           }
-        ] as IAudioData[];
+        ];
         const result = playerStateReducer(
           {
             ...playerInitialState,

@@ -27,7 +27,6 @@
       "@svg": ["./assets/svg/*"],
       "@styles/*": ["./styles/*"]
     },
-    "types": ["jest", "node"],
     "typeRoots": ["./@types", "./node_modules/@types"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "assets/svg/**/*.svg"],
