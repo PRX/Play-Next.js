@@ -88,7 +88,7 @@ export const playerStateReducer = (
         currentTrackIndex: Math.max(currentTrackIndex - 1, 0)
       };
 
-    case ActionTypes.PLAYER_UPDATE_PROGRESS:
+    case ActionTypes.PLAYER_UPDATE_CURRENT_TIME:
       return { ...state, currentTime: action.payload };
 
     case ActionTypes.PLAYER_MUTE:
