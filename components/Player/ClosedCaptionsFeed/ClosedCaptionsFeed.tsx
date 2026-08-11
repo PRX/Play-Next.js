@@ -536,6 +536,8 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const { el, state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex, currentTime } = state;
   const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
+  const { guid, transcripts, duration } = currentTrack;
+  const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 
   const [currentTextTrack, setCurrentTextTrack] = useState(
     el.current?.textTracks?.[0]
@@ -543,10 +545,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const [currentCue, setCurrentCue] = useState(
     getCurrentCue(currentTextTrack, el.current.currentTime)
   );
-  const currentVttCues = useMemo(
-    () => [...(currentTextTrack?.cues || [])] as VTTCue[],
-    [currentTextTrack?.cues]
-  );
+  const currentVttCues = [...(currentTextTrack?.cues || [])] as VTTCue[];
 
   const scrollAreaRef = useRef<HTMLDivElement>();
   const currentCaptionRef = useRef<HTMLElement>();
@@ -650,12 +649,9 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
           }
         ];
       }, []),
-    [cuePositions, currentVttCues, segments]
+    [guid, cuePositions, currentVttCues, segments]
   );
   const currentCaption = binaryFindCaption(captions, currentCue);
-
-  const { transcripts, duration } = currentTrack;
-  const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 
   const jumpButtonColor = speakersColorMap.current?.get(
     getVttCueSpeaker(currentCue)
@@ -753,20 +749,23 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     updateCurrentCue(el.current.currentTime);
   }, [el, updateCurrentCue]);
 
-  const handleAddTrack = useCallback((e: TrackEvent) => {
-    // eslint-disable-next-line no-param-reassign
-    e.track.mode = 'showing';
+  const handleAddTrack = useCallback(
+    (e: TrackEvent) => {
+      // eslint-disable-next-line no-param-reassign
+      e.track.mode = 'showing';
 
-    // Watch track till it has cues loaded.
-    const textTrackHasCuesCheckInterval = setInterval(() => {
-      if (e.track.cues?.length) {
-        // Stop watching for cues.
-        clearInterval(textTrackHasCuesCheckInterval);
-        // Update state now that we have cues to render.
-        setCurrentTextTrack(e.track);
-      }
-    }, 100);
-  }, []);
+      // Watch track till it has cues loaded.
+      const textTrackHasCuesCheckInterval = setInterval(() => {
+        if (e.track.cues?.length) {
+          // Stop watching for cues.
+          clearInterval(textTrackHasCuesCheckInterval);
+          // Update state now that we have cues to render.
+          setCurrentTextTrack(e.track);
+        }
+      }, 100);
+    },
+    [guid]
+  );
 
   const handleRemoveTrack = useCallback(() => {
     setCurrentTextTrack(null);
@@ -783,6 +782,12 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
     const elCurrent = el.current;
     const textTracks = elCurrent?.textTracks;
 
+    setCurrentTextTrack(textTracks[0] || null);
+
+    textTracks.removeEventListener('addtrack', handleAddTrack);
+    textTracks.removeEventListener('removetrack', handleRemoveTrack);
+    elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
+
     textTracks.addEventListener('addtrack', handleAddTrack);
     textTracks.addEventListener('removetrack', handleRemoveTrack);
 
@@ -793,13 +798,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
       textTracks.removeEventListener('removetrack', handleRemoveTrack);
       elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
-  }, [
-    el,
-    currentTextTrack,
-    handleAddTrack,
-    handleAudioTimeUpdate,
-    handleRemoveTrack
-  ]);
+  }, [el, handleAddTrack, handleAudioTimeUpdate, handleRemoveTrack]);
 
   useEffect(() => {
     if (!transcriptJson?.url) return;
@@ -849,7 +848,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
             <Caption
               {...props}
               isCurrent={currentCaption?.cues.at(0).id === props.cues.at(0).id}
-              key={`caption:${props.cues.at(0).startTime}:${
+              key={`caption:${guid}:${props.cues.at(0).startTime}:${
                 props.cues.at(-1).endTime
               }`}
             />

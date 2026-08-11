@@ -104,7 +104,7 @@ const Player: React.FC<IPlayerProps> = ({
   const seekTo = useCallback(
     (time: number) => {
       dispatch({
-        type: PlayerActionTypes.PLAYER_UPDATE_PROGRESS,
+        type: PlayerActionTypes.PLAYER_UPDATE_CURRENT_TIME,
         payload: boundedTime(time)
       });
     },
@@ -115,7 +115,7 @@ const Player: React.FC<IPlayerProps> = ({
     (seconds: number) => {
       seekTo((el.current?.currentTime || currentTime) + seconds);
     },
-    [seekTo, currentTime]
+    [el, seekTo, currentTime]
   );
 
   const seekToRelative = useCallback(

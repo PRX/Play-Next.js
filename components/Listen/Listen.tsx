@@ -413,7 +413,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
           </div>
         </div>
 
-        {closedCaptionsShown && (
+        {!hasVideo && closedCaptionsShown && (
           <div
             className={clsx(styles.closedCaptionsFeed)}
             id="listen-closed-caption-modal"
