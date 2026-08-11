@@ -609,11 +609,16 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
         const aClone = [...a];
         const previousCaption = aClone.pop();
         const previousCaptionLastCue = previousCaption?.cues.at(-1);
-        const speaker = getVttCueSpeaker(cue);
+        const speaker = getVttCueSpeaker(cue) || previousCaption?.speaker;
         const speakerChanged = !!(
           previousCaption && speaker !== previousCaption.speaker
         );
         const tooManyCues = previousCaption?.cues.length > 3;
+        const tooMuchText =
+          ([...(previousCaption?.cues || []), cue].reduce(
+            (a, { text }) => a + text.length,
+            0
+          ) || 0) > 300;
         const sentenceEnded = /[.?!]$/.test(
           previousCaptionLastCue?.text.trimEnd() || ''
         );
@@ -626,7 +631,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
         if (
           !previousCaption ||
           speakerChanged ||
-          (sentenceEnded && (tooManyCues || hasLongPause))
+          (sentenceEnded && (tooManyCues || hasLongPause || tooMuchText))
         ) {
           return [
             ...a,
