@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import type {
-  IAudioData,
+  IMediaData,
   IListenEpisodeData,
   IRssPodcastTranscriptJsonSegment,
   SpeakerSegmentsBlock
@@ -228,7 +228,7 @@ const EpisodeTranscript = ({
   const { state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const currentTrack = useMemo(
-    () => tracks[currentTrackIndex] || ({} as IAudioData),
+    () => tracks[currentTrackIndex] || ({} as IMediaData),
     [currentTrackIndex, tracks]
   );
   const [isCurrentTrack, setIsCurrentTrack] = useState(false);

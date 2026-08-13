@@ -92,27 +92,94 @@ describe('lib/parse/data', () => {
     };
 
     test('should handle config overrides only', () => {
-      const result = parseEmbedData({
+      const mockConfig = {
         title: 'Foo',
         subtitle: 'Foo to the bar',
+        mediaType: undefined,
         audioUrl: 'http://foo.com/foo.mp3',
         audioUrlPreview: 'http://preview.foo.com/foo.mp3',
         imageUrl: 'http://foo.com/bg.png',
         episodeImageUrl: 'http://foo.com/foo.png',
         subscribeUrl: 'http://foo.com/feed.rss'
-      });
+      };
+      let result = parseEmbedData(mockConfig);
 
       expect(result.bgImageUrl).toBe('http://foo.com/bg.png');
-      expect(result.audio).toStrictEqual({
+      expect(result.media).toStrictEqual({
         title: 'Foo',
         subtitle: 'Foo to the bar',
-        url: 'http://foo.com/foo.mp3?_from=play.prx.org',
+        sources: [
+          {
+            type: 'audio/mpeg',
+            url: 'http://foo.com/foo.mp3?_from=play.prx.org',
+            length: 0
+          }
+        ],
+        hasAudioSourceAt: 0,
+        hasVideoSourceAt: false,
         previewUrl: 'http://preview.foo.com/foo.mp3?_from=play.prx.org',
         imageUrl: 'http://foo.com/foo.png'
       });
       expect(result.followLinks[0].href).toBe('http://foo.com/feed.rss');
       expect(result.playlist).toBeUndefined();
       expect(result.shareUrl).toBeUndefined();
+
+      mockConfig.audioUrl = 'http://foo.com/foo';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('audio/mpeg');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.oga';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('audio/ogg');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.m4a';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('audio/mp4');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.opus';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('audio/opus');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.flac';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('audio/flac');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.ogv';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/ogg');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.ogg';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/ogg');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.mov';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/quicktime');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.avi';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/x-msvideo');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.wmv';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/x-ms-wmv');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.mp4';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/mp4');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.webm';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('video/webm');
+
+      mockConfig.audioUrl = 'http://foo.com/foo.m3u8';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe('application/x-mpegURL');
+
+      mockConfig.audioUrl = 'http://foo.com/foo';
+      mockConfig.mediaType = 'video/mp4';
+      result = parseEmbedData(mockConfig);
+      expect(result.media.sources[0].type).toBe(mockConfig.mediaType);
     });
 
     test('should use first item as audio data', () => {
@@ -121,16 +188,16 @@ describe('lib/parse/data', () => {
         mockRssData
       );
 
-      expect(result.audio.guid).toBe('foo-bar');
+      expect(result.media.guid).toBe('foo-bar');
     });
 
-    test('should not have audio data when guid is not in feed', () => {
+    test('should not have media data when guid is not in feed', () => {
       const result = parseEmbedData(
         { feedUrl: 'http://foo.com/feed.rss', episodeGuid: 'NOT-THERE' },
         mockRssData
       );
 
-      expect(result.audio).toBeUndefined();
+      expect(result.media).toBeUndefined();
     });
 
     test('should get prepend follow data links to followLinks', () => {
@@ -149,7 +216,7 @@ describe('lib/parse/data', () => {
       expect(result.followLinks[2].href).toBe('http://foo.com/feed.rss');
     });
 
-    test('should get set service prop on followLink items', () => {
+    test('should set service prop on followLink items', () => {
       const result = parseEmbedData(
         { feedUrl: 'http://foo.com/feed.rss' },
         mockRssData
@@ -190,7 +257,7 @@ describe('lib/parse/data', () => {
         mockRssData
       );
 
-      expect(result.audio.guid).toBe('foo-baz');
+      expect(result.media.guid).toBe('foo-baz');
     });
 
     test('should include a full playlist', () => {
@@ -292,7 +359,7 @@ describe('lib/parse/data', () => {
         rssData
       );
 
-      expect(result.audio.link).toBe('http://foo.com');
+      expect(result.media.link).toBe('http://foo.com');
       expect(result.playlist[0].link).toBe('http://foo.com');
       expect(result.playlist[1].link).toBe('http://foo.com/foo-baz');
     });

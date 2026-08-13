@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import type { IAudioData } from '@interfaces/data/IAudioData';
+import type { IMediaData } from '@interfaces/data/IMediaData';
 import { useContext } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
@@ -19,7 +19,7 @@ const PlayerText: React.FC<IPlayerTextProps> = () => {
   const { state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex } = state;
   const { title, subtitle, explicit } =
-    tracks[currentTrackIndex] || ({} as IAudioData);
+    tracks[currentTrackIndex] || ({} as IMediaData);
 
   const wrapWords = (text: string) =>
     text?.match(/\s*\S+/g).map((word, i) => (

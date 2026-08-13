@@ -2,7 +2,7 @@
  * Defines Embed data interfaces and types.
  */
 
-import type { IAudioData } from './IAudioData';
+import type { IMediaData } from './IMediaData';
 import { IRssPodcastFollowLink } from './IRssPodcast';
 
 /**
@@ -10,14 +10,14 @@ import { IRssPodcastFollowLink } from './IRssPodcast';
  */
 export interface IEmbedData {
   /**
-   * Audio data player will be initialized with.
+   * Media data player will be initialized with.
    */
-  audio: IAudioData;
+  media: IMediaData;
 
   /**
    * Collection of audio data to be shown in playlist.
    */
-  playlist?: IAudioData[];
+  playlist?: IMediaData[];
 
   /**
    * URL of image to use in the background of the player.

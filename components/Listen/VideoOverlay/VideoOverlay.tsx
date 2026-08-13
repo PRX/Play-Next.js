@@ -3,7 +3,7 @@
  * Component for audio player controls in listen page footer.
  */
 
-import type { IAudioData, IListenMediaData } from '@interfaces/data';
+import type { IMediaData } from '@interfaces/data';
 import { forwardRef, useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import ThemeVars from '@components/ThemeVars';
@@ -33,15 +33,20 @@ const VideoOverlay = forwardRef<HTMLDivElement, IVideoOverlayProps>(
     const { currentTrackIndex, tracks, playing } = playerState;
     const isVideoHidden = videoVisibility === 'hidden';
     const currentTrack = tracks[currentTrackIndex];
-    const { guid, transcripts, duration, imageUrl } = (currentTrack ||
-      {}) as IAudioData;
+    const {
+      guid,
+      transcripts,
+      duration,
+      imageUrl,
+      sources,
+      hasVideoSourceAt = false
+    } = (currentTrack || {}) as IMediaData;
     const transcript = transcripts?.find(
       (t) =>
         !!['vtt', 'srt', 'x-subrip', 'json'].find((n) => t.type.includes(n))
     );
-    const { sources, hasVideo, videoSourceIndex } = (currentTrack ||
-      {}) as IListenMediaData;
-    const videoSource = sources?.[videoSourceIndex];
+    const hasVideo = hasVideoSourceAt !== false;
+    const videoSource = hasVideo && sources?.[hasVideoSourceAt];
     const trackIsVideo = !!currentTrack && hasVideo;
     const useVideoElement = trackIsVideo;
     const isShown = !!currentTrack && trackIsVideo && !isVideoHidden;

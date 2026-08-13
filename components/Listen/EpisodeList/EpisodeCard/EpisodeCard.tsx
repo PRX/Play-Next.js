@@ -45,9 +45,11 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
     duration,
     explicit,
     pubDate,
-    url,
-    fileSize
+    sources,
+    hasAudioSourceAt
   } = episode;
+  const { url, length = 0 } =
+    hasAudioSourceAt !== false ? sources?.[hasAudioSourceAt] : {};
   const thumbSrc = imageUrl || defaultThumbUrl;
   const thumbnailSize = 100;
   const thumbnailSizeMobile = 40;
@@ -65,7 +67,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
   const episodesDurationsInt = convertDurationStringToIntegerArray(duration);
   const episodesDurationSums = sumDurationParts([episodesDurationsInt]);
   const episodesDurationString = formatDurationParts(episodesDurationSums);
-  const downloadLabel = filesize(fileSize);
+  const downloadLabel = filesize(length);
 
   const handlePlayButtonClick = useCallback(() => {
     playTrack(index);

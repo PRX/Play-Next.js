@@ -10,7 +10,9 @@ describe('lib/parse/data', () => {
       content: 'CONTENT',
       'content:encoded': 'CONTENT:ENCODED',
       enclosure: {
-        url: 'http://test.com/e1.mp3'
+        type: 'audio/mpeg',
+        url: 'http://test.com/e1.mp3',
+        length: 123456
       },
       categories: ['cat1', '  cat2', 'cat3   '],
       itunes: {
@@ -25,12 +27,20 @@ describe('lib/parse/data', () => {
 
     test('should map expected properties', () => {
       const result = parseListenEpisodeData(mockRssItem);
+      const resultAudioSource =
+        result.hasAudioSourceAt !== false &&
+        result.sources[result.hasAudioSourceAt];
 
       expect(result.guid).toBe('GUID:1');
       expect(result.link).toBe('http://test.com/1');
       expect(result.title).toBe('TITLE');
       expect(result.content).toBe('CONTENT:ENCODED');
-      expect(result.url).toBe('http://test.com/e1.mp3?_from=play.prx.org');
+      expect(result.hasAudioSourceAt).toBeGreaterThan(-1);
+      expect(resultAudioSource).toStrictEqual({
+        type: 'audio/mpeg',
+        url: 'http://test.com/e1.mp3?_from=play.prx.org',
+        length: 123456
+      });
       expect(result.imageUrl).toBe('http://test.com/e1.png');
       expect(result.subtitle).toBe('ITUNES:SUBTITLE');
       expect(result.season).toBe(42);
@@ -87,7 +97,8 @@ describe('lib/parse/data', () => {
       delete rssItem.enclosure;
       const result = parseListenEpisodeData(rssItem);
 
-      expect(result.url).toBeUndefined();
+      expect(result.hasAudioSourceAt).toBe(false);
+      expect(result.sources).toEqual([]);
     });
   });
 });

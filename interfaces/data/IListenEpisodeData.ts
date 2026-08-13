@@ -2,9 +2,9 @@
  * Defines episode data interfaces and types.
  */
 
-import { IListenMediaData } from './IListenMediaData';
+import { IMediaData } from './IMediaData';
 
-export interface IListenEpisodeData extends IListenMediaData {
+export interface IListenEpisodeData extends IMediaData {
   /**
    * Subtitle for the episode for use in playlist.
    */

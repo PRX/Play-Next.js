@@ -4,11 +4,7 @@
  */
 
 import type React from 'react';
-import type {
-  IAudioData,
-  IListenMediaData,
-  IListenMediaSource
-} from '@interfaces/data';
+import type { IMediaData, IMediaSource } from '@interfaces/data';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import {
   playerInitialState,
@@ -19,7 +15,7 @@ import PlayerContext from '@contexts/PlayerContext';
 import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
-  audio: IAudioData | IAudioData[] | IListenMediaData[];
+  audio: IMediaData | IMediaData[];
   startIndex?: number;
   imageUrl?: string;
 }
@@ -55,18 +51,23 @@ const Player: React.FC<IPlayerProps> = ({
   } = state;
   const currentTrack = tracks[currentTrackIndex];
   const isLastTrack = currentTrackIndex === tracks.length - 1;
-  const { guid, url, type, previewUrl, transcripts, duration } =
-    (currentTrack || {}) as IAudioData;
+  const {
+    guid,
+    sources,
+    hasAudioSourceAt = false,
+    hasVideoSourceAt = false,
+    previewUrl,
+    transcripts,
+    duration
+  } = (currentTrack || {}) as IMediaData;
+  const hasVideo = hasVideoSourceAt !== false;
+  const audioSource =
+    hasAudioSourceAt !== false ? sources?.[hasAudioSourceAt] : null;
+  const useAudioElement = !hasVideo && !!audioSource;
   const currentTrackDurationSeconds = useMemo(
     () => convertDurationToSeconds(duration),
     [duration]
   );
-  const { sources, hasVideo } = (currentTrack || {}) as IListenMediaData;
-  const audioSources = currentTrack
-    ? sources || [{ url: previewUrl || url, type }]
-    : null;
-  const trackIsAudio = !!currentTrack && !hasVideo;
-  const useAudioElement = trackIsAudio;
   const transcript = transcripts?.find(
     (t) => !!['vtt', 'srt', 'x-subrip', 'json'].find((n) => t.type.includes(n))
   );
@@ -140,7 +141,7 @@ const Player: React.FC<IPlayerProps> = ({
     });
   };
 
-  const setTracks = (newTracks: IAudioData[]) => {
+  const setTracks = (newTracks: IMediaData[]) => {
     dispatch({
       type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
       payload: newTracks
@@ -521,9 +522,7 @@ const Player: React.FC<IPlayerProps> = ({
       {useAudioElement && (
         /* eslint-disable-next-line jsx-a11y/media-has-caption */
         <audio preload={playing ? 'auto' : 'none'} ref={el} key={guid}>
-          {audioSources?.map((s: IListenMediaSource) => (
-            <source src={s.url} type={s.type} key={s.url} />
-          ))}
+          <source src={audioSource.url} type={audioSource.type} />
           {transcript && (
             <track
               kind="captions"

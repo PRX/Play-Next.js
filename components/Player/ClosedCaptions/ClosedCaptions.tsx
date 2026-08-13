@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import type { CSSProperties } from 'react';
-import type { IAudioData } from '@interfaces/data';
+import type { IMediaData } from '@interfaces/data';
 import type {
   IRssPodcastTranscriptJson,
   IRssPodcastTranscriptJsonSegment
@@ -43,7 +43,7 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   const [cueEnded, setCueEnded] = useState(false);
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
-  const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
+  const currentTrack = tracks[currentTrackIndex] || ({} as IMediaData);
   const { transcripts } = currentTrack;
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
   const captionsClassNames = clsx(styles.captions, {

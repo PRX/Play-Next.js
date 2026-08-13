@@ -3,7 +3,7 @@
  * Define state interface used by player.
  */
 
-import type { IAudioData, IListenMediaData } from '@interfaces/data';
+import type { IMediaData } from '@interfaces/data';
 
 export interface IPlayerState {
   /**
@@ -29,7 +29,7 @@ export interface IPlayerState {
   /**
    * Holds all the audio data that can be played.
    */
-  tracks: (IAudioData | IListenMediaData)[];
+  tracks: IMediaData[];
 
   /**
    * Current volume of the player as a value between 0 and 1.

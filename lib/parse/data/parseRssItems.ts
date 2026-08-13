@@ -1,6 +1,6 @@
 import type { IRss, IRssItem } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/config';
-import parseAudioData from './parseAudioData';
+import parseMediaData from './parseMediaData';
 
 /**
  * Parse RSS data items into audio data. Items are filtered and truncated before parsing.
@@ -22,7 +22,7 @@ const parseRssItems = (
   const imageUrl = rssItunesImage || rssImageUrl;
   const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
     config;
-  const itemParserFunc = itemParser || parseAudioData;
+  const itemParserFunc = itemParser || parseMediaData;
   const rssItems = rssData.items
     .filter((item) => !!item.enclosure)
     .map(

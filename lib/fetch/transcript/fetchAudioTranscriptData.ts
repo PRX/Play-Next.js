@@ -1,12 +1,6 @@
-import {
-  IAudioData,
-  IListenMediaData,
-  SpeakerSegmentsBlock
-} from '@interfaces/data';
+import { IMediaData, SpeakerSegmentsBlock } from '@interfaces/data';
 
-const fetchAudioTranscriptData = async (
-  episode: IAudioData | IListenMediaData
-) => {
+const fetchAudioTranscriptData = async (episode: IMediaData) => {
   if (!episode?.transcripts) return null;
 
   const { transcripts, duration } = episode;

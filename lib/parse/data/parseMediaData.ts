@@ -1,18 +1,14 @@
-import type {
-  IListenMediaData,
-  IListenMediaSource,
-  IRssItem
-} from '@interfaces/data';
+import type { IMediaData, IMediaSource, IRssItem } from '@interfaces/data';
 import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 
 /**
- * Parse RSS item into listen media data object.
+ * Parse RSS item into media data object.
  * @param rssItem RSS item to be parsed.
  * @returns Listen media data object.
  */
-const parseListenMediaData = ({
+const parseMediaData = ({
   guid,
   link,
   title,
@@ -20,19 +16,19 @@ const parseListenMediaData = ({
   enclosure,
   categories,
   podcast
-}: IRssItem): IListenMediaData => {
-  const enclosureSource: IListenMediaSource = enclosure && {
+}: IRssItem): IMediaData => {
+  const enclosureSource: IMediaSource = enclosure && {
     type: enclosure.type,
     url: generateAudioUrl(enclosure.url),
     length: enclosure.length
   };
-  const alternateEnclosures: IListenMediaSource[] =
+  const alternateEnclosures: IMediaSource[] =
     podcast?.alternateEnclosure?.map((ae) => ({
       type: ae.type,
       url: generateAudioUrl(ae.sources[0].uri),
       length: ae.length
     })) || [];
-  const sources: IListenMediaSource[] = [
+  const sources: IMediaSource[] = [
     ...alternateEnclosures,
     ...(enclosureSource ? [enclosureSource] : [])
   ];
@@ -42,20 +38,13 @@ const parseListenMediaData = ({
   const videoSourceIndex = sources.findIndex(({ type: t }) =>
     /^video\/|^application\/x-mpegURL$/i.test(t)
   );
-  const hasVideo = videoSourceIndex > -1;
 
   return {
     guid,
     ...(link && { link }),
-    ...(enclosureSource && {
-      type: enclosureSource.type,
-      url: enclosureSource.url,
-      fileSize: enclosureSource.length
-    }),
     sources,
-    audioSourceIndex,
-    videoSourceIndex,
-    hasVideo,
+    hasAudioSourceAt: audioSourceIndex > -1 && audioSourceIndex,
+    hasVideoSourceAt: videoSourceIndex > -1 && videoSourceIndex,
     ...(categories && {
       categories: categories.map((v) => v.replace(/^\s+|\s+$/g, ''))
     }),
@@ -75,4 +64,4 @@ const parseListenMediaData = ({
   };
 };
 
-export default parseListenMediaData;
+export default parseMediaData;

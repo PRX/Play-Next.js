@@ -1,8 +1,8 @@
 import { IRssItem } from '@interfaces/data';
-import parseAudioData from './parseAudioData';
+import parseMediaData from './parseMediaData';
 
 describe('lib/parse/data', () => {
-  describe('parseAudioData', () => {
+  describe('parseMediaData', () => {
     const mockRssItem: IRssItem = {
       guid: 'foo-bar',
       link: 'http://foo.com/foo-bar',
@@ -23,15 +23,21 @@ describe('lib/parse/data', () => {
     };
 
     test('should map expected properties', () => {
-      const result = parseAudioData(mockRssItem);
+      const result = parseMediaData(mockRssItem);
 
       expect(result).toStrictEqual({
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
-        type: 'audio/mpeg',
-        url: 'http://foo.com/audio.mp3?_from=play.prx.org',
-        fileSize: 12345,
+        sources: [
+          {
+            type: 'audio/mpeg',
+            url: 'http://foo.com/audio.mp3?_from=play.prx.org',
+            length: 12345
+          }
+        ],
+        hasAudioSourceAt: 0,
+        hasVideoSourceAt: false,
         categories: ['cat1', 'cat2', 'cat3'],
         subtitle: 'bar',
         imageUrl: 'http://foo.com/image.png',
@@ -44,15 +50,21 @@ describe('lib/parse/data', () => {
     test('should handle missing categories property', () => {
       const rssItem = { ...mockRssItem };
       delete rssItem.categories;
-      const result = parseAudioData(rssItem);
+      const result = parseMediaData(rssItem);
 
       expect(result).toStrictEqual({
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
-        type: 'audio/mpeg',
-        url: 'http://foo.com/audio.mp3?_from=play.prx.org',
-        fileSize: 12345,
+        sources: [
+          {
+            type: 'audio/mpeg',
+            url: 'http://foo.com/audio.mp3?_from=play.prx.org',
+            length: 12345
+          }
+        ],
+        hasAudioSourceAt: 0,
+        hasVideoSourceAt: false,
         subtitle: 'bar',
         imageUrl: 'http://foo.com/image.png',
         season: 42,
@@ -64,15 +76,21 @@ describe('lib/parse/data', () => {
     test('should handle missing itunes property', () => {
       const rssItem = { ...mockRssItem };
       delete rssItem.itunes;
-      const result = parseAudioData(rssItem);
+      const result = parseMediaData(rssItem);
 
       expect(result).toStrictEqual({
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
-        type: 'audio/mpeg',
-        url: 'http://foo.com/audio.mp3?_from=play.prx.org',
-        fileSize: 12345,
+        sources: [
+          {
+            type: 'audio/mpeg',
+            url: 'http://foo.com/audio.mp3?_from=play.prx.org',
+            length: 12345
+          }
+        ],
+        hasAudioSourceAt: 0,
+        hasVideoSourceAt: false,
         categories: ['cat1', 'cat2', 'cat3']
       });
     });
@@ -80,12 +98,15 @@ describe('lib/parse/data', () => {
     test('should handle missing enclosure property', () => {
       const rssItem = { ...mockRssItem };
       delete rssItem.enclosure;
-      const result = parseAudioData(rssItem);
+      const result = parseMediaData(rssItem);
 
       expect(result).toStrictEqual({
         guid: 'foo-bar',
         link: 'http://foo.com/foo-bar',
         title: 'foo',
+        sources: [],
+        hasAudioSourceAt: false,
+        hasVideoSourceAt: false,
         categories: ['cat1', 'cat2', 'cat3'],
         subtitle: 'bar',
         imageUrl: 'http://foo.com/image.png',

@@ -6,7 +6,7 @@
 import type React from 'react';
 import type { CSSProperties } from 'react';
 import type { IListenPageProps } from '@interfaces/page';
-import type { IListenMediaData } from '@interfaces/data';
+import type { IMediaData } from '@interfaces/data';
 import 'videojs-video-element';
 import {
   useCallback,
@@ -79,7 +79,8 @@ const Listen = ({ config, data }: IListenPageProps) => {
   const { currentTrackIndex, tracks } = playerState;
   const currentTrack = tracks[currentTrackIndex];
   const playerShown = !!currentTrack;
-  const { hasVideo } = (currentTrack || {}) as IListenMediaData;
+  const { hasVideoSourceAt = false } = (currentTrack || {}) as IMediaData;
+  const hasVideo = hasVideoSourceAt !== false;
   const episode = useMemo(
     () => episodes?.find(({ guid }) => guid === episodeGuid),
     [episodeGuid, episodes]

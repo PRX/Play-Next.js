@@ -1,5 +1,5 @@
 /**
- * Defines audio data interfaces and types.
+ * Defines media data interfaces and types.
  */
 
 import {
@@ -7,10 +7,27 @@ import {
   IRssPodcastTranscriptJson
 } from './IRssPodcast';
 
+export interface IMediaSource {
+  /**
+   * Mime type of the source.
+   */
+  type?: string;
+
+  /**
+   * Source URL for the file.
+   */
+  url: string;
+
+  /**
+   * Length of the file in bytes.
+   */
+  length?: number;
+}
+
 /**
  * Audio data interface.
  */
-export interface IAudioData {
+export interface IMediaData {
   /**
    * Globally unique id for the audio.
    */
@@ -22,19 +39,19 @@ export interface IAudioData {
   link: string;
 
   /**
-   * Mime type of the audio file.
+   * Media sources.
    */
-  type: string;
+  sources: IMediaSource[];
 
   /**
-   * Source URL for the audio file.
+   * Index of audio in sources. `false` when no audio source.
    */
-  url: string;
+  hasAudioSourceAt: number | false;
 
   /**
-   * File size audio file in bytes.
+   * Index of video in sources. `false` when no video source.
    */
-  fileSize: number;
+  hasVideoSourceAt: number | false;
 
   /**
    * Source URL for the preview audio file.
