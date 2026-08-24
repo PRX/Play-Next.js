@@ -35,22 +35,22 @@ import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
 import ClosedCaptions from '@components/Player/ClosedCaptions';
 import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
-import styles from './Embed.module.scss';
+import styles from './VideoEmbed.module.scss';
 import EmbedSettingsMenu from './EmbedSettingsMenu';
+import VideoElement from './VideoElement';
+import VideoUIWrapper from './VideoUIWrapper';
 
 // Define dynamic component imports.
 const PrxLogo = dynamic(() => import('@svg/logos/PRX-Logo-Horizontal.svg'));
 const PrxLogoColor = dynamic(
   () => import('@svg/logos/PRX-Logo-Horizontal-Color.svg')
 );
-const CoverArt = dynamic(() => import('@components/Player/CoverArt'));
 
 const Playlist = dynamic(() => import('@components/Player/Playlist/Playlist'));
 
 export interface IEmbedLayoutBreakPoint {
   name: string;
   minWidth: number;
-  thumbnailSize: number;
 }
 
 const Embed = ({ config, data, mode }: IEmbedProps) => {
@@ -84,11 +84,6 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     supportShown ||
     webMonetizationShown ||
     settingsShown;
-  const thumbnailSize = parseInt(styles['--player-thumbnail-size'], 10);
-  const thumbnailSizeMobile = parseInt(
-    styles['--player-thumbnail-size--mobile'],
-    10
-  );
   const [showMenu, setShowMenu] = useState(false);
   const [playerLayout, setPlayerLayout] = useState<IEmbedLayoutBreakPoint>();
   const playerMainRef = useRef<HTMLDivElement>();
@@ -96,7 +91,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
   const playerControlsRef = useRef<HTMLDivElement>();
   const playerMenuRef = useRef<HTMLDivElement>();
   const layoutBreakpoints = useRef<IEmbedLayoutBreakPoint[]>([
-    { name: 'init', minWidth: 0, thumbnailSize: thumbnailSizeMobile }
+    { name: 'init', minWidth: 0 }
   ]);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
   const coverArtImage = imageUrl || bgImageUrl;
@@ -144,24 +139,17 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     const playerMenuRect = playerMenuRef.current.getBoundingClientRect();
     const playerGap = parseInt(styles.playerGap, 10);
     const minPanelWidth =
-      playerMenuRect.width + playerControlsRect.width + playerGap;
-    const thumbnailOffset = !canShowCoverArt ? thumbnailSize + playerGap : 0;
+      playerMenuRect.width + playerControlsRect.width + playerGap + 8;
     const breakpoints: IEmbedLayoutBreakPoint[] = [
-      { name: 'compact', minWidth: 0, thumbnailSize: thumbnailSizeMobile },
+      { name: 'compact', minWidth: 0 },
       {
-        name: 'compact-full',
-        minWidth: minPanelWidth,
-        thumbnailSize: thumbnailSizeMobile
-      },
-      {
-        name: 'extended-full',
-        minWidth: thumbnailOffset + minPanelWidth,
-        thumbnailSize
+        name: 'full',
+        minWidth: minPanelWidth
       }
     ].sort((a, b) => a.minWidth - b.minWidth);
 
     layoutBreakpoints.current = breakpoints;
-  }, [canShowCoverArt, thumbnailSize, thumbnailSizeMobile]);
+  }, []);
 
   /**
    * Update player layout by finding the last breakpoint with a min width the
@@ -198,10 +186,6 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     dispatch({
       type: EmbedActionTypes.EMBED_TOGGLE_CLOSED_CAPTIONS_DIALOG_SHOWN
     });
-  };
-
-  const handleClosedCaptionCloseClick = () => {
-    dispatch({ type: EmbedActionTypes.EMBED_HIDE_CLOSED_CAPTIONS_DIALOG });
   };
 
   const handleFollowButtonClick = () => {
@@ -270,11 +254,12 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
 
   return (
     <>
-      <ThemeVars theme="EmbedTheme" cssProps={styles} />
+      <ThemeVars theme="VIdeoEmbedTheme" cssProps={styles} />
 
       <Head>
         <style>{`:root {${rootStyles}}`}</style>
       </Head>
+
       <div className={styles.container} data-theme={theme}>
         <div className={mainClasses}>
           {!hasMediaTypeSource && (
@@ -286,80 +271,57 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
               <p>Episode Not Available</p>
             </div>
           )}
+
           {hasMediaTypeSource && (
             <Player
               media={playlist || media}
               startIndex={currentTrackIndex}
               imageUrl={bgImageUrl}
             >
-              {canShowCoverArt && (
-                <div
-                  className={styles.coverArt}
-                  {...(modalShown && { inert: '' })}
-                >
-                  <CoverArt />
-
-                  {showClosedCaptionFeed && (
-                    <div
-                      className={clsx(styles.modals, styles.closedCaptionsFeed)}
-                      id="embed-closed-caption-modal"
-                      {...(!closedCaptionsShown && { inert: '' })}
-                    />
-                  )}
-                </div>
-              )}
-
               <div
                 className={styles.playerContainer}
                 {...(modalShown && { inert: '' })}
               >
-                <BackgroundImage
-                  imageUrl={bgImageUrl}
-                  className={styles.background}
+                <VideoElement
+                  className={styles.video}
+                  closedCaptionsShown={closedCaptionsShown}
                 />
 
-                <div
+                <VideoUIWrapper
                   ref={playerMainRef}
                   className={styles.playerMain}
                   data-layout={playerLayout?.name}
                 >
-                  {!canShowCoverArt && playerLayout && (
-                    <div className={styles.thumbnail}>
-                      <PlayerThumbnail
-                        width={playerLayout?.thumbnailSize}
-                        height={playerLayout?.thumbnailSize}
-                      />
+                  <div className={styles.header}>
+                    <div className={styles.text}>
+                      <PlayerText />
                     </div>
-                  )}
 
-                  <div className={styles.text}>
-                    <PlayerText />
-                  </div>
+                    <div className={styles.logo}>
+                      <a
+                        href="https://prx.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.logoLink}
+                      >
+                        {theme === 'light' ? (
+                          <PrxLogoColor aria-label="PRX" />
+                        ) : (
+                          <PrxLogo aria-label="PRX" />
+                        )}
+                      </a>
+                    </div>
 
-                  <div className={styles.logo}>
-                    <a
-                      href="https://prx.org"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.logoLink}
-                    >
-                      {theme === 'light' ? (
-                        <PrxLogoColor aria-label="PRX" />
-                      ) : (
-                        <PrxLogo aria-label="PRX" />
-                      )}
-                    </a>
-                  </div>
-
-                  <div className={styles.menuToggle}>
-                    <IconButton
-                      type="button"
-                      className={clsx(styles.iconButton, styles.moreButton)}
-                      onClick={handleMoreButtonClick}
-                      title={!showMenu ? 'Show menu' : 'Close Menu'}
-                    >
-                      {!showMenu ? <MoreHorizIcon /> : <CloseIcon />}
-                    </IconButton>
+                    <div className={styles.menuToggle}>
+                      <IconButton
+                        type="button"
+                        className={clsx(styles.iconButton, styles.moreButton)}
+                        onClick={handleMoreButtonClick}
+                        title={!showMenu ? 'Show menu' : 'Close Menu'}
+                      >
+                        {!showMenu ? <MoreHorizIcon /> : <CloseIcon />}
+                      </IconButton>
+                    </div>
                   </div>
 
                   <div ref={playerPanelRef} className={styles.panel}>
@@ -371,26 +333,29 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                     >
                       {canShowPlaylist && (
                         <PreviousButton
-                          className={clsx(styles.button, styles.previousButton)}
+                          className={clsx(
+                            styles.iconButton,
+                            styles.previousButton
+                          )}
                           disabled={currentTrackIndex === 1}
                         />
                       )}
 
                       <ReplayButton
-                        className={clsx(styles.button, styles.replayButton)}
+                        className={clsx(styles.iconButton, styles.replayButton)}
                       />
 
                       <PlayButton
-                        className={clsx(styles.button, styles.playButton)}
+                        className={clsx(styles.iconButton, styles.playButton)}
                       />
 
                       <ForwardButton
-                        className={clsx(styles.button, styles.replayButton)}
+                        className={clsx(styles.iconButton, styles.replayButton)}
                       />
 
                       {canShowPlaylist && (
                         <NextButton
-                          className={clsx(styles.button, styles.nextButton)}
+                          className={clsx(styles.iconButton, styles.nextButton)}
                           disabled={currentTrackIndex === playlist.length - 1}
                         />
                       )}
@@ -401,17 +366,17 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                       className={clsx(styles.menu, menuShownClass)}
                       {...(!showMenu &&
                         playerLayout?.name === 'compact' && { inert: '' })}
-                      style={{
-                        // Initialize hidden in compact layout to prevent content flash.
-                        ...(playerLayout?.name === 'compact' && {
-                          visibility: 'hidden'
-                        })
-                      }}
+                      // style={{
+                      //   // Initialize hidden in compact layout to prevent content flash.
+                      //   ...(playerLayout?.name === 'compact' && {
+                      //     visibility: 'hidden'
+                      //   })
+                      // }}
                     >
                       {showClosedCaptionsButton && (
                         <ClosedCaptionsDialog
                           className={clsx(
-                            styles.menuButton,
+                            styles.iconButton,
                             styles.closedCaptionsButton,
                             {
                               [styles.closedCaptionsEnabled]:
@@ -419,21 +384,21 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                             }
                           )}
                           onOpen={handleClosedCaptionButtonClick}
-                          onClose={handleClosedCaptionCloseClick}
-                          isOpen={closedCaptionsShown}
-                          portalId="embed-closed-caption-modal"
-                        >
-                          {showClosedCaptionFeed ? (
-                            <ClosedCaptionsFeed speakerColors={accentColor} />
-                          ) : (
-                            <ClosedCaptions speakerColors={accentColor} />
-                          )}
-                        </ClosedCaptionsDialog>
+                        />
                       )}
+
+                      <WebMonetized
+                        className={clsx(styles.iconButton, styles.monetized)}
+                        onOpen={handleWebMonetizationButtonClick}
+                        onClose={handleWebMonetizationCloseClick}
+                        isOpen={webMonetizationShown}
+                        portalId="embed-modals"
+                        paymentPointer={paymentPointer}
+                      />
 
                       <FollowMenu
                         className={clsx(
-                          styles.menuButton,
+                          styles.iconButton,
                           styles.followRssButton
                         )}
                         onOpen={handleFollowButtonClick}
@@ -446,7 +411,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                       {showShareMenu && (
                         <PlayerShareMenu
                           className={clsx(
-                            styles.menuButton,
+                            styles.iconButton,
                             styles.shareButton
                           )}
                           onOpen={handleShareButtonClick}
@@ -460,7 +425,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
 
                       <SupportMenu
                         className={clsx(
-                          styles.menuButton,
+                          styles.iconButton,
                           styles.supportButton
                         )}
                         onOpen={handleSupportButtonClick}
@@ -469,35 +434,21 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                         portalId="embed-modals"
                         supportUrls={supportUrls}
                       />
+
+                      <EmbedSettingsMenu
+                        className={clsx(styles.iconButton)}
+                        portalId="embed-modals"
+                        isOpen={settingsShown}
+                        onOpen={handleSettingsButtonClick}
+                        onClose={handleSettingsCloseClick}
+                      />
                     </div>
                   </div>
 
-                  <div className={styles.progress}>
-                    <PlayerProgress />
-                    <WebMonetized
-                      className={styles.monetized}
-                      onOpen={handleWebMonetizationButtonClick}
-                      onClose={handleWebMonetizationCloseClick}
-                      isOpen={webMonetizationShown}
-                      portalId="embed-modals"
-                      paymentPointer={paymentPointer}
-                    />
-                    <EmbedSettingsMenu
-                      portalId="embed-modals"
-                      isOpen={settingsShown}
-                      onOpen={handleSettingsButtonClick}
-                      onClose={handleSettingsCloseClick}
-                    />
+                  <div className={styles.footer}>
+                    <PlayerProgress className={styles.progress} />
                   </div>
-                </div>
-
-                {showClosedCaptionDialog && (
-                  <div
-                    className={styles.modals}
-                    id="embed-closed-caption-modal"
-                    {...(!closedCaptionsShown && { inert: '' })}
-                  />
-                )}
+                </VideoUIWrapper>
               </div>
 
               {canShowPlaylist && (

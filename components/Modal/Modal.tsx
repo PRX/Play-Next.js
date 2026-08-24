@@ -15,7 +15,7 @@ import styles from './Modal.module.scss';
 
 export interface IModalProps
   extends React.PropsWithChildren<{ className?: string }> {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose?(): void;
   portalId?: string;
 }

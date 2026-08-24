@@ -12,7 +12,7 @@ import NextError from 'next/error';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
-import Embed from '@components/Embed/Embed';
+import VideoEmbed from '@components/Embed/VideoEmbed';
 import ReqError from '@lib/error/ReqError';
 
 const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
@@ -23,9 +23,9 @@ const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   return (
     <>
       <Head>
-        <title>PRX Play - Embeddable Player</title>
+        <title>PRX Play - Embeddable Video Player</title>
       </Head>
-      <Embed config={config} data={data} />
+      <VideoEmbed config={config} data={data} />
     </>
   );
 };
@@ -39,6 +39,12 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
 
   // 1. Convert query params into embed config.
   const config = parseEmbedParamsToConfig(query);
+
+  config.mediaType = /^video|^application\/x-mpegURL$/.test(
+    `${config.mediaType}`
+  )
+    ? config.mediaType
+    : 'video';
 
   // 2. If RSS feed URL is provided...
   let rssData: IRss;
@@ -70,7 +76,7 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
   const data = parseEmbedData(config, rssData);
 
   // eslint-disable-next-line no-console
-  console.info({ req, res }, 'Embed');
+  console.info({ req, res }, 'Embed Video');
 
   return {
     props: { config, data, ...(error && { error }) }

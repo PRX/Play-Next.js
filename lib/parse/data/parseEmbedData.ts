@@ -42,12 +42,31 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const paymentPointer =
     podcastValueRecipient?.address ||
     (process.env.NODE_ENV !== 'production' && process.env.PAYMENT_POINTER);
+  const useAudioOnly = /^audio/i.test(mediaType);
   const mediaItems = parseRssItems(rssData, config)?.map(
     (item) =>
       ({
         ...item,
         // Use feed title as audio items' subtitle.
-        subtitle: rssTitle
+        subtitle: rssTitle,
+        ...(useAudioOnly && {
+          // Try to use video source for audio when no audio source was detected.
+          hasAudioSourceAt:
+            item.hasAudioSourceAt !== false
+              ? item.hasAudioSourceAt
+              : item.hasVideoSourceAt,
+          // Disable video for audio embeds.
+          hasVideoSourceAt: false
+        }),
+        ...(!useAudioOnly && {
+          // Try to use audio source for video when no video source was detected.
+          hasVideoSourceAt:
+            item.hasVideoSourceAt !== false
+              ? item.hasVideoSourceAt
+              : item.hasAudioSourceAt,
+          // Disable audio for video embeds.
+          hasAudioSourceAt: false
+        })
       } as IMediaData)
   );
   const initialMediaIndex =

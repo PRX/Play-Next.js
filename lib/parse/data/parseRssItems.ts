@@ -1,4 +1,4 @@
-import type { IRss, IRssItem } from '@interfaces/data';
+import type { IMediaData, IRss, IRssItem } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/config';
 import parseMediaData from './parseMediaData';
 
@@ -12,7 +12,7 @@ const parseRssItems = (
   rssData: IRss,
   config: IEmbedConfig,
   // eslint-disable-next-line no-unused-vars
-  itemParser?: (rd: IRssItem) => any
+  itemParser?: (rd: IRssItem) => IMediaData
 ) => {
   if (!rssData || !rssData.items?.length) return undefined;
 
@@ -131,7 +131,7 @@ const parseRssItems = (
     resultItems = rssItems[0] && [rssItems[0]];
   }
 
-  // Return resulting items as audio data or `undefined`.
+  // Return resulting items as media data or `undefined`.
   return resultItems?.map(
     (item) =>
       ({

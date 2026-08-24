@@ -3,7 +3,7 @@
 .iconButton {
   --_iconButton--background-color: var(
     --iconButton--background-color,
-    transparent
+    #{colors.$white-a-0}
   );
   --_iconButton--background-color--hover: var(
     --iconButton--background-color--hover,
@@ -87,6 +87,13 @@
     outline-color: var(--_iconButton--outline-color--focus);
     outline-style: solid;
     color: var(--_iconButton--color--focus);
+  }
+
+  @media (pointer: coarse) {
+    --_iconButton--background-color: var(
+      --_iconButton--background-color--hover
+    );
+    --_iconButton--color: var(--_iconButton--color--hover);
   }
 
   @media (pointer: fine) {

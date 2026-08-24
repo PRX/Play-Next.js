@@ -24,7 +24,7 @@ import styles from './VideoOverlay.module.scss';
 export interface IVideoOverlayProps {}
 
 const VideoOverlay = forwardRef<HTMLDivElement, IVideoOverlayProps>(
-  (props, ref) => {
+  (_props, ref) => {
     const trackRef = useRef<HTMLTrackElement>(null);
     const { state: listenState, dispatch: listenDispatch } =
       useContext(ListenContext);
@@ -129,6 +129,7 @@ const VideoOverlay = forwardRef<HTMLDivElement, IVideoOverlayProps>(
               poster={imageUrl}
               ref={el}
               key={guid}
+              disablepictureinpicture
             >
               {transcript && (
                 <track

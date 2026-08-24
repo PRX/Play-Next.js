@@ -37,14 +37,16 @@ const ClosedCaptionsDialog: React.FC<IClosedCaptionDialogProps> = ({
       >
         <ClosedCaptionIcon />
       </IconButton>
-      <Modal
-        className={modalClassName}
-        onClose={onClose}
-        isOpen={isOpen}
-        portalId={portalId}
-      >
-        {children}
-      </Modal>
+      {portalId && (
+        <Modal
+          className={modalClassName}
+          onClose={onClose}
+          isOpen={isOpen}
+          portalId={portalId}
+        >
+          {children}
+        </Modal>
+      )}
     </>
   );
 };

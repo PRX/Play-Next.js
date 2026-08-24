@@ -1,0 +1,431 @@
+@use '@styles/colors';
+@use '@styles/grid';
+@use '@styles/theme';
+
+$divider-color: colors.$white-a-70;
+$divider-size: 3px;
+
+$player-gap: 12px;
+$player-corner-radius: 10px;
+$player-padding: 8px;
+$player-text-color: colors.$white;
+
+:export {
+  playerGap: #{$player-gap};
+
+  --divider-color: #{$divider-color};
+  --divider-size: #{$divider-size};
+
+  --player-text-color: #{$player-text-color};
+  --player-text-color--contrast: #{colors.$black-a-80};
+}
+
+.container {
+  @include theme.light {
+    --divider-color: #{colors.$black-a-10};
+
+    --player-text-color: #{colors.$black};
+    --player-text-color--contrast: #{colors.$white-a-80};
+
+    // BackgroundImage
+    --backgroundImage-tint-color: #{colors.$white};
+    --backgroundImage-tint-opacity: 0.9;
+
+    // IconButton
+    --iconButton--background-color--hover: #{colors.$black-a-10};
+    --iconButton--outline-color--focus: #{colors.$black-a-10};
+    --iconButton--color: #{colors.$black-a-60};
+    --iconButton--color--promote: #{colors.$black-a-80};
+    --iconButton--color--hover: #{colors.$black};
+    --iconButton--color--focus: #{colors.$black};
+
+    // PlayButton
+    --playButton--color: #{colors.$black-a-80};
+
+    // Playlist
+    --playlist-text-color: #{colors.$grey-600};
+    --playlist-text-color--active: #{colors.$black};
+    --playlist-background-color: #{colors.$grey-50};
+    --playlist-divider-color: #{colors.$black-a-10};
+    --playlist-header-text-color: #{colors.$black};
+    --playlist-header-icon-color: #{colors.$black-a-30};
+    --playlist-header-icon-color--active: #{colors.$black};
+
+    // PlayerProgress
+    --playerProgress-progress-color: #{colors.$secondary-500};
+    --playerProgress-handle-color: #{colors.$white-a-50};
+    --playerProgress-track-color: #{colors.$black-a-10};
+
+    // Modal
+    --modal-background-color: #{colors.$white-a-90};
+    --modal-text-color: #{colors.$black};
+
+    // SettingsMenuButton
+    --settingsMenuButton--color: #{colors.$black-a-60};
+    --settingsMenuButton--color--hover: #{colors.$black};
+    --settingsMenuButton--color--focus: #{colors.$black};
+    --settingsMenuButton--border-color: #{colors.$black-a-10};
+    --settingsMenuButton--background-color--hover: #{colors.$black-a-10};
+
+    // Slider
+    --slider--color: #{colors.$black-a-80};
+    --slider--color--hover: #{colors.$black};
+    --slider--track--color: #{colors.$black-a-30};
+
+    // RadioGroup
+    --radio-group--color: #{colors.$black-a-80};
+    --radio-group--color--hover: #{colors.$black};
+    --radio-group--background-color--hover: #{colors.$black-a-10};
+    --radio-group--background-color--checked: #{colors.$black-a-30};
+  }
+
+  width: 100dvw;
+  height: 100dvh;
+
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
+}
+
+.main {
+  overflow: hidden;
+
+  &.withPlaylist {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: calc(100dvw / var(--video--aspect-ratio, (16 / 9))) 1fr;
+  }
+}
+
+.messageContainer {
+  @include grid.stacked;
+  place-items: center;
+
+  padding: 2rem;
+
+  color: var(--player-text-color);
+  font-size: clamp(1.25rem, 3.5vw, 3rem);
+  text-align: center;
+
+  & > p {
+    margin: 0;
+  }
+}
+
+.modals {
+  position: absolute;
+  inset: 0;
+}
+
+.playerContainer {
+  position: absolute;
+  inset: 0;
+
+  aspect-ratio: var(--video--aspect-ratio, 16 / 9);
+  max-width: 100dvw;
+  max-height: 100dvh;
+  overflow: hidden;
+
+  margin: auto;
+
+  .withPlaylist & {
+    position: relative;
+    width: 100%;
+
+    margin-top: 0;
+
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.playerMain {
+  --column-gap: #{$player-gap};
+
+  isolation: isolate;
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  grid-template-areas:
+    'HEAD'
+    'PANEL'
+    'FOOT'
+    '----';
+  align-content: space-between;
+  column-gap: var(--column-gap);
+
+  visibility: hidden;
+
+  color: var(--player-text-color);
+
+  &::before,
+  &::after {
+    content: '';
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &::before {
+    grid-area: HEAD;
+
+    transform-origin: center top;
+    scale: 1.75;
+    translate: 0 -175%;
+
+    background-image: linear-gradient(
+      to bottom,
+      var(--player-text-color--contrast),
+      transparent
+    );
+  }
+
+  &::after {
+    grid-column: 1 / -1;
+    grid-row: -3 / span 2;
+
+    transform-origin: center bottom;
+    scale: 1.75;
+    translate: 0 175%;
+
+    background-image: linear-gradient(
+      to top,
+      var(--player-text-color--contrast),
+      transparent
+    );
+  }
+
+  .header,
+  .panel,
+  .footer,
+  &::before,
+  &::after {
+    transition-property: translate opacity;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  &[data-shown='true'] {
+    .header,
+    .panel,
+    .footer,
+    &::before,
+    &::after {
+      translate: 0;
+    }
+  }
+
+  &:where([data-layout]) {
+    visibility: visible;
+  }
+
+  &:where([data-layout='compact']) {
+    .logo {
+      display: none;
+    }
+    .playStateOverlay {
+      display: none;
+    }
+    .panel {
+      --iconButton--size: clamp(20px, 12vw, 40px);
+      --settingsMenuButton--size: clamp(20px, 12vw, 40px);
+      --playButton--size: clamp(40px, 20vw, 60px);
+
+      @include grid.stacked;
+      grid-template-columns: 1fr;
+      justify-items: center;
+
+      isolation: isolate;
+
+      position: relative;
+
+      translate: 0 300%;
+
+      .controls {
+        &.menuShown {
+          position: absolute;
+          left: 110%;
+        }
+      }
+
+      .menu {
+        position: absolute;
+        left: 110%;
+
+        &.menuShown {
+          position: relative;
+          left: 0;
+        }
+      }
+    }
+  }
+
+  &:where([data-layout='full']) {
+    grid-template-areas:
+      'HEAD'
+      '----'
+      'FOOT'
+      'PANEL';
+
+    .menuToggle {
+      display: none;
+    }
+    .panel {
+      --iconButton--background-color: unset;
+
+      justify-content: space-between;
+      padding-top: 0.5rem;
+
+      .iconButton {
+        backdrop-filter: unset;
+
+        &:where(:hover, :focus-visible):not(:disabled) {
+          backdrop-filter: blur(10px) brightness(80%);
+        }
+      }
+    }
+    .controls {
+      &.menuShown {
+        display: flex;
+        pointer-events: all;
+      }
+    }
+    .menu {
+      display: flex;
+      pointer-events: all;
+    }
+
+    .footer {
+      padding-block-end: unset;
+    }
+  }
+}
+
+.header {
+  grid-area: HEAD;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  grid-template-areas: 'TEXT LOGO';
+
+  translate: 0 -100%;
+
+  padding: clamp(0.5rem, 2vw, 1rem);
+}
+
+.text {
+  grid-area: TEXT;
+}
+
+.logo {
+  grid-area: LOGO;
+  align-self: start;
+  padding-inline-start: 0.5rem;
+}
+.logoLink {
+  & > svg {
+    width: clamp(50px, 10vw, 100px);
+    display: inline-block;
+    vertical-align: -webkit-baseline-middle;
+    fill: var(--logo-color, currentColor);
+  }
+}
+
+.moreButton {
+  --iconButton--size: 24px;
+  --iconButton--padding: 4px;
+}
+
+.panel {
+  --iconButton--background-color: hsl(
+    from var(var(--player-text-color)) h s l / 0.5
+  );
+  --iconButton--size: 1.5rem;
+  --iconButton--padding: 0.25rem;
+  --playButton--size: 2rem;
+  --playButton--padding: 0.25rem;
+  --settingsMenuButton--size: 1.5rem;
+  --settingsMenuButton--background-color--hover: hsl(
+    from var(var(--player-text-color)) h s l / 0.5
+  );
+
+  grid-area: PANEL;
+  align-self: center;
+
+  display: flex;
+  justify-content: center;
+  gap: $player-gap;
+
+  padding: clamp(0.5rem, 2vw, 1rem);
+
+  line-height: 0;
+
+  .iconButton {
+    backdrop-filter: blur(10px) brightness(80%);
+
+    &:disabled {
+      --iconButton--color: hsl(from var(--player-text-color) h s l / 0.1);
+
+      opacity: unset;
+      backdrop-filter: blur(15px) brightness(80%);
+    }
+  }
+
+  :where([data-layout='full']) & {
+    translate: 0 100%;
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.menuToggle {
+  grid-area: LOGO;
+}
+
+.closedCaptionsButton {
+  --iconButton--size: 24px;
+  &.closedCaptionsEnabled {
+    color: var(--accent-color, #{colors.$secondary-500});
+  }
+}
+
+.footer {
+  grid-area: FOOT;
+
+  display: flex;
+  align-items: center;
+  gap: $player-gap;
+
+  translate: 0 800%;
+
+  padding-inline: clamp(0.5rem, 2vw, 1rem);
+  padding-block-end: clamp(0.5rem, 2vw, 1rem);
+
+  & > :first-child {
+    flex-grow: 1;
+  }
+}
+
+.progress {
+  padding-inline: 0.25rem;
+}
+
+.footerMenus {
+  display: flex;
+  align-items: center;
+  gap: $player-gap / 2;
+}
+
+.playlist {
+  overflow: hidden;
+}

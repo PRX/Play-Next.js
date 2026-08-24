@@ -15,7 +15,7 @@ import PlayerContext from '@contexts/PlayerContext';
 import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
-  audio: IMediaData | IMediaData[];
+  media: IMediaData | IMediaData[];
   startIndex?: number;
   imageUrl?: string;
 }
@@ -25,14 +25,14 @@ export interface KeyboardEventWithTarget extends KeyboardEvent {
 }
 
 const Player: React.FC<IPlayerProps> = ({
-  audio,
+  media,
   startIndex,
   imageUrl,
   children
 }) => {
   const initialTracks = useMemo(
-    () => (audio && (Array.isArray(audio) ? audio : [audio])) || [],
-    [audio]
+    () => (media && (Array.isArray(media) ? media : [media])) || [],
+    [media]
   );
   const el = useRef<HTMLMediaElement | null>(null);
   const [state, dispatch] = useReducer(playerStateReducer, {

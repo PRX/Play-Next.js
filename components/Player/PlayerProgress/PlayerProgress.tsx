@@ -24,15 +24,19 @@ import ThemeVars from '@components/ThemeVars';
 import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import styles from './PlayerProgress.module.scss';
+import clsx from 'clsx';
 
-export interface IPlayerProgressProps {}
+export interface IPlayerProgressProps extends React.ComponentProps<'div'> {}
 
 export interface IPlayerProgressCssProps extends React.CSSProperties {
   '--progress': number;
   '--track-width'?: string;
 }
 
-const PlayerProgress: React.FC<IPlayerProgressProps> = () => {
+const PlayerProgress: React.FC<IPlayerProgressProps> = ({
+  className,
+  ...props
+}) => {
   const trackRef = useRef<HTMLDivElement>();
   const [state, dispatch] = useReducer(
     playerProgressStateReducer,
@@ -215,7 +219,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = () => {
   return (
     <>
       <ThemeVars theme="PlayerProgress" cssProps={styles} />
-      <div className={styles.root}>
+      <div className={clsx(styles.root, className)} {...props}>
         <div className={styles.currentTime}>{currentDuration}</div>
         <div
           className={styles.track}

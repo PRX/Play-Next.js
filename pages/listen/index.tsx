@@ -23,7 +23,7 @@ const ListenPage = ({ data, config, error }: IListenPageProps) => {
   }
 
   return (
-    <Player audio={episodes}>
+    <Player media={episodes}>
       <Listen data={data} config={config} />
     </Player>
   );
