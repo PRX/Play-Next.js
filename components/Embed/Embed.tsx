@@ -14,6 +14,7 @@ import {
 } from '@states/embed/Embed.reducer';
 import { EmbedActionTypes } from '@states/embed/Embed.actions';
 import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
+import isAudioMimeType from '@lib/validate/isAudioMimeType';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 import ThemeVars from '@components/ThemeVars';
 import PlayButton from '@components/Player/PlayButton';
@@ -64,8 +65,8 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     paymentPointer
   } = data;
   const isPreview = mode === 'preview';
-  const { imageUrl, sources, hasAudioSourceAt, hasVideoSourceAt } = media || {};
-  const useAudio = /^audio/i.test(mediaType);
+  const { imageUrl, hasAudioSourceAt, hasVideoSourceAt } = media || {};
+  const useAudio = isAudioMimeType(mediaType);
   const hasAudioSource = hasAudioSourceAt !== false;
   const hasVideoSource = hasVideoSourceAt !== false;
   const hasMediaTypeSource = useAudio ? hasAudioSource : hasVideoSource;

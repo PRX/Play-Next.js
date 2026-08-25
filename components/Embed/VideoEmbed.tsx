@@ -14,6 +14,7 @@ import {
 } from '@states/embed/Embed.reducer';
 import { EmbedActionTypes } from '@states/embed/Embed.actions';
 import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
+import isAudioMimeType from '@lib/validate/isAudioMimeType';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 import ThemeVars from '@components/ThemeVars';
 import PlayButton from '@components/Player/PlayButton';
@@ -24,7 +25,6 @@ import NextButton from '@components/Player/NextButton';
 import Player from '@components/Player';
 import ClosedCaptionsDialog from '@components/Player/ClosedCaptionsDialog';
 import PlayerText from '@components/Player/PlayerText';
-import PlayerThumbnail from '@components/Player/PlayerThumbnail';
 import PreviousButton from '@components/Player/PreviousButton';
 import ReplayButton from '@components/Player/ReplayButton';
 import PlayerShareMenu from '@components/Player/PlayerShareMenu';
@@ -33,8 +33,6 @@ import SupportMenu from '@components/Player/SupportMenu';
 import WebMonetized from '@components/Player/WebMonetized';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
-import ClosedCaptions from '@components/Player/ClosedCaptions';
-import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
 import styles from './VideoEmbed.module.scss';
 import EmbedSettingsMenu from './EmbedSettingsMenu';
 import VideoElement from './VideoElement';
@@ -64,8 +62,8 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     paymentPointer
   } = data;
   const isPreview = mode === 'preview';
-  const { imageUrl, sources, hasAudioSourceAt, hasVideoSourceAt } = media || {};
-  const useAudio = /^audio/i.test(mediaType);
+  const { imageUrl, hasAudioSourceAt, hasVideoSourceAt } = media || {};
+  const useAudio = isAudioMimeType(mediaType);
   const hasAudioSource = hasAudioSourceAt !== false;
   const hasVideoSource = hasVideoSourceAt !== false;
   const hasMediaTypeSource = useAudio ? hasAudioSource : hasVideoSource;

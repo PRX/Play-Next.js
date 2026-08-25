@@ -55,10 +55,6 @@ const nextConfig = {
         destination: '/embed'
       },
       {
-        source: '/e/v',
-        destination: '/embed/video'
-      },
-      {
         source: '/preview',
         destination: '/embed/preview'
       }

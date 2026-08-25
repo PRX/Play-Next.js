@@ -3,6 +3,8 @@ import type { IEmbedConfig } from '@interfaces/config';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 import getServiceFromUrl from '@lib/parse/string/getServiceFromUrl';
 import parseRssItems from './parseRssItems';
+import isVideoMimeType from '@lib/validate/isVideoMimeType';
+import isAudioMimeType from '@lib/validate/isAudioMimeType';
 
 /**
  * Parse RSS data object into embed data object for use on embed page.
@@ -42,7 +44,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const paymentPointer =
     podcastValueRecipient?.address ||
     (process.env.NODE_ENV !== 'production' && process.env.PAYMENT_POINTER);
-  const useAudioOnly = /^audio/i.test(mediaType);
+  const useAudioOnly = isAudioMimeType(mediaType);
   const mediaItems = parseRssItems(rssData, config)?.map(
     (item) =>
       ({
@@ -109,9 +111,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
           (['wmv'].includes(ext) && 'video/x-ms-wmv') ||
           (['m3u8'].includes(ext) && 'application/x-mpegURL') ||
           (['mp4', 'webm'].includes(ext) && `video/${ext}`);
-        const hasAudioSourceAt = /^audio/i.test(type) && 0;
-        const hasVideoSourceAt =
-          /^video|^application\/x-mpegURL$/i.test(type) && 0;
+        const hasAudioSourceAt = isAudioMimeType(type) && 0;
+        const hasVideoSourceAt = isVideoMimeType(type) && 0;
         return {
           sources: [{ type, url: generateAudioUrl(cau), length: 0 }],
           hasAudioSourceAt,

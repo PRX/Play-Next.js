@@ -8,17 +8,21 @@ import type { IEmbedData, IRss } from '@interfaces/data';
 import type { IPageError } from '@interfaces/error';
 import type { IPreviewPageProps } from '@interfaces/page';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Error from 'next/error';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssFeed from '@lib/fetch/rss/fetchRssFeed';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
-import Embed from '@components/Embed/Embed';
 import generateEmbedUrl from '@lib/generate/string/generateEmbedUrl';
 import generateEmbedHtml, {
   generateEmbedStyles,
   getEmbedHeight
 } from '@lib/generate/html/generateEmbedHtml';
+import isVideoMimeType from '@lib/validate/isVideoMimeType';
+
+const Embed = dynamic(() => import('@components/Embed/Embed'));
+const VideoEmbed = dynamic(() => import('@components/Embed/VideoEmbed'));
 
 const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
   const [newConfig, setNewConfig] = useState(config);
@@ -32,6 +36,9 @@ const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
         playlist: data.playlist.slice(0, newConfig.showPlaylist)
       })
   };
+
+  const isVideo = isVideoMimeType(config.mediaType);
+  const EmbedComponent = isVideo ? VideoEmbed : Embed;
 
   function handlePostMessage(e: MessageEvent) {
     if (!/\.prx\.(org|tech|test)$/.test(e.origin)) return;
@@ -70,7 +77,7 @@ const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
       <Head>
         <title>PRX Play - Embeddable Player</title>
       </Head>
-      <Embed config={newConfig} data={embedData} mode="preview" />
+      <EmbedComponent config={newConfig} data={embedData} mode="preview" />
     </>
   );
 };
