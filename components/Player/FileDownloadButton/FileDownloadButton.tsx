@@ -17,18 +17,23 @@ const FileDownloadButton: React.FC<IFileDownloadButtonProps> = ({
 }) => {
   const { state } = useContext(PlayerContext);
   const { currentTrackIndex, tracks } = state;
-  const { url } = tracks[currentTrackIndex];
+  const { sources, hasAudioSourceAt } = tracks[currentTrackIndex];
+  const hasAudioSource = hasAudioSourceAt !== false;
+  const audioSource = hasAudioSource && sources[hasAudioSourceAt];
+  const { url } = audioSource || {};
 
   return (
-    <MenuButton
-      className={className}
-      action="link"
-      label="Download Audio"
-      type="button"
-      linkHref={url}
-    >
-      <FileDownload />
-    </MenuButton>
+    url && (
+      <MenuButton
+        className={className}
+        action="link"
+        label="Download Audio"
+        type="button"
+        linkHref={url}
+      >
+        <FileDownload />
+      </MenuButton>
+    )
   );
 };
 

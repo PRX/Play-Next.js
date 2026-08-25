@@ -43,7 +43,7 @@ const VideoUIWrapper = forwardRef<HTMLDivElement, IVideoUIWrapperProps>(
       if (!isShown) return;
 
       togglePlayPause();
-    }, [isShown]);
+    }, [isShown, togglePlayPause]);
 
     useEffect(() => {
       if (playing) {
@@ -65,11 +65,15 @@ const VideoUIWrapper = forwardRef<HTMLDivElement, IVideoUIWrapperProps>(
         onPointerMove={handlePointerMove}
         onTouchEnd={handlePointerMove}
       >
-        <div className={styles.playStateOverlay} onClick={handleClick}>
+        <button
+          type="button"
+          className={styles.playStateOverlay}
+          onClick={handleClick}
+        >
           <span className={styles.playStateIndicator} aria-hidden="true">
             {playing ? <PlayIcon /> : <PauseIcon />}
           </span>
-        </div>
+        </button>
         {children}
       </div>
     );

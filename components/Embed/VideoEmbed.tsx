@@ -104,8 +104,6 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
   const currentTrack = playlist?.[currentTrackIndex] || media;
   const showShareMenu = !!currentTrack?.link || !isPreview;
   const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
-  const showClosedCaptionFeed = closedCaptionsShown && canShowCoverArt;
-  const showClosedCaptionDialog = !showClosedCaptionFeed && closedCaptionsShown;
   const mainClasses = clsx(styles.main, {
     [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist

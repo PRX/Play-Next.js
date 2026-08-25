@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import type { IMediaData, IMediaSource } from '@interfaces/data';
+import type { IMediaData } from '@interfaces/data';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import {
   playerInitialState,
@@ -522,7 +522,7 @@ const Player: React.FC<IPlayerProps> = ({
       {useAudioElement && (
         /* eslint-disable-next-line jsx-a11y/media-has-caption */
         <audio preload={playing ? 'auto' : 'none'} ref={el} key={guid}>
-          <source src={audioSource.url} type={audioSource.type} />
+          <source src={previewUrl || audioSource.url} type={audioSource.type} />
           {transcript && (
             <track
               kind="captions"

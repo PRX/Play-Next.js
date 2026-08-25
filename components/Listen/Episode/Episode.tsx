@@ -52,8 +52,8 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   const {
     guid,
     title,
-    url,
-    fileSize,
+    sources,
+    hasAudioSourceAt,
     imageUrl,
     duration,
     explicit,
@@ -70,6 +70,9 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
     SpeakerSegmentsBlock[] | null | false
   >(null);
   const isCurrentTrack = index === currentTrackIndex;
+  const hasAudioSource = hasAudioSourceAt !== false;
+  const audioSource = hasAudioSource && sources[hasAudioSourceAt];
+  const { url, length } = audioSource || {};
   const hasTranscripts = !!transcripts?.length;
   const transcriptLoading = hasTranscripts && transcript === null;
   const showTranscript = hasTranscripts && transcript !== false;
@@ -91,7 +94,9 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   const episodesDurationSums = sumDurationParts([episodesDurationsInt]);
   const episodesDurationString = formatDurationParts(episodesDurationSums);
   const [shareShown, setShareShown] = useState(false);
-  const downloadTitle = `Download Episode (${filesize(fileSize || 0)})`;
+  const downloadTitle = `Download Episode${
+    length ? ` (${filesize(length)})` : ''
+  }`;
 
   const handlePlayButtonClick = useCallback(() => {
     playTrack(index);

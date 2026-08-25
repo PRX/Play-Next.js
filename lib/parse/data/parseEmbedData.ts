@@ -2,9 +2,9 @@ import type { IMediaData, IEmbedData, IRss } from '@interfaces/data';
 import type { IEmbedConfig } from '@interfaces/config';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 import getServiceFromUrl from '@lib/parse/string/getServiceFromUrl';
-import parseRssItems from './parseRssItems';
 import isVideoMimeType from '@lib/validate/isVideoMimeType';
 import isAudioMimeType from '@lib/validate/isAudioMimeType';
+import parseRssItems from './parseRssItems';
 
 /**
  * Parse RSS data object into embed data object for use on embed page.

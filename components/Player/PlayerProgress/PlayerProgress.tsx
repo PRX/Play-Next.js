@@ -14,6 +14,7 @@ import {
   useRef,
   useState
 } from 'react';
+import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import {
@@ -24,7 +25,6 @@ import ThemeVars from '@components/ThemeVars';
 import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import styles from './PlayerProgress.module.scss';
-import clsx from 'clsx';
 
 export interface IPlayerProgressProps extends React.ComponentProps<'div'> {}
 

@@ -179,6 +179,7 @@ const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
       });
     };
   }, [
+    el,
     handleAddTrack,
     handleCueChange,
     handleRemoveTrack,

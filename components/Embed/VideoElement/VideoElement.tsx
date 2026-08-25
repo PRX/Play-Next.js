@@ -1,14 +1,7 @@
 import type React from 'react';
 import type { IMediaData } from '@interfaces/data';
 import 'videojs-video-element';
-import {
-  forwardRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import { forwardRef, useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import PlayerContext from '@contexts/PlayerContext';
@@ -30,6 +23,7 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
       duration,
       imageUrl,
       sources,
+      previewUrl,
       hasVideoSourceAt = false
     } = (currentTrack || {}) as IMediaData;
     const hasVideo = hasVideoSourceAt !== false;
@@ -50,7 +44,7 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
     if (!videoSource) return null;
 
     return (
-      <div className={clsx(styles.root, className)} {...props}>
+      <div className={clsx(styles.root, className)} {...props} ref={ref}>
         {imageUrl && (
           <div className={styles.backdropImage}>
             <Image src={imageUrl} alt="" fill objectFit="cover" />
@@ -58,7 +52,7 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
         )}
         <videojs-video
           preload={playing ? 'auto' : 'none'}
-          src={videoSource.url}
+          src={previewUrl || videoSource.url}
           poster={imageUrl}
           ref={el}
           key={guid}

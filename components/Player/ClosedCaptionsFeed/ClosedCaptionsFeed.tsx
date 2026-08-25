@@ -545,7 +545,10 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   const [currentCue, setCurrentCue] = useState(
     getCurrentCue(currentTextTrack, el.current.currentTime)
   );
-  const currentVttCues = [...(currentTextTrack?.cues || [])] as VTTCue[];
+  const currentVttCues = useMemo(
+    () => [...(currentTextTrack?.cues || [])] as VTTCue[],
+    [currentTextTrack]
+  );
 
   const scrollAreaRef = useRef<HTMLDivElement>();
   const currentCaptionRef = useRef<HTMLElement>();
@@ -616,7 +619,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
         const tooManyCues = previousCaption?.cues.length > 3;
         const tooMuchText =
           ([...(previousCaption?.cues || []), cue].reduce(
-            (a, { text }) => a + text.length,
+            (acc, { text }) => acc + text.length,
             0
           ) || 0) > 300;
         const sentenceEnded = /[.?!]$/.test(
