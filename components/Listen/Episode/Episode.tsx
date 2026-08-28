@@ -71,7 +71,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   >(null);
   const isCurrentTrack = index === currentTrackIndex;
   const hasAudioSource = hasAudioSourceAt !== false;
-  const audioSource = hasAudioSource && sources[hasAudioSourceAt];
+  const audioSource = sources && hasAudioSource && sources[hasAudioSourceAt];
   const { url, length } = audioSource || {};
   const hasTranscripts = !!transcripts?.length;
   const transcriptLoading = hasTranscripts && transcript === null;
