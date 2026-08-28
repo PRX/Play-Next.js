@@ -37,7 +37,7 @@ const PreviewPage = ({ config, rssData, error }: IPreviewPageProps) => {
       })
   };
 
-  const isVideo = isVideoMimeType(config.mediaType);
+  const isVideo = isVideoMimeType(newConfig.mediaType);
   const EmbedComponent = isVideo ? VideoEmbed : Embed;
 
   function handlePostMessage(e: MessageEvent) {
