@@ -83,10 +83,10 @@ const generateEmbedHtml = (config: IEmbedConfig) => {
 
   // Add wrapper div when wrapper styles are generated.
   if (styles.wrapper?.trim().length) {
-    return `<div style="${styles.wrapper}"><iframe allow="monetization" frameborder="0" height="100%" scrolling="no" src="${src}" style="${styles.iframe}" width="100%"></iframe></div>`;
+    return `<div style="${styles.wrapper}"><iframe title="PRX Embed Player" allow="monetization" frameborder="0" height="100%" scrolling="no" src="${src}" style="${styles.iframe}" width="100%"></iframe></div>`;
   }
 
-  return `<iframe allow="monetization" frameborder="0" height="${height}" scrolling="no" src="${src}"${
+  return `<iframe title="PRX Embed Player" allow="monetization" frameborder="0" height="${height}" scrolling="no" src="${src}"${
     styles.iframe && ` style="${styles.iframe}"`
   } width="100%"></iframe>`;
 };
