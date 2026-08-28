@@ -47,7 +47,13 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
       <div className={clsx(styles.root, className)} {...props} ref={ref}>
         {imageUrl && (
           <div className={styles.backdropImage}>
-            <Image src={imageUrl} alt="" fill objectFit="cover" />
+            <Image
+              src={imageUrl}
+              alt=""
+              fill
+              style={{ objectFit: 'cover' }}
+              priority
+            />
           </div>
         )}
         <videojs-video
