@@ -69,11 +69,13 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    * Update progress styles.
    */
   const updateProgressStyles = useCallback(() => {
+    if (!trackRef.current) return;
+
     const rect = trackRef.current.getBoundingClientRect();
     setProgressStyles({
       '--track-width': `${rect.width}px`
     });
-  }, []);
+  }, [trackRef]);
 
   /**
    * Update scrub position on the progress track.
