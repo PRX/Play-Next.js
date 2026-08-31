@@ -9,10 +9,11 @@ import styles from './VideoElement.module.scss';
 
 export interface IVideoElementProps extends React.ComponentProps<'div'> {
   closedCaptionsShown: boolean;
+  posterImageUrl?: string;
 }
 
 const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
-  ({ className, closedCaptionsShown, ...props }, ref) => {
+  ({ className, closedCaptionsShown, posterImageUrl, ...props }, ref) => {
     const trackRef = useRef<HTMLTrackElement>(null);
     const { el, state: playerState } = useContext(PlayerContext);
     const { currentTrackIndex, tracks, playing } = playerState;
@@ -32,6 +33,7 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
       (t) =>
         !!['vtt', 'srt', 'x-subrip', 'json'].find((n) => t.type.includes(n))
     );
+    const posterImageSrc = posterImageUrl || imageUrl;
 
     useEffect(() => {
       if (!videoSource || !el.current?.textTracks?.[0]) return;
@@ -45,10 +47,10 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
 
     return (
       <div className={clsx(styles.root, className)} {...props} ref={ref}>
-        {imageUrl && (
+        {posterImageSrc && (
           <div className={styles.backdropImage}>
             <Image
-              src={imageUrl}
+              src={posterImageSrc}
               alt=""
               fill
               style={{ objectFit: 'cover' }}
@@ -59,7 +61,7 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
         <videojs-video
           preload={playing ? 'auto' : 'none'}
           src={previewUrl || videoSource.url}
-          poster={imageUrl}
+          poster={posterImageSrc}
           ref={el}
           key={guid}
           disablepictureinpicture

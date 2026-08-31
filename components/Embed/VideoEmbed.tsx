@@ -52,7 +52,14 @@ export interface IEmbedLayoutBreakPoint {
 }
 
 const Embed = ({ config, data, mode }: IEmbedProps) => {
-  const { showCoverArt, showPlaylist, accentColor, theme, mediaType } = config;
+  const {
+    showCoverArt,
+    imageUrl: configImageUrl,
+    showPlaylist,
+    accentColor,
+    theme,
+    mediaType
+  } = config;
   const {
     media,
     playlist,
@@ -92,8 +99,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     { name: 'init', minWidth: 0 }
   ]);
   const menuShownClass = clsx({ [styles.menuShown]: showMenu });
-  const coverArtImage = imageUrl || bgImageUrl;
-  const canShowCoverArt = showCoverArt && coverArtImage;
+  const posterImageUrl = configImageUrl || imageUrl || bgImageUrl;
   const canShowPlaylist = !!(showPlaylist && playlist?.length);
   const currentTrackIndex = !playlist
     ? 0
@@ -105,7 +111,6 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
   const showShareMenu = !!currentTrack?.link || !isPreview;
   const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
   const mainClasses = clsx(styles.main, {
-    [styles.withCoverArt]: canShowCoverArt,
     [styles.withPlaylist]: canShowPlaylist
   });
   const embedHtml = !isPreview && generateEmbedHtml(config);
@@ -281,6 +286,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                 <VideoElement
                   className={styles.video}
                   closedCaptionsShown={closedCaptionsShown}
+                  posterImageUrl={posterImageUrl}
                 />
 
                 <VideoUIWrapper

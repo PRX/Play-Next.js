@@ -65,11 +65,13 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     paymentPointer
   } = data;
   const isPreview = mode === 'preview';
-  const { imageUrl, hasAudioSourceAt, hasVideoSourceAt } = media || {};
+  const { imageUrl, hasAudioSourceAt, hasVideoSourceAt, previewUrl } =
+    media || {};
   const useAudio = isAudioMimeType(mediaType);
   const hasAudioSource = hasAudioSourceAt !== false;
   const hasVideoSource = hasVideoSourceAt !== false;
-  const hasMediaTypeSource = useAudio ? hasAudioSource : hasVideoSource;
+  const hasMediaTypeSource =
+    !!previewUrl || (useAudio ? hasAudioSource : hasVideoSource);
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const {
     closedCaptionsShown,
