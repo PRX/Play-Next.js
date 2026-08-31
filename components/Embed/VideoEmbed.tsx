@@ -53,7 +53,7 @@ export interface IEmbedLayoutBreakPoint {
 
 const Embed = ({ config, data, mode }: IEmbedProps) => {
   const {
-    imageUrl: configImageUrl,
+    episodeImageUrl: configImageUrl,
     showPlaylist,
     accentColor,
     theme,
