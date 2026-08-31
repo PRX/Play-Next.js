@@ -40,6 +40,8 @@ $playerProgress-gap: 20px;
   border-radius: var(--track-radius);
   background-color: var(--playerProgress-track-color);
 
+  backdrop-filter: blur(10px) brightness(80%);
+
   &::after {
     content: '';
     grid-row: 1;

@@ -1,4 +1,4 @@
-export * from './IAudioData';
+export * from './IMediaData';
 export * from './IEmbedData';
 export * from './IListenData';
 export * from './IListenEpisodeData';

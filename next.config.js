@@ -17,7 +17,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.prxu.org'
+        hostname: '*'
       }
     ],
     imageSizes: [16, 32, 40, 48, 65, 96, 120, 128, 135, 256, 384]
@@ -53,6 +53,10 @@ const nextConfig = {
       {
         source: '/e',
         destination: '/embed'
+      },
+      {
+        source: '/preview',
+        destination: '/embed/preview'
       }
     ];
   },

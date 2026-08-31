@@ -16,6 +16,7 @@ import type { TranscriptTypeConversion } from '@interfaces/data';
 import type { IRssProxyError } from '@interfaces/error';
 import convertJsonToVtt from '@lib/convert/string/convertJsonToVtt';
 import convertSrtToVtt from '@lib/convert/string/convertSrtToVtt';
+import convertVttToJson from '@lib/convert/string/convertVttToJson';
 
 export default async function handler(
   req: NextApiRequest,
@@ -47,7 +48,7 @@ export default async function handler(
       {
         check: (ct: string, t: string) =>
           /(?:application|text)\/vtt/i.test(ct) || t.startsWith('WEBVTT'),
-        convert: (t: string) => t
+        convert: (t: string) => convertJsonToVtt(convertVttToJson(t))
       },
       {
         check: (ct: string, t: string) =>

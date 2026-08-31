@@ -32,7 +32,7 @@
   align-items: center;
   gap: 0.25em;
   left: 50%;
-  bottom: calc(var(--gutter-size-block-end) + var(--gap));
+  bottom: calc(var(--gutter-size-block-end) + var(--gap) + 46px);
   transform: translateX(-50%);
   z-index: 9;
 

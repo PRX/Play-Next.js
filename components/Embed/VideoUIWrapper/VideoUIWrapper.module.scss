@@ -1,0 +1,69 @@
+@use '@styles/theme';
+
+.playStateOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  display: grid;
+  place-items: center;
+
+  cursor: default;
+}
+
+.playStateIndicator {
+  pointer-events: none;
+
+  animation: playStateIndicator_fadeIn 1200ms forwards;
+
+  display: grid;
+
+  background-color: hsl(from var(--player-text-color--contrast) h s l / 0.3);
+
+  backdrop-filter: blur(10px) brightness(80%);
+
+  corner-shape: superellipse(1.33333);
+  border-radius: clamp(5px, 10vw, 30px);
+
+  color: var(--player-text-color);
+
+  svg {
+    width: clamp(40px, 10vw, 240px);
+  }
+
+  [data-playing='true'] & {
+    animation-name: playStateIndicator_fadeOut;
+  }
+}
+
+@keyframes playStateIndicator_fadeIn {
+  0% {
+    opacity: 0;
+    scale: 0.9;
+  }
+  25%,
+  75% {
+    opacity: 1;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes playStateIndicator_fadeOut {
+  0% {
+    opacity: 0;
+    scale: 0.9;
+  }
+  25%,
+  75% {
+    opacity: 1;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 0.9;
+  }
+}

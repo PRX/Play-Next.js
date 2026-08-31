@@ -130,6 +130,7 @@ $episode-breakpoint--full: 120ch;
   position: sticky;
   top: 8px;
   display: flex;
+  flex-wrap: wrap;
   z-index: 9;
   isolation: isolate;
   justify-content: space-between;
@@ -269,6 +270,13 @@ $episode-breakpoint--full: 120ch;
     scroll-snap-align: start;
     // TODO: Figure out how to not magic number this offset.
     scroll-margin-top: calc(132px + var(--gap) - var(--episode-divider-size));
+  }
+
+  [data-video-view] & {
+    padding-block-end: calc(
+      var(--gutter-size-block-end, var(--gutter-size-block)) +
+        var(--listen-video-overlay--height) + 16px
+    );
   }
 
   @media (min-width: Listen.$breakpoint-full) {

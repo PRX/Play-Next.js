@@ -1,6 +1,6 @@
-@use './colors';
-@use './grid';
-@use './theme';
+@use '@styles/colors';
+@use '@styles/grid';
+@use '@styles/theme';
 
 $divider-color: colors.$white-a-70;
 $divider-size: 3px;

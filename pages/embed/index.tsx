@@ -7,25 +7,32 @@ import type { GetServerSideProps } from 'next';
 import type { IRss } from '@interfaces/data';
 import type { IPageError } from '@interfaces/error';
 import type { IEmbedPageProps, IPageProps } from '@interfaces/page';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import NextError from 'next/error';
 import parseEmbedParamsToConfig from '@lib/parse/config/parseEmbedParamsToConfig';
 import fetchRssProxy from '@lib/fetch/rss/fetchRssProxy';
 import parseEmbedData from '@lib/parse/data/parseEmbedData';
-import Embed from '@components/Embed/Embed';
 import ReqError from '@lib/error/ReqError';
+import isVideoMimeType from '@lib/validate/isVideoMimeType';
+
+const Embed = dynamic(() => import('@components/Embed/Embed'));
+const VideoEmbed = dynamic(() => import('@components/Embed/VideoEmbed'));
 
 const EmbedPage = ({ config, data, error }: IEmbedPageProps) => {
   if (error) {
     return <NextError statusCode={error.statusCode} title={error.message} />;
   }
 
+  const isVideo = isVideoMimeType(config.mediaType);
+  const EmbedComponent = isVideo ? VideoEmbed : Embed;
+
   return (
     <>
       <Head>
         <title>PRX Play - Embeddable Player</title>
       </Head>
-      <Embed config={config} data={data} />
+      <EmbedComponent config={config} data={data} />
     </>
   );
 };
@@ -39,6 +46,12 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
 
   // 1. Convert query params into embed config.
   const config = parseEmbedParamsToConfig(query);
+
+  config.mediaType = isVideoMimeType(config.mediaType)
+    ? // Media type is video. Use as is.
+      config.mediaType
+    : // Media type is not video or undefined. Use as is, falling back to audio.
+      config.mediaType || 'audio';
 
   // 2. If RSS feed URL is provided...
   let rssData: IRss;

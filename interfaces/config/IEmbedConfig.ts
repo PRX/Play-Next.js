@@ -102,6 +102,16 @@ export interface IEmbedParams extends ParsedUrlQuery {
   th?: string | string[];
 
   /**
+   * Media type the embed should play and dictates the embed player layout.
+   * Can be a mime type or simple "audio" or "video". Defaults to "audio".
+   *
+   * Should be a mime type when `ua` param is set. Media type of `ua` will
+   * try to use the url filename extension when `mt` param is not set,
+   * otherwise, "audio/mpeg" will me assumed.
+   */
+  mt?: string | string[];
+
+  /**
    * DEPRECATED
    * Use to set call to action text.
    */
@@ -150,6 +160,7 @@ export interface IEmbedConfig {
   showCoverArt?: boolean;
   accentColor?: string[];
   theme?: 'light' | 'dark' | 'auto';
+  mediaType?: string;
   maxWidth?: number;
 }
 
@@ -178,6 +189,7 @@ EmbedParamKeysMap.set('ct', 'playlistCategory');
 EmbedParamKeysMap.set('ca', 'showCoverArt');
 EmbedParamKeysMap.set('ac', 'accentColor');
 EmbedParamKeysMap.set('th', 'theme');
+EmbedParamKeysMap.set('mt', 'mediaType');
 
 /**
  * Map of embed config property keys to embed parameter keys.
@@ -207,3 +219,4 @@ EmbedConfigKeysMap.set('playlistCategory', 'ct');
 EmbedConfigKeysMap.set('showCoverArt', 'ca');
 EmbedConfigKeysMap.set('accentColor', 'ac');
 EmbedConfigKeysMap.set('theme', 'th');
+EmbedConfigKeysMap.set('mediaType', 'mt');

@@ -137,6 +137,20 @@ $episodeList-header-icon-color--active: colors.$white;
 
   padding-block-end: var(--gutter-size-block-end, var(--gutter-size-block));
 
+  @media (max-width: Listen.$breakpoint-full) {
+    [data-video-view][data-video-visibility='visible'] & {
+      padding-block-end: calc(
+        var(--gutter-size-block-end, var(--gutter-size-block)) +
+          var(--listen-video-overlay--height) + 24px + 38px
+      );
+    }
+    [data-video-view][data-video-visibility='hidden'] & {
+      padding-block-end: calc(
+        var(--gutter-size-block-end, var(--gutter-size-block)) + 16px + 38px
+      );
+    }
+  }
+
   @media (min-width: Listen.$breakpoint-full) {
     @include Listen.scrollbar;
   }

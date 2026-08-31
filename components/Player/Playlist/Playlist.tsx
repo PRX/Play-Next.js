@@ -42,13 +42,15 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
   const playlistDurationString = formatDurationParts(playlistDurationSums);
 
   const updatePlaylistStyles = useCallback(() => {
+    if (!rootRef.current) return;
+
     const rect = rootRef.current?.getBoundingClientRect();
 
     setPlaylistStyles({
       '--playlist-top': `${rect.top}px`,
       '--playlist-height': `${rect.height}px`
     });
-  }, []);
+  }, [rootRef]);
 
   const handleSortClick = () => {
     const reversedTracks = [...tracks].reverse();

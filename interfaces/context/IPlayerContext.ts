@@ -5,14 +5,15 @@
  * player.
  */
 
-import { IAudioData } from '@interfaces/data';
+import { RefObject } from 'react';
+import { IMediaData } from '@interfaces/data';
 import type { IPlayerState } from '@interfaces/states';
 import type { IPlayerAction } from '@states/player/Player.actions';
 import type { IStateContext } from './IStateContext';
 
 export interface IPlayerContext
   extends IStateContext<IPlayerState, IPlayerAction> {
-  audioElm: HTMLAudioElement;
+  el: RefObject<HTMLMediaElement | null>;
   imageUrl: string;
   play(): void;
   playTrack(index: number): void;
@@ -29,7 +30,7 @@ export interface IPlayerContext
   nextTrack(): void;
   previousTrack(): void;
   setTrack(index: number): void;
-  setTracks(tracks: IAudioData[]): void;
+  setTracks(tracks: IMediaData[]): void;
   setVolume(newVolume: number): void;
   setPlaybackRate(newPlaybackRate: number): void;
 }

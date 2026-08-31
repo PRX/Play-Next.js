@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import type { CSSProperties, KeyboardEventHandler } from 'react';
-import type { IAudioData } from '@interfaces/data';
+import type { IMediaData } from '@interfaces/data';
 import type {
   IRssPodcastTranscriptJson,
   IRssPodcastTranscriptJsonSegment
@@ -217,7 +217,7 @@ const getNextCue = (cue: VTTCue) => {
 };
 
 const Segment = ({ data, inCurrentCue }: SegmentProps) => {
-  const { audioElm } = useContext(PlayerContext);
+  const { el } = useContext(PlayerContext);
   const { body } = data;
   const [spoken, setSpoken] = useState(false);
 
@@ -225,22 +225,23 @@ const Segment = ({ data, inCurrentCue }: SegmentProps) => {
    * Setup audio element event handlers.
    */
   useEffect(() => {
+    const elCurrent = el.current;
     const handleUpdate = () => {
-      setSpoken(() => data.startTime <= audioElm.currentTime);
+      setSpoken(() => data.startTime <= el.current.currentTime);
     };
 
     if (inCurrentCue) {
-      audioElm.addEventListener('timeupdate', handleUpdate);
+      elCurrent?.addEventListener('timeupdate', handleUpdate);
     } else {
-      audioElm.removeEventListener('timeupdate', handleUpdate);
+      elCurrent?.removeEventListener('timeupdate', handleUpdate);
     }
 
     handleUpdate();
 
     return () => {
-      audioElm.removeEventListener('timeupdate', handleUpdate);
+      elCurrent?.removeEventListener('timeupdate', handleUpdate);
     };
-  }, [audioElm, audioElm.currentTime, data.startTime, inCurrentCue]);
+  }, [el, data.startTime, inCurrentCue]);
 
   return (
     <span className={styles.segment} {...(spoken && { 'data-spoken': '' })}>
@@ -255,11 +256,13 @@ const CaptionCue = ({
   inCurrentCaption,
   index
 }: CaptionCueProps) => {
-  const { seekTo, play, state, audioElm } = useContext(PlayerContext);
+  const { seekTo, play, state, el } = useContext(PlayerContext);
   const { setScrollTarget, currentCue } = useContext(ClosedCaptionsContext);
   const { id, text, startTime, endTime } = cue;
   const [isCurrent, setIsCurrent] = useState(id === currentCue?.id);
-  const [isComplete, setIsComplete] = useState(audioElm.currentTime > endTime);
+  const [isComplete, setIsComplete] = useState(
+    el.current?.currentTime > endTime
+  );
   const cueSegments = useMemo(
     () =>
       segments
@@ -343,13 +346,13 @@ const CaptionCue = ({
 
   useEffect(() => {
     setIsCurrent(currentCue?.id === id);
-    setIsComplete(audioElm.currentTime > endTime);
-  }, [audioElm.currentTime, currentCue?.id, endTime, id]);
+    setIsComplete(el.current?.currentTime > endTime);
+  }, [el, currentCue?.id, endTime, id]);
 
   useEffect(() => {
     function handleCueExit() {
       setIsCurrent(false);
-      setIsComplete(audioElm.currentTime > endTime);
+      setIsComplete(el.current?.currentTime > endTime);
     }
 
     if (inCurrentCaption) {
@@ -361,7 +364,7 @@ const CaptionCue = ({
     return () => {
       cue.removeEventListener('exit', handleCueExit);
     };
-  }, [audioElm.currentTime, cue, endTime, inCurrentCaption]);
+  }, [el, cue, endTime, inCurrentCaption]);
 
   if (!hasText) return null;
 
@@ -432,11 +435,13 @@ const Caption = ({
   segments,
   isCurrent
 }: CaptionProps) => {
-  const { audioElm } = useContext(PlayerContext);
+  const { el } = useContext(PlayerContext);
   const { currentCue } = useContext(ClosedCaptionsContext);
   const { startTime } = cues.at(0);
   const { endTime } = cues.at(-1);
-  const [isComplete, setIsComplete] = useState(audioElm.currentTime > endTime);
+  const [isComplete, setIsComplete] = useState(
+    el.current.currentTime > endTime
+  );
   const [mousePosition, setMousePosition] = useState<{
     x: number;
     y: number;
@@ -471,28 +476,29 @@ const Caption = ({
 
   useEffect(() => {
     const bodyElm = bodyRef.current;
+    const elCurrent = el.current;
 
     function handleMouseMove(e: MouseEvent) {
       setMousePosition({ x: e.offsetX, y: e.offsetY });
     }
 
     function handleAudioTimeUpdate() {
-      setIsComplete(audioElm.currentTime > endTime);
+      setIsComplete(el.current.currentTime > endTime);
     }
 
     bodyElm?.addEventListener('mousemove', handleMouseMove);
 
     if (isCurrent) {
-      audioElm.addEventListener('timeupdate', handleAudioTimeUpdate);
+      elCurrent.addEventListener('timeupdate', handleAudioTimeUpdate);
     } else {
-      audioElm.removeEventListener('timeupdate', handleAudioTimeUpdate);
+      elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
     }
 
     return () => {
       bodyElm?.removeEventListener('mousemove', handleMouseMove);
-      audioElm.removeEventListener('timeupdate', handleAudioTimeUpdate);
+      elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
-  }, [audioElm, endTime, isCurrent]);
+  }, [el, endTime, isCurrent]);
 
   return (
     <div {...rootProps}>
@@ -514,8 +520,8 @@ const Caption = ({
             cue={cue}
             segments={segments}
             inCurrentCaption={isCurrent}
-            isComplete={audioElm.currentTime > cue.endTime}
-            key={`caption_cue:${cue.id}`}
+            isComplete={el.current.currentTime > cue.endTime}
+            key={`caption_cue:${cue.startTime}:${cue.endTime}`}
             index={index}
           />
         ))}
@@ -527,19 +533,21 @@ const Caption = ({
 const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   speakerColors
 }) => {
-  const { audioElm, state } = useContext(PlayerContext);
+  const { el, state } = useContext(PlayerContext);
   const { tracks, currentTrackIndex, currentTime } = state;
-  const currentTrack = tracks[currentTrackIndex] || ({} as IAudioData);
+  const currentTrack = tracks[currentTrackIndex] || ({} as IMediaData);
+  const { guid, transcripts, duration } = currentTrack;
+  const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 
   const [currentTextTrack, setCurrentTextTrack] = useState(
-    audioElm?.textTracks?.[0]
+    el.current?.textTracks?.[0]
   );
   const [currentCue, setCurrentCue] = useState(
-    getCurrentCue(currentTextTrack, audioElm.currentTime)
+    getCurrentCue(currentTextTrack, el.current.currentTime)
   );
   const currentVttCues = useMemo(
     () => [...(currentTextTrack?.cues || [])] as VTTCue[],
-    [currentTextTrack?.cues]
+    [currentTextTrack]
   );
 
   const scrollAreaRef = useRef<HTMLDivElement>();
@@ -604,11 +612,16 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
         const aClone = [...a];
         const previousCaption = aClone.pop();
         const previousCaptionLastCue = previousCaption?.cues.at(-1);
-        const speaker = getVttCueSpeaker(cue);
+        const speaker = getVttCueSpeaker(cue) || previousCaption?.speaker;
         const speakerChanged = !!(
           previousCaption && speaker !== previousCaption.speaker
         );
         const tooManyCues = previousCaption?.cues.length > 3;
+        const tooMuchText =
+          ([...(previousCaption?.cues || []), cue].reduce(
+            (acc, { text }) => acc + text.length,
+            0
+          ) || 0) > 300;
         const sentenceEnded = /[.?!]$/.test(
           previousCaptionLastCue?.text.trimEnd() || ''
         );
@@ -621,7 +634,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
         if (
           !previousCaption ||
           speakerChanged ||
-          (sentenceEnded && (tooManyCues || hasLongPause))
+          (sentenceEnded && (tooManyCues || hasLongPause || tooMuchText))
         ) {
           return [
             ...a,
@@ -644,12 +657,9 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
           }
         ];
       }, []),
-    [cuePositions, currentVttCues, segments]
+    [guid, cuePositions, currentVttCues, segments]
   );
   const currentCaption = binaryFindCaption(captions, currentCue);
-
-  const { transcripts, duration } = currentTrack;
-  const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 
   const jumpButtonColor = speakersColorMap.current?.get(
     getVttCueSpeaker(currentCue)
@@ -744,23 +754,26 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   );
 
   const handleAudioTimeUpdate = useCallback(() => {
-    updateCurrentCue(audioElm.currentTime);
-  }, [audioElm.currentTime, updateCurrentCue]);
+    updateCurrentCue(el.current.currentTime);
+  }, [el, updateCurrentCue]);
 
-  const handleAddTrack = useCallback((e: TrackEvent) => {
-    // eslint-disable-next-line no-param-reassign
-    e.track.mode = 'showing';
+  const handleAddTrack = useCallback(
+    (e: TrackEvent) => {
+      // eslint-disable-next-line no-param-reassign
+      e.track.mode = 'showing';
 
-    // Watch track till it has cues loaded.
-    const textTrackHasCuesCheckInterval = setInterval(() => {
-      if (e.track.cues?.length) {
-        // Stop watching for cues.
-        clearInterval(textTrackHasCuesCheckInterval);
-        // Update state now that we have cues to render.
-        setCurrentTextTrack(e.track);
-      }
-    }, 100);
-  }, []);
+      // Watch track till it has cues loaded.
+      const textTrackHasCuesCheckInterval = setInterval(() => {
+        if (e.track.cues?.length) {
+          // Stop watching for cues.
+          clearInterval(textTrackHasCuesCheckInterval);
+          // Update state now that we have cues to render.
+          setCurrentTextTrack(e.track);
+        }
+      }, 100);
+    },
+    [guid]
+  );
 
   const handleRemoveTrack = useCallback(() => {
     setCurrentTextTrack(null);
@@ -774,25 +787,26 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    const textTracks = audioElm?.textTracks;
+    const elCurrent = el.current;
+    const textTracks = elCurrent?.textTracks;
+
+    setCurrentTextTrack(textTracks[0] || null);
+
+    textTracks.removeEventListener('addtrack', handleAddTrack);
+    textTracks.removeEventListener('removetrack', handleRemoveTrack);
+    elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
 
     textTracks.addEventListener('addtrack', handleAddTrack);
     textTracks.addEventListener('removetrack', handleRemoveTrack);
 
-    audioElm.addEventListener('timeupdate', handleAudioTimeUpdate);
+    elCurrent.addEventListener('timeupdate', handleAudioTimeUpdate);
 
     return () => {
       textTracks.removeEventListener('addtrack', handleAddTrack);
       textTracks.removeEventListener('removetrack', handleRemoveTrack);
-      audioElm.removeEventListener('timeupdate', handleAudioTimeUpdate);
+      elCurrent.removeEventListener('timeupdate', handleAudioTimeUpdate);
     };
-  }, [
-    audioElm,
-    currentTextTrack,
-    handleAddTrack,
-    handleAudioTimeUpdate,
-    handleRemoveTrack
-  ]);
+  }, [el, handleAddTrack, handleAudioTimeUpdate, handleRemoveTrack]);
 
   useEffect(() => {
     if (!transcriptJson?.url) return;
@@ -819,14 +833,14 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
 
     scrollAreaElement?.addEventListener('scroll', handleScroll);
 
-    if (!audioElm.currentTime) {
+    if (!el.current?.currentTime) {
       scrollAreaRef.current?.scrollTo({ top: 0 });
     }
 
     return () => {
       scrollAreaElement?.removeEventListener('scroll', handleScroll);
     };
-  }, [audioElm.currentTime, showJumpButton]);
+  }, [el, showJumpButton]);
 
   if (!transcripts) return null;
 
@@ -842,7 +856,9 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
             <Caption
               {...props}
               isCurrent={currentCaption?.cues.at(0).id === props.cues.at(0).id}
-              key={`caption:${props.cues.at(0).id}:${props.cues.at(-1).id}`}
+              key={`caption:${guid}:${props.cues.at(0).startTime}:${
+                props.cues.at(-1).endTime
+              }`}
             />
           ))}
           <div className={styles.loader}>

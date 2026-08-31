@@ -5,8 +5,10 @@ import RssProxyError from './RssProxyError';
 
 type CustomFeed = { 'podcast:value': any; 'itunes:type': string };
 type CustomItem = {
+  podcast: any;
   'podcast:value': any;
   'podcast:transcript': any;
+  'podcast:alternateEnclosure': any;
   itunes: any;
   'itunes:episodeType': string;
 };
@@ -24,7 +26,13 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
     item: [
       'podcast:value',
       'itunes:episodeType',
-      ['podcast:transcript', 'podcast:transcript', { keepArray: true }]
+      ['podcast:transcript', 'podcast:transcript', { keepArray: true }],
+      ['podcast:source', 'podcast:source', { keepArray: true }],
+      [
+        'podcast:alternateEnclosure',
+        'podcast:alternateEnclosure',
+        { keepArray: true }
+      ]
     ]
   }
 });

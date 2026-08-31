@@ -25,7 +25,8 @@
   grid-template-areas:
     'TT TT'
     'ST ST';
-  gap: 5px;
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
   align-items: center;
 
   &.isExplicit {

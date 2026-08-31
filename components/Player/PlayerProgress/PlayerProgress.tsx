@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import type { IAudioData } from '@interfaces/data/IAudioData';
+import type { IMediaData } from '@interfaces/data/IMediaData';
 import {
   CSSProperties,
   useCallback,
@@ -14,6 +14,7 @@ import {
   useRef,
   useState
 } from 'react';
+import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import { PlayerActionTypes } from '@states/player/Player.actions';
 import {
@@ -25,9 +26,7 @@ import convertDurationToSeconds from '@lib/convert/string/convertDurationToSecon
 import convertSecondsToDuration from '@lib/convert/string/convertSecondsToDuration';
 import styles from './PlayerProgress.module.scss';
 
-export interface IPlayerProgressProps {
-  updateFrequency?: number;
-}
+export interface IPlayerProgressProps extends React.ComponentProps<'div'> {}
 
 export interface IPlayerProgressCssProps extends React.CSSProperties {
   '--progress': number;
@@ -35,24 +34,23 @@ export interface IPlayerProgressCssProps extends React.CSSProperties {
 }
 
 const PlayerProgress: React.FC<IPlayerProgressProps> = ({
-  updateFrequency = 500
+  className,
+  ...props
 }) => {
-  const updateInterval = useRef(null);
   const trackRef = useRef<HTMLDivElement>();
   const [state, dispatch] = useReducer(
     playerProgressStateReducer,
     playerProgressInitialState
   );
   const { scrubPosition, played, playedSeconds, duration } = state;
-  const { audioElm, state: playerState, seekTo } = useContext(PlayerContext);
+  const { el, state: playerState, seekTo } = useContext(PlayerContext);
   const {
     currentTrackIndex,
     tracks,
-    playing,
     currentTime: playerCurrentTime
   } = playerState;
   const { duration: trackDuration } =
-    tracks[currentTrackIndex] || ({} as IAudioData);
+    tracks[currentTrackIndex] || ({} as IMediaData);
   const [progressStyles, setProgressStyles] = useState({});
   const totalDuration = duration
     ? convertSecondsToDuration(Math.round(duration))
@@ -71,11 +69,13 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    * Update progress styles.
    */
   const updateProgressStyles = useCallback(() => {
+    if (!trackRef.current) return;
+
     const rect = trackRef.current.getBoundingClientRect();
     setProgressStyles({
       '--track-width': `${rect.width}px`
     });
-  }, []);
+  }, [trackRef]);
 
   /**
    * Update scrub position on the progress track.
@@ -97,7 +97,8 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
    */
   const updateProgress = useCallback(
     (seconds?: number) => {
-      const { currentTime: ct, duration: d } = audioElm;
+      const { currentTime: ct = 0, duration: dur } = el.current || {};
+      const d = !Number.isNaN(dur) ? dur : 0;
       const updatedPlayed = seconds || seconds === 0 ? seconds : ct;
 
       updateProgressStyles();
@@ -111,7 +112,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
         }
       });
     },
-    [audioElm, totalDurationSeconds, updateProgressStyles]
+    [el, totalDurationSeconds, updateProgressStyles]
   );
 
   /**
@@ -184,38 +185,28 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   }, [playerCurrentTime, updateProgress]);
 
   /**
-   * Setup update interval.
-   */
-  useEffect(() => {
-    clearInterval(updateInterval.current);
-
-    if (playing) {
-      updateInterval.current = setInterval(handleUpdate, updateFrequency);
-    }
-
-    return () => {
-      clearInterval(updateInterval.current);
-    };
-  }, [playing, updateFrequency, handleUpdate]);
-
-  /**
    * Setup audio element event handlers.
    */
   useEffect(() => {
-    audioElm?.addEventListener('loadedmetadata', handleLoadedMetadata);
+    const elCurrent = el.current;
+
+    elCurrent?.addEventListener('loadedmetadata', handleLoadedMetadata);
+    elCurrent?.addEventListener('timeupdate', handleUpdate);
 
     return () => {
-      audioElm?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      elCurrent?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      elCurrent?.removeEventListener('timeupdate', handleUpdate);
     };
-  }, [audioElm, handleLoadedMetadata]);
+  }, [el, handleLoadedMetadata, handleUpdate]);
 
   /**
    * Setup progress track event handlers.
    */
   useEffect(() => {
     const refElm = trackRef.current;
-    trackRef.current.addEventListener('pointerdown', handlePointerDown);
-    trackRef.current.addEventListener('pointerup', handlePointerUp);
+
+    refElm.addEventListener('pointerdown', handlePointerDown);
+    refElm.addEventListener('pointerup', handlePointerUp);
 
     window.addEventListener('resize', handleResize);
 
@@ -230,7 +221,7 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   return (
     <>
       <ThemeVars theme="PlayerProgress" cssProps={styles} />
-      <div className={styles.root}>
+      <div className={clsx(styles.root, className)} {...props}>
         <div className={styles.currentTime}>{currentDuration}</div>
         <div
           className={styles.track}

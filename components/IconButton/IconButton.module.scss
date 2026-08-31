@@ -3,7 +3,7 @@
 .iconButton {
   --_iconButton--background-color: var(
     --iconButton--background-color,
-    transparent
+    #{colors.$white-a-0}
   );
   --_iconButton--background-color--hover: var(
     --iconButton--background-color--hover,
@@ -72,7 +72,12 @@
     }
   }
 
-  &:active {
+  &:disabled {
+    opacity: 0.5;
+    cursor: unset;
+  }
+
+  &:not(:disabled):active {
     background-color: var(--_iconButton--background-color--hover);
     color: var(--_iconButton--color--hover);
   }
@@ -84,8 +89,15 @@
     color: var(--_iconButton--color--focus);
   }
 
+  @media (pointer: coarse) {
+    --_iconButton--background-color: var(
+      --_iconButton--background-color--hover
+    );
+    --_iconButton--color: var(--_iconButton--color--hover);
+  }
+
   @media (pointer: fine) {
-    &:hover {
+    &:not(:disabled):hover {
       background-color: var(--_iconButton--background-color--hover);
       color: var(--_iconButton--color--hover);
     }

@@ -17,6 +17,10 @@
     --settingsMenuButton--color--focus,
     #{colors.$white}
   );
+  --_settingsMenuButton--background-color: var(
+    --settingsMenuButton--background-color,
+    #{colors.$white-a-0}
+  );
   --_settingsMenuButton--background-color--hover: var(
     --settingsMenuButton--background-color--hover,
     #{colors.$white-a-10}
@@ -31,11 +35,17 @@
   border: 1px solid var(--_settingsMenuButton--border-color);
   border-radius: 100vw;
 
-  color: var(--_settingsMenuButton--color);
+  color: var(--_settingsMenuButton--color--hover);
 
   svg {
     width: var(--_settingsMenuButton--size);
     fill: currentColor;
+  }
+
+  .icon {
+    background-color: var(--_settingsMenuButton--background-color--hover);
+
+    backdrop-filter: blur(10px) brightness(80%);
   }
 
   &:active {
@@ -43,6 +53,8 @@
 
     .icon {
       background-color: var(--_settingsMenuButton--background-color--hover);
+
+      backdrop-filter: blur(10px) brightness(80%);
     }
   }
 
@@ -54,11 +66,21 @@
   }
 
   @media (pointer: fine) {
+    color: var(--_settingsMenuButton--color);
+
+    .icon {
+      background-color: var(--_settingsMenuButton--background-color);
+
+      backdrop-filter: unset;
+    }
+
     &:hover {
       color: var(--_settingsMenuButton--color--hover);
 
       .icon {
         background-color: var(--_settingsMenuButton--background-color--hover);
+
+        backdrop-filter: blur(10px) brightness(80%);
       }
     }
   }

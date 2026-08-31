@@ -142,6 +142,7 @@ $logo-size--mobile: 3rem;
 
   @media (min-width: $breakpoint-full) {
     grid-template-columns: var(--listen-sidebar-width, #{$sidebar-width}) 1fr;
+    grid-template-rows: min-content 1fr min-content;
     grid-template-areas:
       'HEADER FOLLOW'
       'HEADER MAIN'
@@ -240,6 +241,13 @@ $logo-size--mobile: 3rem;
       }
 
       @include scrollbar;
+
+      [data-video-view='pip'][data-video-visibility='visible'] & {
+        padding-block-end: calc(
+          var(--gutter-size-block-end, var(--gutter-size-block)) +
+            var(--listen-video-overlay--height) + 24px
+        );
+      }
     }
   }
 
@@ -488,8 +496,6 @@ $logo-size--mobile: 3rem;
   --cc-feed--gutter: 1rem;
   --cc-feed--bottom: var(--gutter-size-block-end);
 
-  grid-row: main;
-
   @media (min-width: $breakpoint-full) {
     --modal-button--visibility: visible;
     --cc-feed--gutter: unset;
@@ -501,9 +507,16 @@ $logo-size--mobile: 3rem;
     --cc-body--background-color: var(--modal-background-color);
     --cc-body--background-blur: 10px;
 
-    grid-column: SIDEBAR-start / MAIN-end;
-    grid-row: 1;
+    grid-column: 1 / -1;
+    grid-row: 1 / span 2;
   }
+}
+
+.videoOverlay {
+  --videoOverlay--gutter-block-end: calc(var(--gutter-size-block-end) + 54px);
+  position: fixed;
+  inset: 0;
+  z-index: 9;
 }
 
 .modals {

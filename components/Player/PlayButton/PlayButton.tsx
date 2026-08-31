@@ -5,6 +5,7 @@
 
 import type React from 'react';
 import { useContext } from 'react';
+import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
 import IconButton from '@components/IconButton';
 import PlayArrowIcon from '@svg/icons/PlayArrow.svg';
@@ -24,7 +25,7 @@ const PlayButton: React.FC<IPlayButtonProps> = ({ className, ...props }) => {
 
   return (
     <IconButton
-      className={styles.root}
+      className={clsx(styles.root, className)}
       title={`${!playing ? 'Play' : 'Pause'} (k / space)`}
       {...props}
       type="button"

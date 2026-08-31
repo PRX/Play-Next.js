@@ -13,7 +13,8 @@ export interface INextButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const NextButton: React.FC<INextButtonProps> = (props) => {
-  const { nextTrack } = useContext(PlayerContext);
+  const { state, nextTrack } = useContext(PlayerContext);
+  const isLastTrack = state.currentTrackIndex === state.tracks.length - 1;
 
   const handleClick = () => {
     nextTrack();
@@ -23,6 +24,7 @@ const NextButton: React.FC<INextButtonProps> = (props) => {
     <IconButton
       title="Next Episode (])"
       {...props}
+      disabled={isLastTrack}
       type="button"
       onClick={handleClick}
     >

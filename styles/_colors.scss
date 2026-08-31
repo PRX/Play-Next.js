@@ -1,5 +1,6 @@
 // White at specific alphas.
 $white: hsl(0 0% 100%);
+$white-a-0: hsl(0 0% 100% / 0);
 $white-a-10: hsl(0 0% 100% / 0.1);
 $white-a-20: hsl(0 0% 100% / 0.2);
 $white-a-30: hsl(0 0% 100% / 0.3);
@@ -12,6 +13,7 @@ $white-a-90: hsl(0 0% 100% / 0.9);
 
 // Black at specific alphas.
 $black: hsl(0 0% 0%);
+$black-a-0: hsl(0 0% 0% / 0);
 $black-a-10: hsl(0 0% 0% / 0.1);
 $black-a-20: hsl(0 0% 0% / 0.2);
 $black-a-30: hsl(0 0% 0% / 0.3);

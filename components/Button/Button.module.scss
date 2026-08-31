@@ -2,10 +2,15 @@
 
 .root {
   --_button--color: var(--button--color, #{colors.$primary-500});
-  --_button--color--hover: var(--button--color, #{colors.$primary-700});
-  --_button--text-color: var(--button--color, #{colors.$white});
+  --_button--color--hover: var(--button--color--hover, #{colors.$primary-700});
+  --_button--text-color: var(--button--text-color, #{colors.$white});
 
   transition: 200ms linear;
+
+  display: flex;
+  gap: 0.5ch;
+  justify-content: center;
+  align-items: center;
 
   padding: 0.5rem 1rem;
 
@@ -14,6 +19,10 @@
   color: var(--_button--text-color);
   font-weight: 700;
   text-transform: capitalize;
+
+  & svg {
+    height: 1.25em;
+  }
 
   &[data-variation='default'] {
     background-color: var(--_button--color);

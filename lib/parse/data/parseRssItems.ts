@@ -1,6 +1,6 @@
-import type { IAudioData, IRss, IRssItem } from '@interfaces/data';
+import type { IMediaData, IRss, IRssItem } from '@interfaces/data';
 import { IEmbedConfig } from '@interfaces/config';
-import parseAudioData from './parseAudioData';
+import parseMediaData from './parseMediaData';
 
 /**
  * Parse RSS data items into audio data. Items are filtered and truncated before parsing.
@@ -11,7 +11,8 @@ import parseAudioData from './parseAudioData';
 const parseRssItems = (
   rssData: IRss,
   config: IEmbedConfig,
-  itemParser?: Function
+  // eslint-disable-next-line no-unused-vars
+  itemParser?: (rd: IRssItem) => IMediaData
 ) => {
   if (!rssData || !rssData.items?.length) return undefined;
 
@@ -21,6 +22,7 @@ const parseRssItems = (
   const imageUrl = rssItunesImage || rssImageUrl;
   const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
     config;
+  const itemParserFunc = itemParser || parseMediaData;
   const rssItems = rssData.items
     .filter((item) => !!item.enclosure)
     .map(
@@ -129,7 +131,7 @@ const parseRssItems = (
     resultItems = rssItems[0] && [rssItems[0]];
   }
 
-  // Return resulting items as audio data or `undefined`.
+  // Return resulting items as media data or `undefined`.
   return resultItems?.map(
     (item) =>
       ({
@@ -137,8 +139,8 @@ const parseRssItems = (
         link: link || null,
         ...(imageUrl && { imageUrl }),
         // Parse item into audio data, using passed parser if provided.
-        ...(itemParser || parseAudioData)(item)
-      } as IAudioData)
+        ...itemParserFunc(item)
+      } as ReturnType<typeof itemParserFunc>)
   );
 };
 

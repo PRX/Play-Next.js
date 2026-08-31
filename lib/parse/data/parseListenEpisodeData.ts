@@ -1,5 +1,5 @@
 import type { IListenEpisodeData, IRssItem } from '@interfaces/data';
-import parseAudioData from './parseAudioData';
+import parseMediaData from './parseMediaData';
 
 /**
  * Parse RSS data item into listen episode data object for use on landing page.
@@ -9,7 +9,7 @@ import parseAudioData from './parseAudioData';
 const parseListenEpisodeData = (rssEpisode?: IRssItem): IListenEpisodeData => {
   const { itunes, pubDate } = rssEpisode;
   const { subtitle } = itunes || {};
-  const episodeAudio = parseAudioData(rssEpisode);
+  const mediaData = parseMediaData(rssEpisode);
   const content =
     rssEpisode['content:encoded'] ||
     rssEpisode.content ||
@@ -20,7 +20,7 @@ const parseListenEpisodeData = (rssEpisode?: IRssItem): IListenEpisodeData => {
     rssEpisode.itunes?.summary;
 
   const data: IListenEpisodeData = {
-    ...episodeAudio,
+    ...mediaData,
     content,
     contentSnippet,
     pubDate,

@@ -23,7 +23,7 @@ const SettingsMenuButton: React.FC<SettingsMenuButtonProps> = forwardRef<
   const { muted, playbackRate } = state;
   const showPlaybackRate = playbackRate !== 1;
   const hasFeedback = muted || showPlaybackRate;
-  const rootClassNames = clsx(className, styles.root, {
+  const rootClassNames = clsx(styles.root, className, {
     [styles.hasFeedback]: hasFeedback
   });
 

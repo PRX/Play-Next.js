@@ -14,6 +14,7 @@ import {
 } from '@states/embed/Embed.reducer';
 import { EmbedActionTypes } from '@states/embed/Embed.actions';
 import generateEmbedHtml from '@lib/generate/html/generateEmbedHtml';
+import isAudioMimeType from '@lib/validate/isAudioMimeType';
 import BackgroundImage from '@components/BackgroundImage/BackgroundImage';
 import ThemeVars from '@components/ThemeVars';
 import PlayButton from '@components/Player/PlayButton';
@@ -33,9 +34,9 @@ import SupportMenu from '@components/Player/SupportMenu';
 import WebMonetized from '@components/Player/WebMonetized';
 import MoreHorizIcon from '@svg/icons/MoreHoriz.svg';
 import CloseIcon from '@svg/icons/Close.svg';
-import styles from '@styles/Embed.module.scss';
 import ClosedCaptions from '@components/Player/ClosedCaptions';
 import ClosedCaptionsFeed from '@components/Player/ClosedCaptionsFeed';
+import styles from './Embed.module.scss';
 import EmbedSettingsMenu from './EmbedSettingsMenu';
 
 // Define dynamic component imports.
@@ -53,11 +54,10 @@ export interface IEmbedLayoutBreakPoint {
   thumbnailSize: number;
 }
 
-const Embed = ({ config, data }: IEmbedProps) => {
-  const { showCoverArt, showPlaylist, accentColor, theme } = config;
+const Embed = ({ config, data, mode }: IEmbedProps) => {
+  const { showCoverArt, showPlaylist, accentColor, theme, mediaType } = config;
   const {
-    mode,
-    audio,
+    media,
     playlist,
     bgImageUrl,
     followLinks,
@@ -65,7 +65,13 @@ const Embed = ({ config, data }: IEmbedProps) => {
     paymentPointer
   } = data;
   const isPreview = mode === 'preview';
-  const { imageUrl } = audio || {};
+  const { imageUrl, hasAudioSourceAt, hasVideoSourceAt, previewUrl } =
+    media || {};
+  const useAudio = isAudioMimeType(mediaType);
+  const hasAudioSource = hasAudioSourceAt !== false;
+  const hasVideoSource = hasVideoSourceAt !== false;
+  const hasMediaTypeSource =
+    !!previewUrl || (useAudio ? hasAudioSource : hasVideoSource);
   const [state, dispatch] = useReducer(embedStateReducer, embedInitialState);
   const {
     closedCaptionsShown,
@@ -103,9 +109,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
     ? 0
     : Math.max(
         0,
-        playlist.findIndex((track) => track.guid === audio.guid)
+        playlist.findIndex((track) => track.guid === media.guid)
       );
-  const currentTrack = playlist?.[currentTrackIndex] || audio;
+  const currentTrack = playlist?.[currentTrackIndex] || media;
   const showShareMenu = !!currentTrack?.link || !isPreview;
   const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
   const showClosedCaptionFeed = closedCaptionsShown && canShowCoverArt;
@@ -274,7 +280,7 @@ const Embed = ({ config, data }: IEmbedProps) => {
       </Head>
       <div className={styles.container} data-theme={theme}>
         <div className={mainClasses}>
-          {!audio && (
+          {!hasMediaTypeSource && (
             <div className={styles.messageContainer}>
               <BackgroundImage
                 imageUrl={bgImageUrl}
@@ -283,9 +289,9 @@ const Embed = ({ config, data }: IEmbedProps) => {
               <p>Episode Not Available</p>
             </div>
           )}
-          {audio && (
+          {hasMediaTypeSource && (
             <Player
-              audio={playlist || audio}
+              media={playlist || media}
               startIndex={currentTrackIndex}
               imageUrl={bgImageUrl}
             >
@@ -297,7 +303,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                   <CoverArt />
 
                   {showClosedCaptionFeed && (
-                    // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                     <div
                       className={clsx(styles.modals, styles.closedCaptionsFeed)}
                       id="embed-closed-caption-modal"
@@ -490,7 +495,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
                 </div>
 
                 {showClosedCaptionDialog && (
-                  // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                   <div
                     className={styles.modals}
                     id="embed-closed-caption-modal"
@@ -509,7 +513,6 @@ const Embed = ({ config, data }: IEmbedProps) => {
               )}
 
               {modalShown && (
-                // biome-ignore lint/correctness/useUniqueElementIds: Id is tied to portal attributes in other components.
                 <div
                   className={styles.modals}
                   id="embed-modals"
