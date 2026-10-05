@@ -98,7 +98,7 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
       ((cau, mt) => {
         const u = new URL(cau);
         const fn = u.pathname.split('/').pop();
-        const ext = fn.split('.')[1] || 'mp3';
+        const ext = fn.split('.').pop() || 'mp3';
         const type =
           mt ||
           (['mp3'].includes(ext) && 'audio/mpeg') ||
