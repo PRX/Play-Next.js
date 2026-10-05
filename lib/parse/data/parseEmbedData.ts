@@ -110,7 +110,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
           (['avi'].includes(ext) && 'video/x-msvideo') ||
           (['wmv'].includes(ext) && 'video/x-ms-wmv') ||
           (['m3u8'].includes(ext) && 'application/x-mpegURL') ||
-          (['mp4', 'webm'].includes(ext) && `video/${ext}`);
+          (['mp4', 'webm'].includes(ext) && `video/${ext}`) ||
+          'audio/mpeg';
         const hasAudioSourceAt = isAudioMimeType(type) && 0;
         const hasVideoSourceAt = isVideoMimeType(type) && 0;
         return {
