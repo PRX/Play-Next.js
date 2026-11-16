@@ -20,7 +20,7 @@ import ChevronLeftIcon from '@svg/icons/ChevronLeft.svg';
 import ChevronRightIcon from '@svg/icons/ChevronRight.svg';
 import styles from './Playlist.module.scss';
 import { Pagination, SortEnum } from '@interfaces/buf/pagination_pb';
-import { encodePaginationParam } from '@lib/buf/pagination';
+import { defaultPagination, encodePaginationParam } from '@lib/buf/pagination';
 import { useRouter } from 'next/router';
 
 export interface IPlaylistProps
@@ -35,7 +35,7 @@ export interface IPlaylistProps
 
 const Playlist: React.FC<IPlaylistProps> = ({
   className,
-  pagination,
+  pagination = defaultPagination,
   totalEpisodesCount,
   totalDuration,
   ...props
