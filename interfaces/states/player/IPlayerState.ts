@@ -24,7 +24,7 @@ export interface IPlayerState {
   /**
    * Holds the currently playing audio data.
    */
-  currentTrackIndex?: number | null;
+  currentTrack?: IMediaData;
 
   /**
    * Holds all the audio data that can be played.

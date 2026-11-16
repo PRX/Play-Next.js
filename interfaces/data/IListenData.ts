@@ -65,4 +65,14 @@ export interface IListenData {
    * Array of episode data for rendering playlist and episode info content.
    */
   episodes: IListenEpisodeData[];
+
+  /**
+   * Total number of episodes in playlist.
+   */
+  totalEpisodesCount: number;
+
+  /**
+   * Duration of all episodes in playlist.
+   */
+  totalDuration: number;
 }

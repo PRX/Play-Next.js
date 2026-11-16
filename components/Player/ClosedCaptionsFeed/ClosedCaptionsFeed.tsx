@@ -5,7 +5,6 @@
 
 import type React from 'react';
 import type { CSSProperties, KeyboardEventHandler } from 'react';
-import type { IMediaData } from '@interfaces/data';
 import type {
   IRssPodcastTranscriptJson,
   IRssPodcastTranscriptJsonSegment
@@ -534,8 +533,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   speakerColors
 }) => {
   const { el, state } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex, currentTime } = state;
-  const currentTrack = tracks[currentTrackIndex] || ({} as IMediaData);
+  const { currentTrack, currentTime } = state;
   const { guid, transcripts, duration } = currentTrack;
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 

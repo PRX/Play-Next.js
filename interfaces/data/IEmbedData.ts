@@ -20,6 +20,16 @@ export interface IEmbedData {
   playlist?: IMediaData[];
 
   /**
+   * Total number of episodes in playlist.
+   */
+  totalEpisodesCount: number;
+
+  /**
+   * Duration of all episodes in playlist.
+   */
+  totalDuration: number;
+
+  /**
    * URL of image to use in the background of the player.
    */
   bgImageUrl?: string;

@@ -14,8 +14,8 @@ export interface ICopyLinkButtonProps
 
 const CopyLinkButton: React.FC<ICopyLinkButtonProps> = ({ className }) => {
   const { state } = useContext(PlayerContext);
-  const { currentTrackIndex, tracks } = state;
-  const { link } = tracks[currentTrackIndex];
+  const { currentTrack } = state;
+  const { link } = currentTrack || {};
 
   if (!link) return null;
 

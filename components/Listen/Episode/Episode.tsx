@@ -48,7 +48,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
     playTrack,
     pause
   } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex, playing } = state;
+  const { tracks, currentTrack, playing } = state;
   const {
     guid,
     title,
@@ -69,7 +69,7 @@ const Episode = ({ data, onClose }: IEpisodeProps) => {
   const [transcript, setTranscript] = useState<
     SpeakerSegmentsBlock[] | null | false
   >(null);
-  const isCurrentTrack = index === currentTrackIndex;
+  const isCurrentTrack = guid === currentTrack?.guid;
   const hasAudioSource = hasAudioSourceAt !== false;
   const audioSource = sources && hasAudioSource && sources[hasAudioSourceAt];
   const { url, length } = audioSource || {};

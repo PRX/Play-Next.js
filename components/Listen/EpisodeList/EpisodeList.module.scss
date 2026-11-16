@@ -119,10 +119,21 @@ $episodeList-header-icon-color--active: colors.$white;
 
   font-weight: inherit;
   line-height: 1;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 }
 
 .buttonIcon {
+  display: flex;
   fill: var(--_episodeList-header-icon-color);
+
+  svg {
+    width: 2rem;
+    aspect-ratio: 1;
+  }
 
   &.up {
     --up-fill-color: var(--_episodeList-header-icon-color--active);
@@ -130,6 +141,16 @@ $episodeList-header-icon-color--active: colors.$white;
   &.down {
     --down-fill-color: var(--_episodeList-header-icon-color--active);
   }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.pageInfo {
+  white-space: nowrap;
 }
 
 .episodeList {

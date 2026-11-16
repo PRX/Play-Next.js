@@ -83,30 +83,53 @@ describe('states/player', () => {
     describe('`currentTrack` actions', () => {
       const mockState = {
         ...playerInitialState,
-        currentTrackIndex: 0,
+        currentTrack: {
+          guid: 'GUID:1',
+          sources: [
+            {
+              url: '//foo.com/1.mp3'
+            }
+          ],
+          hasAudioSourceAt: 0,
+          hasVideoSourceAt: false as false,
+          link: '//foo.com/1',
+          title: 'Title 1'
+        },
         tracks: [
           {
             guid: 'GUID:1',
-            url: '//foo.com/1.mp3',
+            sources: [
+              {
+                url: '//foo.com/1.mp3'
+              }
+            ],
             link: '//foo.com/1',
             title: 'Title 1'
           },
           {
             guid: 'GUID:2',
-            url: '//foo.com/2.mp3',
+            sources: [
+              {
+                url: '//foo.com/2.mp3'
+              }
+            ],
             link: '//foo.com/2',
             title: 'Title 2'
           },
           {
             guid: 'GUID:3',
-            url: '//foo.com/3.mp3',
+            sources: [
+              {
+                url: '//foo.com/3.mp3'
+              }
+            ],
             link: '//foo.com/3',
             title: 'Title 3'
           }
         ] as IMediaData[]
       };
 
-      test('should set `currentTrackIndex`', () => {
+      test('should set `currentTrack`', () => {
         const result1 = playerStateReducer(
           {
             ...mockState
@@ -135,12 +158,12 @@ describe('states/player', () => {
           }
         );
 
-        expect(result1.currentTrackIndex).toBe(1);
-        expect(result2.currentTrackIndex).toBe(0);
-        expect(result3.currentTrackIndex).toBe(2);
+        expect(result1.currentTrack.guid).toBe('GUID:2');
+        expect(result2.currentTrack.guid).toBe('GUID:1');
+        expect(result3.currentTrack.guid).toBe('GUID:3');
       });
 
-      test('should look up episode index and set `currentTrackIndex`', () => {
+      test('should set currentTrack', () => {
         const result1 = playerStateReducer(
           {
             ...mockState
@@ -160,11 +183,11 @@ describe('states/player', () => {
           }
         );
 
-        expect(result1.currentTrackIndex).toBe(1);
-        expect(result2.currentTrackIndex).toBe(0);
+        expect(result1.currentTrack.guid).toBe('GUID:2');
+        expect(result2.currentTrack.guid).toBe('GUID:1');
       });
 
-      test('should set `currentTrackIndex`, and `playing` true', () => {
+      test('should set `currentTrack`, and `playing` true', () => {
         const result = playerStateReducer(
           {
             ...mockState
@@ -175,64 +198,64 @@ describe('states/player', () => {
           }
         );
 
-        expect(result.currentTrackIndex).toBe(3);
+        expect(result.currentTrack.guid).toBe('GUID:3');
         expect(result.playing).toBe(true);
       });
 
-      test('should set `currentTrackIndex` to next index', () => {
+      test('should set `currentTrack` to next track', () => {
         const result = playerStateReducer(
           {
             ...mockState,
-            currentTrackIndex: 1
+            currentTrack: { ...mockState.tracks[1] }
           },
           {
             type: PlayerActionTypes.PLAYER_NEXT_TRACK
           }
         );
 
-        expect(result.currentTrackIndex).toBe(2);
+        expect(result.currentTrack.guid).toBe('GUID:3');
       });
 
-      test('should set `currentTrackIndex` to next index, w/o wrapping', () => {
+      test('should set `currentTrack` to next track, w/o wrapping', () => {
         const result = playerStateReducer(
           {
             ...mockState,
-            currentTrackIndex: 2
+            currentTrack: { ...mockState.tracks[2] }
           },
           {
             type: PlayerActionTypes.PLAYER_NEXT_TRACK
           }
         );
 
-        expect(result.currentTrackIndex).toBe(2);
+        expect(result.currentTrack.guid).toBe('GUID:3');
       });
 
-      test('should set `currentTrackIndex` to previous index', () => {
+      test('should set `currentTrack` to previous track', () => {
         const result = playerStateReducer(
           {
             ...mockState,
-            currentTrackIndex: 1
+            currentTrack: { ...mockState.tracks[1] }
           },
           {
             type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
           }
         );
 
-        expect(result.currentTrackIndex).toBe(0);
+        expect(result.currentTrack.guid).toBe('GUID:1');
       });
 
-      test('should set `currentTrackIndex` to previous index, w/o wrapping', () => {
+      test('should set `currentTrack` to previous track, w/o wrapping', () => {
         const result = playerStateReducer(
           {
             ...mockState,
-            currentTrackIndex: 0
+            currentTrack: { ...mockState.tracks[0] }
           },
           {
             type: PlayerActionTypes.PLAYER_PREVIOUS_TRACK
           }
         );
 
-        expect(result.currentTrackIndex).toBe(0);
+        expect(result.currentTrack.guid).toBe('GUID:1');
       });
     });
 
@@ -258,24 +281,36 @@ describe('states/player', () => {
         expect(result.tracks[0]).toStrictEqual(mockTrack);
       });
 
-      test('should set `tracks` and update `currentIndex`', () => {
+      test('should set `tracks` and keep current track when tracks index changes', () => {
         const mockTracks = [
           {
-            guid: '1',
-            url: '//foo.com/1.mp3',
+            guid: 'GUID:1',
+            sources: [
+              {
+                url: '//foo.com/1.mp3'
+              }
+            ],
             link: '//foo.com/1',
             title: 'Title 1'
           },
           {
-            guid: '2',
-            url: '//foo.com/2.mp3',
+            guid: 'GUID:2',
+            sources: [
+              {
+                url: '//foo.com/2.mp3'
+              }
+            ],
             link: '//foo.com/2',
             title: 'Title 2'
           }
         ] as IMediaData[];
         const mockTrack = {
-          guid: '3',
-          url: '//foo.com/3.mp3',
+          guid: 'GUID:3',
+          sources: [
+            {
+              url: '//foo.com/3.mp3'
+            }
+          ],
           link: '//foo.com/3',
           title: 'Title 3'
         };
@@ -283,7 +318,7 @@ describe('states/player', () => {
           {
             ...playerInitialState,
             tracks: [...mockTracks],
-            currentTrackIndex: 1
+            currentTrack: { ...mockTracks[1] }
           },
           {
             type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
@@ -295,26 +330,38 @@ describe('states/player', () => {
         expect(result.tracks[0]).toStrictEqual(mockTrack);
         expect(result.tracks[1]).toStrictEqual(mockTracks[0]);
         expect(result.tracks[2]).toStrictEqual(mockTracks[1]);
-        expect(result.currentTrackIndex).toBe(2);
+        expect(result.currentTrack.guid).toBe('GUID:2');
       });
 
-      test('should set `tracks` and set `currentIndex` to 0', () => {
+      test('should set `tracks` and keep current track when no longer in tracks', () => {
         const mockTracks = [
           {
-            guid: '1',
-            url: '//foo.com/1.mp3',
+            guid: 'GUID:1',
+            sources: [
+              {
+                url: '//foo.com/1.mp3'
+              }
+            ],
             link: '//foo.com/1',
             title: 'Title 1'
           },
           {
-            guid: '2',
-            url: '//foo.com/2.mp3',
+            guid: 'GUID:2',
+            sources: [
+              {
+                url: '//foo.com/2.mp3'
+              }
+            ],
             link: '//foo.com/2',
             title: 'Title 2'
           },
           {
-            guid: '3',
-            url: '//foo.com/3.mp3',
+            guid: 'GUID:3',
+            sources: [
+              {
+                url: '//foo.com/3.mp3'
+              }
+            ],
             link: '//foo.com/3',
             title: 'Title 3'
           }
@@ -323,7 +370,7 @@ describe('states/player', () => {
           {
             ...playerInitialState,
             tracks: [...mockTracks],
-            currentTrackIndex: 1
+            currentTrack: { ...mockTracks[1] }
           },
           {
             type: PlayerActionTypes.PLAYER_UPDATE_TRACKS,
@@ -334,7 +381,7 @@ describe('states/player', () => {
         expect(result.tracks).not.toBeNull();
         expect(result.tracks[0]).toStrictEqual(mockTracks[0]);
         expect(result.tracks[1]).toStrictEqual(mockTracks[2]);
-        expect(result.currentTrackIndex).toBe(0);
+        expect(result.currentTrack.guid).toBe('GUID:2');
       });
     });
 

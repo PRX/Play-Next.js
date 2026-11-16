@@ -1,5 +1,7 @@
 import type { IMediaData, IRss, IRssItem } from '@interfaces/data';
-import { IEmbedConfig } from '@interfaces/config';
+import type { IEmbedConfig } from '@interfaces/config';
+import { SortEnum } from '@interfaces/buf/pagination_pb';
+import { defaultPagination } from '@lib/buf/pagination';
 import parseMediaData from './parseMediaData';
 
 /**
@@ -20,8 +22,13 @@ const parseRssItems = (
   const { url: rssImageUrl } = image || {};
   const { image: rssItunesImage, type: rssItunesType } = itunes || {};
   const imageUrl = rssItunesImage || rssImageUrl;
-  const { episodeGuid, showPlaylist, playlistCategory, playlistSeason } =
-    config;
+  const {
+    episodeGuid,
+    showPlaylist,
+    playlistCategory,
+    playlistSeason,
+    pagination = defaultPagination
+  } = config;
   const itemParserFunc = itemParser || parseMediaData;
   const rssItems = rssData.items
     .filter((item) => !!item.enclosure)
@@ -52,6 +59,7 @@ const parseRssItems = (
   let resultItems: IRssItem[];
 
   if (showPlaylist) {
+    const { pageIndex, pageSize, sort } = pagination;
     resultItems = [
       ...[
         // Filter audio by season.
@@ -115,7 +123,17 @@ const parseRssItems = (
             : items,
         // Cap number of items to configured length.
         (items: IRssItem[]) =>
-          showPlaylist === 'all' ? items : items.slice(0, showPlaylist)
+          showPlaylist === 'all' ? items : items.slice(0, showPlaylist),
+        // Pagination sort.
+        (items: IRssItem[]) =>
+          sort === SortEnum.OLDEST ? items.reverse() : items,
+        // Get current page of items.
+        (items: IRssItem[]) => {
+          const maxPageIndex = Math.ceil(items.length / pageSize) - 1;
+          const tracksStartIndex = Math.min(pageIndex, maxPageIndex) * pageSize;
+          const tracksEndIndex = tracksStartIndex + pageSize - 1;
+          return items.slice(tracksStartIndex, tracksEndIndex);
+        }
       ].reduce((a, f) => f(a), rssItems)
     ];
   } else if (episodeGuid && episode) {

@@ -3,6 +3,7 @@
  */
 
 import { ParsedUrlQuery } from 'querystring';
+import { Pagination } from '@interfaces/buf/pagination_pb';
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !! If these change ALL EXISTING EMBEDS WILL BREAK !!
@@ -73,6 +74,11 @@ export interface IEmbedParams extends ParsedUrlQuery {
    * everything in the feed. Requires RSS feed URL be provided with `uf`.
    */
   sp?: string | string[];
+
+  /**
+   * Encoded pagination options string.
+   */
+  pg?: string | string[];
 
   /**
    * Use to filter playlist items by episode season. Requires `sp` and `uf`
@@ -155,6 +161,7 @@ export interface IEmbedConfig {
   subscribeTarget?: string;
   ctaTarget?: string;
   showPlaylist?: number | 'all';
+  pagination?: Pagination;
   playlistSeason?: number;
   playlistCategory?: string;
   showCoverArt?: boolean;
@@ -184,6 +191,7 @@ EmbedParamKeysMap.set('us', 'subscribeUrl');
 EmbedParamKeysMap.set('gs', 'subscribeTarget');
 EmbedParamKeysMap.set('gc', 'ctaTarget');
 EmbedParamKeysMap.set('sp', 'showPlaylist');
+EmbedParamKeysMap.set('pg', 'pagination');
 EmbedParamKeysMap.set('se', 'playlistSeason');
 EmbedParamKeysMap.set('ct', 'playlistCategory');
 EmbedParamKeysMap.set('ca', 'showCoverArt');
@@ -214,6 +222,7 @@ EmbedConfigKeysMap.set('subscribeUrl', 'us');
 EmbedConfigKeysMap.set('subscribeTarget', 'gs');
 EmbedConfigKeysMap.set('ctaTarget', 'gc');
 EmbedConfigKeysMap.set('showPlaylist', 'sp');
+EmbedConfigKeysMap.set('pagination', 'pg');
 EmbedConfigKeysMap.set('playlistSeason', 'se');
 EmbedConfigKeysMap.set('playlistCategory', 'ct');
 EmbedConfigKeysMap.set('showCoverArt', 'ca');

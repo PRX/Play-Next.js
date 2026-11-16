@@ -14,7 +14,11 @@ export interface IPreviousButtonProps
 
 const PreviousButton: React.FC<IPreviousButtonProps> = ({ ...props }) => {
   const { state, previousTrack } = useContext(PlayerContext);
-  const isFirstTrack = state.currentTrackIndex === 0;
+  const { currentTrack, tracks } = state;
+  const currentTrackIndex = tracks.findIndex(
+    ({ guid }) => guid === currentTrack?.guid
+  );
+  const isFirstTrack = currentTrackIndex <= 0;
 
   const handleClick = () => {
     previousTrack();

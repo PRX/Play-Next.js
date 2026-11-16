@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import type { IMediaData } from '@interfaces/data';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';
@@ -26,8 +27,8 @@ const PlayerThumbnail: React.FC<IPlayerThumbnailProps> = ({
   const isInitialLoad = useRef(true);
   const { state, imageUrl: defaultImageUrl } = useContext(PlayerContext);
   const [isLoading, setIsLoading] = useState(false);
-  const { tracks, currentTrackIndex } = state;
-  const { imageUrl, title } = tracks[currentTrackIndex] || {};
+  const { currentTrack } = state;
+  const { imageUrl, title } = currentTrack || ({} as IMediaData);
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, className, {
     [styles.loaded]: !isLoading || imageRef.current?.complete

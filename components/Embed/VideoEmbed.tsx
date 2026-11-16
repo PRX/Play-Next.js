@@ -57,7 +57,8 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     showPlaylist,
     accentColor,
     theme,
-    mediaType
+    mediaType,
+    pagination
   } = config;
   const {
     media,
@@ -65,7 +66,9 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
     bgImageUrl,
     followLinks,
     supportUrls,
-    paymentPointer
+    paymentPointer,
+    totalEpisodesCount,
+    totalDuration
   } = data;
   const isPreview = mode === 'preview';
   const { imageUrl, hasAudioSourceAt, hasVideoSourceAt } = media || {};
@@ -106,7 +109,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
         0,
         playlist.findIndex((track) => track.guid === media.guid)
       );
-  const currentTrack = playlist?.[currentTrackIndex] || media;
+  const currentTrack = media;
   const showShareMenu = !!currentTrack?.link || !isPreview;
   const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
   const mainClasses = clsx(styles.main, {
@@ -275,7 +278,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
           {hasMediaTypeSource && (
             <Player
               media={playlist || media}
-              startIndex={currentTrackIndex}
+              initialTrack={currentTrack}
               imageUrl={bgImageUrl}
             >
               <div
@@ -457,7 +460,12 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                   className={styles.playlist}
                   {...(modalShown && { inert: '' })}
                 >
-                  <Playlist style={{ height: '100%' }} />
+                  <Playlist
+                    style={{ height: '100%' }}
+                    pagination={pagination}
+                    totalEpisodesCount={totalEpisodesCount}
+                    totalDuration={totalDuration}
+                  />
                 </div>
               )}
 

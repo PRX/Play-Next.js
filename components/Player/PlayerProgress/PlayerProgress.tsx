@@ -44,13 +44,8 @@ const PlayerProgress: React.FC<IPlayerProgressProps> = ({
   );
   const { scrubPosition, played, playedSeconds, duration } = state;
   const { el, state: playerState, seekTo } = useContext(PlayerContext);
-  const {
-    currentTrackIndex,
-    tracks,
-    currentTime: playerCurrentTime
-  } = playerState;
-  const { duration: trackDuration } =
-    tracks[currentTrackIndex] || ({} as IMediaData);
+  const { currentTrack, currentTime: playerCurrentTime } = playerState;
+  const { duration: trackDuration } = currentTrack || ({} as IMediaData);
   const [progressStyles, setProgressStyles] = useState({});
   const totalDuration = duration
     ? convertSecondsToDuration(Math.round(duration))

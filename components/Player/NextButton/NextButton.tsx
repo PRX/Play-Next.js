@@ -14,7 +14,11 @@ export interface INextButtonProps
 
 const NextButton: React.FC<INextButtonProps> = (props) => {
   const { state, nextTrack } = useContext(PlayerContext);
-  const isLastTrack = state.currentTrackIndex === state.tracks.length - 1;
+  const { currentTrack, tracks } = state;
+  const currentTrackIndex = tracks.findIndex(
+    ({ guid }) => guid === currentTrack?.guid
+  );
+  const isLastTrack = currentTrackIndex === tracks.length - 1;
 
   const handleClick = () => {
     nextTrack();
