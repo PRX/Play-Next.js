@@ -15,8 +15,8 @@ const PlayerShareTwitterButton: React.FC<IPlayerShareTwitterButtonProps> = ({
   className
 }) => {
   const { state } = useContext(PlayerContext);
-  const { currentTrackIndex, tracks } = state;
-  const { link, title } = tracks[currentTrackIndex];
+  const { currentTrack } = state;
+  const { link, title } = currentTrack || {};
 
   return <ShareTwitterButton className={className} url={link} text={title} />;
 };

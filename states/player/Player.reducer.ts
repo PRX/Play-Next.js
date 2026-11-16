@@ -12,8 +12,8 @@ import {
 export const playerInitialState: IPlayerState = {
   playing: false,
   playbackRate: 1,
-  currentTrackIndex: null,
-  tracks: null,
+  currentTrack: null,
+  tracks: [],
   currentTime: null,
   muted: false,
   volume: 0.8
@@ -23,7 +23,10 @@ export const playerStateReducer = (
   state: IPlayerState,
   action: IPlayerAction
 ): IPlayerState => {
-  const { playing, currentTrackIndex, tracks, muted } = state;
+  const { playing, currentTrack, tracks, muted } = state;
+  const currentTrackIndex = tracks.findIndex(
+    ({ guid }) => guid === currentTrack?.guid
+  );
 
   switch (action.type) {
     case ActionTypes.PLAYER_PLAY:
@@ -38,54 +41,42 @@ export const playerStateReducer = (
     case ActionTypes.PLAYER_UPDATE_TRACKS:
       return {
         ...state,
-        tracks: action.payload,
-        currentTrackIndex:
-          currentTrackIndex == null
-            ? null
-            : Math.max(
-                0,
-                action.payload.findIndex(
-                  ({ guid }) => guid === (tracks || [])[currentTrackIndex]?.guid
-                )
-              )
+        tracks: action.payload
       };
 
     case ActionTypes.PLAYER_UPDATE_CURRENT_TRACK_INDEX:
       return {
         ...state,
-        currentTrackIndex: Math.max(
-          0,
-          Math.min(action.payload, tracks.length - 1)
-        )
+        currentTrack:
+          tracks[Math.max(0, Math.min(action.payload, tracks.length - 1))]
       };
 
     case ActionTypes.PLAYER_PLAY_EPISODE:
       return {
         ...state,
-        currentTrackIndex: Math.max(
-          0,
-          tracks.findIndex(({ guid }) => guid === action.payload)
-        )
+        currentTrack:
+          tracks.find(({ guid }) => guid === action.payload) || tracks[0]
       };
 
     case ActionTypes.PLAYER_PLAY_TRACK:
       return {
         ...state,
         currentTime: 0,
-        currentTrackIndex: action.payload,
+        currentTrack:
+          tracks[Math.max(0, Math.min(action.payload, tracks.length - 1))],
         playing: true
       };
 
     case ActionTypes.PLAYER_NEXT_TRACK:
       return {
         ...state,
-        currentTrackIndex: Math.min(currentTrackIndex + 1, tracks.length - 1)
+        currentTrack: tracks[Math.min(currentTrackIndex + 1, tracks.length - 1)]
       };
 
     case ActionTypes.PLAYER_PREVIOUS_TRACK:
       return {
         ...state,
-        currentTrackIndex: Math.max(currentTrackIndex - 1, 0)
+        currentTrack: tracks[Math.max(currentTrackIndex - 1, 0)]
       };
 
     case ActionTypes.PLAYER_UPDATE_CURRENT_TIME:

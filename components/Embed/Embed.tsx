@@ -55,14 +55,23 @@ export interface IEmbedLayoutBreakPoint {
 }
 
 const Embed = ({ config, data, mode }: IEmbedProps) => {
-  const { showCoverArt, showPlaylist, accentColor, theme, mediaType } = config;
+  const {
+    showCoverArt,
+    showPlaylist,
+    accentColor,
+    theme,
+    mediaType,
+    pagination
+  } = config;
   const {
     media,
     playlist,
     bgImageUrl,
     followLinks,
     supportUrls,
-    paymentPointer
+    paymentPointer,
+    totalEpisodesCount,
+    totalDuration
   } = data;
   const isPreview = mode === 'preview';
   const { imageUrl, hasAudioSourceAt, hasVideoSourceAt, previewUrl } =
@@ -111,7 +120,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
         0,
         playlist.findIndex((track) => track.guid === media.guid)
       );
-  const currentTrack = playlist?.[currentTrackIndex] || media;
+  const currentTrack = media;
   const showShareMenu = !!currentTrack?.link || !isPreview;
   const showClosedCaptionsButton = !!currentTrack?.transcripts?.length;
   const showClosedCaptionFeed = closedCaptionsShown && canShowCoverArt;
@@ -292,7 +301,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
           {hasMediaTypeSource && (
             <Player
               media={playlist || media}
-              startIndex={currentTrackIndex}
+              initialTrack={currentTrack}
               imageUrl={bgImageUrl}
             >
               {canShowCoverArt && (
@@ -375,7 +384,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                       {canShowPlaylist && (
                         <PreviousButton
                           className={clsx(styles.button, styles.previousButton)}
-                          disabled={currentTrackIndex === 1}
+                          disabled={currentTrackIndex <= 1}
                         />
                       )}
 
@@ -394,7 +403,7 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                       {canShowPlaylist && (
                         <NextButton
                           className={clsx(styles.button, styles.nextButton)}
-                          disabled={currentTrackIndex === playlist.length - 1}
+                          disabled={currentTrackIndex >= playlist.length - 1}
                         />
                       )}
                     </div>
@@ -508,7 +517,12 @@ const Embed = ({ config, data, mode }: IEmbedProps) => {
                   className={styles.playlist}
                   {...(modalShown && { inert: '' })}
                 >
-                  <Playlist style={{ height: '100%' }} />
+                  <Playlist
+                    style={{ height: '100%' }}
+                    pagination={pagination}
+                    totalEpisodesCount={totalEpisodesCount}
+                    totalDuration={totalDuration}
+                  />
                 </div>
               )}
 

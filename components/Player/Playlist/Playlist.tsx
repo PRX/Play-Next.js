@@ -16,30 +16,54 @@ import PrxImage from '@components/PrxImage';
 import ThemeVars from '@components/ThemeVars';
 import ExplicitIcon from '@svg/icons/Explicit.svg';
 import SwapVertIcon from '@svg/icons/SwapVert.svg';
+import ChevronLeftIcon from '@svg/icons/ChevronLeft.svg';
+import ChevronRightIcon from '@svg/icons/ChevronRight.svg';
 import styles from './Playlist.module.scss';
+import { Pagination, SortEnum } from '@interfaces/buf/pagination_pb';
+import { encodePaginationParam } from '@lib/buf/pagination';
+import { useRouter } from 'next/router';
 
 export interface IPlaylistProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  totalEpisodesCount?: number;
+  totalDuration?: number;
+  pagination?: Pagination;
+}
 
-const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
+const Playlist: React.FC<IPlaylistProps> = ({
+  className,
+  pagination,
+  totalEpisodesCount,
+  totalDuration,
+  ...props
+}) => {
+  const router = useRouter();
   const {
     imageUrl: defaultThumbUrl,
     state,
-    setTracks,
     playTrack
   } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex } = state;
+  const { tracks, currentTrack } = state;
   const rootRef = useRef(null);
   const [playlistStyles, setPlaylistStyles] = useState({});
-  const [reversed, setReversed] = useState(false);
-  const playlistDurationsInt = tracks?.map(({ duration }) =>
-    convertDurationStringToIntegerArray(duration)
-  );
-  const playlistDurationSums = sumDurationParts(playlistDurationsInt);
-  const playlistDurationString = formatDurationParts(playlistDurationSums);
+  const reversed = pagination?.sort === SortEnum.OLDEST;
+  const episodeCount = totalEpisodesCount || tracks?.length || 0;
+  const episodesDurationsInt =
+    totalDuration != null
+      ? [
+          convertDurationStringToIntegerArray(
+            convertSecondsToDuration(totalDuration)
+          )
+        ]
+      : tracks?.map(({ duration }) =>
+          convertDurationStringToIntegerArray(duration)
+        );
+  const episodesDurationSums = sumDurationParts(episodesDurationsInt);
+  const episodesDurationString = formatDurationParts(episodesDurationSums);
+  const pages = pagination ? Math.ceil(episodeCount / pagination.pageSize) : 1;
 
   const updatePlaylistStyles = useCallback(() => {
     if (!rootRef.current) return;
@@ -52,12 +76,40 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
     });
   }, [rootRef]);
 
-  const handleSortClick = () => {
-    const reversedTracks = [...tracks].reverse();
+  const handleSortClick = useCallback(() => {
+    const newPagination = {
+      ...pagination,
+      pageIndex: 0,
+      sort:
+        pagination?.sort === SortEnum.NEWEST ? SortEnum.OLDEST : SortEnum.NEWEST
+    };
+    const pg = encodePaginationParam(newPagination);
 
-    setReversed(!reversed);
-    setTracks(reversedTracks);
-  };
+    router.push({
+      query: {
+        ...router.query,
+        pg
+      }
+    });
+  }, [pagination]);
+
+  const handlePageClick = useCallback(
+    (newPageIndex: number) => {
+      const newPagination = {
+        ...pagination,
+        pageIndex: Math.max(0, Math.min(newPageIndex, pages))
+      };
+      const pg = encodePaginationParam(newPagination);
+
+      router.push({
+        query: {
+          ...router.query,
+          pg
+        }
+      });
+    },
+    [pagination, pages]
+  );
 
   const handleTrackClick = (index: number) => () => {
     playTrack(index);
@@ -94,15 +146,37 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
           >
             <span
               className={clsx(styles.buttonIcon, {
-                [styles.up]: !reversed,
-                [styles.down]: reversed
+                [styles.up]: reversed,
+                [styles.down]: !reversed
               })}
             >
               <SwapVertIcon />
             </span>
-            {tracks?.length === 1 ? '1 Episode' : `${tracks.length} Episodes`}
+            {episodeCount === 1 ? '1 Episode' : `${episodeCount} Episodes`}
           </button>
-          <span>{playlistDurationString}</span>
+          {pages > 1 && (
+            <span className={styles.pagination}>
+              <button
+                className={clsx(styles.button, styles.buttonIcon)}
+                onClick={() => handlePageClick(pagination.pageIndex - 1)}
+                disabled={pagination.pageIndex <= 0}
+              >
+                <ChevronLeftIcon aria-label="Previous page" />
+              </button>
+              <span className={styles.pageInfo}>
+                {pagination.pageIndex + 1}
+                <span className={styles.pages}> / {pages}</span>
+              </span>
+              <button
+                className={clsx(styles.button, styles.buttonIcon)}
+                onClick={() => handlePageClick(pagination.pageIndex + 1)}
+                disabled={pagination.pageIndex >= pages - 1}
+              >
+                <ChevronRightIcon aria-label="Next page" />
+              </button>
+            </span>
+          )}
+          <span>{episodesDurationString}</span>
         </header>
         <div ref={rootRef} className={styles.playlist} style={playlistStyles}>
           <div className={styles.tracks}>
@@ -117,7 +191,7 @@ const Playlist: React.FC<IPlaylistProps> = ({ className, ...props }) => {
                 <button
                   type="button"
                   className={clsx(styles.track, {
-                    [styles.isCurrentTrack]: index === currentTrackIndex,
+                    [styles.isCurrentTrack]: guid === currentTrack?.guid,
                     [styles.isExplicit]: explicit
                   })}
                   key={guid}

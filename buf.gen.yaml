@@ -1,0 +1,8 @@
+# Learn more: https://buf.build/docs/configuration/v2/buf-gen-yaml
+version: v2
+inputs:
+  - directory: config/proto
+plugins:
+  - local: protoc-gen-es
+    out: interfaces/buf
+    opt: target=ts

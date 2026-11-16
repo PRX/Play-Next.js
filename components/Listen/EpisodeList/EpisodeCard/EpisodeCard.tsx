@@ -35,8 +35,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
     playTrack,
     pause
   } = useContext(PlayerContext);
-  const { currentTrackIndex, playing } = state;
-  const isCurrentTrack = index === currentTrackIndex;
+  const { currentTrack, playing } = state;
   const {
     guid,
     title,
@@ -48,6 +47,7 @@ const EpisodeCard = ({ index, episode, onEpisodeClick }: IEpisodeCardProps) => {
     sources,
     hasAudioSourceAt
   } = episode;
+  const isCurrentTrack = guid === currentTrack?.guid;
   const { url, length = 0 } =
     hasAudioSourceAt !== false ? sources[hasAudioSourceAt] : {};
   const thumbSrc = imageUrl || defaultThumbUrl;

@@ -16,7 +16,7 @@ import convertDurationToSeconds from '@lib/convert/string/convertDurationToSecon
 
 export interface IPlayerProps extends React.PropsWithChildren<{}> {
   media: IMediaData | IMediaData[];
-  startIndex?: number;
+  initialTrack?: IMediaData;
   imageUrl?: string;
 }
 
@@ -26,7 +26,7 @@ export interface KeyboardEventWithTarget extends KeyboardEvent {
 
 const Player: React.FC<IPlayerProps> = ({
   media,
-  startIndex,
+  initialTrack,
   imageUrl,
   children
 }) => {
@@ -38,18 +38,20 @@ const Player: React.FC<IPlayerProps> = ({
   const [state, dispatch] = useReducer(playerStateReducer, {
     ...playerInitialState,
     tracks: initialTracks,
-    ...(startIndex != null && { currentTrackIndex: startIndex })
+    ...(initialTrack && { currentTrack: initialTrack })
   });
   const {
     tracks,
     playing,
-    currentTrackIndex,
+    currentTrack,
     currentTime,
     muted,
     volume,
     playbackRate
   } = state;
-  const currentTrack = tracks[currentTrackIndex];
+  const currentTrackIndex = tracks.findIndex(
+    ({ guid }) => guid === currentTrack?.guid
+  );
   const isLastTrack = currentTrackIndex === tracks.length - 1;
   const {
     guid,

@@ -1,5 +1,6 @@
 import type { IMediaData, IEmbedData, IRss } from '@interfaces/data';
 import type { IEmbedConfig } from '@interfaces/config';
+import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 import generateAudioUrl from '@lib/generate/string/generateAudioUrl';
 import getServiceFromUrl from '@lib/parse/string/getServiceFromUrl';
 import isVideoMimeType from '@lib/validate/isVideoMimeType';
@@ -33,6 +34,16 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
     podcast,
     itunes
   } = rssData || {};
+  const playlistSize =
+    !config.showPlaylist || config.showPlaylist === 'all'
+      ? Infinity
+      : config.showPlaylist;
+  const playlistItems = rssData?.items?.slice(0, playlistSize);
+  const totalEpisodesCount = playlistItems?.length || 0;
+  const totalDuration = (playlistItems || []).reduce(
+    (total, { itunes }) => total + convertDurationToSeconds(itunes.duration),
+    0
+  );
   const { url: rssImageUrl } = rssImage || {};
   const { image: rssItunesImage, owner: rssItunesOwner } = itunes || {};
   const { value: podcastValue, follow: podcastFollow } = podcast || {};
@@ -147,7 +158,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const data: IEmbedData = {
     ...(bgImageUrl && { bgImageUrl }),
     ...(mediaHasProps && { media }),
-    ...(playlist && playlist.length > 1 && { playlist }),
+    ...(playlist &&
+      playlist.length > 1 && { playlist, totalEpisodesCount, totalDuration }),
     ...(rssTitle && { rssTitle }),
     ...(shareUrl && { shareUrl }),
     ...(rssItunesOwner && { owner: rssItunesOwner }),

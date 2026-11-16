@@ -76,8 +76,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
     supportUrls
   } = data;
   const { state: playerState } = useContext(PlayerContext);
-  const { currentTrackIndex, tracks } = playerState;
-  const currentTrack = tracks[currentTrackIndex];
+  const { currentTrack } = playerState;
   const playerShown = !!currentTrack;
   const { hasVideoSourceAt = false } = (currentTrack || {}) as IMediaData;
   const hasVideo = hasVideoSourceAt !== false;
@@ -193,7 +192,8 @@ const Listen = ({ config, data }: IListenPageProps) => {
     () => ({
       state,
       dispatch,
-      config
+      config,
+      data
     }),
     [config, state]
   );

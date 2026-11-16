@@ -534,8 +534,7 @@ const ClosedCaptionsFeed: React.FC<IClosedCaptionsProps> = ({
   speakerColors
 }) => {
   const { el, state } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex, currentTime } = state;
-  const currentTrack = tracks[currentTrackIndex] || ({} as IMediaData);
+  const { tracks, currentTrack, currentTime } = state;
   const { guid, transcripts, duration } = currentTrack;
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
 

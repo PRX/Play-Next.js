@@ -12,7 +12,13 @@ const customJestConfig = {
   // if using TypeScript with a baseUrl set to the root directory then you need the below for alias' to work
   moduleDirectories: ['node_modules', '<rootDir>/'],
   testEnvironment: 'jest-environment-jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'require', 'default']
+  },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
+    '^@bufbuild/protobuf/codegenv2$':
+      '<rootDir>/node_modules/@bufbuild/protobuf/dist/cjs/codegenv2/index.js',
     '^@components(.*)$': '<rootDir>/components$1',
     '^@config(.*)$': '<rootDir>/config$1',
     '^@contexts(.*)$': '<rootDir>/contexts$1',

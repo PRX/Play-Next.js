@@ -1,4 +1,5 @@
 import type { IEmbedConfig, IEmbedParams } from '@interfaces/config';
+import { decodePaginationParam } from '@lib/buf/pagination';
 import { EmbedParamKeysMap } from '@interfaces/config';
 import convertStringToBoolean from '@lib/convert/string/convertStringToBoolean';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
@@ -23,6 +24,12 @@ const parseEmbedParamsToConfig = (params: IEmbedParams): IEmbedConfig => {
           return {
             ...a,
             [prop]: v === 'all' ? v : convertStringToInteger(normalizeValue(v))
+          };
+
+        case 'pagination':
+          return {
+            ...a,
+            [prop]: decodePaginationParam(normalizeValue(v))
           };
 
         case 'playlistSeason':

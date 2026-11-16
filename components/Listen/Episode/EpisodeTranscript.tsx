@@ -226,11 +226,7 @@ const EpisodeTranscript = ({
   loading
 }: IEpisodeTranscriptProps) => {
   const { state } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex } = state;
-  const currentTrack = useMemo(
-    () => tracks[currentTrackIndex] || ({} as IMediaData),
-    [currentTrackIndex, tracks]
-  );
+  const { tracks, currentTrack } = state;
   const [isCurrentTrack, setIsCurrentTrack] = useState(false);
   const [showJumpButton, setShowJumpButton] = useState(false);
   const scrollAreaRef = useRef<Element>();

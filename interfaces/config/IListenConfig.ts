@@ -3,6 +3,7 @@
  */
 
 import { ParsedUrlQuery } from 'querystring';
+import { Pagination } from '@interfaces/buf/pagination_pb';
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !! If these change ALL EXISTING EMBEDS WILL BREAK !!
@@ -37,6 +38,11 @@ export interface IListenParams extends ParsedUrlQuery {
   sp?: string | string[];
 
   /**
+   * Encoded pagination options string.
+   */
+  pg?: string | string[];
+
+  /**
    * Use to filter playlist items by episode season. Requires `sp` and `uf`
    * values be provided.
    */
@@ -67,6 +73,7 @@ export interface IListenConfig {
   episodeGuid?: string;
   subscribeUrl?: string;
   showPlaylist?: number | 'all';
+  pagination?: Pagination;
   playlistSeason?: number;
   playlistCategory?: string;
   accentColor?: string[];
@@ -82,6 +89,7 @@ ListenParamKeysMap.set('uf', 'feedUrl');
 ListenParamKeysMap.set('ge', 'episodeGuid');
 ListenParamKeysMap.set('us', 'subscribeUrl');
 ListenParamKeysMap.set('sp', 'showPlaylist');
+ListenParamKeysMap.set('pg', 'pagination');
 ListenParamKeysMap.set('se', 'playlistSeason');
 ListenParamKeysMap.set('ct', 'playlistCategory');
 ListenParamKeysMap.set('ac', 'accentColor');
@@ -98,6 +106,7 @@ ListenConfigKeysMap.set('feedUrl', 'uf');
 ListenConfigKeysMap.set('episodeGuid', 'ge');
 ListenConfigKeysMap.set('subscribeUrl', 'us');
 ListenConfigKeysMap.set('showPlaylist', 'sp');
+ListenConfigKeysMap.set('pagination', 'pg');
 ListenConfigKeysMap.set('playlistSeason', 'se');
 ListenConfigKeysMap.set('playlistCategory', 'ct');
 ListenConfigKeysMap.set('accentColor', 'ac');

@@ -17,9 +17,8 @@ export interface IPlayerTextProps {}
 
 const PlayerText: React.FC<IPlayerTextProps> = () => {
   const { state } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex } = state;
-  const { title, subtitle, explicit } =
-    tracks[currentTrackIndex] || ({} as IMediaData);
+  const { currentTrack } = state;
+  const { title, subtitle, explicit } = currentTrack;
 
   const wrapWords = (text: string) =>
     text?.match(/\s*\S+/g).map((word, i) => (

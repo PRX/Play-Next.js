@@ -985,6 +985,76 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bufbuild/buf-darwin-arm64@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-darwin-arm64/-/buf-darwin-arm64-1.75.0.tgz#5af782c98dd6e115c8b49fbe079f64a26e065003"
+  integrity sha512-QiQYSmtVUcKy9DK/d+zJ3+D4iUQmmiDQ3i8/yBr8cf7Nr28lqKMAIKznJE/uGRsjr90fHaUQO+Xsedec0ArN5g==
+
+"@bufbuild/buf-darwin-x64@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-darwin-x64/-/buf-darwin-x64-1.75.0.tgz#5aff2d965a2ec631980b4dce64d72e8df0618c74"
+  integrity sha512-U2W+MRE9jJ7Am7x02ZWt87U5lfPrjKMdB1aZDslsuyOHo+fEUvZolupmhoW30v6syNAWBOfkoi0k5TLc2FNGqQ==
+
+"@bufbuild/buf-linux-aarch64@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-aarch64/-/buf-linux-aarch64-1.75.0.tgz#c42c4acd7c9e4507c8615f7b0a2353523c1562fa"
+  integrity sha512-eX+XyokzJDqsNIFo8b1O3DBvbnksOozPJX4QVsNn61JqSUtWspyTNeYqwg8lRDancML+bDqZEDFPABjAsVCQGQ==
+
+"@bufbuild/buf-linux-armv7@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-armv7/-/buf-linux-armv7-1.75.0.tgz#a8115ddae5229ffc887beb518e9c5e39234a195f"
+  integrity sha512-2RVhmr3vJ145DazYTk9dWAzeQPtcJ0SiSzY02v1Su/JIfgzhv9lgOm+y3nGuLjyZFF8UfTtmuHfHso5zDBgsCQ==
+
+"@bufbuild/buf-linux-x64@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-x64/-/buf-linux-x64-1.75.0.tgz#1073ae59f1e148447918e37f04153707a61b3871"
+  integrity sha512-YGGJAx0lpMCE7aMWjNOJcfoEaG/e+iYHnTC4SZ0P5eS4IffMryA9Z4/bb1m1wNXAEJ8ATFMEZOAk/5x9VE47ig==
+
+"@bufbuild/buf-win32-arm64@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-win32-arm64/-/buf-win32-arm64-1.75.0.tgz#cae8d2e2ae0999507c6664a2133d0b4f60d416ea"
+  integrity sha512-iRge6Ntta41gt0i7P8/EZFDWe3uLNnCEN86r1tKTWctumWxPET3UJcSzzYPyL4gxvzu1/1VTu+AB3+MYAqHy6Q==
+
+"@bufbuild/buf-win32-x64@1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-win32-x64/-/buf-win32-x64-1.75.0.tgz#494cba632f6a9143daf8f0a38294b54bcb15d34a"
+  integrity sha512-/BgLt3VWndocuG4lbMdlBc1i41I+Bap4zm8R1Cnmov6DtoAQp4dy/leRrvT4aDArIUQ1o7W/Y92xTRITedU4ww==
+
+"@bufbuild/buf@^1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf/-/buf-1.75.0.tgz#2b47cf71ecaaab0a2f88fa321c83fdfd6446d5a8"
+  integrity sha512-uMuBCULLDax9/3d5Lo9mea38vuPDv4mrRVE4XfSq3qPcD5UUxlg0RJ9hm84lYCzI3A3lIvLeChxrw9c1RUiD2w==
+  optionalDependencies:
+    "@bufbuild/buf-darwin-arm64" "1.75.0"
+    "@bufbuild/buf-darwin-x64" "1.75.0"
+    "@bufbuild/buf-linux-aarch64" "1.75.0"
+    "@bufbuild/buf-linux-armv7" "1.75.0"
+    "@bufbuild/buf-linux-x64" "1.75.0"
+    "@bufbuild/buf-win32-arm64" "1.75.0"
+    "@bufbuild/buf-win32-x64" "1.75.0"
+
+"@bufbuild/protobuf@2.17.0", "@bufbuild/protobuf@^2.17.0":
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.17.0.tgz#231e87fc12d859bf95166890e9cebd64ac362810"
+  integrity sha512-hcPkSz6D7MiTU/5VBBhK+kxaYDoOdQ6yJRFJ3kS8Nydp+VZXfg1vrpABKPNod8bXMufsVCmiUJVIKFzCzta4uw==
+
+"@bufbuild/protoc-gen-es@^2.17.0":
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protoc-gen-es/-/protoc-gen-es-2.17.0.tgz#300e1e18c95722d357d225819a8867fe9dc50a1e"
+  integrity sha512-Uk8Hx145z76lDOEPhWChy53jtKITUnqG0vASuOiRybbZbBbx4oho9JDqt8QZsHemeTCNl6q4yy4Qpc2iV5outQ==
+  dependencies:
+    "@bufbuild/protobuf" "2.17.0"
+    "@bufbuild/protoplugin" "2.17.0"
+
+"@bufbuild/protoplugin@2.17.0":
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protoplugin/-/protoplugin-2.17.0.tgz#a70f834374da38635f2ae265ecb16a1ff79c1b15"
+  integrity sha512-4ExU8AGygKkwIx3U8D5kyBOn9rcCM1qnj4wCP95RbP1CRe73QvVGHQ/lOp6IQiyvQMh9BGrYGht+ZDa8gwC2fg==
+  dependencies:
+    "@bufbuild/protobuf" "2.17.0"
+    "@typescript/vfs" "^1.6.2"
+    typescript "5.4.5"
+
 "@emnapi/core@^1.4.3":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@emnapi/core/-/core-1.9.2.tgz#3870265ecffc7352d01ead62d8d83d8358a2d034"
@@ -2075,7 +2145,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@*":
+"@types/jest@*", "@types/jest@^30.0.0":
   version "30.0.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-30.0.0.tgz#5e85ae568006712e4ad66f25433e9bdac8801f1d"
   integrity sha512-XTYugzhuwqWjws0CVz8QpM36+T+Dz5mTEBKhNs/esGLnCIlGdRy+Dq78NRjd7ls7r8BC8ZRMOrKlkO1hU0JOwA==
@@ -2352,6 +2422,13 @@
   dependencies:
     "@typescript-eslint/types" "8.58.2"
     eslint-visitor-keys "^5.0.0"
+
+"@typescript/vfs@^1.6.2":
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/@typescript/vfs/-/vfs-1.6.6.tgz#e9240a13fb8bcb1af3e5ea5c4778d5171dec32cc"
+  integrity sha512-gXw0+tpchiQUjTcbnNIPnyLFIhbwJ7M1VaxLQ1vXhjQxtTBK3sdDLY1ih0jxCu1I5K3V0dDxq8CkVZtIMspC3A==
+  dependencies:
+    debug "^4.4.3"
 
 "@ungap/structured-clone@^1.2.0":
   version "1.3.0"
@@ -7639,6 +7716,11 @@ types-wm@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/types-wm/-/types-wm-1.1.0.tgz#01b31b6689d77a3799bbe159ab5fd67159bf47eb"
   integrity sha512-kGecZLoCh4ge8rcRsoMtLs4nuSyi8wl687EfAH9Iss602rFDU/Heih86Awv/6958GwxxDm8gLztkLkrUEsxXug==
+
+typescript@5.4.5:
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.5.tgz#42ccef2c571fdbd0f6718b1d1f5e6e5ef006f611"
+  integrity sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==
 
 typescript@^5.4.5:
   version "5.9.3"

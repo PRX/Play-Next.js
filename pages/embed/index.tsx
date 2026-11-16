@@ -79,6 +79,21 @@ export const getServerSideProps: GetServerSideProps<IPageProps> = async ({
     }
   }
 
+  if (config.pagination) {
+    // Ensure pageIndex does not exceed max index based on config showPlaylist and number of rss items.
+    const playlistItemsCount =
+      !config.showPlaylist || config.showPlaylist === 'all'
+        ? rssData?.items.length
+        : config.showPlaylist;
+    const maxIndex =
+      Math.ceil(playlistItemsCount / config.pagination.pageSize) - 1;
+
+    config.pagination.pageIndex = Math.min(
+      config.pagination.pageIndex,
+      maxIndex
+    );
+  }
+
   // 3. Parse config and RSS data into embed data.
   const data = parseEmbedData(config, rssData);
 

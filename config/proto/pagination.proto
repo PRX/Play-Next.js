@@ -1,0 +1,13 @@
+syntax = "proto3";
+package pagination;
+
+message Pagination {
+  uint32 page_index = 1;
+  uint32 page_size = 2;
+  SortEnum sort = 3;
+}
+
+enum SortEnum {
+  NEWEST = 0;
+  OLDEST = 1;
+}

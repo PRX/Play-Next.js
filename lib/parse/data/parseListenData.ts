@@ -1,5 +1,6 @@
 import type { IListenData, IListenEpisodeData, IRss } from '@interfaces/data';
 import type { IListenConfig } from '@interfaces/config';
+import convertDurationToSeconds from '@lib/convert/string/convertDurationToSeconds';
 import generateHtmlString from '@lib/generate/html/generateHtmlString';
 import getServiceFromUrl from '@lib/parse/string/getServiceFromUrl';
 import parseListenEpisodeData from './parseListenEpisodeData';
@@ -34,6 +35,16 @@ const parseListenData = (
     owner: rssItunesOwner,
     summary: rssItunesSummary
   } = itunes || {};
+  const playlistSize =
+    !config.showPlaylist || config.showPlaylist === 'all'
+      ? Infinity
+      : config.showPlaylist;
+  const playlistItems = rssData?.items?.slice(0, playlistSize);
+  const totalEpisodesCount = playlistItems?.length || 0;
+  const totalDuration = (playlistItems || []).reduce(
+    (total, { itunes }) => total + convertDurationToSeconds(itunes.duration),
+    0
+  );
   const episodes = parseRssItems(
     rssData,
     {
@@ -67,7 +78,8 @@ const parseListenData = (
       ...(copyright && { copyright }),
       ...(rssItunesAuthor && { author: rssItunesAuthor }),
       ...(rssItunesOwner && { owner: rssItunesOwner }),
-      ...(episodes && episodes.length && { episodes })
+      ...(episodes &&
+        episodes.length && { episodes, totalEpisodesCount, totalDuration })
     }),
     followLinks
   };

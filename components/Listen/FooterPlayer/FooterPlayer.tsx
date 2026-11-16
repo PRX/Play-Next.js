@@ -41,9 +41,8 @@ const FooterPlayer = forwardRef<HTMLDivElement, IFooterPlayerProps>(
     const { accentColor } = config;
     const { imageUrl: defaultThumbUrl, state: playerState } =
       useContext(PlayerContext);
-    const { currentTrackIndex, tracks } = playerState;
-    const isShown = currentTrackIndex !== null && currentTrackIndex >= 0;
-    const currentTrack = tracks[currentTrackIndex];
+    const { currentTrack, tracks } = playerState;
+    const isShown = !!currentTrack;
     const {
       imageUrl,
       title,

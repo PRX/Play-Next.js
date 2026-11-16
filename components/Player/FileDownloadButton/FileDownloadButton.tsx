@@ -16,8 +16,8 @@ const FileDownloadButton: React.FC<IFileDownloadButtonProps> = ({
   className
 }) => {
   const { state } = useContext(PlayerContext);
-  const { currentTrackIndex, tracks } = state;
-  const { sources, hasAudioSourceAt } = tracks[currentTrackIndex];
+  const { currentTrack } = state;
+  const { sources, hasAudioSourceAt } = currentTrack || {};
   const hasAudioSource = hasAudioSourceAt !== false;
   const audioSource = hasAudioSource && sources[hasAudioSourceAt];
   const { url } = audioSource || {};

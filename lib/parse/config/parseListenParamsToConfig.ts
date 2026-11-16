@@ -1,4 +1,5 @@
 import type { IListenConfig, IListenParams } from '@interfaces/config';
+import { decodePaginationParam } from '@lib/buf/pagination';
 import { EmbedParamKeysMap } from '@interfaces/config';
 import convertStringToInteger from '@lib/convert/string/convertStringToInteger';
 import parseAccentColorParam from './parseAccentColorParam';
@@ -22,6 +23,12 @@ const parseListenParamsToConfig = (params: IListenParams): IListenConfig => {
           return {
             ...a,
             [prop]: v === 'all' ? v : convertStringToInteger(normalizeValue(v))
+          };
+
+        case 'pagination':
+          return {
+            ...a,
+            [prop]: decodePaginationParam(normalizeValue(v))
           };
 
         case 'playlistSeason':
