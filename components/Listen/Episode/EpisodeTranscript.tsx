@@ -5,7 +5,6 @@
 
 import type React from 'react';
 import type {
-  IMediaData,
   IListenEpisodeData,
   IRssPodcastTranscriptJsonSegment,
   SpeakerSegmentsBlock
@@ -226,7 +225,7 @@ const EpisodeTranscript = ({
   loading
 }: IEpisodeTranscriptProps) => {
   const { state } = useContext(PlayerContext);
-  const { tracks, currentTrack } = state;
+  const { currentTrack } = state;
   const [isCurrentTrack, setIsCurrentTrack] = useState(false);
   const [showJumpButton, setShowJumpButton] = useState(false);
   const scrollAreaRef = useRef<Element>();

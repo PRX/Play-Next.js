@@ -195,7 +195,7 @@ const Listen = ({ config, data }: IListenPageProps) => {
       config,
       data
     }),
-    [config, state]
+    [config, state, data]
   );
 
   /**

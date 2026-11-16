@@ -30,7 +30,7 @@ const VideoOverlay = forwardRef<HTMLDivElement, IVideoOverlayProps>(
       useContext(ListenContext);
     const { closedCaptionsShown, videoVisibility } = listenState;
     const { el, state: playerState } = useContext(PlayerContext);
-    const { currentTrack, tracks, playing } = playerState;
+    const { currentTrack, playing } = playerState;
     const isVideoHidden = videoVisibility === 'hidden';
     const {
       guid,

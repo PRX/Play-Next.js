@@ -16,7 +16,7 @@ const VideoElement = forwardRef<HTMLDivElement, IVideoElementProps>(
   ({ className, closedCaptionsShown, posterImageUrl, ...props }, ref) => {
     const trackRef = useRef<HTMLTrackElement>(null);
     const { el, state: playerState } = useContext(PlayerContext);
-    const { currentTrack, tracks, playing } = playerState;
+    const { currentTrack, playing } = playerState;
     const {
       guid,
       transcripts,

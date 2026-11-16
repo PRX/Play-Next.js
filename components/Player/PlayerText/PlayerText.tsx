@@ -4,7 +4,6 @@
  */
 
 import type React from 'react';
-import type { IMediaData } from '@interfaces/data/IMediaData';
 import { useContext } from 'react';
 import clsx from 'clsx';
 import PlayerContext from '@contexts/PlayerContext';

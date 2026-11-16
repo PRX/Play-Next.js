@@ -41,7 +41,8 @@ const parseEmbedData = (config: IEmbedConfig, rssData?: IRss): IEmbedData => {
   const playlistItems = rssData?.items?.slice(0, playlistSize);
   const totalEpisodesCount = playlistItems?.length || 0;
   const totalDuration = (playlistItems || []).reduce(
-    (total, { itunes }) => total + convertDurationToSeconds(itunes.duration),
+    (total, { itunes: itemItunes }) =>
+      total + convertDurationToSeconds(itemItunes.duration),
     0
   );
   const { url: rssImageUrl } = rssImage || {};

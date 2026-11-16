@@ -22,8 +22,8 @@ const CoverArt: React.FC<ICoverArtProps> = () => {
   const imageRef = useRef<HTMLImageElement>(null);
   const isInitialLoad = useRef(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { tracks, currentTrackIndex } = state;
-  const { imageUrl, title } = tracks[currentTrackIndex] || ({} as IMediaData);
+  const { currentTrack } = state;
+  const { imageUrl, title } = currentTrack || ({} as IMediaData);
   const srcUrl = imageUrl || defaultImageUrl;
   const rootClassNames = clsx(styles.root, {
     [styles.loaded]: !isLoading || imageRef.current?.complete

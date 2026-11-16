@@ -1,3 +1,4 @@
+import 'core-js/proposals/array-buffer-base64';
 import {
   create,
   fromBinary,

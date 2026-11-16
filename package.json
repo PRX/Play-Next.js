@@ -32,6 +32,7 @@
     "@svgr/webpack": "^6.2.1",
     "clsx": "^1.1.1",
     "copy-to-clipboard": "^3.3.1",
+    "core-js": "^3.51.0",
     "filesize": "^10.1.4",
     "framer-motion": "^11.1.9",
     "html-react-parser": "^6.0.1",

@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import type { IListenEpisodeData } from '@interfaces/data';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import convertDurationStringToIntegerArray from '@lib/convert/string/convertDurationStringToIntegerArray';
@@ -72,7 +72,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
         pg
       }
     });
-  }, [pagination]);
+  }, [pagination, router]);
 
   const handlePageClick = useCallback(
     (newPageIndex: number) => {
@@ -89,22 +89,19 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
         }
       });
     },
-    [pagination, pages]
+    [pagination, pages, router]
   );
 
   const renderEpisodes = useMemo(
-    () => (
-      <>
-        {(tracks as IListenEpisodeData[])?.map((track, index) => (
-          <EpisodeCard
-            episode={track}
-            index={index}
-            onEpisodeClick={onEpisodeClick}
-            key={track.guid}
-          />
-        ))}
-      </>
-    ),
+    () =>
+      (tracks as IListenEpisodeData[])?.map((track, index) => (
+        <EpisodeCard
+          episode={track}
+          index={index}
+          onEpisodeClick={onEpisodeClick}
+          key={track.guid}
+        />
+      )),
     [onEpisodeClick, tracks]
   );
 
@@ -130,6 +127,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
           {pages > 1 && (
             <span className={styles.pagination}>
               <button
+                type="button"
                 className={clsx(styles.button, styles.buttonIcon)}
                 onClick={() => handlePageClick(pagination.pageIndex - 1)}
                 disabled={pagination.pageIndex <= 0}
@@ -141,6 +139,7 @@ const EpisodeList: React.FC<IEpisodeListProps> = ({
                 <span className={styles.pages}> / {pages}</span>
               </span>
               <button
+                type="button"
                 className={clsx(styles.button, styles.buttonIcon)}
                 onClick={() => handlePageClick(pagination.pageIndex + 1)}
                 disabled={pagination.pageIndex >= pages - 1}

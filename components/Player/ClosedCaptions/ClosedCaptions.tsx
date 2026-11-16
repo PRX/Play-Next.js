@@ -37,14 +37,13 @@ const getCurrentCue = (textTrack: TextTrack) =>
 
 const ClosedCaptions: React.FC<IClosedCaptionsProps> = ({ speakerColors }) => {
   const { el, state } = useContext(PlayerContext);
-  const { tracks, currentTrackIndex } = state;
+  const { currentTrack } = state;
   const [currentTime, setCurrentTime] = useState(el.current?.currentTime || 0);
   const [currentCue, setCurrentCue] = useState<VTTCue>();
   const [cueEnded, setCueEnded] = useState(false);
   const [transcriptData, setTranscriptData] =
     useState<IRssPodcastTranscriptJson>();
-  const currentTrack = tracks[currentTrackIndex] || ({} as IMediaData);
-  const { transcripts } = currentTrack;
+  const { transcripts } = currentTrack || ({} as IMediaData);
   const transcriptJson = transcripts?.find((t) => t.type.includes('json'));
   const captionsClassNames = clsx(styles.captions, {
     [styles.ended]: cueEnded

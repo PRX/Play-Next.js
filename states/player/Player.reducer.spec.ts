@@ -83,13 +83,15 @@ describe('states/player', () => {
     describe('`currentTrack` actions', () => {
       const mockState = {
         ...playerInitialState,
-        currentTrackIndex: {
+        currentTrack: {
           guid: 'GUID:1',
           sources: [
             {
               url: '//foo.com/1.mp3'
             }
           ],
+          hasAudioSourceAt: 0,
+          hasVideoSourceAt: false as false,
           link: '//foo.com/1',
           title: 'Title 1'
         },
@@ -127,7 +129,7 @@ describe('states/player', () => {
         ] as IMediaData[]
       };
 
-      test('should set `currentTrackIndex`', () => {
+      test('should set `currentTrack`', () => {
         const result1 = playerStateReducer(
           {
             ...mockState
@@ -185,7 +187,7 @@ describe('states/player', () => {
         expect(result2.currentTrack.guid).toBe('GUID:1');
       });
 
-      test('should set `currentTrackIndex`, and `playing` true', () => {
+      test('should set `currentTrack`, and `playing` true', () => {
         const result = playerStateReducer(
           {
             ...mockState
@@ -200,7 +202,7 @@ describe('states/player', () => {
         expect(result.playing).toBe(true);
       });
 
-      test('should set `currentTrackIndex` to next index', () => {
+      test('should set `currentTrack` to next track', () => {
         const result = playerStateReducer(
           {
             ...mockState,
@@ -214,7 +216,7 @@ describe('states/player', () => {
         expect(result.currentTrack.guid).toBe('GUID:3');
       });
 
-      test('should set `currentTrackIndex` to next index, w/o wrapping', () => {
+      test('should set `currentTrack` to next track, w/o wrapping', () => {
         const result = playerStateReducer(
           {
             ...mockState,
@@ -228,7 +230,7 @@ describe('states/player', () => {
         expect(result.currentTrack.guid).toBe('GUID:3');
       });
 
-      test('should set `currentTrackIndex` to previous index', () => {
+      test('should set `currentTrack` to previous track', () => {
         const result = playerStateReducer(
           {
             ...mockState,
@@ -242,7 +244,7 @@ describe('states/player', () => {
         expect(result.currentTrack.guid).toBe('GUID:1');
       });
 
-      test('should set `currentTrackIndex` to previous index, w/o wrapping', () => {
+      test('should set `currentTrack` to previous track, w/o wrapping', () => {
         const result = playerStateReducer(
           {
             ...mockState,
