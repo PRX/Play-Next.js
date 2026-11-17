@@ -88,6 +88,12 @@ export const getServerSideProps: GetServerSideProps<
   // 1. Convert query params into embed config.
   const config = parseEmbedParamsToConfig(query);
 
+  config.mediaType = isVideoMimeType(config.mediaType)
+    ? // Media type is video. Use as is.
+      config.mediaType
+    : // Media type is not video or undefined. Use as is, falling back to audio.
+      config.mediaType || 'audio';
+
   // 2. If RSS feed URL is provided...
   let rssData: IRss;
   let error: IPageError;
