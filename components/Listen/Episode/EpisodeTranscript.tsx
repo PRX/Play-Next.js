@@ -289,7 +289,7 @@ const EpisodeTranscript = ({
   };
 
   useEffect(() => {
-    const newIsCurrentTrack = episode.guid === currentTrack.guid;
+    const newIsCurrentTrack = episode.guid === currentTrack?.guid;
     setIsCurrentTrack(newIsCurrentTrack);
   }, [currentTrack, episode.guid]);
 
